@@ -332,7 +332,7 @@
       margin: 2.5rem auto 3rem;
       padding: 0 1.5rem;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 1.25rem;
     }
 
@@ -668,7 +668,7 @@
         font-size: 2.15rem;
       }
       .stats-row {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
@@ -1040,6 +1040,43 @@
         filterArticles();
       });
     });
+  </script>
+
+  <!-- Visitor Counter (Page Views API) -->
+  <script>
+    (function () {
+      const PV_SITE = 'haedarfarhani.github.io';
+      const PV_PREFIX = '/My-Articles/';
+      const PV_API = 'https://page-views-api.ratneshc.com/api/v1';
+      const fa = n => Number(n).toLocaleString('fa-IR');
+
+      const cards = Array.from(document.querySelectorAll('[data-pv]'));
+      const statViews = document.getElementById('stat-views');
+      const statCard = document.getElementById('stat-views-card');
+      let total = 0;
+      let okCount = 0;
+
+      Promise.all(
+        cards.map(el =>
+          fetch(PV_API + '/views?site=' + PV_SITE + '&path=' + encodeURIComponent(PV_PREFIX + el.dataset.pv))
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(d => {
+              const v = Number(d.views) || 0;
+              total += v;
+              okCount++;
+              el.textContent = '👁 ' + fa(v);
+            })
+            .catch(() => { el.style.display = 'none'; })
+        )
+      ).then(() => {
+        if (!statViews || !statCard) return;
+        if (okCount === 0) {
+          statCard.style.display = 'none';
+        } else {
+          statViews.textContent = fa(total);
+        }
+      });
+    })();
   </script>
 </body>
 </html>
