@@ -1656,6 +1656,7 @@
               <span class="meta-badge highlight">⏱ ~۲۰ دقیقه مطالعه</span>
               <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
               <span class="meta-badge">🚀 سطح: متوسط تا پیشرفته</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
             </div>
           </div>
 
@@ -2668,6 +2669,30 @@ Koin با شفافیت و سرعت. هر دو، از «ساخت پنهان» ب�
         });
       });
     });
+  </script>
+
+  <!-- Visitor Counter (Page Views API) -->
+  <script>
+    (function () {
+      const PV_SITE = 'haedarfarhani.github.io';
+      const PV_PREFIX = '/My-Articles/';
+      const PV_API = 'https://page-views-api.ratneshc.com/api/v1';
+
+      const file = (location.pathname.split('/').pop() || 'index.html').replace(/\/+$/, '');
+      const path = PV_PREFIX + (/\.[a-z0-9]+$/i.test(file) ? file : 'index.html');
+      const query = '?site=' + PV_SITE + '&path=' + encodeURIComponent(path);
+      const badge = document.getElementById('pv-badge');
+      const num = document.getElementById('pv-num');
+
+      if (location.hostname === PV_SITE) {
+        fetch(PV_API + '/track' + query, { keepalive: true }).catch(() => {});
+      }
+
+      fetch(PV_API + '/views' + query)
+        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(d => { if (num) num.textContent = Number(d.views).toLocaleString('fa-IR'); })
+        .catch(() => { if (badge) badge.style.display = 'none'; });
+    })();
   </script>
 </body>
 </html>

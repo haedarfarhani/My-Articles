@@ -527,6 +527,14 @@
       color: var(--text-subtle);
     }
 
+    .card-views {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: var(--text-subtle);
+      white-space: nowrap;
+    }
+
     .card-title {
       font-size: 1.35rem;
       font-weight: 900;
@@ -762,6 +770,10 @@
       <div class="stat-number">۱۰۰٪</div>
       <div class="stat-label">کدهای کاربردی و تست‌شده</div>
     </div>
+    <div class="stat-card" id="stat-views-card">
+      <div class="stat-number" id="stat-views">···</div>
+      <div class="stat-label">بازدید مجموع مقالات</div>
+    </div>
   </section>
 
   <!-- Search & Filter Controls -->
@@ -795,6 +807,7 @@
         <div class="card-top">
           <div class="card-meta-row">
             <span class="card-time">⏱ ~۳۰ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="concurrency-in-kotlin.html">👁 —</span>
             <span class="card-date">مهر ۱۴۰۵</span>
           </div>
           <h3 class="card-title">همزمانی در کاتلین: از Thread تا Flow؛ راهنمای جامع و پیشرفته</h3>
@@ -820,6 +833,7 @@
         <div class="card-top">
           <div class="card-meta-row">
             <span class="card-time">⏱ ~۲۵ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="clean-architecture-mvi-compose.html">👁 —</span>
             <span class="card-date">مهر ۱۴۰۵</span>
           </div>
           <h3 class="card-title">معماری تمیز و الگوی MVI در Jetpack Compose: از تئوری تا پروداکشن</h3>
@@ -845,6 +859,7 @@
         <div class="card-top">
           <div class="card-meta-row">
             <span class="card-time">⏱ ~۲۲ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="android-performance-memory.html">👁 —</span>
             <span class="card-date">مهر ۱۴۰۵</span>
           </div>
           <h3 class="card-title">بهینه‌سازی کارایی و مدیریت حافظه در اندروید: نشت حافظه و پروفایلینگ</h3>
@@ -870,6 +885,7 @@
         <div class="card-top">
           <div class="card-meta-row">
             <span class="card-time">⏱ ~۲۰ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="dependency-injection-hilt-koin.html">👁 —</span>
             <span class="card-date">مهر ۱۴۰۵</span>
           </div>
           <h3 class="card-title">تزریق وابستگی در کاتلین: نبرد تن به تن Hilt و Koin در دنیای واقعی</h3>
@@ -895,6 +911,7 @@
         <div class="card-top">
           <div class="card-meta-row">
             <span class="card-time">⏱ ~۲۵ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="naming-conventions.html">👁 —</span>
             <span class="card-date">مهر ۱۴۰۵</span>
           </div>
           <h3 class="card-title">قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا و کارآمد</h3>
