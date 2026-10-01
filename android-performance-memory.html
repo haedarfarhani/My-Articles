@@ -1,0 +1,2636 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>بهینه‌سازی کارایی و مدیریت حافظه در اندروید: نشت حافظه و پروفایلینگ | مقالات من</title>
+  <meta name="description" content="کالبدشکافی Garbage Collector در ART، مهار Memory Leakهای کلاسیک و مدرن با LeakCanary، تحلیل رندرینگ و فریم‌های جاافتاده و افزایش سرعت راه‌اندازی با Baseline Profiles.">
+  <meta name="keywords" content="Android Performance, Memory Leaks, LeakCanary, Profiler, Baseline Profiles, Cold Start, پرفورمنس اندروید">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="بهینه‌سازی کارایی و مدیریت حافظه در اندروید">
+  <meta property="og:description" content="رهنمای عملی مهار نشت حافظه، پروفایلینگ با ابزارهای Android Studio و بهینه‌سازی رندر و Cold Start.">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#7f52ff">
+
+  <!-- Fonts: Vazirmatn & JetBrains Mono with comprehensive system fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS Variables & Themes
+       ========================================================================== */
+    :root {
+      --font-sans: 'Vazirmatn', 'IRANSansWeb', 'IRANSans', 'Vazir', 'Tahoma', 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
+      
+      --color-primary: #7f52ff;
+      --color-primary-light: #a78bfa;
+      --color-primary-dark: #6330eb;
+      --color-primary-soft: rgba(127, 82, 255, 0.16);
+      --color-primary-glow: rgba(127, 82, 255, 0.3);
+      
+      --color-secondary: #0b7285;
+      --color-secondary-soft: rgba(11, 114, 133, 0.16);
+      
+      --color-success: #10b981;
+      --color-success-soft: rgba(16, 185, 129, 0.16);
+      --color-danger: #f43f5e;
+      --color-danger-soft: rgba(244, 63, 94, 0.16);
+      --color-warning: #f59e0b;
+      --color-warning-soft: rgba(245, 158, 11, 0.16);
+      --color-info: #06b6d4;
+      --color-info-soft: rgba(6, 182, 212, 0.16);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --radius-pill: 9999px;
+      
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s ease;
+      --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html[data-theme="light"] {
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #f1f5f9;
+      --bg-surface-alt: #f8fafc;
+      --bg-code: #0f172a;
+      --bg-code-header: #1e293b;
+      
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #94a3b8;
+      --text-code: #f8fafc;
+      
+      --border-subtle: #e2e8f0;
+      --border-normal: #cbd5e1;
+      --border-accent: rgba(127, 82, 255, 0.35);
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --shadow-glow: 0 0 20px rgba(127, 82, 255, 0.2);
+
+      --navbar-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    html[data-theme="dark"] {
+      --bg-body: #0a0e17;
+      --bg-surface: #111827;
+      --bg-surface-elevated: #1e293b;
+      --bg-surface-alt: #162032;
+      --bg-code: #070b12;
+      --bg-code-header: #111a2e;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      --text-code: #f8fafc;
+      
+      --border-subtle: #1e293b;
+      --border-normal: #334155;
+      --border-accent: rgba(167, 139, 250, 0.45);
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.55);
+      --shadow-glow: 0 0 24px rgba(127, 82, 255, 0.3);
+
+      --navbar-bg: rgba(10, 14, 23, 0.9);
+    }
+
+    /* ==========================================================================
+       Reset & Base Styles
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      font-size: 16.5px;
+      line-height: 2.15;
+      color: var(--text-main);
+      background-color: var(--bg-body);
+      transition: background-color var(--transition-normal), color var(--transition-normal);
+      direction: rtl;
+      text-align: right;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background: var(--color-primary);
+      color: #ffffff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 9px;
+      height: 9px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-body);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-normal);
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--bg-body);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-primary);
+    }
+
+    /* ==========================================================================
+       Top Progress Bar & Navbar
+       ========================================================================== */
+    #reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #7f52ff, #c711e1, #00b4d8);
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 10px rgba(127, 82, 255, 0.6);
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: all var(--transition-normal);
+    }
+
+    .nav-container {
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #7f52ff 0%, #d946ef 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(127, 82, 255, 0.4);
+      flex-shrink: 0;
+    }
+
+    .brand-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .nav-breadcrumb-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--color-primary-soft);
+      color: var(--color-primary-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .btn-icon:hover {
+      background: var(--color-primary-soft);
+      color: var(--color-primary-light);
+      border-color: var(--color-primary);
+      transform: translateY(-1px);
+    }
+
+    .btn-toc-toggle {
+      display: none;
+    }
+
+    /* ==========================================================================
+       Main Blog Layout
+       ========================================================================== */
+    .blog-wrapper {
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .blog-article {
+      min-width: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem 2.8rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* ==========================================================================
+       Article Hero / Header
+       ========================================================================== */
+    .article-hero {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .hero-category {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .cat-pill {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      background: var(--color-primary-soft);
+      padding: 0.3rem 0.9rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-accent);
+    }
+
+    .post-title {
+      font-size: 2.35rem;
+      font-weight: 900;
+      line-height: 1.5;
+      letter-spacing: -0.8px;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #a78bfa 0%, #e879f9 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-lead {
+      font-size: 1.15rem;
+      line-height: 2.3;
+      color: var(--text-muted);
+      margin-bottom: 1.8rem;
+      background: var(--bg-surface-alt);
+      border-right: 4px solid var(--color-primary);
+      padding: 1.1rem 1.4rem;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+
+    .hero-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.2rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+    }
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .author-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7f52ff, #3b82f6);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.2rem;
+      box-shadow: 0 0 0 3px var(--bg-surface), 0 0 0 5px var(--color-primary-soft);
+    }
+
+    .author-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .author-name {
+      font-weight: 800;
+      font-size: 0.98rem;
+      color: var(--text-main);
+    }
+
+    .author-role {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .meta-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-pill);
+    }
+
+    .meta-badge.highlight {
+      color: var(--color-primary-light);
+      border-color: var(--border-accent);
+      background: var(--color-primary-soft);
+    }
+
+    .post-tags-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.2rem;
+    }
+
+    .post-tag {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-pill);
+      background: var(--bg-surface-alt);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .post-tag:hover {
+      color: var(--color-primary-light);
+      border-color: var(--color-primary);
+      background: var(--color-primary-soft);
+    }
+
+    /* ==========================================================================
+       Inline TOC Box
+       ========================================================================== */
+    .inline-toc-box {
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1.6rem;
+      margin: 2.2rem 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .inline-toc-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--color-primary-light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .inline-toc-grid {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem 1.5rem;
+      padding: 0;
+    }
+
+    .inline-toc-item {
+      margin: 0;
+    }
+
+    .inline-toc-link {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.92rem;
+      line-height: 1.9;
+      transition: color var(--transition-fast);
+      border-bottom: none !important;
+    }
+
+    .inline-toc-link:hover {
+      color: var(--color-primary-light) !important;
+    }
+
+    .inline-toc-num {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      background: var(--color-primary-soft);
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       Sidebar & Sticky TOC
+       ========================================================================== */
+    .blog-sidebar {
+      position: sticky;
+      top: 85px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-height: calc(100vh - 105px);
+    }
+
+    .sidebar-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 1.4rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-card.toc-card {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .sidebar-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .toc-scroll-container {
+      overflow-y: auto;
+      padding-left: 0.4rem;
+      flex: 1;
+    }
+
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0;
+    }
+
+    .toc-item {
+      margin: 0;
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      font-weight: 500;
+      border-right: 3px solid transparent;
+      transition: all var(--transition-fast);
+      text-align: right;
+      direction: rtl;
+    }
+
+    .toc-link:hover {
+      color: var(--color-primary-light);
+      background: var(--color-primary-soft);
+      border-right-color: var(--color-primary);
+    }
+
+    .toc-link.active {
+      color: var(--color-primary-light);
+      background: var(--color-primary-soft);
+      font-weight: 800;
+      border-right-color: var(--color-primary);
+    }
+
+    .toc-num {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .toc-link.active .toc-num {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+    }
+
+    .toc-text {
+      flex: 1;
+      text-align: right;
+      direction: rtl;
+      unicode-bidi: isolate;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .sidebar-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .btn-action-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .btn-action-block:hover {
+      background: var(--color-primary-soft);
+      color: var(--color-primary-light);
+      border-color: var(--color-primary);
+    }
+
+    /* ==========================================================================
+       Article Content Typography & Headings
+       ========================================================================== */
+    .kl-article {
+      color: var(--text-main);
+      line-height: 2.15;
+    }
+
+    .kl-article h2 {
+      font-size: 1.55rem;
+      font-weight: 900;
+      margin: 3.2rem 0 1.2rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 2px solid var(--border-subtle);
+      position: relative;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .kl-article h2::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      right: 0;
+      width: 90px;
+      height: 2px;
+      background: linear-gradient(90deg, #7f52ff, #c711e1);
+      border-radius: var(--radius-pill);
+    }
+
+    .kl-article h2 .kl-num {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      background: var(--color-primary-soft);
+      border: 1px solid var(--border-accent);
+      padding: 0.15rem 0.65rem;
+      border-radius: var(--radius-pill);
+      margin-inline-end: 0.65rem;
+      vertical-align: middle;
+      font-family: var(--font-sans);
+    }
+
+    .kl-article h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin: 2.4rem 0 0.85rem;
+      color: var(--color-primary-light);
+      line-height: 1.6;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .kl-article h3::before {
+      content: "◆";
+      font-size: 0.7em;
+      color: var(--color-primary);
+    }
+
+    .kl-article h4 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      margin: 1.8rem 0 0.6rem;
+      color: var(--text-main);
+    }
+
+    .kl-article p {
+      margin: 1.15rem 0;
+      color: var(--text-main);
+    }
+
+    .kl-article strong {
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .kl-article a {
+      color: var(--color-primary-light);
+      text-decoration: none;
+      border-bottom: 1.5px dotted var(--color-primary);
+      transition: all var(--transition-fast);
+      font-weight: 600;
+    }
+
+    .kl-article a:hover {
+      color: #c084fc;
+      border-bottom-style: solid;
+    }
+
+    .kl-article ul, .kl-article ol {
+      margin: 1.1rem 0;
+      padding-inline-start: 1.75rem;
+    }
+
+    .kl-article li {
+      margin: 0.45rem 0;
+    }
+
+    .kl-article li::marker {
+      color: var(--color-primary-light);
+      font-weight: 800;
+    }
+
+    /* ==========================================================================
+       Inline Code & Code Blocks
+       ========================================================================== */
+    .kl-article code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--color-primary-soft);
+      color: var(--color-primary-light);
+      padding: 0.15em 0.5em;
+      border-radius: 6px;
+      direction: ltr;
+      unicode-bidi: embed;
+      border: 1px solid rgba(127, 82, 255, 0.25);
+    }
+
+    .code-block-wrapper {
+      margin: 1.8rem 0;
+      border-radius: var(--radius-lg);
+      background: var(--bg-code);
+      border: 1px solid var(--border-normal);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .code-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 1rem;
+      background: var(--bg-code-header);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      direction: ltr;
+    }
+
+    .code-block-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+
+    .code-block-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .code-lang-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-copy-code {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #e2e8f0;
+      font-family: var(--font-sans);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.3rem 0.7rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-copy-code:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #ffffff;
+    }
+
+    .kl-article pre.kl-code {
+      background: transparent !important;
+      color: var(--text-code) !important;
+      direction: ltr !important;
+      text-align: left !important;
+      unicode-bidi: plaintext !important;
+      padding: 1.25rem 1.4rem !important;
+      margin: 0 !important;
+      overflow-x: auto !important;
+      font-family: var(--font-mono) !important;
+      font-size: 13.6px !important;
+      line-height: 1.85 !important;
+      border: none !important;
+      white-space: pre !important;
+      word-wrap: normal !important;
+    }
+
+    .kl-article pre.kl-code code {
+      background: transparent !important;
+      padding: 0 !important;
+      font-size: inherit !important;
+      color: inherit !important;
+      border: none !important;
+      font-family: inherit !important;
+      direction: ltr !important;
+      text-align: left !important;
+      unicode-bidi: plaintext !important;
+      white-space: pre !important;
+    }
+
+    /* ==========================================================================
+       SVG Diagrams & Shapes (Crystal Clear High Contrast)
+       ========================================================================== */
+    .kl-article figure.kl-fig {
+      margin: 2.5rem 0;
+      background: var(--bg-surface-elevated) !important;
+      border: 1px solid var(--border-normal) !important;
+      border-radius: var(--radius-xl);
+      padding: 1.8rem 1.4rem 1.4rem;
+      text-align: center;
+      overflow-x: auto;
+      box-shadow: var(--shadow-md);
+    }
+
+    .kl-article figure.kl-fig svg {
+      width: 100%;
+      height: auto;
+      max-width: 770px;
+      min-width: 540px;
+      display: block;
+      margin: 0 auto;
+      direction: ltr !important;
+      overflow: visible;
+    }
+
+    .kl-article figure.kl-fig svg text {
+      font-family: var(--font-sans) !important;
+      user-select: none;
+    }
+
+    /* --- Light Mode SVGs --- */
+    html[data-theme="light"] figure.kl-fig svg .s-box,
+    html[data-theme="light"] figure.kl-fig svg .s-boxed,
+    html[data-theme="light"] figure.kl-fig svg [class*="s-box"] {
+      fill: #ffffff !important;
+      stroke: #cbd5e1 !important;
+      stroke-width: 1.6 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-chip {
+      fill: #1e293b !important;
+      stroke: #334155 !important;
+      stroke-width: 1 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-acc {
+      fill: rgba(127, 82, 255, 0.12) !important;
+      stroke: #7f52ff !important;
+      stroke-width: 1.8 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-ok {
+      fill: rgba(16, 185, 129, 0.12) !important;
+      stroke: #10b981 !important;
+      stroke-width: 1.8 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-bad {
+      fill: rgba(244, 63, 94, 0.12) !important;
+      stroke: #f43f5e !important;
+      stroke-width: 1.8 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-warn {
+      fill: rgba(245, 158, 11, 0.14) !important;
+      stroke: #f59e0b !important;
+      stroke-width: 1.8 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-t {
+      fill: #0f172a !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-t2 {
+      fill: #475569 !important;
+      font-size: 12.5px !important;
+      font-weight: 600 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-tc {
+      fill: #f8fafc !important;
+      font-size: 13px !important;
+      font-family: var(--font-mono), Consolas, monospace !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-tbad {
+      fill: #e11d48 !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-tok {
+      fill: #059669 !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-acc-t {
+      fill: #7f52ff !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-line {
+      stroke: #64748b !important;
+      stroke-width: 1.8 !important;
+      fill: none !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-dash {
+      stroke: #64748b !important;
+      stroke-width: 1.6 !important;
+      fill: none !important;
+      stroke-dasharray: 5 4 !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-arr {
+      stroke: #7f52ff !important;
+      stroke-width: 2 !important;
+      fill: none !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-arr-bad {
+      stroke: #f43f5e !important;
+      stroke-width: 2 !important;
+      fill: none !important;
+    }
+    html[data-theme="light"] figure.kl-fig svg .s-arr-ok {
+      stroke: #10b981 !important;
+      stroke-width: 2 !important;
+      fill: none !important;
+    }
+
+    /* --- Dark Mode SVGs --- */
+    html[data-theme="dark"] figure.kl-fig svg .s-box,
+    html[data-theme="dark"] figure.kl-fig svg .s-boxed,
+    html[data-theme="dark"] figure.kl-fig svg [class*="s-box"] {
+      fill: #1e293b !important;
+      stroke: #475569 !important;
+      stroke-width: 1.6 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-chip {
+      fill: #334155 !important;
+      stroke: #64748b !important;
+      stroke-width: 1 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-acc {
+      fill: rgba(155, 119, 255, 0.18) !important;
+      stroke: #9b77ff !important;
+      stroke-width: 1.8 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-ok {
+      fill: rgba(32, 201, 151, 0.18) !important;
+      stroke: #20c997 !important;
+      stroke-width: 1.8 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-bad {
+      fill: rgba(255, 107, 107, 0.18) !important;
+      stroke: #ff6b6b !important;
+      stroke-width: 1.8 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-warn {
+      fill: rgba(252, 196, 25, 0.2) !important;
+      stroke: #fcc419 !important;
+      stroke-width: 1.8 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-t {
+      fill: #f8fafc !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-t2 {
+      fill: #cbd5e1 !important;
+      font-size: 12.5px !important;
+      font-weight: 500 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-tc {
+      fill: #93c5fd !important;
+      font-size: 13px !important;
+      font-family: var(--font-mono), Consolas, monospace !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-tbad {
+      fill: #ff6b6b !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-tok {
+      fill: #20c997 !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-acc-t {
+      fill: #c084fc !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-line {
+      stroke: #94a3b8 !important;
+      stroke-width: 1.8 !important;
+      fill: none !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-dash {
+      stroke: #94a3b8 !important;
+      stroke-width: 1.6 !important;
+      fill: none !important;
+      stroke-dasharray: 5 4 !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-arr {
+      stroke: #a855f7 !important;
+      stroke-width: 2 !important;
+      fill: none !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-arr-bad {
+      stroke: #ff6b6b !important;
+      stroke-width: 2 !important;
+      fill: none !important;
+    }
+    html[data-theme="dark"] figure.kl-fig svg .s-arr-ok {
+      stroke: #20c997 !important;
+      stroke-width: 2 !important;
+      fill: none !important;
+    }
+
+    .kl-article figcaption {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+      line-height: 2;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--border-subtle);
+    }
+
+    .kl-article figcaption b {
+      color: var(--color-primary-light);
+    }
+
+    /* ==========================================================================
+       Callout Boxes
+       ========================================================================== */
+    .kl-box {
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      border: 1px solid var(--border-subtle);
+      border-right: 5px solid var(--color-primary);
+      background: var(--bg-surface-alt);
+      line-height: 2.1;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .kl-box .kl-h {
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+      color: var(--color-primary-light);
+      font-size: 1.05rem;
+    }
+
+    .kl-box.kl-warn {
+      border-right-color: var(--color-warning);
+      background: var(--color-warning-soft);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .kl-box.kl-warn .kl-h {
+      color: var(--color-warning);
+    }
+
+    .kl-box.kl-bad {
+      border-right-color: var(--color-danger);
+      background: var(--color-danger-soft);
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+    .kl-box.kl-bad .kl-h {
+      color: var(--color-danger);
+    }
+
+    .kl-box.kl-deep {
+      border-right-color: var(--color-secondary);
+      background: var(--color-secondary-soft);
+      border-color: rgba(11, 114, 133, 0.3);
+    }
+    .kl-box.kl-deep .kl-h {
+      color: var(--color-secondary);
+    }
+
+    .kl-ok {
+      color: var(--color-success);
+      font-weight: 800;
+    }
+    .kl-no {
+      color: var(--color-danger);
+      font-weight: 800;
+    }
+
+    /* ==========================================================================
+       Tables (Clean Grid & Beautiful Styling)
+       ========================================================================== */
+    .kl-scroll {
+      overflow-x: auto;
+      margin: 2.2rem 0;
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-surface);
+    }
+
+    .kl-article table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      min-width: 620px;
+      font-size: 0.94rem;
+      background: transparent;
+      direction: rtl;
+    }
+
+    .kl-article th {
+      background: var(--bg-surface-elevated) !important;
+      color: #a78bfa !important;
+      padding: 12px 16px !important;
+      font-weight: 800 !important;
+      border-bottom: 2px solid var(--color-primary) !important;
+      border-left: 1px solid var(--border-subtle);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .kl-article th:last-child {
+      border-left: none;
+    }
+
+    .kl-article td {
+      padding: 12px 16px !important;
+      border-bottom: 1px solid var(--border-subtle);
+      border-left: 1px solid var(--border-subtle);
+      vertical-align: middle;
+      line-height: 1.95;
+      text-align: right;
+    }
+
+    .kl-article td:last-child {
+      border-left: none;
+    }
+
+    .kl-article tr:last-child td {
+      border-bottom: none;
+    }
+
+    .kl-article tr:nth-child(even) td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .kl-article tr:hover td {
+      background: var(--color-primary-soft) !important;
+    }
+
+    .kl-article td code {
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       Checklist & Sources
+       ========================================================================== */
+    .kl-check {
+      counter-reset: klc;
+      list-style: none;
+      padding-inline-start: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .kl-check li {
+      counter-increment: klc;
+      padding-inline-start: 2.8rem;
+      position: relative;
+      margin: 0;
+      line-height: 2.1;
+    }
+
+    .kl-check li::before {
+      content: counter(klc);
+      position: absolute;
+      right: 0;
+      top: 0.2em;
+      width: 1.85em;
+      height: 1.85em;
+      border-radius: 50%;
+      background: var(--color-primary-soft);
+      border: 1px solid var(--border-accent);
+      color: var(--color-primary-light);
+      font-weight: 900;
+      font-size: 0.85em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kl-sources {
+      list-style: none;
+      padding-inline-start: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .kl-sources li {
+      margin: 0;
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 1rem;
+      transition: all var(--transition-fast);
+    }
+
+    .kl-sources li:hover {
+      border-color: var(--color-primary);
+      background: var(--color-primary-soft);
+      transform: translateY(-1px);
+    }
+
+    .kl-sources a {
+      display: block;
+      border-bottom: none !important;
+      font-size: 0.92rem;
+    }
+
+    /* ==========================================================================
+       Article Footer & Author Box
+       ========================================================================== */
+    .article-end-box {
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .author-card-lg {
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .author-card-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7f52ff, #ec4899);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 900;
+      flex-shrink: 0;
+      box-shadow: 0 4px 15px rgba(127, 82, 255, 0.4);
+    }
+
+    .author-card-content {
+      flex: 1;
+    }
+
+    .author-card-name {
+      font-size: 1.2rem;
+      font-weight: 900;
+      margin-bottom: 0.3rem;
+      color: var(--text-main);
+    }
+
+    .author-card-bio {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.9;
+    }
+
+    .site-footer {
+      margin-top: 4rem;
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-brand {
+      font-weight: 800;
+      color: var(--color-primary-light);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ==========================================================================
+       Floating Action Buttons & Toast
+       ========================================================================== */
+    .floating-actions {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      z-index: 850;
+    }
+
+    .btn-fab {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      font-size: 1.25rem;
+    }
+
+    .btn-fab:hover {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    #back-to-top {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(15px);
+    }
+
+    #back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      right: 50%;
+      transform: translateX(50%) translateY(30px);
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--color-primary);
+      box-shadow: var(--shadow-lg);
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.9rem;
+      font-weight: 700;
+      z-index: 1100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(50%) translateY(0);
+    }
+
+    .mobile-drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 950;
+      opacity: 0;
+      transition: opacity var(--transition-normal);
+    }
+
+    .mobile-drawer-overlay.open {
+      display: block;
+      opacity: 1;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: -320px;
+      width: 320px;
+      background: var(--bg-surface);
+      z-index: 960;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      transition: right var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-drawer.open {
+      right: 0;
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    /* ==========================================================================
+       Responsive Media Queries
+       ========================================================================== */
+    @media (max-width: 1080px) {
+      .blog-grid {
+        grid-template-columns: 1fr;
+      }
+      .blog-sidebar {
+        display: none;
+      }
+      .btn-toc-toggle {
+        display: flex;
+      }
+      .blog-article {
+        padding: 2rem 1.6rem;
+      }
+      .post-title {
+        font-size: 1.95rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .inline-toc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        font-size: 15.8px;
+      }
+      .blog-wrapper {
+        padding: 1rem 0.75rem 4rem;
+      }
+      .blog-article {
+        padding: 1.4rem 0.95rem;
+        border-radius: var(--radius-lg);
+      }
+      .post-title {
+        font-size: 1.55rem;
+        line-height: 1.45;
+      }
+      .hero-lead {
+        font-size: 1.02rem;
+        padding: 0.9rem 1rem;
+      }
+      .nav-container {
+        padding: 0.6rem 0.85rem;
+      }
+      .author-card-lg {
+        flex-direction: column;
+        text-align: center;
+      }
+      .floating-actions {
+        bottom: 15px;
+        left: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="reading-progress"></div>
+
+  <!-- Navigation Bar -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="index.html" class="brand-link" title="صفحه اصلی ناجی‌بلاگ">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">مقالات من</span>
+          <span class="brand-subtitle">حیدر فرحانی</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <span class="nav-breadcrumb-tag">
+          <span>⚡</span>
+          <span>کاتلین و اندروید</span>
+        </span>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Mobile TOC Toggle Button -->
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <!-- Share Button -->
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <!-- Article Content Column -->
+      <article class="blog-article">
+
+                <!-- Hero Header -->
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">پرفورمنس اندروید</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">مدیریت حافظه</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">بهینه‌سازی کارایی و مدیریت حافظه</span> در اندروید: نشت حافظه و پروفایلینگ
+          </h1>
+
+          <p class="hero-lead">
+            اپ شما کند بالا می‌آید؟ بعد از چند دقیقه استفاده، حافظه بالا می‌ماند یا فریم‌ها می‌پرند؟ این مقاله چرخه‌ی حیات اشیا و سطل‌های Garbage Collection در ART را تشریح می‌کند، نشت‌های کلاسیک (Listener، Context، Coroutine) را با <code>LeakCanary</code> ریشه‌یابی می‌کند و مسیر عملی از پروفایلینگ تا <code>Baseline Profile</code> و بهینه‌سازی Cold Start را گام‌به‌گام نشان می‌دهد.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">توسعه‌دهنده اندروید و کاتلین</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۲۲ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Performance</span>
+            <span class="post-tag">#Memory_Leaks</span>
+            <span class="post-tag">#LeakCanary</span>
+            <span class="post-tag">#Android_Profiler</span>
+            <span class="post-tag">#Baseline_Profiles</span>
+            <span class="post-tag">#Jank</span>
+          </div>
+
+          <!-- Inline Table of Contents -->
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+      <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>کارایی در اندروید: چه چیزی را باید اندازه گرفت؟</span></a></li>
+      <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>حافظه در اندروید: چرخه حیات اشیا و سطل‌های GC</span></a></li>
+      <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Memory Leak: تعریف، علل و نشانه‌ها</span></a></li>
+      <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>LeakCanary: ریشه‌یابی عملی نشت حافظه</span></a></li>
+      <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>نشت‌های کلاسیک: Listener، Context و Coroutine</span></a></li>
+      <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Android Studio Profiler: حافظه، CPU و شبکه</span></a></li>
+      <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>رندرینگ و Jank: فریم‌های جاافتاده</span></a></li>
+      <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>Cold Start: ریشه‌یابی و بهینه‌سازی راه‌اندازی</span></a></li>
+      <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>Baseline Profiles و R8: سرعت و حجم در یک بسته</span></a></li>
+      <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>جمع‌بندی، چک‌لیست و منابع</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <!-- Sections Content -->
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>کارایی در اندروید: چه چیزی را باید اندازه گرفت؟</h2>
+
+<p>
+«اپ من کند است» یک بیانیه‌ی فنی نیست؛ یک علامت است. قبل از هر بهینه‌سازی باید مشخص کنید
+<em>کدام بعدِ کارایی</em> شکسته شده، چون هر کدام ابزار و راه‌حل خودشان را دارند.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بعد کارایی</th><th>نشانه برای کاربر</th><th>شاخص فنی</th><th>ابزار اندازه‌گیری</th></tr>
+  <tr><td>زمان راه‌اندازی</td><td>لوگو طولانی می‌ماند</td><td>Cold Start &lt; ۵۰۰ms</td><td>App Startups، Macrobenchmark</td></tr>
+  <tr><td>کارایی رندر</td><td>لرزش و گیر کردن حرکت</td><td>Frame Time &lt; ۱۶ms</td><td>GPU Profiler، JankStats</td></tr>
+  <tr><td>حافظه</td><td>کرش در پس‌زمینه، ری‌استارت</td><td>Heap پایدار، صفر نشت</td><td>Memory Profiler، LeakCanary</td></tr>
+  <tr><td>مصرف انرژی</td><td>داغ شدن و خالی شدن باتری</td><td>WakeLock/Wakelock کم</td><td>Battery Historian</td></tr>
+  <tr><td>شبکه</td><td>صفحه خالی می‌ماند</td><td>TTFB، بایت اضافه</td><td>Network Profiler، OkHttp Logging</td></tr>
+</table>
+</div>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 270" role="img" aria-label="بودجه زمانی رندر یک فریم">
+  <defs>
+    <marker id="m-p1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7f52ff"/>
+    </marker>
+  </defs>
+
+  <rect class="s-acc" x="30" y="30" width="710" height="52" rx="12"/>
+  <text class="s-acc-t" x="385" y="62" text-anchor="middle" font-size="16">بودجه‌ی ۱۶.۷ میلی‌ثانیه (نمایشگر ۶۰Hz)</text>
+
+  <rect class="s-ok" x="30" y="110" width="290" height="60" rx="11"/>
+  <text class="s-tok" x="175" y="137" text-anchor="middle" font-size="14">Input + Measure + Layout</text>
+  <text class="s-t2" x="175" y="160" text-anchor="middle" font-size="12">کمتر از ۵ms — عالی</text>
+
+  <rect class="s-warn" x="336" y="110" width="230" height="60" rx="11"/>
+  <text class="s-t" x="451" y="137" text-anchor="middle" font-size="14" fill="#b45309">Draw / Record</text>
+  <text class="s-t2" x="451" y="160" text-anchor="middle" font-size="12">۳ تا ۶ms — قابل قبول</text>
+
+  <rect class="s-bad" x="582" y="110" width="158" height="60" rx="11"/>
+  <text class="s-tbad" x="661" y="137" text-anchor="middle" font-size="14">Jank!</text>
+  <text class="s-t2" x="661" y="160" text-anchor="middle" font-size="12">&gt; ۱۶.۷ms</text>
+
+  <line class="s-arr" x1="30" y1="200" x2="740" y2="200" marker-end="url(#m-p1)"/>
+  <text class="s-t2" x="30" y="224" font-size="12">0ms</text>
+  <text class="s-t2" x="740" y="224" text-anchor="end" font-size="12">16.7ms — اگر رد شود، فریم بعدی جا می‌افتد</text>
+
+  <rect class="s-box" x="140" y="238" width="490" height="26" rx="8"/>
+  <text class="s-t" x="385" y="256" text-anchor="middle" font-size="12.5">جاافتادنِ سه فریم پشت‌سرهم = اصطلاحاً ANR نامرئی برای کاربر</text>
+</svg>
+<figcaption><b>شکل ۱ — بودجه‌ی فریم:</b> هر فریم باید در ۱۶.۷ms تمام شود. فراتر رفتنِ یک‌باره اهمیتی ندارد؛ آنچه UX را می‌کشد، جاافتادن متوالی فریم‌هاست.</figcaption>
+</figure>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">عمیق‌تر: اصل اول پرفورمنس</span>
+سریع‌ترین کد، کدی‌ست که اصلاً اجرا نشود. پیش از هر میکرو-بهینه‌سازی،
+پرسش اول این باشد: «آیا این کار اساساً لازم است؟ آیا الان لازم است؟ آیا هر بار لازم است؟»
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>حافظه در اندروید: چرخه حیات اشیا و سطل‌های GC</h2>
+
+<p>
+در اندروید، حافظه توسط <strong>ART (Android Runtime)</strong> با یک Garbage Collector نسلی مدیریت می‌شود.
+درک این مدل به شما می‌گوید چرا برنامه‌ی شما «ناگهان» فریز می‌شود و چرا بعضی اشیا هرگز جمع نمی‌شوند.
+</p>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 340" role="img" aria-label="چرخه حیات شیء و سطل‌های GC">
+  <defs>
+    <marker id="m-p2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7f52ff"/>
+    </marker>
+    <marker id="m-p2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f43f5e"/>
+    </marker>
+  </defs>
+
+  <rect class="s-ok" x="30" y="30" width="200" height="52" rx="12"/>
+  <text class="s-tok" x="130" y="62" text-anchor="middle" font-size="15">Young Generation</text>
+  <rect class="s-warn" x="285" y="30" width="200" height="52" rx="12"/>
+  <text class="s-t" x="385" y="62" text-anchor="middle" font-size="15" fill="#b45309">Old Generation</text>
+  <rect class="s-box" x="540" y="30" width="200" height="52" rx="12"/>
+  <text class="s-t" x="640" y="62" text-anchor="middle" font-size="15">Large Object Space</text>
+
+  <text class="s-t2" x="130" y="106" text-anchor="middle" font-size="12">اشیای تازه — GC خیلی سریع</text>
+  <text class="s-t2" x="385" y="106" text-anchor="middle" font-size="12">باقی‌مانده‌ی چندین GC — GC کُندتر</text>
+  <text class="s-t2" x="640" y="106" text-anchor="middle" font-size="12">بیت‌مپها و آرایه‌های بزرگ</text>
+
+  <line class="s-arr" x1="230" y1="56" x2="279" y2="56" marker-end="url(#m-p2)"/>
+  <line class="s-arr" x1="485" y1="56" x2="534" y2="56" marker-end="url(#m-p2)"/>
+  <text class="s-t2" x="255" y="44" text-anchor="middle" font-size="11">aging</text>
+  <text class="s-t2" x="510" y="44" text-anchor="middle" font-size="11">بزرگ</text>
+
+  <rect class="s-acc" x="30" y="140" width="710" height="76" rx="13"/>
+  <text class="s-acc-t" x="720" y="170" text-anchor="end" font-size="15">Root Set: Activity، Thread، ثابت‌ها، Register‌ها</text>
+  <text class="s-t" x="720" y="198" text-anchor="end" font-size="13">هر شیءی که از این‌جا قابل دسترسی باشد «زنده» است — حتی اگر دیگر لازمش ندارید!</text>
+
+  <path class="s-arr-bad" d="M 150 216 L 150 250" marker-end="url(#m-p2b)"/>
+  <rect class="s-bad" x="30" y="252" width="330" height="66" rx="12"/>
+  <text class="s-tbad" x="195" y="280" text-anchor="middle" font-size="14">Unreachable → جمع‌آوری در GC بعدی</text>
+  <text class="s-t2" x="195" y="304" text-anchor="middle" font-size="12.5">آزاد شدن سریع و بی‌صدای حافظه</text>
+
+  <path class="s-arr" d="M 620 216 L 620 250" marker-end="url(#m-p2)"/>
+  <rect class="s-warn" x="410" y="252" width="330" height="66" rx="12"/>
+  <text class="s-t" x="575" y="280" text-anchor="middle" font-size="14" fill="#b45309">Reachable but useless → نشت حافظه</text>
+  <text class="s-t2" x="575" y="304" text-anchor="middle" font-size="12.5">رجع‌پذیر = زنده؛ GC هرگز جمعش نمی‌کند</text>
+</svg>
+<figcaption><b>شکل ۲ — سطل‌های GC و دو سرنوشت:</b> GC فقط اشیای «غیرقابل‌دسترس» را آزاد می‌کند. اگر یک Listener ثبتشده یا Coroutine فراموش‌شده، شیء را از Root Set قابل‌دسترس نگه دارد، نشت رخ داده است — هر چند برنامه هیچ‌وقت خطا نمی‌دهد.</figcaption>
+</figure>
+
+<h3>۲.۱ هزینه‌ی یک GC چیست؟</h3>
+
+<ul>
+  <li><strong>GC خاموش (Young):</strong> معمولاً چند میلی‌ثانیه؛ تقریباً نامرئی است.</li>
+  <li><strong>GC کامل (Full):</strong> کل Heap را اسکن می‌کند؛ در لحظه‌ی رندر می‌تواند چند فریم را ببلعد.</li>
+  <li><strong>Heap بزرگ:</strong> اشیای زیاد ← زمان اسکن بیشتر ← GCهای کُندتر ← چرخه‌ی معیوب.</li>
+  <li><strong>اشیای بزرگ (بیت‌مپ):</strong> مستقیم به Large Object Space می‌روند و نوسان heap را تشدید می‌کنند.</li>
+</ul>
+
+<div class="kl-box">
+<span class="kl-h">نکته: Allocation گران‌تر از چیزی‌ست که فکر می‌کنید</span>
+تخصیص مکرر ابجکت در حلقه‌ی رندر (مثل <code>Paint</code>، <code>Rect</code> یا لیست فیلترشده) هم حافظه می‌سوزاند
+هم فشار GC را بالا می‌برد. در Compose و View، الگوی «بساز-دور بینداز» را با
+<code>remember</code> یا بازاستفاده از بافرهای آماده بشکنید.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Memory Leak: تعریف، علل و نشانه‌ها</h2>
+
+<p>
+<strong>نشت حافظه</strong> یعنی شیءای که دیگر از نظر کسب‌وکار مرده، اما از نظر GC زنده است،
+چون یک مرجع (Reference) فراموش‌شده آن را به زنجیره‌ی Root وصل نگه داشته است.
+</p>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 260" role="img" aria-label="ساختار یک نشت حافظه">
+  <defs>
+    <marker id="m-p3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7f52ff"/>
+    </marker>
+    <marker id="m-p3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f43f5e"/>
+    </marker>
+  </defs>
+
+  <rect class="s-acc" x="20" y="30" width="190" height="54" rx="12"/>
+  <text class="s-acc-t" x="115" y="63" text-anchor="middle" font-size="14">Singleton / Service</text>
+
+  <rect class="s-box" x="290" y="30" width="190" height="54" rx="12"/>
+  <text class="s-t" x="385" y="63" text-anchor="middle" font-size="14">Listener ثبتشده</text>
+
+  <rect class="s-bad" x="560" y="30" width="190" height="54" rx="12"/>
+  <text class="s-tbad" x="655" y="63" text-anchor="middle" font-size="14">Activity قدیمی (Leak)</text>
+
+  <line class="s-arr" x1="210" y1="57" x2="284" y2="57" marker-end="url(#m-p3)"/>
+  <line class="s-arr-bad" x1="480" y1="57" x2="554" y2="57" marker-end="url(#m-p3b)"/>
+  <text class="s-tbad" x="517" y="45" text-anchor="middle" font-size="11.5">unregister نشده</text>
+
+  <path class="s-dash" d="M 115 84 L 115 140 L 655 140 L 655 88"/>
+  <text class="s-t2" x="385" y="132" text-anchor="middle" font-size="12.5">زنجیره‌ی مرجع تا Root — مسیر نشت</text>
+
+  <rect class="s-ok" x="20" y="176" width="330" height="60" rx="12"/>
+  <text class="s-tok" x="185" y="202" text-anchor="middle" font-size="14">روش درست: unregister در onDestroy</text>
+  <text class="s-t2" x="185" y="226" text-anchor="middle" font-size="12.5">Activity آزاد می‌شود و GC جمعش می‌کند</text>
+
+  <rect class="s-warn" x="420" y="176" width="330" height="60" rx="12"/>
+  <text class="s-t" x="585" y="202" text-anchor="middle" font-size="14" fill="#b45309">سرانجام: OOM یا ری‌استارت پروسه در پس‌زمینه</text>
+  <text class="s-t2" x="585" y="226" text-anchor="middle" font-size="12.5">کاربر اپ را باز می‌کند، همه‌چیز از نو شروع می‌شود</text>
+</svg>
+<figcaption><b>شکل ۳ — آناتومی نشت:</b> نشت هیچ‌وقت «خودش» را نشان نمی‌دهد؛ فقط یک مرجع قدیمی‌ست که کسی پاکش نکرده. به همین دلیل ابزار، نه کد‌خوانی، تنها راه قطعی کشف آن است.</figcaption>
+</figure>
+
+<h3>۳.۱ نشانه‌های عملی نشت</h3>
+
+<ul>
+  <li>مصرف حافظه بعد از باز کردن/بستن یک صفحه هرگز به سطح اولیه برنمی‌گردد (پله‌ای بالا می‌رود).</li>
+  <li>در Memory Profiler، نمونه‌هایی از <code>Activity</code> بعد از تخریب، روی می‌مانند.</li>
+  <li>کرش <code>OutOfMemoryError</code> روی دستگاه‌های ارزان‌قیمت با حافظه‌ی کم.</li>
+  <li>تاخیر ناگهانی GC و فریز کوتاه هنگام اسکن heap بزرگ.</li>
+</ul>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">هشدار: نشت در پس‌زمینه خودش را نشان می‌دهد</span>
+اپ در foreground ممکن است ماه‌ها بی‌مشکل کار کند. نشت وقتی کشنده می‌شود که اپ را در پس‌زمینه رها می‌کنید:
+سیستم برای آزادسازی حافظه تلاش می‌کند، نمی‌تواند، و در نهایت پروسه را kill می‌کند —
+کاربر فکر می‌کند اپ «کرش کرده» در حالی که قربانی حافظه‌ی بالای شماست.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>LeakCanary: ریشه‌یابی عملی نشت حافظه</h2>
+
+<p>
+<strong>LeakCanary</strong> کتابخانه‌ی متن‌باز Square است که در نسخه‌ی دیباگ، خودش شیءهای تخریب‌شده را نگه می‌دارد،
+بعد از تخریب، ارجاع‌ها را بررسی می‌کند و اگر زنده مانده باشند، <strong>هلال نشت (Leak Trace)</strong> را گزارش می‌دهد —
+دقیقاً با نام کلاس و خطی که مرجع را نگه داشته است.
+</p>
+
+<pre class="kl-code"><code>// build.gradle (app) — فقط برای debug؛ در release حذف می‌شود
+dependencies {
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.14"
+}
+
+// نیازی به هیچ کد دیگری نیست! LeakCanary خودش:
+// ۱) onActivityDestroyed را رجیستر می‌کند
+// ۲) بعد از ۵ ثانیه منتظر می‌ماند تا Activity تخریب و GC شود
+// ۳) اگر زنده ماند، نوتیفیکیشن نشت با Trace کامل می‌دهد</code></pre>
+
+<h3>۴.۱ خواندن یک Leak Trace</h3>
+
+<pre class="kl-code"><code>┬───
+│ GC Root: System class
+│
+├── com.example.app.analytics.Tracker instance
+│    ↓ Tracker.context
+│                     ← خط مقصر: مرجع نگه‌داشته‌شده
+├── com.example.app.MainActivity instance
+│    ↓ Activity.mDestroyed = true   ← یعنی تخریب شده ولی زنده است
+╰───</code></pre>
+
+<p>
+قاعده‌ی خواندن: از پایین به بالا بیایید؛ اولین فیلدی که به یک شیءِ <em>تخریب‌شده</em> اشاره می‌کند،
+همان مرجع خراب است. در مثال بالا، <code>Tracker</code> یک singleton است و <code>context</code> آن
+به Activity قدیمی اشاره می‌کند — راه‌حل: استفاده از <code>applicationContext</code>.
+</p>
+
+<pre class="kl-code"><code>// ✗ نشت: Activity در مقدار اولیه نگه داشته می‌شود
+class Tracker(private val context: Context)      // اگر context = Activity باشد
+
+// ✓ درست: هیچ‌وقت به Activity وابسته نشو
+class Tracker(@ApplicationContext private val context: Context)
+
+// یا اگر واقعاً به Activity نیاز دارید: WeakReference
+class Scroller(activity: Activity) {
+    private val ref = WeakReference(activity)
+    fun scroll() { ref.get()?.let { /* ... */ } }   // اگر null شد، یعنی Activity رفته
+}</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">عمیق‌تر: LeakCanary چگونه کار می‌کند؟</span>
+این کتابخانه از ترکیب <code>ObjectWatcher</code> و <code>WeakReference</code> استفاده می‌کند:
+بعد از تخریب، شیء در یک WeakReference نگه داشته می‌شود و اگر بعد از یک چرخه‌ی GC هنوز زنده بود،
+یعنی مرجع قوی دیگری وجود دارد. سپس با heap dump و تحلیل ارجاعات (aha library)، مسیر دقیق نشت را پیدا می‌کند.
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>نشت‌های کلاسیک: Listener، Context و Coroutine</h2>
+
+<p>
+سه نشت در کد اندروید بیش از بقیه تکرار می‌شوند. هر سه یک ریشه دارند:
+<strong>یک ثبت (register) بدون جفتِ خودش (unregister)</strong>.
+</p>
+
+<h3>۵.۱ Listenerها و Callbackها</h3>
+
+<pre class="kl-code"><code>class PlayerActivity : AppCompatActivity() {
+
+    // ✗ MediaPlayer این listener را نگه می‌دارد تا release شود
+    override fun onStart() {
+        super.onStart()
+        mediaPlayer.setOnCompletionListener { finish() }   // ← ارجاع به Activity
+        mediaPlayer.start()
+    }
+
+    // release فراموش شده + listener پابرجا = نشت کامل
+
+    // ✓ راه‌حل: هم جفت کردن register/unregister، هم release
+    override fun onStart() {
+        super.onStart()
+        mediaPlayer.setOnCompletionListener(listener)
+        mediaPlayer.start()
+    }
+    override fun onStop() {
+        mediaPlayer.stop()
+        mediaPlayer.release()
+        super.onStop()
+    }
+    private val listener = MediaPlayer.OnCompletionListener { /* بدون ارجاع سنگین */ }
+}</code></pre>
+
+<h3>۵.۲ نشت از طریق Context</h3>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Context</th><th>عمر</th><th>کجا مجاز است</th><th>خطر نشت</th></tr>
+  <tr><td><code>Application</code></td><td>کل عمر پروسه</td><td>Service، Singleton، DI</td><td><span class="kl-ok">تقریباً صفر</span></td></tr>
+  <tr><td><code>Activity</code></td><td>تا onDestroy</td><td>UI، Dialog، inflate</td><td><span class="kl-no">بالا</span></td></tr>
+  <tr><td><code>Service</code></td><td>تا stopSelf</td><td>کار پس‌زمینه</td><td>متوسط</td></tr>
+</table>
+</div>
+
+<h3>۵.۳ Coroutineهای ناامن</h3>
+
+<pre class="kl-code"><code>class BadMapFragment : Fragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // ✗ GlobalScope: تا ابد زنده است و به view این fragment اشاره می‌کند
+        GlobalScope.launch(Dispatchers.IO) {
+            val data = api.load()              // شاید ۱۰ ثانیه طول بکشد
+            binding.title.text = data.title     // ← binding از view تخریب‌شده!
+        }
+    }
+}
+
+class GoodMapFragment : Fragment() {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // ✓ lifecycleScope: با تخریب view لغو می‌شود
+        viewLifecycleOwner.lifecycleScope.launch {
+            val data = withContext(Dispatchers.IO) { api.load() }
+            binding.title.text = data.title     // اگر لغو شده باشد، اصلاً اجرا نمی‌شود
+        }
+    }
+}</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">آفت شماره ۱: تأخیر (delay) در لود شدن</span>
+اگر کاربر از صفحه‌ای که در حال لود است خارج شود و request شما لغو نشود،
+وقتی جواب بیاید، کد تلاش می‌کند به view تخریب‌شده دست بزند — یا نشت ایجاد می‌کند یا کرش.
+<strong>همه‌ی جمع‌آوری‌ها را به lifecycle گره بزنید:</strong> <code>lifecycleScope</code>،
+<code>repeatOnLifecycle</code> و <code>collectAsStateWithLifecycle</code>.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>Android Studio Profiler: حافظه، CPU و شبکه</h2>
+
+<p>
+LeakCanary نشت را پیدا می‌کند؛ اما برای «کندی» باید از Profiler استفاده کنید.
+پروفایلر سه منحنی اصلی دارد و هر کدام یک زبان متفاوت حرف می‌زنند.
+</p>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="پروفایل حافظه و لحظه GC">
+  <defs>
+    <marker id="m-p4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7f52ff"/>
+    </marker>
+  </defs>
+
+  <line class="s-line" x1="60" y1="40" x2="60" y2="230"/>
+  <line class="s-line" x1="60" y1="230" x2="740" y2="230"/>
+  <text class="s-t2" x="60" y="28" font-size="12">حافظه (MB)</text>
+  <text class="s-t2" x="740" y="252" text-anchor="end" font-size="12">زمان (ثانیه)</text>
+
+  <path class="s-arr" fill="none" d="M 60 200 L 120 190 L 170 175 L 220 160 L 260 95 L 275 195 L 330 185 L 380 170 L 430 155 L 470 90 L 485 192 L 540 180 L 600 165 L 650 150 L 690 85 L 705 190 L 740 180"/>
+  <text class="s-t2" x="275" y="82" text-anchor="middle" font-size="11.5">GC</text>
+  <text class="s-t2" x="485" y="78" text-anchor="middle" font-size="11.5">GC</text>
+  <text class="s-t2" x="690" y="73" text-anchor="middle" font-size="11.5">GC</text>
+
+  <path class="s-dash" d="M 60 118 L 740 118"/>
+  <text class="s-tbad" x="70" y="112" font-size="11.5">کفِ در حال رشد = نشت</text>
+
+  <rect class="s-ok" x="380" y="256" width="330" height="34" rx="9"/>
+  <text class="s-tok" x="545" y="278" text-anchor="middle" font-size="12.5">حالت سالم: کف پس از GC به نقطه‌ی اول برمی‌گردد</text>
+</svg>
+<figcaption><b>شکل ۴ — خواندن منحنی حافظه:</b> نوسان «بالا رفتن و بعد GC» طبیعی است. آنچه خطرناک است، <em>کفِ منحنی</em> است: اگر بعد از هر بار باز و بسته‌شدن صفحه، کف بالاتر برود، نشت دارید.</figcaption>
+</figure>
+
+<h3>۶.۱ نقشه‌ی راه استفاده از Profiler</h3>
+
+<ol class="kl-check">
+  <li><strong>Memory:</strong> منحنی را باز کنید؛ لحظه‌ی GC را با دکمه‌ی «Force GC» تشدید کنید و ببینید کف کجا می‌نشیند.</li>
+  <li><strong>Heap Dump:</strong> بعد از تخریب صفحه، دکمه‌ی Dump را بزنید و با فیلتر <code>Activity</code> چک کنید چند نمونه مانده است.</li>
+  <li><strong>Allocation Tracking:</strong> در لحظه‌ی اسکرول، ببینید کدام کلاس بیش از حد تخصیص می‌گیرد (معمولاً Adapter یا Modifier).</li>
+  <li><strong>CPU:</strong> بازه‌ی فریز را پیدا کنید و ببینید کدام method روی Main Thread سنگین است (معمولاً inflate یا JSON parse دستی).</li>
+  <li><strong>Network:</strong> پاسخ‌های تکراری و JSONهای بزرگ را شناسایی و cache کنید.</li>
+</ol>
+
+<pre class="kl-code"><code>// مثال: رهاسازی باگِ Allocation در حلقه‌ی رندر
+// ✗ در هر onDraw یک Rect می‌سازد — ده‌ها هزار تخصیص در دقیقه
+override fun onDraw(canvas: Canvas) {
+    val rect = Rect(0, 0, width, height)          // تخصیص جدید در هر فریم
+    canvas.drawRect(rect, paint)
+}
+
+// ✓ بافر آماده و بازاستفاده
+private val rect = Rect()
+override fun onDraw(canvas: Canvas) {
+    rect.set(0, 0, width, height)
+    canvas.drawRect(rect, paint)
+}</code></pre>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>رندرینگ و Jank: فریم‌های جاافتاده</h2>
+
+<p>
+UI اندروید در سه مرحله اجرا می‌شود: <strong>Measure</strong>، <strong>Layout</strong> و <strong>Draw</strong> —
+و همه باید در ۱۶.۷ms تمام شوند. رایج‌ترین مرتکبانِ نقض این بودجه در View System و Compose یکسان‌اند:
+کار سنگین روی Main Thread و بازترسیم زیاد.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مقصر رایج Jank</th><th>نشانه در پروفایل</th><th>راه‌حل عملی</th></tr>
+  <tr><td>I/O روی Main</td><td>بلوک‌های <code>File.read</code> در UI thread</td><td><code>withContext(IO)</code> یا WorkManager</td></tr>
+  <tr><td>JSON سنگین</td><td><code>parse</code> طولانی در لود اولیه</td><td>moveTo IO + کش + دلتا</td></tr>
+  <tr><td><code>onBindViewHolder</code> سنگین</td><td>زمان بالا در جدول trace اسکرول</td><td>پیش‌محاسبه، DiffUtil، image pre-load</td></tr>
+  <tr><td>بازترسیم مکرر</td><td>زیادشدن count رندر در Layout Inspector</td><td>مبناهای پایدار، <code>remember</code>، حداقل‌کردن پین</td></tr>
+  <tr><td> بیت‌مپ بزرگ</td><td>پرش حافظه هنگام نمایش تصویر</td><td><code>inSampleSize</code> و decode محلی</td></tr>
+</table>
+</div>
+
+<pre class="kl-code"><code>// نمونه‌ی درست: سنگین‌ترین کار از Main Thread خارج است
+class FeedViewModel(private val repo: FeedRepository) : ViewModel() {
+
+    val state: StateFlow&lt;FeedUiState&gt; = repo.observeFeed()
+        .map { items -&gt; FeedUiState(items = items) }     // مپ سبک
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), FeedUiState())
+}
+
+// Compose: اسکرول روان با کلید پایدار و تصویر بهینه
+LazyColumn {
+    items(items, key = { it.id }) { item -&gt;
+        FeedRow(item)          // بدون هیچ محاسبه‌ی سنگینی در بدنه
+    }
+}</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">هشدار: اندازه بگیرید، حدس نزنید</span>
+خیلی از «بهینه‌سازی‌ها» اثری ندارند یا حتی کندتر می‌کنند (مثلاً premature optimize در Kotlin).
+همیشه قبل و بعد را با <strong>Macrobenchmark</strong> یا <strong>JankStats</strong> اندازه بگیرید
+و فقط تغییراتی را نگه دارید که عدد را جابه‌جا کرده‌اند.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>Cold Start: ریشه‌یابی و بهینه‌سازی راه‌اندازی</h2>
+
+<p>
+<strong>Cold Start</strong> زمانی است که پروسه از صفر ساخته می‌شود: کلاس‌ها بارگذاری، Application ساخته،
+Activity ایجاد و اولین فریم رندر می‌شود. هر کاری که در <code>Application.onCreate</code> بگذارید،
+مسیر کاربر را سنگین‌تر می‌کند.
+</p>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 240" role="img" aria-label="مراحل Cold Start">
+  <defs>
+    <marker id="m-p5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7f52ff"/>
+    </marker>
+  </defs>
+
+  <rect class="s-acc" x="20" y="50" width="220" height="70" rx="12"/>
+  <text class="s-acc-t" x="130" y="80" text-anchor="middle" font-size="14">۱) Fork پروسه</text>
+  <text class="s-t2" x="130" y="106" text-anchor="middle" font-size="12">سیستم‌عامل</text>
+
+  <rect class="s-box" x="275" y="50" width="220" height="70" rx="12"/>
+  <text class="s-t" x="385" y="80" text-anchor="middle" font-size="14">۲) Application.onCreate</text>
+  <text class="s-t2" x="385" y="106" text-anchor="middle" font-size="12">DI، SDKها، کش‌ها ← مقصر اصلی</text>
+
+  <rect class="s-warn" x="530" y="50" width="220" height="70" rx="12"/>
+  <text class="s-t" x="640" y="80" text-anchor="middle" font-size="14" fill="#b45309">۳) Activity و اولین فریم</text>
+  <text class="s-t2" x="640" y="106" text-anchor="middle" font-size="12">inflate + bind + draw</text>
+
+  <line class="s-arr" x1="240" y1="85" x2="269" y2="85" marker-end="url(#m-p5)"/>
+  <line class="s-arr" x1="495" y1="85" x2="524" y2="85" marker-end="url(#m-p5)"/>
+
+  <rect class="s-ok" x="120" y="160" width="530" height="58" rx="12"/>
+  <text class="s-tok" x="385" y="186" text-anchor="middle" font-size="14">هدف: زیر ۵۰۰ms تا اولین فریم مفید</text>
+  <text class="s-t2" x="385" y="208" text-anchor="middle" font-size="12.5">هر SDKِ سنگین در مرحله‌ی ۲، مستقیماً به دست کاربر اضافه می‌شود</text>
+</svg>
+<figcaption><b>شکل ۵ — مسیر Cold Start:</b> مرحله‌ی ۲ تنها مرحله‌ای‌ست که کاملاً تحت کنترل شماست. سنجش دقیق با Macrobenchmark و trace از همین‌جا شروع می‌شود.</figcaption>
+</figure>
+
+<h3>۸.۱ تکنیک‌های عملی</h3>
+
+<pre class="kl-code"><code>// ✗ بارگذاری سنگین در onCreate — همه‌ی SDKها هم‌زمان
+class App : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        analytics.init(this)          // ۳۰ms
+        crashReporter.init(this)      // ۲۰ms
+        remoteConfig.fetchSync()      // ۸۰ms شبکه!
+        database.warmUp()             // ۵۰ms
+    }
+}
+
+// ✓ تأخیر آگاهانه: فقط آنچه واقعاً لازم است
+class App : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        AppInitializer.getInstance(this)      // App Startup: ترتیب وابستگی‌ها
+        // بقیه فقط وقتی لازم شد
+    }
+    fun initHeavySdk() {
+        // Lazy delegate یا call در اولین استفاده‌ی واقعی
+    }
+}
+
+// پیش‌گرم‌سازی هوشمند در جایی که واقعاً کاربر است
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        installSplashScreen()                // SplashScreen API
+        setContentView(R.layout.activity_main)
+        lifecycleScope.launch(Dispatchers.Default) { prewarmCache() }  // خارج از مسیر رندر
+    }
+}</code></pre>
+
+<div class="kl-box">
+<span class="kl-h">نکته: اندازه‌گیری Cold Start</span>
+با <code>Macrobenchmark</code> می‌توانید زمان <code>timeToInitialDisplay</code> و
+<code>timeToFullDisplay</code> را در هر کامیت بگیرید و در CI آستانه (threshold) بگذارید —
+به این ترتیب هیچ‌کس بدون دیدن عدد، «بهینه‌سازی» را merge نمی‌کند.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>Baseline Profiles و R8: سرعت و حجم در یک بسته</h2>
+
+<p>
+اگر فقط یک بهینه‌سازی با بیشترین اثر انجام دهید، همین است:
+<strong>Baseline Profile</strong> به ART می‌گوید کدام مسیرهای کد را از قبل AOT کند،
+و <strong>R8</strong> کد مرده را حذف و نام‌ها را کوچک می‌کند.
+</p>
+
+<h3>۹.۱ Baseline Profile چیست؟</h3>
+
+<p>
+به‌صورت پیش‌فرض، اندروید اپ را در ابتدا <em>تفسیری (Interpretation)</em> اجرا می‌کند و بعد از مدتی AOT می‌کند.
+Basline Profile یک فایل نصبی است که «مسیرهای گرم» (ورود، اسکرول اول، لاگین) را از قبل کامپایل می‌کند —
+نتیجه‌ی رایج: <strong>۲۰ تا ۴۰ درصد بهبود در Cold Start و روانی اسکرول اول</strong>.
+</p>
+
+<pre class="kl-code"><code>// build.gradle — ماژول baselineprofile
+plugins { id("androidx.baselineprofile") }
+
+dependencies {
+    baselineProfile(project(":baselineprofile"))   // ماژول تست مخصوص
+}
+
+// اجرای تولید پروفایل (روی دستگاه یا امولاتور)
+// ./gradlew :app:generateReleaseBaselineProfile</code></pre>
+
+<h3>۹.۲ تنظیمات R8 که واقعاً مهم‌اند</h3>
+
+<pre class="kl-code"><code>// proguard-rules.pro — نمونه‌های کاربردی
+# حذف لاگ‌های ساخته‌شده با buildConfig.DEBUG
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+}
+
+# مدل‌های داده‌ی مورد استفاده در serialization نباید نام‌شان عوض شود
+-keepclassmembers class com.example.data.model.** { *; }
+
+# ورودی/خروجی‌های JNI
+-keepclasseswithmembernames class * { native &lt;methods&gt;; }</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>تکنیک</th><th>اثر بر سرعت</th><th>اثر بر حجم</th><th>هزینه‌ی پیاده‌سازی</th></tr>
+  <tr><td>Baseline Profile</td><td><span class="kl-ok">۲۰–۴۰٪ بهبود</span></td><td>≈۰</td><td>کم (یک ماژول تست)</td></tr>
+  <tr><td>R8 / Resource Shrink</td><td>کم</td><td><span class="kl-ok">۲۰–۴۰٪ کوچک‌تر</span></td><td>کم (تنظیم پیش‌فرض + keep rules)</td></tr>
+  <tr><td>Lazy Init</td><td><span class="kl-ok">مستقیم در Cold Start</span></td><td>صفر</td><td>متوسط (نیازمند بازآرایی)</td></tr>
+  <tr><td>Crash-only نگه‌داشتن کش‌ها</td><td>کم</td><td>صفر</td><td>کم</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">عمیق‌تر: Baseline Profile در کجا قرار می‌گیرد؟</span>
+فایل تولیدشده در <code>assets/baseline.prof</code> بسته‌بندی می‌شود و در هنگام نصب توسط PackageManager
+به ART داده می‌شود؛ یعنی کاربر اولین باری که اپ را باز می‌کند، همان مسیرهای بهینه را اجرا می‌کند،
+نه بعد از چند روز استفاده. برای اپ‌های بزرگ، این تنها راه «گرم‌شدن» منصفانه است.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>جمع‌بندی، چک‌لیست و منابع</h2>
+
+<p>
+پرفورمنس اندروید یک مهارت اندازه‌گیری است، نه حدس. چرخه‌ی درست این است:
+<strong>اندازه بگیر → ریشه را پیدا کن → یک تغییر بده → دوباره اندازه بگیر → فقط آنچه عدد را جابه‌جا کرد نگه دار.</strong>
+</p>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 250" role="img" aria-label="درخت تصمیم عیب‌یابی کارایی">
+  <defs>
+    <marker id="m-p6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7f52ff"/>
+    </marker>
+  </defs>
+
+  <rect class="s-acc" x="230" y="12" width="310" height="44" rx="12"/>
+  <text class="s-acc-t" x="385" y="40" text-anchor="middle" font-size="15">کاربر چه می‌گوید؟</text>
+
+  <line class="s-arr" x1="385" y1="56" x2="385" y2="84"/>
+  <line class="s-arr" x1="120" y1="84" x2="650" y2="84"/>
+  <line class="s-arr" x1="120" y1="84" x2="120" y2="110" marker-end="url(#m-p6)"/>
+  <line class="s-arr" x1="385" y1="84" x2="385" y2="110" marker-end="url(#m-p6)"/>
+  <line class="s-arr" x1="650" y1="84" x2="650" y2="110" marker-end="url(#m-p6)"/>
+
+  <rect class="s-box" x="20" y="112" width="200" height="62" rx="11"/>
+  <text class="s-t" x="120" y="138" text-anchor="middle" font-size="13">«کند بالا می‌آید»</text>
+  <text class="s-acc-t" x="120" y="162" text-anchor="middle" font-size="13">Macrobenchmark</text>
+
+  <rect class="s-box" x="285" y="112" width="200" height="62" rx="11"/>
+  <text class="s-t" x="385" y="138" text-anchor="middle" font-size="13">«هنگام اسکرول می‌لرزد»</text>
+  <text class="s-acc-t" x="385" y="162" text-anchor="middle" font-size="13">JankStats / GPU</text>
+
+  <rect class="s-box" x="550" y="112" width="200" height="62" rx="11"/>
+  <text class="s-t" x="650" y="138" text-anchor="middle" font-size="13">«کرش می‌کند / ری‌استارت»</text>
+  <text class="s-acc-t" x="650" y="162" text-anchor="middle" font-size="13">LeakCanary / Heap</text>
+
+  <rect class="s-ok" x="150" y="196" width="470" height="42" rx="11"/>
+  <text class="s-tok" x="385" y="223" text-anchor="middle" font-size="13.5">هر مسیر: اندازه‌گیری خط پایه → اصلاح → اندازه‌گیری دوباره</text>
+</svg>
+<figcaption><b>شکل ۶ — درخت عیب‌یابی:</b> هرگز از «شاید» شروع نکنید؛ از «کدام شاخص خراب است؟» شروع کنید تا ابزار درست خودش را نشان دهد.</figcaption>
+</figure>
+
+<h3>۱۰.۱ چک‌لیست بازبینی کارایی</h3>
+
+<ol class="kl-check">
+  <li>هیچ I/O، پارس JSON سنگین یا فراخوانی شبکه روی Main Thread وجود ندارد.</li>
+  <li>همه‌ی <code>register/unregister</code>ها جفت‌اند و <code>release()</code>ها در تخریب صدا زده می‌شوند.</li>
+  <li>هیچ <code>GlobalScope</code> یا scope بدون مالک در پروژه نیست؛ جمع‌آوری‌ها به lifecycle گره خورده‌اند.</li>
+  <li>Contextهای وابسته به Activity در singletonها استفاده نمی‌شوند (<code>@ApplicationContext</code>).</li>
+  <li>Memory Profiler بعد از باز/بسته‌شدن صفحه، کفِ پایدار نشان می‌دهد.</li>
+  <li>لیست‌ها <code>key</code> دارند و <code>onBindViewHolder</code> عاری از کار سنگین است.</li>
+  <li>Cold Start با Macrobenchmark اندازه‌گیری شده و برایش آستانه‌ی CI گذاشته شده.</li>
+  <li>Baseline Profile تولید و در build نهایی بسته‌بندی می‌شود.</li>
+  <li>R8 فعال است و <code>assumenosideeffects</code> برای لاگ‌ها تنظیم شده.</li>
+</ol>
+
+<h3>۱۰.۲ منابع برای ادامه</h3>
+
+<ul class="kl-sources">
+  <li><a href="https://developer.android.com/topic/performance/vitals" target="_blank" rel="noopener">Android Vitals — Performance</a> (مستندات رسمی)</li>
+  <li><a href="https://developer.android.com/studio/profile/memory-profiler" target="_blank" rel="noopener">Memory Profiler</a> و <a href="https://square.github.io/leakcanary/" target="_blank" rel="noopener">LeakCanary</a></li>
+  <li><a href="https://developer.android.com/topic/performance/baselineprofiles/overview" target="_blank" rel="noopener">Baseline Profiles — Overview</a></li>
+  <li><a href="https://developer.android.com/topic/performance/macrobenchmark" target="_blank" rel="noopener">Macrobenchmark</a> و <a href="https://developer.android.com/topic/performance/jankstats" target="_blank" rel="noopener">JankStats</a></li>
+  <li><a href="https://developer.android.com/build/shrink-code" target="_blank" rel="noopener">Shrink, obfuscate, and optimize your app</a> (R8)</li>
+  <li><a href="https://developer.android.com/topic/performance/rendering" target="_blank" rel="noopener">Rendering performance</a></li>
+</ul>
+
+<div class="kl-box">
+<span class="kl-h">یک جمله‌ی خلاصه</span>
+حافظه‌ی سالم یعنی «هر شیء یک مالک مشخص و یک لحظه‌ی مرگ مشخص دارد»؛
+کارایی سالم یعنی «هیچ کارِ سنگینی در مسیر رندر نیست و هر ادعایی با عدد اثبات شده است».
+</div>
+</section>
+        </div>
+
+        <!-- End of Article & Author Box -->
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                توسعه‌دهنده و معمار اپلیکیشن‌های اندروید و سیستم‌های همزمان در کاتلین. علاقه‌مند به مهندسی نرم‌افزار تمیز، عملکرد بالا و اشتراک دانش روز دنیای تکنولوژی.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <!-- Sticky Sidebar (Desktop) -->
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۱۰ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">کارایی در اندروید: چه چیزی را باید اندازه گرفت؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">حافظه در اندروید: چرخه حیات اشیا و سطل‌های GC</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Memory Leak: تعریف، علل و نشانه‌ها</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">LeakCanary: ریشه‌یابی عملی نشت حافظه</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">نشت‌های کلاسیک: Listener، Context و Coroutine</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Android Studio Profiler: حافظه، CPU و شبکه</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">رندرینگ و Jank: فریم‌های جاافتاده</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Cold Start: ریشه‌یابی و بهینه‌سازی راه‌اندازی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Baseline Profiles و R8: سرعت و حجم در یک بسته</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">جمع‌بندی، چک‌لیست و منابع</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s10" class="btn-action-block" style="text-align:center;">
+              <span>چک‌لیست و منابع سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>انتشار این راهنما به‌منظور ارتقای دانش مهندسی و جامعه توسعه‌دهندگان کاتلین در دسترس قرار گرفته است.</p>
+  </footer>
+
+  <!-- Floating Action Buttons -->
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <!-- Mobile TOC Drawer -->
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">کارایی در اندروید: چه چیزی را باید اندازه گرفت؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">حافظه در اندروید: چرخه حیات اشیا و سطل‌های GC</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Memory Leak: تعریف، علل و نشانه‌ها</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">LeakCanary: ریشه‌یابی عملی نشت حافظه</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">نشت‌های کلاسیک: Listener، Context و Coroutine</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Android Studio Profiler: حافظه، CPU و شبکه</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">رندرینگ و Jank: فریم‌های جاافتاده</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Cold Start: ریشه‌یابی و بهینه‌سازی راه‌اندازی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Baseline Profiles و R8: سرعت و حجم در یک بسته</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">جمع‌بندی، چک‌لیست و منابع</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+  <!-- JavaScript for UX Features -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- Reading Progress Bar ---
+      const progressBar = document.getElementById('reading-progress');
+      const backToTopBtn = document.getElementById('back-to-top');
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = scrolled + '%';
+
+        if (scrollTop > 400) {
+          backToTopBtn.classList.add('visible');
+        } else {
+          backToTopBtn.classList.remove('visible');
+        }
+      }, { passive: true });
+
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // --- Dark / Light Theme Toggle ---
+      const btnTheme = document.getElementById('btn-theme');
+      const sunIcon = document.getElementById('theme-icon-sun');
+      const moonIcon = document.getElementById('theme-icon-moon');
+      const htmlEl = document.documentElement;
+
+      function updateThemeIcons(theme) {
+        if (theme === 'dark') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+
+      // Check saved or preferred
+      const savedTheme = localStorage.getItem('blog_theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+
+      htmlEl.setAttribute('data-theme', initialTheme);
+      updateThemeIcons(initialTheme);
+
+      btnTheme.addEventListener('click', () => {
+        const currentTheme = htmlEl.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        htmlEl.setAttribute('data-theme', newTheme);
+        localStorage.setItem('blog_theme', newTheme);
+        updateThemeIcons(newTheme);
+      });
+
+      // --- Code Block Enhancements (macOS dots + Language tag + Copy button) ---
+      const codeBlocks = document.querySelectorAll('.kl-article pre.kl-code');
+      codeBlocks.forEach(pre => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+
+        const header = document.createElement('div');
+        header.className = 'code-block-header';
+        header.innerHTML = `
+          <div class="code-block-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="code-block-meta">
+            <span class="code-lang-tag">Kotlin</span>
+            <button class="btn-copy-code" type="button" title="کپی کد">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>کپی</span>
+            </button>
+          </div>
+        `;
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(header);
+        wrapper.appendChild(pre);
+
+        const copyBtn = header.querySelector('.btn-copy-code');
+        copyBtn.addEventListener('click', () => {
+          const codeText = pre.innerText;
+          navigator.clipboard.writeText(codeText).then(() => {
+            copyBtn.innerHTML = `
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span style="color:#22c55e">کپی شد!</span>
+            `;
+            setTimeout(() => {
+              copyBtn.innerHTML = `
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>کپی</span>
+              `;
+            }, 2000);
+          });
+        });
+      });
+
+      // --- TOC ScrollSpy ---
+      const sections = document.querySelectorAll('.kl-article section[id]');
+      const tocLinks = document.querySelectorAll('.toc-link');
+
+      const observerOptions = {
+        root: null,
+        rootMargin: '-80px 0px -60% 0px',
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            tocLinks.forEach(link => {
+              if (link.getAttribute('data-target') === id) {
+                link.classList.add('active');
+                link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+              } else {
+                link.classList.remove('active');
+              }
+            });
+          }
+        });
+      }, observerOptions);
+
+      sections.forEach(sec => observer.observe(sec));
+
+      // --- Share & Toast ---
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2800);
+      }
+
+      function copyShareLink() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('لینک راهنما در حافظه کپی شد! ✓');
+        }).catch(() => {
+          showToast('امکان کپی خودکار لینک فراهم نشد.');
+        });
+      }
+
+      document.getElementById('btn-share').addEventListener('click', copyShareLink);
+      const sideShareBtn = document.getElementById('sidebar-share-btn');
+      if (sideShareBtn) sideShareBtn.addEventListener('click', copyShareLink);
+
+      // --- Mobile Drawer ---
+      const btnTocToggle = document.getElementById('btn-toc-toggle');
+      const mobileDrawer = document.getElementById('mobile-drawer');
+      const drawerOverlay = document.getElementById('drawer-overlay');
+      const btnCloseDrawer = document.getElementById('btn-close-drawer');
+
+      function openDrawer() {
+        mobileDrawer.classList.add('open');
+        drawerOverlay.classList.add('open');
+      }
+
+      function closeDrawer() {
+        mobileDrawer.classList.remove('open');
+        drawerOverlay.classList.remove('open');
+      }
+
+      if (btnTocToggle) btnTocToggle.addEventListener('click', openDrawer);
+      if (btnCloseDrawer) btnCloseDrawer.addEventListener('click', closeDrawer);
+      if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+
+      document.querySelectorAll('#drawer-toc .toc-link').forEach(link => {
+        link.addEventListener('click', () => {
+          closeDrawer();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
