@@ -1,63 +1,95 @@
-# مقالات من — حیدر فرحانی
+# حیدر فرهانی — پورتفولیو و پایگاه دانش مهندسی نرم‌افزار
 
-پورتفولیو و پایگاه دانش تخصصی توسعه اندروید و کاتلین؛ مجموعه‌ای از راهنماهای عمیق و کاربردی
-که به‌صورت مستقیم و بدون هیچ مرحله‌ی ساخت (Static Site) روی **GitHub Pages** منتشر می‌شود.
+سایت شخصی استاتیک (بدون هیچ مرحله‌ی build) شامل **مقالات تخصصی**، **پروژه‌ها** و **کتابخانه‌های نرم‌افزاری**؛
+منتشرشده روی **GitHub Pages** با پالت زمردی (Emerald) و پشتیبانی کامل RTL/فارسی.
+
+> نام کاربری گیت‌هاب از روی دامنه/پیکربندی استخراج شده است: `haedarfarhani`.
+> پیش از انتشار، ایمیل، آدرس کانال‌ها و نام کاربری را در `about/` و `contact/` با اطلاعات واقعی خود جایگزین کنید.
 
 ## فهرست مقالات
 
 | # | مقاله | فایل | زمان مطالعه |
 |---|-------|------|-------------|
-| ۱ | همزمانی در کاتلین: از Thread تا Flow | [`concurrency-in-kotlin.html`](concurrency-in-kotlin.html) | ~۳۰ دقیقه |
-| ۲ | معماری تمیز و الگوی MVI در Jetpack Compose | [`clean-architecture-mvi-compose.html`](clean-architecture-mvi-compose.html) | ~۲۵ دقیقه |
-| ۳ | بهینه‌سازی کارایی و مدیریت حافظه در اندروید | [`android-performance-memory.html`](android-performance-memory.html) | ~۲۲ دقیقه |
-| ۴ | تزریق وابستگی در کاتلین: Hilt در برابر Koin | [`dependency-injection-hilt-koin.html`](dependency-injection-hilt-koin.html) | ~۲۰ دقیقه |
-| ۵ | قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا | [`naming-conventions.html`](naming-conventions.html) | ~۲۵ دقیقه |
+| ۱ | همزمانی در کاتلین: از Thread تا Flow | [`articles/concurrency-in-kotlin.html`](articles/concurrency-in-kotlin.html) | ~۳۰ دقیقه |
+| ۲ | معماری تمیز و الگوی MVI در Jetpack Compose | [`articles/clean-architecture-mvi-compose.html`](articles/clean-architecture-mvi-compose.html) | ~۲۵ دقیقه |
+| ۳ | بهینه‌سازی کارایی و مدیریت حافظه در اندروید | [`articles/android-performance-memory.html`](articles/android-performance-memory.html) | ~۲۲ دقیقه |
+| ۴ | تزریق وابستگی در کاتلین: Hilt در برابر Koin | [`articles/dependency-injection-hilt-koin.html`](articles/dependency-injection-hilt-koin.html) | ~۲۰ دقیقه |
+| ۵ | قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا | [`articles/naming-conventions.html`](articles/naming-conventions.html) | ~۲۵ دقیقه |
 
 ## ساختار پروژه
 
 ```
 my-articales/
-├── index.html                           # صفحه اصلی: معرفی نویسنده، فیلتر تگ‌ها، جستجوی لحظه‌ای
-├── concurrency-in-kotlin.html           # مقاله ۱
-├── clean-architecture-mvi-compose.html  # مقاله ۲
-├── android-performance-memory.html      # مقاله ۳
-├── dependency-injection-hilt-koin.html  # مقاله ۴
-├── naming-conventions.html             # مقاله ۵
-├── .nojekyll                            # جلوگیری از پردازش Jekyll در GitHub Pages
-└── README.md                            # همین فایل
+├── index.html                    # صفحه خانه: معرفی، آمار، مقالات، کتابخانه‌ها
+├── 404.html                      # صفحه ۴۰۴ با تشخیص خودکار مسیر پایه
+├── .nojekyll                     # جلوگیری از پردازش Jekyll در GitHub Pages
+├── README.md
+│
+├── articles/                     # فهرست مقالات + ۵ مقاله
+│   ├── index.html                # جستجو + فیلتر تگ + حالت خالی
+│   ├── concurrency-in-kotlin.html
+│   ├── clean-architecture-mvi-compose.html
+│   ├── android-performance-memory.html
+│   ├── dependency-injection-hilt-koin.html
+│   └── naming-conventions.html
+│
+├── projects/                     # پروژه‌ها (ساختار آماده، کارت نمونه در کامنت راهنما)
+│   └── index.html
+├── libraries/                    # کتابخانه‌های نرم‌افزاری/پکیج‌ها (۱۲ کارت با لینک رسمی)
+│   └── index.html
+├── about/                        # پروفایل، تایم‌لاین، مهارت‌ها
+│   └── index.html
+├── contact/                      # کانال‌های تماس + فرم کپی‌پیام
+│   └── index.html
+│
+├── css/                          # توکن‌های طراحی + استایل‌های جداشده
+│   ├── tokens.css                # رنگ‌ها، سایه‌ها، رادیوس، گرادیانت‌ها
+│   ├── fonts.css                 # فونت‌های self-host شده (assets/fonts)
+│   ├── base.css                  # reset + متغیرها + کلاس‌های عمومی
+│   ├── layout.css                # نویگیشن، Hero، فوتر، ریسپانسیو
+│   ├── articles.css              # کارت‌ها و کنترل‌های فهرست مقالات
+│   ├── article-shell.css         # پوسته‌ی صفحه‌ی مقاله (سایدبار، TOC، نوار پیشرفت)
+│   ├── article-content.css       # تایپوگرافی محتوا، کد، جدول، Callout، نمودار
+│   ├── projects.css | libraries.css | about.css | contact.css
+│
+├── js/
+│   ├── theme.js                  # تم تیره/روشن + کلید hf_theme
+│   ├── main.js                   # نویگیشن، منوی موبایل، toast، نوار مهارت، سال
+│   ├── article.js                # پیشرفت خواندن، کپی کد، ScrollSpy، اشتراک‌گذاری
+│   ├── views.js                  # شمارنده بازدید (Page Views API)
+│   ├── articles.js | projects.js | libraries.js | contact.js
+│
+└── assets/
+    └── fonts/                    # woff2 وزیرمتن و JetBrains Mono (بدون وابستگی به CDN)
 ```
 
 ## امکانات
 
-- **هویت بصری مدرن**: تایپوگرافی وزیرمتن، گرادیانت‌های بنفش/صورتی، آیکون‌های SVG.
-- **تم تیره/روشن**: با `localStorage` — انتخاب کاربر در همه‌ی صفحات پابرجا می‌ماند.
-- **جستجوی لحظه‌ای**: فیلتر کلاینت‌ساید روی عنوان و چکیده مقالات.
-- **شمارنده بازدید**: تعداد بازدیدکنندگان هر مقاله (در هدر مقاله) و مجموع بازدیدها (در آمار صفحه‌ی اصلی)، با [Page Views API](https://page-views-api.ratneshc.com/) — بدون کوکی، بدون ذخیره‌ی IP و با شمارش یکتای هر بازدیدکننده در بازه‌ی ۳۰ دقیقه.
-- **فیلتر تگ‌ها**: همه، کاتلین، اندروید و کامپوز، معماری نرم‌افزار، پرفورمنس، مبانی و کیفیت کد.
-- **تجربه‌ی مطالعه**: نوار پیشرفت خواندن، فهرست مطالب چسبان (ScrollSpy)، دکمه کپی کد، دکمه بازگشت به بالا، اشتراک‌گذاری.
-- **کاملاً واکنش‌گرا**: موبایل، تبلت و دسکتاپ (کشوی موبایل برای فهرست مطالب).
-- **راست‌چین و RTL**: با پشتیبانی کامل اعداد و متن فارسی.
-- **بدون وابستگی بیلد**: فقط HTML/CSS/JS خام — بدون Jekyll، بدون Node، بدون خطای ساخت.
+- **هویت بصری زمردی**: `#0F766E` / `#14B8A6` / `#84CC16` — بدون هیچ رنگ بنفش قدیمی.
+- **فونت self-host**: وزیرمتن و JetBrains Mono از `assets/fonts/` — بدون فراخوانی به Google Fonts.
+- **تم تیره/روشن**: با `localStorage` (کلید `hf_theme` + اسکریپت `theme.js` در `<head>` برای جلوگیری از فلش اولیه).
+- **چهار بخش مجزا**: مقالات، پروژه‌ها، کتابخانه‌های نرم‌افزاری، درباره/تماس — هرکدام CSS و JS اختصاصی خودشان.
+- **جستجو و فیلتر لحظه‌ای**: کلاینت‌ساید، با هش (`#kotlin` و غیره) برای لینک‌پذیری.
+- **تجربه‌ی مطالعه**: نوار پیشرفت خواندن، فهرست مطالب چسبان (ScrollSpy)، دکمه کپی کد، بازگشت به بالا، اشتراک‌گذاری.
+- **شمارنده بازدید**: با [Page Views API](https://page-views-api.ratneshc.com/) — بدون کوکی، بدون ذخیره‌ی IP، شمارش یکتا در بازه‌ی ۳۰ دقیقه.
+- **کاملاً واکنش‌گرا و RTL**: موبایل/تبلت/دسکتاپ، منوی همبرگری، کشوی موبایل فهرست مطالب.
 
 ## انتشار روی GitHub Pages
 
-### روش ۱ — از طریق تنظیمات رابط وب (ساده‌ترین)
+### روش ۱ — از طریق تنظیمات رابط وب
 
-1. یک مخزن جدید در GitHub بسازید (مثلاً `my-articles`).
-2. فایل‌های همین پوشه را push کنید:
+1. مخزنی بسازید (مثلاً `My-Articles`) و فایل‌های همین پوشه را push کنید:
 
    ```bash
    git init
    git add .
-   git commit -m "feat: publish articles portfolio"
+   git commit -m "feat: emerald personal site"
    git branch -M main
-   git remote add origin https://github.com/<USERNAME>/my-articles.git
+   git remote add origin https://github.com/haedarfarhani/My-Articles.git
    git push -u origin main
    ```
 
-3. در مخزن: **Settings → Pages → Source: Deploy from a branch**.
-4. شاخه `main` و پوشه `/ (root)` را انتخاب کنید و Save بزنید.
-5. چند دقیقه بعد، سایت روی `https://<USERNAME>.github.io/my-articles/` بالا می‌آید.
+2. **Settings → Pages → Source: Deploy from a branch** → شاخه `main` و پوشه `/ (root)` → Save.
 
 ### روش ۲ — اکشن GitHub Pages (Recommended)
 
@@ -97,45 +129,50 @@ jobs:
 
 سپس در **Settings → Pages → Source** گزینه‌ی **GitHub Actions** را انتخاب کنید.
 
-### نکته‌ی مهم: فایل `.nojekyll`
+### نکته‌ی مهم: مسیر پایه (base path)
 
-فایل [`.nojekyll`](.nojekyll) عمداً خالی است و باید در ریشه مخزن بماند؛
-بدون آن، GitHub Pages پردازشگر Jekyll را اجرا می‌کند و فایل‌ها/پوشه‌هایی که با `_` شروع شوند را نادیده می‌گیرد.
-این پروژه به Jekyll نیازی ندارد، پس پردازش آن فقط کندتر و غیرقابل‌پیش‌بینی‌ترش می‌کند.
+- سایت روی مخزن پروژه با نام `My-Articles` روی `https://haedarfarhani.github.io/My-Articles/` سرو می‌شود.
+- تمام لینک‌های داخلی **نسبی** هستند، پس تغییر نام مخزن لینک‌ها را نمی‌شکند؛
+  فقط `404.html` از مقدار ثابت `/My-Articles/` استفاده می‌کند و اگر نام مخزن را عوض کردید، آن را به‌روز کنید.
+- فایل [`.nojekyll`](.nojekyll) عمداً خالی است و باید در ریشه بماند.
 
 ## اجرای محلی (Local Dev)
 
-برای بررسی پیش از انتشار، یک سرور ساده‌ی استاتیک کافی است:
-
 ```bash
-# با Python (پیشنهادی)
-python -m http.server 8080
-
-# یا با Node
-npx serve .
+python -m http.server 8080     # یا: npx serve .
 ```
 
-سپس `http://localhost:8080` را باز کنید و این موارد را چک کنید:
+سپس `http://localhost:8080` را باز کنید:
 
-- [ ] تمام لینک‌های بین `index.html` و پنج مقاله کار می‌کنند.
-- [ ] سوییچر تم در همه‌ی صفحات کار می‌کند و انتخاب کاربر می‌ماند.
-- [ ] متن فارسی (راست‌چین)، جداول و نمودارهای SVG بی‌نقص رندر می‌شوند.
-- [ ] جستجو و فیلتر تگ‌ها لحظه‌ای است.
-- [ ] در عرض‌های موبایل/تبلت/دسکتاپ چیدمان درست می‌شکند.
+- [ ] لینک خانه ← مقالات ← پروژه‌ها ← کتابخانه‌ها ← درباره ← تماس کار می‌کند.
+- [ ] از داخل یک مقاله، برند/نان‌بار به خانه و نان‌بار به فهرست مقالات می‌رود.
+- [ ] تم تیره/روشن در همه‌ی صفحات پابرجا می‌ماند (کلید `hf_theme`).
+- [ ] جستجو/فیلتر در `articles/` و `libraries/` لحظه‌ای است؛ نوشتن چیزی نامربوط حالت خالی نشان می‌دهد.
+- [ ] نوار پیشرفت خواندن، کپی کد و ScrollSpy در مقالات کار می‌کنند.
+- [ ] URL ناموجود (مثل `/foo`) صفحه‌ی ۴۰۴ درست با لینک‌های سالم نشان می‌دهد.
 
-## افزودن مقاله‌ی جدید
+## افزودن محتوا
 
-1. یک فایل HTML جدید با همان ساختار مقالات موجود بسازید
-   (کپی از یکی از مقالات موجود، سریع‌ترین راه است — `lang="fa" dir="rtl"` و `data-theme` را حفظ کنید).
-2. در `index.html` یک کارت مقاله‌ی جدید با `data-tags` مناسب اضافه کنید.
-3. آمار بخش Hero (`تعداد مقالات`) و برچسب شمارش کنار «فهرست مقالات» را به‌روز کنید.
+### مقاله‌ی جدید
+
+1. کپی از یکی از فایل‌های `articles/*.html`؛ `<head>` را تغییر ندهید (همان ۴ لینک CSS و ۴ اسکریپت).
+2. کارت مقاله را در `articles/index.html` اضافه کنید و `data-tags` را درست بگذارید.
+3. آمار «تعداد مقالات» در `index.html` و برچسب شمارش کنار «فهرست مقالات» را به‌روز کنید.
+
+### پروژه‌ی جدید
+
+قالب کارت نمونه در کامنت بالای `projects/index.html` آمده است؛ کافی است یک بلوک `<div class="project-card">` را از کامنت دربیاورید.
+
+### کتابخانه‌ی جدید
+
+یک بلوک کارت در `libraries/index.html` کپی کنید و `data-cat` را با دسته‌ی فیلتر هماهنگ کنید.
 
 ## مشخصات فنی
 
-- HTML استاتیک خام، بدون فریم‌ورک و بدون مرحله‌ی build.
-- تایپوگرافی: [Vazirmatn](https://github.com/rastikerdar/vazirmatn) + [JetBrains Mono](https://www.jetbrains.com/lp/mono/) از Google Fonts.
-- ذخیره‌سازی ترجیح تم: `localStorage` با کلید `blog_theme`.
+- HTML استاتیک خام — بدون فریم‌ورک، بدون Node، بدون build.
+- تایپوگرافی: [Vazirmatn](https://github.com/rastikerdar/vazirmatn) + [JetBrains Mono](https://www.jetbrains.com/lp/mono/) به‌صورت self-host (woff2).
+- ذخیره‌سازی ترجیح تم: `localStorage` با کلید `hf_theme` (مهاجرت خودکار از کلید قدیمی `blog_theme`).
 
 ---
 
-ساخته‌شده با ❤ توسط **حیدر فرحانی** — مهندس نرم‌افزار | معمار اندروید و کاتلین
+ساخته‌شده با ❤ توسط **حیدر فرهانی** — مهندس نرم‌افزار | معمار اندروید و کاتلین

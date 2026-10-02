@@ -1,0 +1,103 @@
+/* ============================================================
+   Design Tokens — Emerald Green Minimal Palette
+   Shared variables for the personal software-engineering site
+   ============================================================ */
+
+:root {
+  /* Typography */
+  --font-sans: 'Vazirmatn', 'IRANSansWeb', 'IRANSans', 'Vazir', 'Tahoma', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
+
+  /* Primary palette (emerald) */
+  --color-primary: #0F766E;
+  --color-primary-light: #14B8A6;
+  --color-primary-dark: #0D4F47;
+  --color-primary-soft: rgba(15, 118, 110, 0.14);
+  --color-primary-glow: rgba(15, 118, 110, 0.28);
+
+  /* Secondary / mint */
+  --color-secondary: #14B8A6;
+  --color-secondary-soft: rgba(20, 184, 166, 0.14);
+
+  /* Accent / lime */
+  --color-accent: #84CC16;
+  --color-accent-soft: rgba(132, 204, 22, 0.16);
+
+  /* Semantic */
+  --color-success: #10B981;
+  --color-success-soft: rgba(16, 185, 129, 0.16);
+  --color-warning: #F59E0B;
+  --color-warning-soft: rgba(245, 158, 11, 0.16);
+  --color-danger: #EF4444;
+  --color-danger-soft: rgba(239, 68, 68, 0.16);
+  --color-info: #06B6D4;
+  --color-info-soft: rgba(6, 182, 212, 0.16);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- LIGHT THEME ---------- */
+html[data-theme="light"] {
+  --bg-body: #F0FDFA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #F1F5F9;
+  --bg-surface-alt: #ECFDF5;
+  --bg-code: #0F172A;
+  --bg-code-header: #0B1220;
+  --text-code: #F8FAFC;
+
+  --text-main: #1E293B;
+  --text-muted: #475569;
+  --text-subtle: #94A3B8;
+  --text-on-primary: #FFFFFF;
+
+  --border-subtle: #E2E8F0;
+  --border-normal: #CBD5E1;
+  --border-accent: rgba(15, 118, 110, 0.35);
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.10);
+  --shadow-glow: 0 8px 30px rgba(15, 118, 110, 0.18);
+
+  --navbar-bg: rgba(255, 255, 255, 0.85);
+  --footer-bg: #F1F5F9;
+}
+
+/* ---------- DARK THEME ---------- */
+html[data-theme="dark"] {
+  --bg-body: #0B1A18;
+  --bg-surface: #112623;
+  --bg-surface-elevated: #163531;
+  --bg-surface-alt: #0F1F1C;
+  --bg-code: #0A0F0E;
+  --bg-code-header: #070B0A;
+  --text-code: #F8FAFC;
+
+  --text-main: #E2E8F0;
+  --text-muted: #94A3B8;
+  --text-subtle: #64748B;
+  --text-on-primary: #0B1413;
+
+  --border-subtle: #1E2D2B;
+  --border-normal: #243533;
+  --border-accent: rgba(20, 184, 166, 0.40);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 8px 30px rgba(20, 184, 166, 0.22);
+
+  --navbar-bg: rgba(11, 26, 24, 0.85);
+  --footer-bg: #0F1F1C;
+}

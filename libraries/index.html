@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>کتابخانه‌ها — حیدر فرحانی</title>
+  <meta name="description" content="کتابخانه‌ها و ابزارهای نرم‌افزاری که حیدر فرحانی در پروژه‌های واقعی استفاده می‌کند؛ با دسته‌بندی، توضیح و لینک مستندات.">
+  <meta name="author" content="حیدر فرحانی">
+  <meta name="theme-color" content="#0F766E">
+  <meta property="og:title" content="کتابخانه‌ها — حیدر فرحانی">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>ح</text></svg>">
+
+  <script>
+    try {
+      var t = localStorage.getItem('hf_theme');
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/articles.css">
+  <link rel="stylesheet" href="../css/libraries.css">
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/libraries.js"></script>
+</head>
+
+<body data-section="libraries">
+<div id="reading-progress"></div>
+
+  <!-- ================= Navigation ================= -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu" id="nav-menu" aria-label="فهرست اصلی">
+        <ul class="nav-links">
+          <li><a class="nav-link" data-section="home" href="../">خانه</a></li>
+          <li><a class="nav-link" data-section="articles" href="../articles/">مقالات</a></li>
+          <li><a class="nav-link" data-section="projects" href="../projects/">پروژه‌ها</a></li>
+          <li><a class="nav-link" data-section="libraries" href="./">کتابخانه‌ها</a></li>
+          <li><a class="nav-link" data-section="about" href="../about/">درباره من</a></li>
+          <li><a class="nav-link" data-section="contact" href="../contact/">تماس</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn-icon" href="https://github.com/haedarfarhani" target="_blank" rel="noopener" title="گیت‌هاب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+        </a>
+        <button class="btn-icon" id="btn-theme" title="تغییر تم شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button class="btn-icon nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="باز و بسته کردن منو">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= Page hero ================= -->
+  <section class="page-hero">
+    <div class="page-breadcrumb">
+      <a href="../">خانه</a>
+      <span>/</span>
+      <span>کتابخانه‌ها</span>
+    </div>
+    <h1 class="page-title">کتابخانه‌ها و <span class="gradient-text">ابزارها</span></h1>
+    <p class="page-description">
+      کتابخانه‌های نرم‌افزاری و ابزارهایی که در پروژه‌های واقعی از آن‌ها استفاده می‌کنم؛
+      هر مورد با دلیل انتخاب، جایگزین‌ها و لینک مستندات رسمی.
+    </p>
+  </section>
+
+  <!-- ================= Search & filters ================= -->
+  <div class="controls-wrapper">
+    <div class="search-box">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="library-search" class="search-input" placeholder="جستجو در کتابخانه‌ها و ابزارها...">
+    </div>
+
+    <div class="tags-filter">
+      <button class="tag-btn library-filter-btn active" data-filter="all">همه</button>
+      <button class="tag-btn library-filter-btn" data-filter="ui">رابط کاربری</button>
+      <button class="tag-btn library-filter-btn" data-filter="data">داده و ذخیره‌سازی</button>
+      <button class="tag-btn library-filter-btn" data-filter="network">شبکه</button>
+      <button class="tag-btn library-filter-btn" data-filter="async">همزمانی</button>
+      <button class="tag-btn library-filter-btn" data-filter="tooling">ابزارسازی</button>
+    </div>
+  </div>
+
+  <!-- ================= Libraries grid ================= -->
+  <main class="articles-container">
+    <div class="section-header">
+      <h2 class="section-title">فهرست کتابخانه‌ها</h2>
+      <span class="section-count" id="libraries-count">۱۲ مورد</span>
+    </div>
+
+    <!--
+      راهنمای افزودن کتابخانه:
+      ۱) یک بلاک <a class="library-card" data-category="..."> کپی کنید.
+      ۲) data-category یکی از کلیدهای فیلتر باشد:
+         ui | data | network | async | tooling   (چند مورد با فاصله مجاز)
+      ۳) شمارنده و فیلترها خودکار به‌روز می‌شوند.
+    -->
+    <div class="library-grid" id="library-grid">
+
+      <!-- ===== UI ===== -->
+      <a class="library-card" data-category="ui" href="https://developer.android.com/jetpack/compose" target="_blank" rel="noopener">
+        <div class="library-icon">🎨</div>
+        <div class="library-title">Jetpack Compose</div>
+        <p class="library-desc">سیستم UI اعلامی برای اندروید؛ حذف XML، Recomposition قابل کنترل و معماری State-first. انتخاب اول من برای هر اپ جدید.</p>
+        <div class="library-meta">
+          <span class="library-type">UI · Google</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="library-card" data-category="ui" href="https://coil-kt.github.io/coil/" target="_blank" rel="noopener">
+        <div class="library-icon">🖼️</div>
+        <div class="library-title">Coil</div>
+        <p class="library-desc">بارگذاری تصویر مدرن برای کامپوز و اندروید، مبتنی بر کاتلین و Coroutines؛ سبک، با کش هوشمند و پشتیبانی از کامپوز.</p>
+        <div class="library-meta">
+          <span class="library-type">UI · Image</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- ===== Data ===== -->
+      <a class="library-card" data-category="data" href="https://developer.android.com/training/data-storage/room" target="_blank" rel="noopener">
+        <div class="library-icon">🗄️</div>
+        <div class="library-title">Room</div>
+        <p class="library-desc">لایه‌ی انتزاعی روی SQLite با بررسی کوئری در زمان کامپایل، مهاجرت خودکار اسکیما و یکپارچگی کامل با Flow.</p>
+        <div class="library-meta">
+          <span class="library-type">Data · Persistence</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="library-card" data-category="data" href="https://kotlinlang.org/docs/serialization.html" target="_blank" rel="noopener">
+        <div class="library-icon">🧬</div>
+        <div class="library-title">kotlinx.serialization</div>
+        <p class="library-desc">سریال‌سازی مبتنی بر کامپایلر؛ بدون بازتاب، امن در ProGuard و هم‌خوان با JSON، protobuf و کامپوز. جایگزین اول من به‌جای Gson/Moshi.</p>
+        <div class="library-meta">
+          <span class="library-type">Data · Serialization</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="library-card" data-category="data" href="https://insert-koin.io/" target="_blank" rel="noopener">
+        <div class="library-icon">💊</div>
+        <div class="library-title">Koin</div>
+        <p class="library-desc">تزریق وابستگی بدون کد تولیدشده، تعریف مبتنی بر DSL و منحنی یادگیری کوتاه؛ مناسب پروژه‌های چندماژوله‌ی متوسط.</p>
+        <div class="library-meta">
+          <span class="library-type">Data · DI</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="library-card" data-category="data" href="https://dagger.dev/hilt/" target="_blank" rel="noopener">
+        <div class="library-icon">🗡️</div>
+        <div class="library-title">Hilt</div>
+        <p class="library-desc">تزریق وابستگی مبتنی بر Dagger با انتخاب‌های کامپایل‌تایم؛ وقتی پروژه بزرگ می‌شود و به ایمنی بیشتر نیاز دارم.</p>
+        <div class="library-meta">
+          <span class="library-type">Data · DI</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- ===== Network ===== -->
+      <a class="library-card" data-category="network" href="https://square.github.io/retrofit/" target="_blank" rel="noopener">
+        <div class="library-icon">🌐</div>
+        <div class="library-title">Retrofit</div>
+        <p class="library-desc">کلاینت REST تایپ‌شده؛ تبدیل رابط به کوئری، پشتیبانی از کروتین و یکپارچگی با OkHttp و kotlinx.serialization.</p>
+        <div class="library-meta">
+          <span class="library-type">Network · HTTP</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="library-card" data-category="network async" href="https://ktor.io/" target="_blank" rel="noopener">
+        <div class="library-icon">⚡</div>
+        <div class="library-title">Ktor</div>
+        <p class="library-desc">فریم‌ورک شبکه‌ی خالص کاتلین؛ هم برای سمت سرور (کلاینت HTTP) و هم برای مصرف سرویس‌ها، با همان مدل Coroutineها.</p>
+        <div class="library-meta">
+          <span class="library-type">Network · Kotlin</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- ===== Async ===== -->
+      <a class="library-card" data-category="async" href="https://kotlinlang.org/docs/coroutines-overview.html" target="_blank" rel="noopener">
+        <div class="library-icon">🧵</div>
+        <div class="library-title">Kotlin Coroutines &amp; Flow</div>
+        <p class="library-desc">پایه‌ی همزمانی مدرن در کاتلین؛ Structured Concurrency، Dispatcherها و جریان‌های واکنشی با StateFlow/SharedFlow.</p>
+        <div class="library-meta">
+          <span class="library-type">Async · Core</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- ===== Tooling ===== -->
+      <a class="library-card" data-category="tooling" href="https://square.github.io/leakcanary/" target="_blank" rel="noopener">
+        <div class="library-icon">🕵️</div>
+        <div class="library-title">LeakCanary</div>
+        <p class="library-desc">تشخیص خودکار نشت حافظه در زمان توسعه؛ بدون تنظیم اضافه، محل نشت را با زنجیره‌ی ارجاعات گزارش می‌کند.</p>
+        <div class="library-meta">
+          <span class="library-type">Tooling · Debug</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="library-card" data-category="tooling" href="https://detekt.dev/" target="_blank" rel="noopener">
+        <div class="library-icon">🔬</div>
+        <div class="library-title">detekt</div>
+        <p class="library-desc">آنالیز‌کننده‌ی استاتیک کد کاتلین؛ بررسی پیچیدگی، بوهای کد و یکدستی استایل در CI، قبل از رسیدن کد به review.</p>
+        <div class="library-meta">
+          <span class="library-type">Tooling · Static Analysis</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="library-card" data-category="tooling" href="https://ktlint.github.io/" target="_blank" rel="noopener">
+        <div class="library-icon">🧹</div>
+        <div class="library-title">ktlint</div>
+        <p class="library-desc">فرمت‌کننده‌ی خودکار کد کاتلین بر اساس راهنمای رسمی؛ یکدست‌سازی تیم بدون بحث‌های بی‌پایان روی فرمت.</p>
+        <div class="library-meta">
+          <span class="library-type">Tooling · Format</span>
+          <span class="library-link">مستندات
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="library-empty">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">📦</div>
+        <h3 class="empty-state-title">موردی با این مشخصات یافت نشد</h3>
+        <p class="empty-state-desc">واژه‌ی جستجو را تغییر دهید یا دسته‌بندی دیگری را انتخاب کنید.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">حیدر فرحانی</div>
+        <p class="footer-text">
+          این سایت با هدف اشتراک دانش فنی، راهنماهای کاربردی و تجربیات مهندسی نرم‌افزار ساخته شده است؛
+          بدون فریم‌ورک و بدون مرحله‌ی build، با HTML/CSS/JS خام.
+        </p>
+        <div class="footer-social">
+          <a class="social-link" href="https://github.com/haedarfarhani" target="_blank" rel="noopener" title="گیت‌هاب">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          </a>
+          <a class="social-link" href="../contact/" title="تماس با من">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>سایت</h4>
+        <ul>
+          <li><a href="../">خانه</a></li>
+          <li><a href="../articles/">مقالات</a></li>
+          <li><a href="../projects/">پروژه‌ها</a></li>
+          <li><a href="./">کتابخانه‌ها</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>دسترسی سریع</h4>
+        <ul>
+          <li><a href="../about/">درباره من</a></li>
+          <li><a href="../contact/">تماس</a></li>
+          <li><a href="../articles/#architecture">مقالات معماری</a></li>
+          <li><a href="../articles/#kotlin">مقالات کاتلین</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span data-year>۱۴۰۵</span> حیدر فرحانی — تمام حقوق محفوظ است.</span>
+      <span>ساخته‌شده با HTML / CSS / JS خام · میزبانی روی GitHub Pages</span>
+    </div>
+  </footer>
+
+  <button id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+  </button>
+</body>
+</html>

@@ -1,15 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>حیدر فرحانی — مهندس نرم‌افزار | مقالات، پروژه‌ها و کتابخانه‌ها</title>
-  <meta name="description" content="سایت شخصی حیدر فرحانی؛ مهندس نرم‌افزار. مقالات عمیق مهندسی نرم‌افزار، پروژه‌های متن‌باز و کتابخانه‌های نرم‌افزاری محبوب من در یک جا.">
-  <meta name="keywords" content="حیدر فرحانی, مهندسی نرم‌افزار, معماری نرم‌افزار, کاتلین, اندروید, Jetpack Compose, مقالات فنی">
+  <title>مقالات — حیدر فرحانی</title>
+  <meta name="description" content="فهرست کامل مقالات حیدر فرحانی درباره‌ی مهندسی نرم‌افزار: معماری، همزمانی در کاتلین، Jetpack Compose، پرفورمنس اندروید و کیفیت کد.">
   <meta name="author" content="حیدر فرحانی">
   <meta name="theme-color" content="#0F766E">
-  <meta property="og:title" content="حیدر فرحانی — مهندس نرم‌افزار">
-  <meta property="og:description" content="مقالات عمیق مهندسی نرم‌افزار، پروژه‌ها و کتابخانه‌های نرم‌افزاری.">
+  <meta property="og:title" content="مقالات — حیدر فرحانی">
   <meta property="og:type" content="website">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>ح</text></svg>">
 
@@ -23,23 +21,24 @@
     } catch (e) {}
   </script>
 
-  <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/articles.css">
-  <script defer src="js/theme.js"></script>
-  <script defer src="js/main.js"></script>
-  <script defer src="js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/articles.css">
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/articles.js"></script>
+  <script defer src="../js/views.js"></script>
 </head>
 
-<body data-section="home">
+<body data-section="articles">
 <div id="reading-progress"></div>
 
   <!-- ================= Navigation ================= -->
   <header class="site-nav">
     <div class="nav-container">
-      <a href="./" class="brand-link" title="خانه">
+      <a href="../" class="brand-link" title="خانه">
         <div class="brand-badge">ح</div>
         <div class="brand-details">
           <span class="brand-title">حیدر فرحانی</span>
@@ -49,12 +48,12 @@
 
       <nav class="nav-menu" id="nav-menu" aria-label="فهرست اصلی">
         <ul class="nav-links">
-          <li><a class="nav-link" data-section="home" href="./">خانه</a></li>
-          <li><a class="nav-link" data-section="articles" href="articles/">مقالات</a></li>
-          <li><a class="nav-link" data-section="projects" href="projects/">پروژه‌ها</a></li>
-          <li><a class="nav-link" data-section="libraries" href="libraries/">کتابخانه‌ها</a></li>
-          <li><a class="nav-link" data-section="about" href="about/">درباره من</a></li>
-          <li><a class="nav-link" data-section="contact" href="contact/">تماس</a></li>
+          <li><a class="nav-link" data-section="home" href="../">خانه</a></li>
+          <li><a class="nav-link" data-section="articles" href="./">مقالات</a></li>
+          <li><a class="nav-link" data-section="projects" href="../projects/">پروژه‌ها</a></li>
+          <li><a class="nav-link" data-section="libraries" href="../libraries/">کتابخانه‌ها</a></li>
+          <li><a class="nav-link" data-section="about" href="../about/">درباره من</a></li>
+          <li><a class="nav-link" data-section="contact" href="../contact/">تماس</a></li>
         </ul>
       </nav>
 
@@ -73,72 +72,47 @@
     </div>
   </header>
 
-  <!-- ================= Hero ================= -->
-  <section class="hero-section">
-    <div class="hero-badge-pill">
-      <span>⚙️</span>
-      <span>پایگاه دانش مهندسی نرم‌افزار</span>
+  <!-- ================= Page hero ================= -->
+  <section class="page-hero">
+    <div class="page-breadcrumb">
+      <a href="../">خانه</a>
+      <span>/</span>
+      <span>مقالات</span>
     </div>
-
-    <h1 class="hero-title">
-      مقالات، پروژه‌ها و <span class="gradient-text">کتابخانه‌های نرم‌افزار</span> من
-    </h1>
-
-    <p class="hero-description">
-      من حیدر فرحانی، مهندس نرم‌افزار هستم. اینجا یادداشت‌های عمیق درباره‌ی معماری نرم‌افزار،
-      کیفیت کد، همزمانی و کارایی سیستم‌ها را کنار پروژه‌ها و ابزارهایی که می‌سازم یا استفاده می‌کنم،
-      منتشر می‌کنم — از اندروید و کاتلین تا معماری کلی سیستم‌ها.
+    <h1 class="page-title">فهرست <span class="gradient-text">مقالات</span></h1>
+    <p class="page-description">
+      راهنماهای بلند و عمیق درباره‌ی مهندسی نرم‌افزار؛ از معماری و همزمانی تا کارایی و کیفیت کد.
+      جستجو و فیلترها کاملاً در مرورگر اجرا می‌شوند.
     </p>
-
-    <div class="hero-actions">
-      <a href="articles/" class="btn btn-primary btn-lg">مشاهده مقالات</a>
-      <a href="projects/" class="btn btn-secondary btn-lg">پروژه‌ها</a>
-      <a href="contact/" class="btn btn-accent btn-lg">تماس با من</a>
-    </div>
-
-    <div class="hero-author-box">
-      <div class="author-mini-avatar">ح</div>
-      <div class="author-mini-text">
-        <div class="author-mini-name">حیدر فرحانی</div>
-        <div class="author-mini-role">مهندس نرم‌افزار — معماری، کاتلین و اندروید</div>
-      </div>
-    </div>
   </section>
 
-  <!-- ================= Stats ================= -->
-  <section class="stats-row">
-    <a class="stat-card" href="articles/">
-      <div class="stat-number">۵</div>
-      <div class="stat-label">مقاله جامع و عمیق</div>
-    </a>
-    <a class="stat-card" href="articles/">
-      <div class="stat-number">۵</div>
-      <div class="stat-label">دسته‌بندی تخصصی</div>
-    </a>
-    <a class="stat-card" href="libraries/">
-      <div class="stat-number">۱۵+</div>
-      <div class="stat-label">کتابخانه و ابزار معرفی‌شده</div>
-    </a>
-    <a class="stat-card" id="stat-views-card" href="articles/">
-      <div class="stat-number" id="stat-views">···</div>
-      <div class="stat-label">بازدید مجموع مقالات</div>
-    </a>
-  </section>
-
-  <!-- ================= Latest articles ================= -->
-  <section class="section-block">
-    <div class="section-head">
-      <div class="section-head-text">
-        <h2>آخرین مقالات</h2>
-        <p>راهنماهای بلند و کاربردی که با نمونه‌کدهای واقعی نوشته شده‌اند.</p>
-      </div>
-      <a class="section-more" href="articles/">همه مقالات
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-      </a>
+  <!-- ================= Search & filters ================= -->
+  <div class="controls-wrapper" id="articles-section">
+    <div class="search-box">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="search-input" class="search-input" placeholder="جستجو در عناوین و موضوعات مقالات...">
     </div>
 
-    <div class="articles-grid">
-      <a href="articles/concurrency-in-kotlin.html" class="article-card" data-tags="kotlin architecture">
+    <div class="tags-filter">
+      <button class="tag-btn active" data-filter="all">همه</button>
+      <button class="tag-btn" data-filter="kotlin">کاتلین و همزمانی</button>
+      <button class="tag-btn" data-filter="compose">اندروید و کامپوز</button>
+      <button class="tag-btn" data-filter="architecture">معماری نرم‌افزار</button>
+      <button class="tag-btn" data-filter="performance">پرفورمنس و حافظه</button>
+      <button class="tag-btn" data-filter="fundamentals">مبانی و کیفیت کد</button>
+    </div>
+  </div>
+
+  <!-- ================= Articles grid ================= -->
+  <main class="articles-container">
+    <div class="section-header">
+      <h2 class="section-title">مقالات منتشر شده</h2>
+      <span class="section-count" id="articles-count">۵ مقاله</span>
+    </div>
+
+    <div class="articles-grid" id="articles-grid">
+
+      <a href="concurrency-in-kotlin.html" class="article-card" data-tags="kotlin architecture">
         <div class="card-top">
           <div class="card-meta-row">
             <span class="card-time">⏱ ~۳۰ دقیقه مطالعه</span>
@@ -155,6 +129,7 @@
             <span class="card-tag">#Kotlin</span>
             <span class="card-tag">#Coroutines</span>
             <span class="card-tag">#Flow</span>
+            <span class="card-tag">#Structured_Concurrency</span>
           </div>
           <div class="card-arrow">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -162,7 +137,7 @@
         </div>
       </a>
 
-      <a href="articles/clean-architecture-mvi-compose.html" class="article-card" data-tags="compose architecture">
+      <a href="clean-architecture-mvi-compose.html" class="article-card" data-tags="compose architecture">
         <div class="card-top">
           <div class="card-meta-row">
             <span class="card-time">⏱ ~۲۵ دقیقه مطالعه</span>
@@ -171,7 +146,7 @@
           </div>
           <h3 class="card-title">معماری تمیز و الگوی MVI در Jetpack Compose: از تئوری تا پروداکشن</h3>
           <p class="card-excerpt">
-            راهنمای عملی پیاده‌سازی جریان تک‌جهته داده‌ها (UDF)، تفکیک State از Event و Side-Effect، معماری لایه‌های Domain و Data، و مهار Recompositionهای ناخواسته.
+            راهنمای عملی پیاده‌سازی جریان تک‌جهته داده‌ها (UDF)، تفکیک State از Event و Side-Effect، معماری لایه‌های Domain و Data، و مهار Recompositionهای ناخواسته در کامپوز.
           </p>
         </div>
         <div class="card-bottom">
@@ -179,6 +154,7 @@
             <span class="card-tag">#Jetpack_Compose</span>
             <span class="card-tag">#MVI</span>
             <span class="card-tag">#Clean_Architecture</span>
+            <span class="card-tag">#UDF</span>
           </div>
           <div class="card-arrow">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -186,7 +162,57 @@
         </div>
       </a>
 
-      <a href="articles/naming-conventions.html" class="article-card" data-tags="fundamentals">
+      <a href="android-performance-memory.html" class="article-card" data-tags="performance compose">
+        <div class="card-top">
+          <div class="card-meta-row">
+            <span class="card-time">⏱ ~۲۲ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="articles/android-performance-memory.html">👁 —</span>
+            <span class="card-date">مهر ۱۴۰۵</span>
+          </div>
+          <h3 class="card-title">بهینه‌سازی کارایی و مدیریت حافظه در اندروید: نشت حافظه و پروفایلینگ</h3>
+          <p class="card-excerpt">
+            کالبدشکافی Garbage Collector در ART، مهار Memory Leakهای کلاسیک و مدرن با LeakCanary، تحلیل رندرینگ و فریم‌های جاافتاده (Jank)، و افزایش سرعت راه‌اندازی با Baseline Profiles.
+          </p>
+        </div>
+        <div class="card-bottom">
+          <div class="card-tags">
+            <span class="card-tag">#Performance</span>
+            <span class="card-tag">#Memory_Leaks</span>
+            <span class="card-tag">#LeakCanary</span>
+            <span class="card-tag">#Profiler</span>
+          </div>
+          <div class="card-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+        </div>
+      </a>
+
+      <a href="dependency-injection-hilt-koin.html" class="article-card" data-tags="kotlin architecture compose">
+        <div class="card-top">
+          <div class="card-meta-row">
+            <span class="card-time">⏱ ~۲۰ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="articles/dependency-injection-hilt-koin.html">👁 —</span>
+            <span class="card-date">مهر ۱۴۰۵</span>
+          </div>
+          <h3 class="card-title">تزریق وابستگی در کاتلین: نبرد تن به تن Hilt و Koin در دنیای واقعی</h3>
+          <p class="card-excerpt">
+            مقایسه رویکرد زمان کامپایل (Dagger/Hilt) با Service Locator زمان اجرا (Koin)؛ مدیریت Scopeها در پروژه‌های چندماژوله، یکپارچه‌سازی با ViewModels و تست‌پذیری وابستگی‌ها.
+          </p>
+        </div>
+        <div class="card-bottom">
+          <div class="card-tags">
+            <span class="card-tag">#Hilt</span>
+            <span class="card-tag">#Koin</span>
+            <span class="card-tag">#Dependency_Injection</span>
+            <span class="card-tag">#Architecture</span>
+          </div>
+          <div class="card-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+        </div>
+      </a>
+
+      <a href="naming-conventions.html" class="article-card" data-tags="fundamentals">
         <div class="card-top">
           <div class="card-meta-row">
             <span class="card-time">⏱ ~۲۵ دقیقه مطالعه</span>
@@ -195,13 +221,14 @@
           </div>
           <h3 class="card-title">قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا و کارآمد</h3>
           <p class="card-excerpt">
-            مقایسه کامل snake_case، camelCase، PascalCase و kebab-case با قواعد عمومی و خاص هر زبان؛ از PEP 8 و Google Java Style تا راهنمای کاتلین و Airbnb.
+            مقایسه کامل snake_case، camelCase، PascalCase و kebab-case با قواعد عمومی و خاص هر زبان؛ از PEP 8 و Google Java Style تا راهنمای کاتلین و Airbnb، همراه با چک‌لیست و درخت تصمیم.
           </p>
         </div>
         <div class="card-bottom">
           <div class="card-tags">
             <span class="card-tag">#Naming</span>
             <span class="card-tag">#Clean_Code</span>
+            <span class="card-tag">#PEP8</span>
             <span class="card-tag">#Style_Guides</span>
           </div>
           <div class="card-arrow">
@@ -209,56 +236,15 @@
           </div>
         </div>
       </a>
-    </div>
-  </section>
 
-  <!-- ================= Site sections ================= -->
-  <section class="section-block">
-    <div class="section-head">
-      <div class="section-head-text">
-        <h2>سه بخش اصلی سایت</h2>
-        <p>هر بخش یک ورودی مستقل به محتوای تخصصی من است.</p>
+      <!-- Empty state (shown when filters match nothing) -->
+      <div class="empty-state" id="empty-state">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🔍</div>
+        <h3 class="empty-state-title">مقاله‌ای با این مشخصات یافت نشد</h3>
+        <p class="empty-state-desc">لطفاً واژه‌ی جستجو را تغییر دهید یا دسته‌بندی دیگری را انتخاب کنید.</p>
       </div>
     </div>
-
-    <div class="library-grid">
-      <a href="articles/" class="library-card">
-        <div class="library-icon">📝</div>
-        <div class="library-title">مقالات</div>
-        <p class="library-desc">راهنماهای جامع مهندسی نرم‌افزار؛ معماری، همزمانی، پرفورمنس و کیفیت کد — همراه با جستجو و فیلتر موضوعی.</p>
-        <div class="library-meta">
-          <span class="library-type">Articles</span>
-          <span class="library-link">ورود به فهرست
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </span>
-        </div>
-      </a>
-
-      <a href="projects/" class="library-card">
-        <div class="library-icon">🛠️</div>
-        <div class="library-title">پروژه‌ها</div>
-        <p class="library-desc">کارهای عملی و متن‌باز من؛ از اپلیکیشن‌های اندروید و سرویس‌های بک‌اند تا ابزارهای توسعه.</p>
-        <div class="library-meta">
-          <span class="library-type">Projects</span>
-          <span class="library-link">ورود به فهرست
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </span>
-        </div>
-      </a>
-
-      <a href="libraries/" class="library-card">
-        <div class="library-icon">📦</div>
-        <div class="library-title">کتابخانه‌ها</div>
-        <p class="library-desc">کتابخانه‌ها و ابزارهای نرم‌افزاری که در پروژه‌های واقعی استفاده می‌کنم، با دلیل انتخاب و جایگزین‌ها.</p>
-        <div class="library-meta">
-          <span class="library-type">Libraries</span>
-          <span class="library-link">ورود به فهرست
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </span>
-        </div>
-      </a>
-    </div>
-  </section>
+  </main>
 
   <!-- ================= Footer ================= -->
   <footer class="site-footer">
@@ -273,7 +259,7 @@
           <a class="social-link" href="https://github.com/haedarfarhani" target="_blank" rel="noopener" title="گیت‌هاب">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
           </a>
-          <a class="social-link" href="contact/" title="تماس با من">
+          <a class="social-link" href="../contact/" title="تماس با من">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
           </a>
         </div>
@@ -282,20 +268,20 @@
       <div class="footer-col">
         <h4>سایت</h4>
         <ul>
-          <li><a href="./">خانه</a></li>
-          <li><a href="articles/">مقالات</a></li>
-          <li><a href="projects/">پروژه‌ها</a></li>
-          <li><a href="libraries/">کتابخانه‌ها</a></li>
+          <li><a href="../">خانه</a></li>
+          <li><a href="./">مقالات</a></li>
+          <li><a href="../projects/">پروژه‌ها</a></li>
+          <li><a href="../libraries/">کتابخانه‌ها</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4>دسترسی سریع</h4>
         <ul>
-          <li><a href="about/">درباره من</a></li>
-          <li><a href="contact/">تماس</a></li>
-          <li><a href="articles/#architecture">مقالات معماری</a></li>
-          <li><a href="articles/#kotlin">مقالات کاتلین</a></li>
+          <li><a href="../about/">درباره من</a></li>
+          <li><a href="../contact/">تماس</a></li>
+          <li><a href="#architecture">مقالات معماری</a></li>
+          <li><a href="#kotlin">مقالات کاتلین</a></li>
         </ul>
       </div>
     </div>

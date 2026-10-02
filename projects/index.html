@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>پروژه‌ها — حیدر فرحانی</title>
+  <meta name="description" content="فهرست پروژه‌های حیدر فرحانی؛ اپلیکیشن‌های اندروید، سرویس‌های بک‌اند و ابزارهای متن‌باز مهندسی نرم‌افزار.">
+  <meta name="author" content="حیدر فرحانی">
+  <meta name="theme-color" content="#0F766E">
+  <meta property="og:title" content="پروژه‌ها — حیدر فرحانی">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>ح</text></svg>">
+
+  <script>
+    try {
+      var t = localStorage.getItem('hf_theme');
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/articles.css">
+  <link rel="stylesheet" href="../css/projects.css">
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/projects.js"></script>
+</head>
+
+<body data-section="projects">
+<div id="reading-progress"></div>
+
+  <!-- ================= Navigation ================= -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu" id="nav-menu" aria-label="فهرست اصلی">
+        <ul class="nav-links">
+          <li><a class="nav-link" data-section="home" href="../">خانه</a></li>
+          <li><a class="nav-link" data-section="articles" href="../articles/">مقالات</a></li>
+          <li><a class="nav-link" data-section="projects" href="./">پروژه‌ها</a></li>
+          <li><a class="nav-link" data-section="libraries" href="../libraries/">کتابخانه‌ها</a></li>
+          <li><a class="nav-link" data-section="about" href="../about/">درباره من</a></li>
+          <li><a class="nav-link" data-section="contact" href="../contact/">تماس</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn-icon" href="https://github.com/haedarfarhani" target="_blank" rel="noopener" title="گیت‌هاب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+        </a>
+        <button class="btn-icon" id="btn-theme" title="تغییر تم شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button class="btn-icon nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="باز و بسته کردن منو">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= Page hero ================= -->
+  <section class="page-hero">
+    <div class="page-breadcrumb">
+      <a href="../">خانه</a>
+      <span>/</span>
+      <span>پروژه‌ها</span>
+    </div>
+    <h1 class="page-title">پروژه‌های <span class="gradient-text">من</span></h1>
+    <p class="page-description">
+      اپلیکیشن‌ها، سرویس‌ها و ابزارهایی که ساخته‌ام؛ هر پروژه با توضیح معماری، تکنولوژی‌های استفاده‌شده و لینک مخزن.
+    </p>
+  </section>
+
+  <!-- ================= Filters ================= -->
+  <div class="controls-wrapper">
+    <div class="tags-filter">
+      <button class="tag-btn project-filter-btn active" data-filter="all">همه</button>
+      <button class="tag-btn project-filter-btn" data-filter="android">اندروید</button>
+      <button class="tag-btn project-filter-btn" data-filter="backend">بک‌اند</button>
+      <button class="tag-btn project-filter-btn" data-filter="tooling">ابزارسازی</button>
+      <button class="tag-btn project-filter-btn" data-filter="library">کتابخانه</button>
+    </div>
+    <span class="badge-count" id="projects-count">۰ پروژه</span>
+  </div>
+
+  <!-- ================= Projects grid ================= -->
+  <main class="section-block">
+    <div class="projects-grid" id="projects-grid">
+
+      <!--
+      ============================================================
+      راهنمای افزودن پروژه
+      ============================================================
+      ۱) بلاک زیر را کپی کنید و داخل <div class="projects-grid"> بگذارید.
+      ۲) data-tech باید شامل کلید فیلترها باشد:
+         android | backend | tooling | library   (چند مورد با فاصله مجاز است)
+      ۳) لینک‌ها را واقعی کنید: repo = مخزن گیت‌هاب، live = نسخه منتشرشده.
+      ۴) شمارنده «۰ پروژه» خودکار به‌روز می‌شود (js/projects.js).
+
+      <article class="project-card" data-tech="android kotlin">
+        <div class="project-header">
+          <div class="project-icon">📱</div>
+          <div class="project-links">
+            <a class="project-link" href="https://github.com/USERNAME/REPO" target="_blank" rel="noopener" title="مخزن">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            </a>
+          </div>
+        </div>
+        <h3 class="project-title">عنوان پروژه</h3>
+        <p class="project-desc">توضیح کوتاه: مشکلی که حل می‌کند، معماری و نکات فنی جالب.</p>
+        <div class="project-tech">
+          <span class="project-tech-tag">Kotlin</span>
+          <span class="project-tech-tag">Compose</span>
+        </div>
+        <div class="project-footer">
+          <span class="project-year">1405</span>
+          <span class="project-status live">● در حال توسعه</span>
+        </div>
+      </article>
+      -->
+
+      <!-- Empty state -->
+      <div class="empty-state" id="projects-empty" style="display:block;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🚧</div>
+        <h3 class="empty-state-title">پروژه‌ها به‌زودی اضافه می‌شوند</h3>
+        <p class="empty-state-desc">
+          این بخش هنوز در حال آماده‌سازی است. نمونه‌ی کارت پروژه به‌صورت کامنت داخل کد این صفحه قرار دارد؛
+          کافی است کپی کنید و اطلاعات واقعی را جایگزین کنید.
+        </p>
+        <div style="margin-top:1.5rem;display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;">
+          <a href="../articles/" class="btn btn-primary">مطالعه مقالات</a>
+          <a href="../contact/" class="btn btn-secondary">همکاری با من</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">حیدر فرحانی</div>
+        <p class="footer-text">
+          این سایت با هدف اشتراک دانش فنی، راهنماهای کاربردی و تجربیات مهندسی نرم‌افزار ساخته شده است؛
+          بدون فریم‌ورک و بدون مرحله‌ی build، با HTML/CSS/JS خام.
+        </p>
+        <div class="footer-social">
+          <a class="social-link" href="https://github.com/haedarfarhani" target="_blank" rel="noopener" title="گیت‌هاب">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          </a>
+          <a class="social-link" href="../contact/" title="تماس با من">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>سایت</h4>
+        <ul>
+          <li><a href="../">خانه</a></li>
+          <li><a href="../articles/">مقالات</a></li>
+          <li><a href="./">پروژه‌ها</a></li>
+          <li><a href="../libraries/">کتابخانه‌ها</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>دسترسی سریع</h4>
+        <ul>
+          <li><a href="../about/">درباره من</a></li>
+          <li><a href="../contact/">تماس</a></li>
+          <li><a href="../articles/#architecture">مقالات معماری</a></li>
+          <li><a href="../articles/#kotlin">مقالات کاتلین</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span data-year>۱۴۰۵</span> حیدر فرحانی — تمام حقوق محفوظ است.</span>
+      <span>ساخته‌شده با HTML / CSS / JS خام · میزبانی روی GitHub Pages</span>
+    </div>
+  </footer>
+
+  <button id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+  </button>
+</body>
+</html>

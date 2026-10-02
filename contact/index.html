@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تماس با من — حیدر فرحانی</title>
+  <meta name="description" content="راه‌های تماس با حیدر فرحانی برای همکاری، پرسش فنی، پیشنهاد مقاله یا بازخورد درباره‌ی سایت.">
+  <meta name="author" content="حیدر فرحانی">
+  <meta name="theme-color" content="#0F766E">
+  <meta property="og:title" content="تماس با من — حیدر فرحانی">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>ح</text></svg>">
+
+  <script>
+    try {
+      var t = localStorage.getItem('hf_theme');
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/articles.css">
+  <link rel="stylesheet" href="../css/contact.css">
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/contact.js"></script>
+</head>
+
+<body data-section="contact">
+<div id="reading-progress"></div>
+
+  <!-- ================= Navigation ================= -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu" id="nav-menu" aria-label="فهرست اصلی">
+        <ul class="nav-links">
+          <li><a class="nav-link" data-section="home" href="../">خانه</a></li>
+          <li><a class="nav-link" data-section="articles" href="../articles/">مقالات</a></li>
+          <li><a class="nav-link" data-section="projects" href="../projects/">پروژه‌ها</a></li>
+          <li><a class="nav-link" data-section="libraries" href="../libraries/">کتابخانه‌ها</a></li>
+          <li><a class="nav-link" data-section="about" href="../about/">درباره من</a></li>
+          <li><a class="nav-link" data-section="contact" href="./">تماس</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn-icon" href="https://github.com/haedarfarhani" target="_blank" rel="noopener" title="گیت‌هاب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+        </a>
+        <button class="btn-icon" id="btn-theme" title="تغییر تم شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button class="btn-icon nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="باز و بسته کردن منو">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= Page hero ================= -->
+  <section class="page-hero">
+    <div class="page-breadcrumb">
+      <a href="../">خانه</a>
+      <span>/</span>
+      <span>تماس</span>
+    </div>
+    <h1 class="page-title">تماس با <span class="gradient-text">من</span></h1>
+    <p class="page-description">
+      برای همکاری، پرسش فنی، پیشنهاد مقاله یا بازخورد درباره‌ی سایت در تماس باشید؛
+      سریع‌ترین پاسخ را از طریق گیت‌هاب می‌گیرید.
+    </p>
+  </section>
+
+  <!-- ================= Contact ================= -->
+  <main class="section-block">
+    <div class="contact-layout">
+
+      <!-- Channels -->
+      <aside class="contact-card">
+        <h3>راه‌های ارتباطی</h3>
+        <p>یکی از کانال‌های زیر را انتخاب کنید؛ پیام‌های مرتبط با کد و پروژه را ترجیح می‌دهم.</p>
+
+        <ul class="contact-info-list">
+          <li class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            </div>
+            <div class="contact-info-text">
+              <span class="contact-info-label">گیت‌هاب</span>
+              <a class="contact-info-value" href="https://github.com/haedarfarhani" target="_blank" rel="noopener">github.com/haedarfarhani</a>
+            </div>
+          </li>
+
+          <!--
+            راهنما: کانال‌های زیر را با اطلاعات واقعی خود فعال کنید
+            (کافی است کامنت را بردارید و مقادیر را جایگزین کنید).
+
+          <li class="contact-info-item">
+            <div class="contact-info-icon">✉️</div>
+            <div class="contact-info-text">
+              <span class="contact-info-label">ایمیل</span>
+              <a class="contact-info-value" href="mailto:YOUR@EMAIL.COM">YOUR@EMAIL.COM</a>
+            </div>
+          </li>
+
+          <li class="contact-info-item">
+            <div class="contact-info-icon">✈️</div>
+            <div class="contact-info-text">
+              <span class="contact-info-label">تلگرام</span>
+              <a class="contact-info-value" href="https://t.me/YOUR_ID" target="_blank" rel="noopener">t.me/YOUR_ID</a>
+            </div>
+          </li>
+
+          <li class="contact-info-item">
+            <div class="contact-info-icon">💼</div>
+            <div class="contact-info-text">
+              <span class="contact-info-label">لینکدین</span>
+              <a class="contact-info-value" href="https://www.linkedin.com/in/YOUR_ID" target="_blank" rel="noopener">linkedin.com/in/YOUR_ID</a>
+            </div>
+          </li>
+          -->
+
+          <li class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </div>
+            <div class="contact-info-text">
+              <span class="contact-info-label">مقالات</span>
+              <a class="contact-info-value" href="../articles/">خواندن راهنماهای من</a>
+            </div>
+          </li>
+
+          <li class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="contact-info-text">
+              <span class="contact-info-label">بازخورد</span>
+              <a class="contact-info-value" href="https://github.com/haedarfarhani" target="_blank" rel="noopener">ثبت issue برای پیشنهاد مقاله</a>
+            </div>
+          </li>
+        </ul>
+
+        <div class="social-links">
+          <a class="social-link" href="https://github.com/haedarfarhani" target="_blank" rel="noopener" title="گیت‌هاب">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Message form (static: copies the message for you) -->
+      <section class="contact-form-card">
+        <h3 style="font-size:1.3rem;font-weight:900;margin-bottom:0.5rem;">نوشتن پیام</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.9;">
+          این سایت استاتیک است و سروری برای دریافت فرم ندارد؛ با پر کردن فرم، متن پیام آماده و
+          در کلیپ‌بورد شما کپی می‌شود تا از هر کانالی بفرستید.
+        </p>
+
+        <form id="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="cf-name">نام *</label>
+              <input class="form-input" id="cf-name" name="name" type="text" placeholder="نام شما" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-email">ایمیل (اختیاری)</label>
+              <input class="form-input" id="cf-email" name="email" type="email" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cf-topic">موضوع</label>
+            <input class="form-input" id="cf-topic" name="topic" type="text" placeholder="مثلاً: پیشنهاد مقاله، همکاری، بازخورد...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cf-message">متن پیام *</label>
+            <textarea class="form-textarea" id="cf-message" name="message" placeholder="پیام خود را بنویسید..." required></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">کپی پیام</button>
+            <button class="btn btn-secondary" type="reset">پاک کردن</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">حیدر فرحانی</div>
+        <p class="footer-text">
+          این سایت با هدف اشتراک دانش فنی، راهنماهای کاربردی و تجربیات مهندسی نرم‌افزار ساخته شده است؛
+          بدون فریم‌ورک و بدون مرحله‌ی build، با HTML/CSS/JS خام.
+        </p>
+        <div class="footer-social">
+          <a class="social-link" href="https://github.com/haedarfarhani" target="_blank" rel="noopener" title="گیت‌هاب">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          </a>
+          <a class="social-link" href="./" title="تماس با من">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>سایت</h4>
+        <ul>
+          <li><a href="../">خانه</a></li>
+          <li><a href="../articles/">مقالات</a></li>
+          <li><a href="../projects/">پروژه‌ها</a></li>
+          <li><a href="../libraries/">کتابخانه‌ها</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>دسترسی سریع</h4>
+        <ul>
+          <li><a href="../about/">درباره من</a></li>
+          <li><a href="./">تماس</a></li>
+          <li><a href="../articles/#architecture">مقالات معماری</a></li>
+          <li><a href="../articles/#kotlin">مقالات کاتلین</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span data-year>۱۴۰۵</span> حیدر فرحانی — تمام حقوق محفوظ است.</span>
+      <span>ساخته‌شده با HTML / CSS / JS خام · میزبانی روی GitHub Pages</span>
+    </div>
+  </footer>
+
+  <button id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+  </button>
+</body>
+</html>
