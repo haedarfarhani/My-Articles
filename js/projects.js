@@ -8,8 +8,7 @@
     const filterButtons = document.querySelectorAll('.project-filter-btn');
     const projectCards = document.querySelectorAll('.project-card');
     const countEl = document.getElementById('projects-count');
-
-    if (!projectCards.length) return;
+    const emptyState = document.getElementById('projects-empty');
 
     let currentFilter = 'all';
 
@@ -25,6 +24,7 @@
         if (matches) visibleCount++;
       });
       if (countEl) countEl.textContent = toFa(visibleCount) + ' پروژه';
+      if (emptyState) emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
     }
 
     filterButtons.forEach((btn) => {

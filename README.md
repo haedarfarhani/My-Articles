@@ -16,6 +16,18 @@
 | ۴ | تزریق وابستگی در کاتلین: Hilt در برابر Koin | [`articles/dependency-injection-hilt-koin.html`](articles/dependency-injection-hilt-koin.html) | ~۲۰ دقیقه |
 | ۵ | قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا | [`articles/naming-conventions.html`](articles/naming-conventions.html) | ~۲۵ دقیقه |
 
+## فهرست پروژه‌ها
+
+| پروژه | معماری / تکنولوژی | مخزن |
+|-------|-------------------|------|
+| 📁 فایل‌منیجر جتپک کامپوز | Jetpack Compose · Material 3 · Scoped Storage | [`filemanager-jetpack-compose`](https://github.com/haedarfarhani/filemanager-jetpack-compose) |
+| 💬 چت‌اپ با الگوی MVI | Compose · MVI · Apollo GraphQL · Supabase · Hilt | [`chatapp-jetpack-compose-mvi`](https://github.com/haedarfarhani/chatapp-jetpack-compose-mvi) |
+| 🛍️ اپ فروشگاهی MVVM | MVVM · Ktor · Hilt · Fragments | [`mvvm-shoping-app`](https://github.com/haedarfarhani/mvvm-shoping-app) |
+| 🧱 فروشگاه با Clean Architecture | چند-ماژوله (domain/data/presentation) · Detekt · Kover | [`android-clean-architecture-shoping`](https://github.com/haedarfarhani/android-clean-architecture-shoping) |
+| 🏗️ فروشگاه ساده با MVP | MVP · Java · Dagger · ObjectBox · RxJava | [`simple-android-mvp-shoping`](https://github.com/haedarfarhani/simple-android-mvp-shoping) |
+| 🛒 فروشگاه با معماری MVC | MVC · Java · Retrofit · Room · RxJava | [`shoping_mvc_architecture`](https://github.com/haedarfarhani/shoping_mvc_architecture) |
+| 🗺️ شهرها و موقعیت‌های ایران (JSON) | داده‌ی باز · JSON | [`iran-cities-and-locations-in-json-format`](https://github.com/haedarfarhani/iran-cities-and-locations-in-json-format) |
+
 ## ساختار پروژه
 
 ```
@@ -33,7 +45,7 @@ my-articales/
 │   ├── dependency-injection-hilt-koin.html
 │   └── naming-conventions.html
 │
-├── projects/                     # پروژه‌ها (ساختار آماده، کارت نمونه در کامنت راهنما)
+├── projects/                     # پروژه‌ها (۷ کارت + راهنمای افزودن در کامنت)
 │   └── index.html
 ├── libraries/                    # کتابخانه‌های نرم‌افزاری/پکیج‌ها (۱۲ کارت با لینک رسمی)
 │   └── index.html
@@ -70,6 +82,7 @@ my-articales/
 - **تم تیره/روشن**: با `localStorage` (کلید `hf_theme` + اسکریپت `theme.js` در `<head>` برای جلوگیری از فلش اولیه).
 - **چهار بخش مجزا**: مقالات، پروژه‌ها، کتابخانه‌های نرم‌افزاری، درباره/تماس — هرکدام CSS و JS اختصاصی خودشان.
 - **جستجو و فیلتر لحظه‌ای**: کلاینت‌ساید، با هش (`#kotlin` و غیره) برای لینک‌پذیری.
+- **صفحه‌ی پروژه‌ها**: ۷ پروژه‌ی واقعی از گیت‌هاب با توضیح معماری و تگ‌های فنی، به‌همراه فیلتر دسته‌ای (اندروید، بک‌اند، ابزارسازی، کتابخانه، داده) و شمارنده‌ی خودکار.
 - **تجربه‌ی مطالعه**: نوار پیشرفت خواندن، فهرست مطالب چسبان (ScrollSpy)، دکمه کپی کد، بازگشت به بالا، اشتراک‌گذاری.
 - **شمارنده بازدید**: با [Page Views API](https://page-views-api.ratneshc.com/) — بدون کوکی، بدون ذخیره‌ی IP، شمارش یکتا در بازه‌ی ۳۰ دقیقه.
 - **کاملاً واکنش‌گرا و RTL**: موبایل/تبلت/دسکتاپ، منوی همبرگری، کشوی موبایل فهرست مطالب.
@@ -161,7 +174,9 @@ python -m http.server 8080     # یا: npx serve .
 
 ### پروژه‌ی جدید
 
-قالب کارت نمونه در کامنت بالای `projects/index.html` آمده است؛ کافی است یک بلوک `<div class="project-card">` را از کامنت دربیاورید.
+کافی است یکی از بلوک‌های `<article class="project-card">` موجود در `projects/index.html` را کپی کنید؛
+سپس لینک مخزن، عنوان، توضیح، تگ‌های فنی و `data-tech` را بگذارید.
+کلیدهای معتبر `data-tech` (برای فیلترها): `android` · `backend` · `tooling` · `library` · `data` — چند کلید با فاصله مجاز است.
 
 ### کتابخانه‌ی جدید
 
