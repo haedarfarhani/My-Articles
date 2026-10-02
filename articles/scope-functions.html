@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also | حیدر فرحانی</title>
+  <meta name="description" content="همه‌چیز درباره Scope Functions در کاتلین: تفاوت let، run، with، apply و also، فرق این (this) و it، کاربرد هرکدام، دام‌ها، بازگشت غیرمحلی و نمونه‌کدهای واقعی.">
+  <meta name="keywords" content="Scope Functions, Kotlin, let, run, with, apply, also, this vs it, اسکوپ فانکشن کاتلین, کاتلین">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also">
+  <meta property="og:description" content="راهنمای جامع Scope Functions در کاتلین؛ تفاوت this و it، کاربرد هر تابع، دام‌های رایج و نمونه‌کدهای واقعی اندروید و Compose.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/scope-functions.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/scope-functions.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="اسکوپ فانکشن‌ها در کاتلین">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="کاتلین و کیفیت کد">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also">
+  <meta name="twitter:description" content="تفاوت این (this) و it، کاربرد هر اسکوپ فانکشن، دام‌های رایج و نمونه‌کدهای واقعی.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also",
+    "description": "همه‌چیز درباره Scope Functions در کاتلین: تفاوت let، run، with، apply و also، فرق این (this) و it، کاربرد هرکدام، دام‌ها، بازگشت غیرمحلی و نمونه‌کدهای واقعی.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/scope-functions.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/scope-functions.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Scope Functions, Kotlin, let, run, with, apply, also, this vs it",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "اسکوپ فانکشن‌ها در کاتلین", "item": "https://haedarfarhani.github.io/My-Articles/articles/scope-functions.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="reading-progress"></div>
+
+  <!-- Navigation Bar -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="Bazgasht be fehrest" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>&#1605;&#1602;&#1575;&#1604;&#1575;&#1578; &#1608; &#1585;&#1575;&#1607;&#1606;&#1605;&#1575;&#1607;&#1575;</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Mobile TOC Toggle Button -->
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <!-- Share Button -->
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <!-- Article Content Column -->
+      <article class="blog-article">
+
+                <!-- Hero Header -->
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">کاتلین</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">کیفیت کد</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">اسکوپ فانکشن‌ها در کاتلین</span>: راهنمای کامل let، run، with، apply و also
+          </h1>
+
+          <p class="hero-lead">
+            پنج تابع کوچک در کتابخانه‌ی استاندارد کاتلین وجود دارند که ظاهرشان ساده است، اما همین پنج تابع
+            بیشترین سردرگمی را برای توسعه‌دهندگان تازه‌کار می‌سازند: <code>let</code>، <code>run</code>،
+            <code>with</code>، <code>apply</code> و <code>also</code>. تفاوت آن‌ها فقط دو چیز است —
+            «شیء چطور در دسترس است (this یا it)» و «چه‌چیزی برمی‌گردانند». در این مقاله هر پنج تابع را
+            با نمونه‌کد می‌شکنیم، جدول مقایسه‌ای می‌سازیم، دام‌های پنهان (نام‌گذاری، بازگشت غیرمحلی و
+            تودرتویی) را نشان می‌دهیم و در نهایت یک درخت تصمیم می‌سازیم تا در هر موقعیت بدانید کدام را
+            انتخاب کنید.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">توسعه‌دهنده اندروید و کاتلین</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۳۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مقدماتی تا پیشرفته</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Kotlin</span>
+            <span class="post-tag">#Scope_Functions</span>
+            <span class="post-tag">#let_run_apply_also_with</span>
+            <span class="post-tag">#Idiomatic_Kotlin</span>
+            <span class="post-tag">#Clean_Code</span>
+          </div>
+
+          <!-- Inline Table of Contents -->
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+      <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>اسکوپ فانکشن چیست و چه دردی را درمان می‌کند؟</span></a></li>
+      <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>پنج اسکوپ فانکشن در یک نگاه</span></a></li>
+      <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>let — کار با مقدار nullable و تبدیل</span></a></li>
+      <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>run و with — اجرای بلوک و بازگشت نتیجه</span></a></li>
+      <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>apply — پیکربندی شیء</span></a></li>
+      <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>also — عوارض جانبی و زنجیره‌سازی</span></a></li>
+      <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>انتخاب درست: این در برابر it و درخت تصمیم</span></a></li>
+      <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>نکات ریز، دام‌ها و بهترین شیوه‌ها</span></a></li>
+      <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>اسکوپ فانکشن‌ها در کد واقعی (اندروید و Compose)</span></a></li>
+      <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>جمع‌بندی، چک‌لیست و منابع</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <!-- Sections Content -->
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>اسکوپ فانکشن چیست و چه دردی را درمان می‌کند؟</h2>
+
+<p>
+<strong>اسکوپ فانکشن (Scope Function)</strong> تابعی است که یک شیء را برمی‌دارد، یک بلوک کد را
+در «دامنه‌ی» آن شیء اجرا می‌کند و اجازه می‌دهد بدون تکرار نام شیء با آن کار کنید. به همین دلیل
+به آن‌ها «توابع دامنه» هم می‌گویند. آن‌ها در کتابخانه‌ی استاندارد کاتلین تعریف شده‌اند و
+نیازی به هیچ وابستگی بیرونی ندارند.
+</p>
+
+<p>
+مسئله‌ی اصلی این است: وقتی چند عملیات پشت‌سرهم روی یک شیء انجام می‌دهیم، نام آن شیء مدام تکرار
+می‌شود و کد شلوغ می‌شود. یک اسکوپ فانکشن این تکرار را حذف می‌کند و ذهن خواننده را روی «چه کاری
+داریم انجام می‌دهیم» متمرکز نگه می‌دارد، نه «روی چه چیزی».
+</p>
+
+<pre class="kl-code"><code>// ✗ بدون اسکوپ فانکشن: نام شیء چهار بار تکرار شده است
+val user = User()
+user.name = "Gull"
+user.age = 19
+user.city = "Gujrat"
+println(user.name)
+
+// ✓ با apply: شیء یک بار ساخته می‌شود و بلوک داخل دامنه‌ی آن اجرا می‌شود
+val user = User().apply {
+    name = "Gull"   // this همان user است؛ لازم نیست نامش را بنویسیم
+    age = 19
+    city = "Gujrat"
+    println(name)
+}</code></pre>
+
+<p>
+به این تغییر ساده دقت کنید: در بلوک <code>apply</code> دیگر <code>user.</code> نمی‌نویسیم، چون
+گیرنده (<code>this</code>) همان شیء است. این «حذف نویز» ظاهراً کوچک، در پیکربندی‌های طولانی
+(مثل ساخت یک <code>Intent</code> یا <code>OkHttpClient</code>) بسیار تأثیرگذار می‌شود.
+</p>
+
+<h3>۱.۱ چرا از اسکوپ فانکشن استفاده کنیم؟</h3>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>دلیل</th><th>توضیح</th></tr>
+  <tr><td>کد تمیزتر</td><td>حذف تکرار نام شیء و کاهش کد اضافه، بدون کاهش خوانایی.</td></tr>
+  <tr><td>کد ایمن‌تر</td><td>با <code>?.let</code> و <code>with</code> می‌توان زنجیره‌ی تکراری بررسی <code>null</code> را کوتاه کرد.</td></tr>
+  <tr><td>دامنه‌ی محدود</td><td>متغیرهای موقت فقط داخل بلوک زنده‌اند و بیرون آن نشت نمی‌کنند.</td></tr>
+  <tr><td>پیکربندی گویاتر</td><td><code>apply</code> برای ساختن/تنظیم شیء، خواندن را از «ساخت» جدا می‌کند.</td></tr>
+  <tr><td>بدون هزینه‌ی اجرا</td><td>هر پنج تابع <code>inline</code> هستند؛ پس هیچ سرباری در زمان اجرا ندارند.</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">عمیق‌تر: چرا اصلاً «اسکوپ»؟</span>
+در کاتلین یک بلوک <code>{ ... }</code> می‌تواند یک <em>گیرنده‌ی ضمنی</em> (implicit receiver) داشته باشد.
+این همان مکانیزمی است که DSLهایی مثل <code>buildString { }</code>، <code>android { }</code> در Gradle
+و DSLهای Compose روی آن ساخته شده‌اند. اسکوپ فانکشن‌ها در واقع سطحی از همین قابلیت زبان‌اند:
+یک شیء را به‌عنوان گیرنده‌ی بلوک به شما می‌دهند.
+</div>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 250" role="img" aria-label="اسکوپ فانکشن بدون تکرار نام شیء">
+  <defs>
+    <marker id="m-s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/>
+    </marker>
+    <marker id="m-s1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f43f5e"/>
+    </marker>
+  </defs>
+
+  <rect class="s-bad" x="20" y="30" width="340" height="80" rx="13"/>
+  <text class="s-tbad" x="190" y="58" text-anchor="middle" font-size="15">بدون اسکوپ: نام تکراری</text>
+  <text class="s-t" x="40" y="88" font-size="12.5">user.name … user.age … user.city … user.name</text>
+
+  <rect class="s-ok" x="410" y="30" width="340" height="80" rx="13"/>
+  <text class="s-tok" x="580" y="58" text-anchor="middle" font-size="15">با Scope Function: دامنه‌دار</text>
+  <text class="s-t" x="430" y="88" font-size="12.5">name … age … city  (این همان شیء است)</text>
+
+  <rect class="s-box" x="20" y="150" width="340" height="76" rx="13"/>
+  <text class="s-t" x="190" y="178" text-anchor="middle" font-size="13.5">خواندن سخت‌تر، تمرکز پراکنده</text>
+  <text class="s-tbad" x="190" y="206" text-anchor="middle" font-size="13">هر خط باید بگوید «کدام شیء»</text>
+
+  <rect class="s-acc" x="410" y="150" width="340" height="76" rx="13"/>
+  <text class="s-t" x="580" y="178" text-anchor="middle" font-size="13.5">تمرکز روی «چه کاری» نه «روی چه چیزی»</text>
+  <text class="s-acc-t" x="580" y="206" text-anchor="middle" font-size="13">کد کوتاه‌تر، همان‌قدر یا روشن‌تر</text>
+
+  <path class="s-arr-bad" d="M 190 110 L 190 144" marker-end="url(#m-s1b)"/>
+  <path class="s-arr" d="M 580 110 L 580 144" marker-end="url(#m-s1)"/>
+</svg>
+<figcaption><b>شکل ۱ — حذف نویز:</b> اسکوپ فانکشن نام شیء را از دل بلوک حذف می‌کند؛ نتیجه کوتاه‌تر است، اما هرگز نباید مبهم‌تر شود. خوانایی هدف است، نه کوتاه‌کردن به‌هرقیمت.</figcaption>
+</figure>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>پنج اسکوپ فانکشن در یک نگاه</h2>
+
+<p>
+تنها دو مؤلفه، هویت هر اسکوپ فانکشن را می‌سازند:
+</p>
+
+<ol>
+  <li><strong>شیء چطور در دسترس است؟</strong> یا به‌عنوان <code>this</code> (گیرنده) است یا به‌عنوان آرگومان <code>it</code>.</li>
+  <li><strong>چه‌چیزی برمی‌گرداند؟</strong> یا خود شیء (گیرنده) را برمی‌گرداند یا نتیجه‌ی آخرین عبارت بلوک (lambda result).</li>
+</ol>
+
+<p>
+با ترکیب این دو، دقیقاً چهار خانه به دست می‌آید و پنج تابع در آن‌ها جا می‌گیرند
+(<code>run</code> و <code>with</code> یک خانه را شریک‌اند):
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>تابع</th><th>شیء را چطور می‌بیند</th><th>خروجی</th><th>معمولاً برای…</th></tr>
+  <tr><td><code>let</code></td><td><code>it</code></td><td>نتیجه‌ی بلوک</td><td>مقدار nullable، تبدیل، محدودسازی دامنه</td></tr>
+  <tr><td><code>run</code></td><td><code>this</code></td><td>نتیجه‌ی بلوک</td><td>پیکربندی + محاسبه‌ی نتیجه در یک بلوک</td></tr>
+  <tr><td><code>with</code></td><td><code>this</code></td><td>نتیجه‌ی بلوک</td><td>چند عملیات روی شیئی که از قبل داریم</td></tr>
+  <tr><td><code>apply</code></td><td><code>this</code></td><td>خود شیء</td><td>پیکربندی و ساختن شیء</td></tr>
+  <tr><td><code>also</code></td><td><code>it</code></td><td>خود شیء</td><td>عوارض جانبی: لاگ، اعتبارسنجی، زنجیره‌سازی</td></tr>
+</table>
+</div>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 340" role="img" aria-label="چهارخانه‌ی اسکوپ فانکشن‌ها">
+  <line class="s-dash" x1="385" y1="30" x2="385" y2="318"/>
+  <line class="s-dash" x1="30" y1="174" x2="740" y2="174"/>
+  <text class="s-acc-t" x="200" y="24" text-anchor="middle" font-size="14">گیرنده = this</text>
+  <text class="s-tok" x="565" y="24" text-anchor="middle" font-size="14">گیرنده = it</text>
+  <text class="s-t2" x="24" y="168" font-size="13">خروجی =</text>
+  <text class="s-t2" x="24" y="186" font-size="13">نتیجه</text>
+  <text class="s-t2" x="24" y="304" font-size="13">خروجی =</text>
+  <text class="s-t2" x="24" y="322" font-size="13">خود شیء</text>
+
+  <rect class="s-acc" x="60" y="60" width="280" height="90" rx="13"/>
+  <text class="s-acc-t" x="200" y="95" text-anchor="middle" font-size="17">run / with</text>
+  <text class="s-t" x="200" y="122" text-anchor="middle" font-size="12.5">بلوک را روی this اجرا کن، نتیجه را بده</text>
+
+  <rect class="s-ok" x="425" y="60" width="280" height="90" rx="13"/>
+  <text class="s-tok" x="565" y="95" text-anchor="middle" font-size="17">let</text>
+  <text class="s-t" x="565" y="122" text-anchor="middle" font-size="12.5">it را بگیر، مقدار جدید بساز و بده</text>
+
+  <rect class="s-box" x="60" y="212" width="280" height="90" rx="13"/>
+  <text class="s-tc" x="200" y="247" text-anchor="middle" font-size="17">apply</text>
+  <text class="s-t" x="200" y="274" text-anchor="middle" font-size="12.5">this را پیکربندی کن و خودش را بده</text>
+
+  <rect class="s-chip" x="425" y="212" width="280" height="90" rx="13"/>
+  <text class="s-tc" x="565" y="247" text-anchor="middle" font-size="17">also</text>
+  <text class="s-t" x="565" y="274" text-anchor="middle" font-size="12.5">it را ببین، کار جانبی بکن، خودش را بده</text>
+</svg>
+<figcaption><b>شکل ۲ — چهارخانه‌ی اسکوپ فانکشن‌ها:</b> تنها دو محور وجود دارد: نحوه‌ی دسترسی به شیء (this یا it) و نوع خروجی (نتیجه یا خود شیء). با حفظ همین دو محور، دیگر هیچ‌وقت پنج تابع با هم قاطی نمی‌شوند.</figcaption>
+</figure>
+
+<div class="kl-box">
+<span class="kl-h">یک قاعده‌ی حفظ‌کردنی</span>
+اگر می‌خواهید <strong>شیء را بدهید</strong> → <code>apply</code> (پیکربندی) یا <code>also</code> (کار جانبی).<br>
+اگر می‌خواهید <strong>نتیجه را بدهید</strong> → <code>let</code>، <code>run</code> یا <code>with</code>.<br>
+اگر با <strong>it</strong> راحت‌ترید → <code>let</code> یا <code>also</code>. اگر می‌خواهید <strong>this</strong> باشد → <code>run</code>، <code>with</code> یا <code>apply</code>.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>let — کار با مقدار nullable و تبدیل</h2>
+
+<p>
+<code>let</code> شیء را به‌عنوان <code>it</code> در اختیار بلوک می‌گذارد و <strong>نتیجه‌ی بلوک</strong> را
+برمی‌گرداند. پرکاربردترین نقش آن، کار کردن با مقادیر nullable و «تبدیل» یک مقدار به مقدار دیگر است.
+</p>
+
+<pre class="kl-code"><code>val name: String? = user.name
+
+// ۱) کار ایمن با مقدار nullable: بلوک فقط وقتی null نباشد اجرا می‌شود
+name?.let {
+    println("طول نام: ${it.length}")
+}
+
+// ۲) تبدیل و مقدار پیش‌فرض با Elvis
+val upper = name?.let { it.trim().uppercase() } ?: "ناشناس"
+
+// ۳) محدود کردن دامنه‌ی متغیر موقت
+val firstEven = listOf(3, 5, 8, 9)
+    .firstOrNull { it % 2 == 0 }
+    .let { it?.times(10) ?: 0 }
+
+// ۴) زنجیره‌ی null-safe روی شیء تودرتو
+val city = order?.customer?.address?.let { it.city } ?: "نامشخص"</code></pre>
+
+<h3>۳.۱ چرا <code>it</code> و نه <code>this</code>؟</h3>
+
+<p>
+در <code>let</code> عمداً از <code>it</code> استفاده شده تا اگر داخل بلوک به <code>this</code> اشاره
+کردید، منظورتان <em>شیء بیرونی</em> باشد، نه شیء دامنه. مثلاً در یک متد کلاس، داخل
+<code>someValue?.let { }</code> نوشتن <code>this</code> به کلاس اشاره می‌کند و این دقیقاً همان چیزی است
+که معمولاً می‌خواهیم.
+</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">دام: نام‌گذاری صریح <code>it</code> برای خوانایی</span>
+اگر بلوک <code>let</code> طولانی است یا <code>it</code> تودرتو شده، نام‌گذاری صریح آرگومان
+(<code>let { value -> ... }</code>) جلوی سردرگمی را می‌گیرد. نام‌گذاری صریح فقط برای خوانایی است و
+هیچ هزینه‌ی اجرایی ندارد.
+</div>
+
+<pre class="kl-code"><code>// وقتی it مبهم است، خودمان نام می‌دهیم
+user?.let { u ->
+    settings?.let { s ->
+        println("${u.name} → ${s.theme}")
+    }
+}</code></pre>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>run و with — اجرای بلوک و بازگشت نتیجه</h2>
+
+<p>
+هر دو تابع شیء را به‌عنوان <code>this</code> در اختیار می‌گذارند و <strong>نتیجه‌ی بلوک</strong> را
+برمی‌گردانند. تفاوت اصلی‌شان در «نحوه‌ی فراخوانی» است:
+</p>
+
+<pre class="kl-code"><code>// run به‌صورت تابع الحاقی روی شیء صدا زده می‌شود (مناسب زنجیره و null-safety)
+val greeting = user.run {
+    "سلام $name، ${age} ساله"
+}
+
+// with به‌صورت تابع معمولی و با شیء به‌عنوان آرگومان (مناسب شیء آماده و غیرnullable)
+val info = with(user) {
+    "$name ($age) از $city"
+}</code></pre>
+
+<h3>۴.۱ <code>run</code> بدون گیرنده</h3>
+
+<p>
+<code>run</code> یک نسخه‌ی بدون گیرنده هم دارد که دقیقاً مثل یک بلوک اجرایی عمل می‌کند و نتیجه‌ی
+آخرین عبارت را برمی‌گرداند. برای گروه‌بندی محاسبات موقت و نگه‌داشتن متغیرها در یک دامنه‌ی کوچک عالی است.
+</p>
+
+<pre class="kl-code"><code>val config = run {
+    val a = loadA()   // این دو متغیر فقط داخل این بلوک زنده‌اند
+    val b = loadB()
+    a + b             // نتیجه‌ی بلوک
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>موقعیت</th><th><code>let</code></th><th><code>run</code></th><th><code>with</code></th></tr>
+  <tr><td>شیء null می‌تواند باشد</td><td><span class="kl-ok">با <code>?.</code> عالی</span></td><td><span class="kl-ok">با <code>?.</code> عالی</span></td><td><span class="kl-no">مناسب نیست</span></td></tr>
+  <tr><td>زنجیره‌سازی روی یک شیء</td><td>بله</td><td>بله</td><td>خیر</td></tr>
+  <tr><td>شیء از قبل آماده و مطمئن است</td><td>نتیجه را بده</td><td>نتیجه را بده</td><td><span class="kl-ok">خواندنی‌ترین</span></td></tr>
+  <tr><td>دسترسی به شیء</td><td><code>it</code></td><td><code>this</code></td><td><code>this</code></td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چه زمانی <code>with</code> را به <code>run</code> ترجیح دهیم؟</span>
+وقتی شیء <strong>غیرnullable</strong> است و می‌خواهیم چند عملیات را روی آن انجام دهیم،
+<code>with</code> خواناتر است چون «شیء» را در ابتدای بلوک صریح می‌کند:
+<code>with(bitmap) { compress(...); recycle() }</code>. اگر احتمال null بودن هست یا می‌خواهید
+زنجیره ادامه پیدا کند، <code>run</code> انتخاب بهتری است.
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>apply — پیکربندی شیء</h2>
+
+<p>
+<code>apply</code> شیء را به‌عنوان <code>this</code> می‌دهد و در پایان <strong>خود شیء</strong> را
+برمی‌گرداند. این ترکیب، آن را به ابزار اصلی «ساختن و آماده‌سازی» تبدیل می‌کند: داخل بلوک
+پیکربندی می‌کنید و بیرون، همان شیء آماده را تحویل می‌گیرید.
+</p>
+
+<pre class="kl-code"><code>val user = User().apply {
+    name = "Gull"
+    age = 19
+    city = "Gujrat"
+}
+// user یک نمونه‌ی کامل و پیکربندی‌شده است
+
+val intent = Intent(context, DetailActivity::class.java).apply {
+    putExtra("id", 42)
+    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+}
+
+val client = OkHttpClient.Builder().apply {
+    connectTimeout(30, TimeUnit.SECONDS)
+    readTimeout(30, TimeUnit.SECONDS)
+}.build()</code></pre>
+
+<h3>۵.۱ الگوی «ساخت و تنظیم» در یک عبارت</h3>
+
+<p>
+به خط آخر مثال بالا دقت کنید: یک <code>Builder</code> ساخته می‌شود، داخل <code>apply</code>
+پیکربندی می‌شود و چون <code>apply</code> خود builder را برمی‌گرداند، بلافاصله
+<code>.build()</code> صدا زده می‌شود. این زنجیره یکی از تمیزترین الگوهای استفاده از
+<code>apply</code> در کد واقعی است.
+</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">دام: خروجی <code>apply</code> همیشه خود شیء است</span>
+اگر داخل <code>apply</code> محاسبه‌ای انجام دهید و انتظار داشته باشید نتیجه‌اش برگردد، اشتباه
+کرده‌اید؛ <code>apply</code> همیشه شیء را برمی‌گرداند و مقدار بلوک را دور می‌ریزد. برای برگرداندن
+نتیجه از <code>run</code> یا <code>let</code> استفاده کنید.
+</div>
+
+<pre class="kl-code"><code>// ✗ نتیجه‌ی محاسبه گم می‌شود: apply همیشه user را برمی‌گرداند
+val result = user.apply { age + 1 }   // result همان user است، نه 20
+
+// ✓ اگر نتیجه را می‌خواهید از run استفاده کنید
+val nextAge = user.run { age + 1 }    // nextAge = 20</code></pre>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>also — عوارض جانبی و زنجیره‌سازی</h2>
+
+<p>
+<code>also</code> شیء را به‌عنوان <code>it</code> می‌دهد و <strong>خود شیء</strong> را برمی‌گرداند.
+تفاوتش با <code>apply</code> در دو چیز است: آن‌که در <code>also</code> داخل بلوک
+<code>this</code> عوض نمی‌شود و شیء با <code>it</code> در دسترس است. به همین دلیل
+<code>also</code> برای «کارهای جانبی» مناسب است: لاگ‌گیری، اعتبارسنجی، اطلاع‌رسانی — بدون اینکه
+مقدار اصلی دست بخورد.
+</p>
+
+<pre class="kl-code"><code>// زنجیره‌سازی: شیء دست‌نخورده رد می‌شود و در مسیر لاگ می‌گیریم
+val numbers = mutableListOf(1, 2, 3)
+    .also { println("قبل: $it") }
+    .apply { add(4) }
+    .also { println("بعد: $it") }
+// بعد: [1, 2, 3, 4]
+
+// اعتبارسنجی بدون تغییر مقدار بازگشتی
+fun save(user: User): User = user.also {
+    require(it.age >= 18) { "سن باید بزرگ‌تر از ۱۸ باشد" }
+}</code></pre>
+
+<h3>۶.۱ قاعده‌ی نام‌گذاری: apply برای «تغییر»، also برای «نگاه»</h3>
+
+<p>
+اصطلاحاً می‌گویند: <code>apply</code> برای چیزی است که بیرون به داخل اثر می‌گذارد (پیکربندی)،
+و <code>also</code> برای چیزی است که داخل به بیرون اثر می‌گذارد (لاگ، اعتبارسنجی):
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مقایسه</th><th><code>apply</code></th><th><code>also</code></th></tr>
+  <tr><td>دسترسی به شیء</td><td><code>this</code></td><td><code>it</code></td></tr>
+  <tr><td>خروجی</td><td>خود شیء</td><td>خود شیء</td></tr>
+  <tr><td>نیت اصلی</td><td>پیکربندی و تغییر شیء</td><td>تأثیر جانبی بدون تغییر شیء</td></tr>
+  <tr><td>مثال</td><td><code>intent.apply { putExtra(...) }</code></td><td><code>user.also { log(it) }</code></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>انتخاب درست: این در برابر it و درخت تصمیم</h2>
+
+<p>
+بزرگ‌ترین منبع سردرگمی، تفاوت <strong>this</strong> و <strong>it</strong> است. در توابعی که از
+<code>this</code> استفاده می‌کنند (<code>run</code>، <code>with</code>، <code>apply</code>) لازم نیست
+نام شیء را بنویسید و اعضای آن مستقیم در دسترس‌اند. در توابعی که از <code>it</code> استفاده می‌کنند
+(<code>let</code>، <code>also</code>) شیء یک آرگومان عادی است و می‌توان نام دلخواه روی آن گذاشت.
+</p>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 290" role="img" aria-label="تفاوت this و it">
+  <rect class="s-acc" x="20" y="30" width="350" height="100" rx="13"/>
+  <text class="s-acc-t" x="195" y="60" text-anchor="middle" font-size="16">with(this)</text>
+  <text class="s-t" x="195" y="88" text-anchor="middle" font-size="12.5">عضوها مستقیم صدا زده می‌شوند: name، age</text>
+  <text class="s-t2" x="195" y="112" text-anchor="middle" font-size="12">this.name === name</text>
+
+  <rect class="s-ok" x="400" y="30" width="350" height="100" rx="13"/>
+  <text class="s-tok" x="575" y="60" text-anchor="middle" font-size="16">let(it)</text>
+  <text class="s-t" x="575" y="88" text-anchor="middle" font-size="12.5">شیء یک آرگومان است: it.name یا نام دلخواه</text>
+  <text class="s-t2" x="575" y="112" text-anchor="middle" font-size="12">let { u -> u.name }</text>
+
+  <rect class="s-warn" x="20" y="170" width="730" height="94" rx="13"/>
+  <text class="s-t" x="40" y="200" font-size="13.5">خطر در تودرتویی: با دو «this» پشت‌سرهم، «this» به نزدیک‌ترین گیرنده اشاره می‌کند.</text>
+  <text class="s-t2" x="40" y="226" font-size="12.5">راه‌حل: یا از let/also (it) استفاده کنید، یا با برچسب صریح: this@outer</text>
+  <text class="s-t2" x="40" y="250" font-size="12.5">user.apply outer@{ settings.apply { this@outer.name = "…" } }</text>
+</svg>
+<figcaption><b>شکل ۳ — this یا it:</b> توابع «this-محور» نوشتن را کوتاه می‌کنند و توابع «it-محور» صراحت را حفظ می‌کنند. در تودرتویی، صراحت (it) یا برچسب‌دهی (this@label) جلوی خطا را می‌گیرد.</figcaption>
+</figure>
+
+<h3>۷.۱ درخت تصمیم</h3>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 380" role="img" aria-label="درخت تصمیم انتخاب اسکوپ فانکشن">
+  <defs>
+    <marker id="m-s7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/>
+    </marker>
+  </defs>
+
+  <rect class="s-chip" x="270" y="16" width="230" height="52" rx="12"/>
+  <text class="s-tc" x="385" y="48" text-anchor="middle" font-size="14">چه چیزی باید برگردد؟</text>
+
+  <path class="s-arr" d="M 300 68 L 160 108" marker-end="url(#m-s7)"/>
+  <path class="s-arr" d="M 470 68 L 610 108" marker-end="url(#m-s7)"/>
+  <text class="s-t2" x="176" y="92" font-size="12.5">خود شیء</text>
+  <text class="s-t2" x="596" y="92" font-size="12.5">نتیجه‌ی محاسبه</text>
+
+  <rect class="s-box" x="40" y="112" width="230" height="50" rx="11"/>
+  <text class="s-t" x="155" y="143" text-anchor="middle" font-size="13">آیا شیء را تغییر می‌دهید؟</text>
+  <rect class="s-acc" x="500" y="112" width="230" height="50" rx="11"/>
+  <text class="s-t" x="615" y="143" text-anchor="middle" font-size="13">null ممکن است؟</text>
+
+  <path class="s-arr" d="M 120 162 L 120 198" marker-end="url(#m-s7)"/>
+  <path class="s-arr" d="M 195 162 L 195 198" marker-end="url(#m-s7)"/>
+  <path class="s-arr" d="M 555 162 L 555 198" marker-end="url(#m-s7)"/>
+  <path class="s-arr" d="M 630 162 L 630 198" marker-end="url(#m-s7)"/>
+
+  <rect class="s-ok" x="30" y="202" width="180" height="52" rx="11"/>
+  <text class="s-tok" x="120" y="234" text-anchor="middle" font-size="15">apply</text>
+  <rect class="s-chip" x="215" y="202" width="180" height="52" rx="11"/>
+  <text class="s-tc" x="305" y="234" text-anchor="middle" font-size="15">also</text>
+  <rect class="s-acc" x="460" y="202" width="180" height="52" rx="11"/>
+  <text class="s-acc-t" x="550" y="234" text-anchor="middle" font-size="15">let</text>
+  <rect class="s-box" x="645" y="202" width="110" height="52" rx="11"/>
+  <text class="s-tc" x="700" y="234" text-anchor="middle" font-size="13">run / with</text>
+
+  <text class="s-t2" x="120" y="278" text-anchor="middle" font-size="11.5">پیکربندی کن، خودش را بده</text>
+  <text class="s-t2" x="305" y="278" text-anchor="middle" font-size="11.5">کار جانبی، خودش را بده</text>
+  <text class="s-t2" x="550" y="278" text-anchor="middle" font-size="11.5">it + نتیجه (Elvis)</text>
+  <text class="s-t2" x="700" y="278" text-anchor="middle" font-size="11.5">this + نتیجه</text>
+
+  <rect class="s-warn" x="60" y="306" width="650" height="60" rx="12"/>
+  <text class="s-t" x="385" y="332" text-anchor="middle" font-size="12.5">اگر شک دارید: «with» برای چند عملیات روی شیء آماده، و «let» برای مقادیر nullable —</text>
+  <text class="s-t" x="385" y="354" text-anchor="middle" font-size="12.5">این دو، ۹۰٪ موارد روزمره را پوشش می‌دهند.</text>
+</svg>
+<figcaption><b>شکل ۴ — درخت تصمیم:</b> اول بپرسید «چه‌چیزی باید برگردد؟»، بعد «شیء nullable است؟» و در نهایت «آیا دارم شیء را تغییر می‌دهم؟». ترتیب همین سه سؤال، شما را به تابع درست می‌رساند.</figcaption>
+</figure>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>نکات ریز، دام‌ها و بهترین شیوه‌ها</h2>
+
+<p>
+اینجا همان «ریز جزئیاتی» است که تفاوت بین کد کارکننده و کد حرفه‌ای را می‌سازد.
+</p>
+
+<h3>۸.۱ همه‌ی اسکوپ فانکشن‌ها <code>inline</code> هستند</h3>
+
+<p>
+هر پنج تابع در کتابخانه‌ی استاندارد به‌صورت <code>inline</code> تعریف شده‌اند؛ یعنی بدنه‌ی lambda
+در زمان کامپایل داخل کد شما کپی می‌شود. نتیجه: <strong>صفر شیء lambda و صفر سربار فراخوانی</strong>
+در زمان اجرا. پس نگرانی از «هزینه‌ی پرفورمنس اسکوپ فانکشن» بی‌اساس است.
+</p>
+
+<h3>۸.۲ بازگشت غیرمحلی (non-local return)</h3>
+
+<p>
+چون توابع <code>inline</code> هستند، یک <code>return</code> ساده داخل بلوک، از <em>تابع بیرونی</em>
+برمی‌گردد، نه فقط از بلوک. این می‌تواند نجات‌دهنده باشد یا دام:
+</p>
+
+<pre class="kl-code"><code>fun firstNegative(list: List&lt;Int&gt;): Int? {
+    list.forEach { number ->
+        // return از خود تابع firstNegative برمی‌گرداند (نه فقط از let)
+        number.takeIf { it &lt; 0 }?.let { return it }
+    }
+    return null
+}
+
+// اگر می‌خواهید فقط از بلوک برگردید، برچسب بگذارید:
+val value = listOf(1, 2, 3).let block@{
+    if (it.isEmpty()) return@block 0
+    it.sum()
+}</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">دام: <code>return</code> بدون برچسب، از تابع بیرونی برمی‌گردد</span>
+اگر عمدی نبوده، این رفتار می‌تواند منطق کد را بشکند. برای بازگشت از خود بلوک از برچسب
+(<code>return@let</code>، <code>return@apply</code> و…) استفاده کنید. دقت کنید <code>break</code>
+و <code>continue</code> داخل این بلوک‌ها مجاز نیستند (چون حلقه نیستند) و فقط با برچسب‌های حلقه
+ممکن‌اند.
+</div>
+
+<h3>۸.۳ هم‌نامی در تودرتویی</h3>
+
+<pre class="kl-code"><code>// این name به نزدیک‌ترین گیرنده (settings) اشاره می‌کند، نه user
+user.apply {
+    settings.apply {
+        name = "dark"          // این settings.name است
+        this@apply.name = "A"  // برای user باید برچسب بدهیم
+    }
+}
+
+// راه روشن‌تر: گیرنده‌ی بیرونی را برچسب بزنید
+user.apply outer@{
+    settings.apply {
+        this@outer.name = "A"
+    }
+}</code></pre>
+
+<p>
+<code>this@apply</code> به نزدیک‌ترین <code>apply</code> اشاره دارد. اگر چند <code>apply</code>
+تودرتو دارید، برچسب صریح (<code>outer@</code>) تنها راه قابل‌اعتماد برای دسترسی به گیرنده‌ی
+بیرونی است. بهترین راه‌حل، اما پرهیز از تودرتویی بی‌مورد است.
+</p>
+
+<h3>۸.۴ اسکوپ فانکشن با <code>takeIf</code> و <code>takeUnless</code></h3>
+
+<p>
+<code>takeIf</code> اگر شرط برقرار باشد خود شیء را برمی‌گرداند، وگرنه <code>null</code>.
+ترکیب آن با <code>let</code> یا <code>also</code> بسیار گویا می‌شود:
+</p>
+
+<pre class="kl-code"><code>val validEmail = input
+    .trim()
+    .takeIf { it.contains("@") }
+    ?.lowercase()
+    ?: error("ایمیل نامعتبر است")
+
+// زنجیره‌ی گویا: «اگر کاربر فعال بود، لاگ بزن و بفرست»
+user.takeIf { it.isActive }
+    ?.also { log("فعال شد") }
+    ?.let { notify(it) }</code></pre>
+
+<h3>۸.۵ بهترین شیوه‌ها</h3>
+
+<ol class="kl-check">
+  <li>هر بلوک اسکوپ فانکشن باید یک «نیت» روشن داشته باشد؛ پخش‌وپلا کردن بلوک‌های طولانی، خوانایی را کم می‌کند.</li>
+  <li>برای پیکربندی از <code>apply</code>، برای کارهای جانبی از <code>also</code> استفاده کنید — نیت را با تابع هم‌راستا نگه دارید.</li>
+  <li>از تودرتویی بیش از دو سطح خودداری کنید؛ اگر ناچار شدید، گیرنده‌ی بیرونی را برچسب بزنید.</li>
+  <li>وقتی <code>it</code> گنگ می‌شود، نام‌گذاری صریح بگذارید: <code>let { user -> ... }</code>.</li>
+  <li>از <code>also</code> برای تغییر وضعیت شیء استفاده نکنید؛ آن کار <code>apply</code> است.</li>
+  <li>به‌جای زنجیره‌ی طولانی <code>let</code>، گاهی یک <code>if</code> ساده یا متغیر محلی خواناتر است.</li>
+  <li>روی مقدار non-null و آماده، <code>with</code> معمولاً از <code>run</code> خواناتر است.</li>
+  <li>هیچ‌وقت <code>return</code> غیرمحلی را ناخواسته در بلوک نگذارید؛ نیت را با برچسب صریح کنید.</li>
+</ol>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>اسکوپ فانکشن‌ها در کد واقعی (اندروید و Compose)</h2>
+
+<p>
+اکنون کاربردهای واقعی را ببینیم؛ جاهایی که این پنج تابع هر روز در کد اندروید ظاهر می‌شوند.
+</p>
+
+<h3>۹.۱ مدیریت مقدار nullable در Compose</h3>
+
+<pre class="kl-code"><code>@Composable
+fun Avatar(user: User?) {
+    user?.let {
+        Image(
+            painter = rememberAsyncImagePainter(it.avatar),
+            contentDescription = it.name,
+            modifier = Modifier.clip(CircleShape),
+        )
+    }
+}</code></pre>
+
+<h3>۹.۲ کار امن با فایل و منبع</h3>
+
+<pre class="kl-code"><code>fun readConfig(path: String): String = File(path).let { file ->
+    require(file.exists()) { "فایل پیدا نشد: $path" }
+    file.readText()
+}
+
+// پایان دادن به دامنه‌ی منبع به‌شکل گویا
+val text = StringBuilder().apply {
+    append("عنوان")
+    append("\n")
+    append("متن")
+}.toString()</code></pre>
+
+<h3>۹.۳ به‌روزرسانی اتمی وضعیت ViewModel</h3>
+
+<pre class="kl-code"><code>data class UiState(
+    val loading: Boolean = false,
+    val items: List&lt;Item&gt; = emptyList(),
+)
+
+private val _state = MutableStateFlow(UiState())
+val state: StateFlow&lt;UiState&gt; = _state.asStateFlow()
+
+fun addItems(newItems: List&lt;Item&gt;) {
+    _state.update { current ->
+        current.copy(items = current.items + newItems, loading = false)
+    }
+}
+
+// نسخه‌ی گویا با run برای بازگشت نتیجه‌ی محاسبه
+fun total(): Int = state.value.run { items.sumOf { it.price } }</code></pre>
+
+<h3>۹.۴ اعتبارسنجی و لاگ در زنجیره‌ی پردازش</h3>
+
+<pre class="kl-code"><code>fun process(raw: String): Order =
+    raw.trim()
+        .takeIf { it.isNotEmpty() }
+        ?.let(::parseOrder)
+        ?.also { log("سفارش خوانده شد: ${it.id}") }
+        ?.takeIf { it.isValid() }
+        ?.apply { status = Status.READY }
+        ?: throw IllegalArgumentException("سفارش نامعتبر")</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">الگوهای بد (Anti-patterns)</span>
+<strong>۱)</strong> استفاده از <code>let</code> برای پنهان‌کردن یک شرط ساده به‌جای <code>if</code>.<br>
+<strong>۲)</strong> زنجیره‌ی چهارپنج‌تایی از <code>let/also/apply</code> که هیچ‌کس نمی‌تواند سریع بخواند.<br>
+<strong>۳)</strong> تغییر وضعیت شیء با <code>also</code> که نیت را گمراه می‌کند.<br>
+<strong>۴)</strong> <code>apply</code> کردن روی شیء فقط برای اینکه یک‌بار <code>return</code> غیرمحلی بزنید.<br>
+<strong>۵)</strong> تکرار <code>?.let { }</code> به‌جای استخراج یک متغیر و یک <code>if</code> تمیز.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>جمع‌بندی، چک‌لیست و منابع</h2>
+
+<p>
+اسکوپ فانکشن‌ها جادو نیستند؛ فقط دو ایده را ترکیب می‌کنند: «شیء را با <code>this</code> یا
+<code>it</code> در دسترس بگذار» و «خود شیء یا نتیجه‌ی بلوک را برگردان». اگر همین دو محور را در ذهن
+نگه دارید، انتخاب بین پنج تابع به یک تصمیم چندثانیه‌ای تبدیل می‌شود.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>می‌خواهید…</th><th>انتخاب</th></tr>
+  <tr><td>روی مقدار nullable کار کنید و نتیجه بگیرید</td><td><strong>let</strong></td></tr>
+  <tr><td>شیء را پیکربندی کنید و همان شیء را بگیرید</td><td><strong>apply</strong></td></tr>
+  <tr><td>کار جانبی (لاگ/اعتبارسنجی) کنید و شیء دست‌نخورده رد شود</td><td><strong>also</strong></td></tr>
+  <tr><td>چند عملیات روی شیء آماده انجام دهید و نتیجه بگیرید</td><td><strong>with</strong></td></tr>
+  <tr><td>بلوک را روی this اجرا کنید و نتیجه بگیرید (با امکان زنجیره)</td><td><strong>run</strong></td></tr>
+</table>
+</div>
+
+<h3>۱۰.۱ چک‌لیست نهایی</h3>
+
+<ol class="kl-check">
+  <li>نیت بلوک روشن است: پیکربندی (<code>apply</code>)، عارضه‌ی جانبی (<code>also</code>)، یا محاسبه (<code>let/run/with</code>).</li>
+  <li>خروجی موردنیاز را می‌دانم: خود شیء یا نتیجه‌ی بلوک.</li>
+  <li>در تودرتویی، از <code>it</code> یا برچسب صریح <code>this@label</code> استفاده کرده‌ام.</li>
+  <li>هیچ <code>return</code> غیرمحلی ناخواسته‌ای وجود ندارد.</li>
+  <li><code>it</code>های گنگ را با نام صریح جایگزین کرده‌ام.</li>
+  <li>از زنجیره‌های طولانی و پرتکرار پرهیز کرده‌ام.</li>
+  <li>روی شیء غیرnullable و آماده، <code>with</code> را به‌جای <code>run</code> در نظر گرفته‌ام.</li>
+  <li>کد پس از حذف اسکوپ فانکشن، واقعاً کوتاه‌تر یا روشن‌تر می‌شود (نه فقط متفاوت).</li>
+</ol>
+
+<h3>۱۰.۲ منابع برای ادامه</h3>
+
+<ul class="kl-sources">
+  <li><a href="https://kotlinlang.org/docs/scope-functions.html" target="_blank" rel="noopener">Kotlin — Scope functions (مستندات رسمی)</a></li>
+  <li><a href="https://kotlinlang.org/docs/inline-functions.html" target="_blank" rel="noopener">Kotlin — Inline functions</a></li>
+  <li><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/let.html" target="_blank" rel="noopener">kotlin.let</a> · <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/run.html" target="_blank" rel="noopener">kotlin.run</a> · <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/with.html" target="_blank" rel="noopener">kotlin.with</a></li>
+  <li><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/apply.html" target="_blank" rel="noopener">kotlin.apply</a> · <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/also.html" target="_blank" rel="noopener">kotlin.also</a></li>
+  <li><a href="https://kotlinlang.org/docs/idioms.html" target="_blank" rel="noopener">Kotlin — Idioms (الگوهای رایج)</a></li>
+</ul>
+
+<div class="kl-box">
+<span class="kl-h">یک جمله‌ی خلاصه</span>
+اگر فقط دو چیز از این مقاله به یادتان بماند، همین‌ها کافی است:
+<strong>apply</strong> شیء را می‌سازد و خودش را می‌دهد، و <strong>let</strong> مقدار nullable را
+ایمن می‌کند و نتیجه‌اش را می‌دهد. بقیه، واریانت‌هایی از همین دو ایده‌اند.
+</div>
+</section>
+        </div>
+
+        <!-- End of Article & Author Box -->
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                توسعه‌دهنده و معمار اپلیکیشن‌های اندروید و سیستم‌های همزمان در کاتلین. علاقه‌مند به مهندسی نرم‌افزار تمیز، عملکرد بالا و اشتراک دانش روز دنیای تکنولوژی.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <!-- Sticky Sidebar (Desktop) -->
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۱۰ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">اسکوپ فانکشن چیست و چه دردی را درمان می‌کند؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">پنج اسکوپ فانکشن در یک نگاه</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">let — کار با مقدار nullable و تبدیل</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">run و with — اجرای بلوک و بازگشت نتیجه</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">apply — پیکربندی شیء</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">also — عوارض جانبی و زنجیره‌سازی</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">انتخاب درست: این در برابر it و درخت تصمیم</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">نکات ریز، دام‌ها و بهترین شیوه‌ها</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">اسکوپ فانکشن‌ها در کد واقعی (اندروید و Compose)</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">جمع‌بندی، چک‌لیست و منابع</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s10" class="btn-action-block" style="text-align:center;">
+              <span>چک‌لیست و منابع سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>انتشار این راهنما به‌منظور ارتقای دانش مهندسی و جامعه توسعه‌دهندگان کاتلین در دسترس قرار گرفته است.</p>
+  </footer>
+
+  <!-- Floating Action Buttons -->
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <!-- Mobile TOC Drawer -->
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">اسکوپ فانکشن چیست و چه دردی را درمان می‌کند؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">پنج اسکوپ فانکشن در یک نگاه</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">let — کار با مقدار nullable و تبدیل</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">run و with — اجرای بلوک و بازگشت نتیجه</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">apply — پیکربندی شیء</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">also — عوارض جانبی و زنجیره‌سازی</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">انتخاب درست: این در برابر it و درخت تصمیم</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">نکات ریز، دام‌ها و بهترین شیوه‌ها</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">اسکوپ فانکشن‌ها در کد واقعی (اندروید و Compose)</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">جمع‌بندی، چک‌لیست و منابع</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+  
+
+  
+</body>
+</html>

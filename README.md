@@ -15,6 +15,7 @@
 | ۳ | بهینه‌سازی کارایی و مدیریت حافظه در اندروید | [`articles/android-performance-memory.html`](articles/android-performance-memory.html) | ~۲۲ دقیقه |
 | ۴ | تزریق وابستگی در کاتلین: Hilt در برابر Koin | [`articles/dependency-injection-hilt-koin.html`](articles/dependency-injection-hilt-koin.html) | ~۲۰ دقیقه |
 | ۵ | قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا | [`articles/naming-conventions.html`](articles/naming-conventions.html) | ~۲۵ دقیقه |
+| ۶ | اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also | [`articles/scope-functions.html`](articles/scope-functions.html) | ~۳۰ دقیقه |
 
 ## فهرست پروژه‌ها
 
@@ -37,13 +38,14 @@ my-articales/
 ├── .nojekyll                     # جلوگیری از پردازش Jekyll در GitHub Pages
 ├── README.md
 │
-├── articles/                     # فهرست مقالات + ۵ مقاله
+├── articles/                     # فهرست مقالات + ۶ مقاله
 │   ├── index.html                # جستجو + فیلتر تگ + حالت خالی
 │   ├── concurrency-in-kotlin.html
 │   ├── clean-architecture-mvi-compose.html
 │   ├── android-performance-memory.html
 │   ├── dependency-injection-hilt-koin.html
-│   └── naming-conventions.html
+│   ├── naming-conventions.html
+│   └── scope-functions.html
 │
 ├── projects/                     # پروژه‌ها (۷ کارت + راهنمای افزودن در کامنت)
 │   └── index.html
