@@ -3,13 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا و کارآمد | مقالات من</title>
+  <title>قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا و کارآمد | حیدر فرحانی</title>
   <meta name="description" content="راهنمای جامع سبک‌های نام‌گذاری snake_case، camelCase، PascalCase، kebab-case و قواعد عمومی و خاص هر زبان؛ از PEP 8 و Google Java Style تا راهنمای کاتلین و Airbnb.">
   <meta name="keywords" content="نام‌گذاری, naming conventions, snake_case, camelCase, PascalCase, kebab-case, PEP 8, Clean Code, Coding Style, کد خوانا">
   <meta name="author" content="حیدر فرحانی">
   <meta property="og:title" content="قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا">
   <meta property="og:description" content="مقایسه‌ی کامل سبک‌های نام‌گذاری و قواعد هر زبان، همراه با مثال‌های عملی، جداول و درخت تصمیم.">
   <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/naming-conventions.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/naming-conventions.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="قواعد نام‌گذاری در برنامه‌نویسی">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="مبانی و کیفیت کد">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا">
+  <meta name="twitter:description" content="مقایسه‌ی کامل سبک‌های نام‌گذاری و قواعد هر زبان، همراه با مثال‌های عملی، جداول و درخت تصمیم.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
   <meta name="theme-color" content="#0F766E">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
   
@@ -23,6 +38,30 @@
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا و کارآمد",
+    "description": "مقایسه‌ی کامل سبک‌های نام‌گذاری و قواعد هر زبان، همراه با مثال‌های عملی، جداول و درخت تصمیم.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/naming-conventions.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/naming-conventions.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "naming conventions, snake_case, camelCase, PascalCase, kebab-case, PEP 8, Clean Code",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "قواعد نام‌گذاری در برنامه‌نویسی", "item": "https://haedarfarhani.github.io/My-Articles/articles/naming-conventions.html" }
+      ]
+    }
+  }
+  </script>
 </head>
 
 <body>
@@ -33,11 +72,11 @@
   <!-- Navigation Bar -->
   <header class="site-nav">
     <div class="nav-container">
-      <a href="../" class="brand-link" title="صفحه اصلی ناجی‌بلاگ">
+      <a href="../" class="brand-link" title="خانه">
         <div class="brand-badge">م</div>
         <div class="brand-details">
-          <span class="brand-title">مقالات من</span>
-          <span class="brand-subtitle">حیدر فرحانی</span>
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
         </div>
       </a>
 

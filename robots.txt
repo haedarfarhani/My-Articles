@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Keep the custom 404 page (client-side routing fallback) out of the index.
+Disallow: /404.html
+
+Sitemap: https://haedarfarhani.github.io/My-Articles/sitemap.xml

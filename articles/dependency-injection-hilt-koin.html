@@ -3,13 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>تزریق وابستگی در کاتلین: نبرد تن به تن Hilt و Koin در دنیای واقعی | مقالات من</title>
+  <title>تزریق وابستگی در کاتلین: نبرد تن به تن Hilt و Koin در دنیای واقعی | حیدر فرحانی</title>
   <meta name="description" content="مقایسه رویکرد زمان کامپایل (Dagger/Hilt) با Service Locator زمان اجرا (Koin)، مدیریت Scopeها در پروژه‌های چندماژوله، تست‌پذیری و جدول مقایسه‌ای پرفورمنس.">
   <meta name="keywords" content="Hilt, Koin, Dependency Injection, Dagger, Android, Kotlin, تزریق وابستگی, Multi-Module">
   <meta name="author" content="حیدر فرحانی">
   <meta property="og:title" content="تزریق وابستگی در کاتلین: Hilt در برابر Koin">
   <meta property="og:description" content="مقایسه جامع Hilt و Koin از معماری و پرفورمنس گرفته تا چندماژوله‌بودن و تست‌پذیری، همراه با کد و جدول.">
   <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/dependency-injection-hilt-koin.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/dependency-injection-hilt-koin.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="تزریق وابستگی در کاتلین: Hilt در برابر Koin">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="کاتلین و معماری">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="تزریق وابستگی در کاتلین: Hilt در برابر Koin">
+  <meta name="twitter:description" content="مقایسه جامع Hilt و Koin از معماری و پرفورمنس گرفته تا چندماژوله‌بودن و تست‌پذیری، همراه با کد و جدول.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
   <meta name="theme-color" content="#0F766E">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
   
@@ -23,6 +38,30 @@
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "تزریق وابستگی در کاتلین: نبرد تن به تن Hilt و Koin در دنیای واقعی",
+    "description": "مقایسه جامع Hilt و Koin از معماری و پرفورمنس گرفته تا چندماژوله‌بودن و تست‌پذیری، همراه با کد و جدول.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/dependency-injection-hilt-koin.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/dependency-injection-hilt-koin.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Hilt, Koin, Dependency Injection, Dagger, Android, Kotlin",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "تزریق وابستگی در کاتلین", "item": "https://haedarfarhani.github.io/My-Articles/articles/dependency-injection-hilt-koin.html" }
+      ]
+    }
+  }
+  </script>
 </head>
 
 <body>
@@ -33,11 +72,11 @@
   <!-- Navigation Bar -->
   <header class="site-nav">
     <div class="nav-container">
-      <a href="../" class="brand-link" title="صفحه اصلی ناجی‌بلاگ">
+      <a href="../" class="brand-link" title="خانه">
         <div class="brand-badge">م</div>
         <div class="brand-details">
-          <span class="brand-title">مقالات من</span>
-          <span class="brand-subtitle">حیدر فرحانی</span>
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
         </div>
       </a>
 

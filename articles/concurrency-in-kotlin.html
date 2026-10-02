@@ -3,13 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>همزمانی در کاتلین: از Thread تا Flow — راهنمای جامع و پیشرفته | ناجی‌بلاگ</title>
+  <title>همزمانی در کاتلین: از Thread تا Flow — راهنمای جامع و پیشرفته | حیدر فرحانی</title>
   <meta name="description" content="راهنمای جامع، کاربردی و پیشرفته درباره همزمانی در Kotlin: از مبانی Thread تا Coroutine، Structured Concurrency، Dispatcherها، Flow، StateFlow، Channel، Mutex و تست.">
   <meta name="keywords" content="Kotlin, Coroutines, Flow, StateFlow, Android, Concurrency, همزمانی, کاتلین, کوروتین">
   <meta name="author" content="حیدر فرحانی">
   <meta property="og:title" content="همزمانی در کاتلین: از Thread تا Flow — راهنمای جامع و پیشرفته">
   <meta property="og:description" content="راهنمای عمیق و کاربردی همزمانی در کاتلین همراه با دیاگرام‌های بصری، جداول مقایسه‌ای و نمونه‌های عملی.">
   <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/concurrency-in-kotlin.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/concurrency-in-kotlin.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="همزمانی در کاتلین: از Thread تا Flow">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="کاتلین و همزمانی">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="همزمانی در کاتلین: از Thread تا Flow — راهنمای جامع و پیشرفته">
+  <meta name="twitter:description" content="راهنمای عمیق و کاربردی همزمانی در کاتلین همراه با دیاگرام‌های بصری، جداول مقایسه‌ای و نمونه‌های عملی.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
   <meta name="theme-color" content="#0F766E">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
   
@@ -23,6 +38,30 @@
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "همزمانی در کاتلین: از Thread تا Flow — راهنمای جامع و پیشرفته",
+    "description": "راهنمای عمیق و کاربردی همزمانی در کاتلین همراه با دیاگرام‌های بصری، جداول مقایسه‌ای و نمونه‌های عملی.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/concurrency-in-kotlin.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/concurrency-in-kotlin.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Kotlin, Coroutines, Flow, StateFlow, Android, Concurrency",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "همزمانی در کاتلین", "item": "https://haedarfarhani.github.io/My-Articles/articles/concurrency-in-kotlin.html" }
+      ]
+    }
+  }
+  </script>
 </head>
 <body>
 
@@ -32,11 +71,11 @@
   <!-- Navigation Bar -->
   <header class="site-nav">
     <div class="nav-container">
-      <a href="../" class="brand-link" title="صفحه اصلی ناجی‌بلاگ">
+      <a href="../" class="brand-link" title="خانه">
         <div class="brand-badge">م</div>
         <div class="brand-details">
-          <span class="brand-title">مقالات من</span>
-          <span class="brand-subtitle">حیدر فرحانی</span>
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
         </div>
       </a>
 
