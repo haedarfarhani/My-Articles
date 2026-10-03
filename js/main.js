@@ -35,7 +35,7 @@
     onScroll();
   }
 
-  /* ---------- Mobile menu ---------- */
+  /* ---------- Mobile menu - Hamburger Menu ---------- */
   function initMobileMenu() {
     const toggle = document.getElementById('nav-toggle');
     const menu = document.getElementById('nav-menu');
@@ -44,12 +44,24 @@
     const close = () => {
       menu.classList.remove('open');
       toggle.setAttribute('aria-expanded', 'false');
+      // Restore body scroll
+      document.body.style.overflow = '';
+    };
+
+    const open = () => {
+      menu.classList.add('open');
+      toggle.setAttribute('aria-expanded', 'true');
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = 'hidden';
     };
 
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      const open = menu.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (menu.classList.contains('open')) {
+        close();
+      } else {
+        open();
+      }
     });
 
     document.addEventListener('click', (e) => {
@@ -103,7 +115,7 @@
     });
   }
 
-  /* ---------- Skill bars ---------- */
+  /* ---------- Skill bars - with IntersectionObserver ---------- */
   function initSkillBars() {
     const bars = document.querySelectorAll('.skill-fill[data-level]');
     if (!bars.length) return;
@@ -119,8 +131,29 @@
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.4, rootMargin: '0px 0px -50px 0px' });
     bars.forEach((bar) => io.observe(bar));
+  }
+
+  /* ---------- Lazy Loading Images ---------- */
+  function initLazyImages() {
+    const images = document.querySelectorAll('img[data-src], img[loading="lazy"]');
+    if (!images.length || !('IntersectionObserver' in window)) return;
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+          }
+          io.unobserve(img);
+        }
+      });
+    }, { rootMargin: '50px' });
+
+    images.forEach((img) => io.observe(img));
   }
 
   /* ---------- Year stamp ---------- */
@@ -139,6 +172,8 @@
     initActiveLink();
     initBackToTop();
     initYear();
+    initSkillBars();
+    initLazyImages();
   }
 
   if (document.readyState === 'loading') {
