@@ -21,7 +21,8 @@ body {
   transition: background-color var(--transition-normal), color var(--transition-normal);
   direction: rtl;
   text-align: right;
-  overflow-x: hidden;
+  /* clip به‌جای hidden تا position: sticky هدر و نوار کناری کار کند */
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

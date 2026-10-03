@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>مقالات — حیدر فرحانی</title>
   <meta name="description" content="فهرست کامل مقالات حیدر فرحانی درباره‌ی مهندسی نرم‌افزار: معماری، همزمانی در کاتلین، Jetpack Compose، پرفورمنس اندروید و کیفیت کد.">
   <meta name="author" content="حیدر فرحانی">
@@ -40,6 +40,7 @@
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/articles.css">
+  <link rel="stylesheet" href="../css/responsive.css">
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/articles.js"></script>
@@ -104,7 +105,7 @@
     </div>
   </header>
 
-  <!-- ================= Page hero ================= -->
+<!-- ================= Page hero ================= -->
   <section class="page-hero">
     <div class="page-breadcrumb">
       <a href="../">خانه</a>
@@ -113,215 +114,294 @@
     </div>
     <h1 class="page-title">فهرست <span class="gradient-text">مقالات</span></h1>
     <p class="page-description">
-      راهنماهای بلند و عمیق درباره‌ی مهندسی نرم‌افزار؛ از معماری و همزمانی تا کارایی و کیفیت کد.
-      جستجو و فیلترها کاملاً در مرورگر اجرا می‌شوند.
+      راهنماهای بلند و عمیق دربارهٔ مهندسی نرم‌افزار؛ از معماری و هم‌زمانی تا کارایی و کیفیت کد.
+      جستجو، فیلتر موضوع و مرتب‌سازی کاملاً در مرورگر اجرا می‌شوند.
     </p>
   </section>
 
-  <!-- ================= Search & filters ================= -->
-  <div class="controls-wrapper" id="articles-section">
-    <div class="search-box">
-      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="search-input" class="search-input" placeholder="جستجو در عناوین و موضوعات مقالات...">
+  <!-- ================= Quick stats ================= -->
+  <div class="posts-stats">
+    <div class="posts-stat">
+      <div class="posts-stat-icon" aria-hidden="true">📚</div>
+      <div class="posts-stat-text">
+        <span class="posts-stat-value">۷</span>
+        <span class="posts-stat-label">مقاله منتشرشده</span>
+      </div>
     </div>
-
-    <div class="tags-filter">
-      <button class="tag-btn active" data-filter="all">همه</button>
-      <button class="tag-btn" data-filter="kotlin">کاتلین و همزمانی</button>
-      <button class="tag-btn" data-filter="compose">اندروید و کامپوز</button>
-      <button class="tag-btn" data-filter="architecture">معماری نرم‌افزار</button>
-      <button class="tag-btn" data-filter="performance">پرفورمنس و حافظه</button>
-      <button class="tag-btn" data-filter="fundamentals">مبانی و کیفیت کد</button>
+    <div class="posts-stat">
+      <div class="posts-stat-icon" aria-hidden="true">🗂️</div>
+      <div class="posts-stat-text">
+        <span class="posts-stat-value">۵</span>
+        <span class="posts-stat-label">موضوع اصلی</span>
+      </div>
+    </div>
+    <div class="posts-stat">
+      <div class="posts-stat-icon" aria-hidden="true">⏱</div>
+      <div class="posts-stat-text">
+        <span class="posts-stat-value">۱۹۷</span>
+        <span class="posts-stat-label">دقیقه مطالعه</span>
+      </div>
+    </div>
+    <div class="posts-stat" id="stat-views-card">
+      <div class="posts-stat-icon" aria-hidden="true">👁</div>
+      <div class="posts-stat-text">
+        <span class="posts-stat-value" id="stat-views">···</span>
+        <span class="posts-stat-label">بازدید کل</span>
+      </div>
     </div>
   </div>
 
-  <!-- ================= Articles grid ================= -->
-  <main class="articles-container">      <div class="section-header">
-      <h2 class="section-title">مقالات منتشر شده</h2>
-      <span class="section-count" id="articles-count">۷ مقاله</span>
+  <!-- ================= Search & filters ================= -->
+  <div class="posts-toolbar" id="articles-toolbar">
+    <div class="posts-toolbar-row">
+      <div class="posts-search search-box">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" id="search-input" class="search-input" placeholder="جستجو در عنوان، خلاصه و برچسب‌ها..." autocomplete="off" aria-label="جستجو در مقالات">
+        <kbd class="search-kbd" aria-hidden="true">/</kbd>
+        <button type="button" class="search-clear" id="search-clear" aria-label="پاک کردن عبارت جستجو" hidden>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="posts-sort">
+        <label for="sort-select">مرتب‌سازی</label>
+        <select id="sort-select" class="sort-select">
+          <option value="newest">جدیدترین</option>
+          <option value="oldest">قدیمی‌ترین</option>
+          <option value="shortest">کوتاه‌ترین</option>
+        </select>
+      </div>
     </div>
 
-    <div class="articles-grid" id="articles-grid">
+    <div class="tags-filter" id="articles-filters" role="group" aria-label="فیلتر بر اساس موضوع">
+      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۷</span></button>
+      <button type="button" class="tag-btn" data-filter="kotlin" data-label="کاتلین و هم‌زمانی" aria-pressed="false">کاتلین و هم‌زمانی <span class="chip-count" data-count="kotlin">۴</span></button>
+      <button type="button" class="tag-btn" data-filter="android" data-label="اندروید و کامپوز" aria-pressed="false">اندروید و کامپوز <span class="chip-count" data-count="android">۴</span></button>
+      <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۳</span></button>
+      <button type="button" class="tag-btn" data-filter="performance" data-label="پرفورمنس و حافظه" aria-pressed="false">پرفورمنس و حافظه <span class="chip-count" data-count="performance">۱</span></button>
+      <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۲</span></button>
+    </div>
+  </div>
 
-      <a href="rxjava-rxandroid.html" class="article-card" data-tags="android kotlin&quot;>
-        <div class="card-top">
-          <div class="card-meta-row">
-            <span class="card-time">⏱ ~۴۵ دقیقه مطالعه</span>
-            <span class="card-views" data-pv="articles/rxjava-rxandroid.html">👁 —</span>
-            <span class="card-date">دی ۱۴۰۵</span>
+  <!-- ================= Results bar ================= -->
+  <div class="posts-results">
+    <h2 class="section-title">مقالات منتشرشده</h2>
+    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۷ مقاله</p>
+  </div>
+
+  <!-- ================= Articles grid ================= -->
+  <main class="posts-container">
+    <div class="posts-grid" id="articles-grid">
+
+      <article class="post-card" data-category="kotlin" data-tags="kotlin android" data-order="7" data-minutes="45" data-featured="true">
+        <a class="post-card-link" href="rxjava-rxandroid.html">
+          <div class="post-card-head">
+            <span class="post-cat">کاتلین و هم‌زمانی</span>
+            <span class="post-badge">جدیدترین</span>
           </div>
-          <h3 class="card-title">RxJava و RxAndroid: از Observable تا Flowable و Subject</h3>
-          <p class="card-excerpt">
+          <h3 class="post-title">RxJava و RxAndroid: از Observable تا Flowable و Subject</h3>
+          <p class="post-excerpt">
             راهنمای جامع RxJava و RxAndroid؛ Observable، Flowable، Single، Maybe، Completable، تمام Operatorهای کلیدی، Schedulers، Subjectها، مدیریت خطا، Cancellation و یکپارچه‌سازی اندرویدی و Compose.
           </p>
-        </div>
-        <div class="card-bottom">
-          <div class="card-tags">
-            <span class="card-tag">#RxJava</span>
-            <span class="card-tag">#RxAndroid</span>
-            <span class="card-tag">#Observable</span>
-            <span class="card-tag">#Android</span>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۴۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/rxjava-rxandroid.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
           </div>
-          <div class="card-arrow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#RxJava</li>
+              <li class="post-tag">#RxAndroid</li>
+              <li class="post-tag">#Observable</li>
+              <li class="post-tag">#Android</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
           </div>
-        </div>
-      </a>
+        </a>
+        <span class="post-fill" style="--fill:100%" aria-hidden="true"></span>
+      </article>
 
-      <a href="scope-functions.html" class="article-card" data-tags="kotlin fundamentals">
-        <div class="card-top">
-          <div class="card-meta-row">
-            <span class="card-time">⏱ ~۳۰ دقیقه مطالعه</span>
-            <span class="card-views" data-pv="articles/scope-functions.html">👁 —</span>
-            <span class="card-date">مهر ۱۴۰۵</span>
+      <article class="post-card" data-category="fundamentals" data-tags="kotlin fundamentals" data-order="6" data-minutes="30">
+        <a class="post-card-link" href="scope-functions.html">
+          <div class="post-card-head">
+            <span class="post-cat">مبانی و کیفیت کد</span>
           </div>
-          <h3 class="card-title">اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also</h3>
-          <p class="card-excerpt">
+          <h3 class="post-title">اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also</h3>
+          <p class="post-excerpt">
             تفاوت این (this) و it، کاربرد دقیق هر پنج تابع، جدول مقایسه‌ای، درخت تصمیم انتخاب، دام‌های پنهان مثل بازگشت غیرمحلی و تودرتویی، و نمونه‌کدهای واقعی اندروید و Compose.
           </p>
-        </div>
-        <div class="card-bottom">
-          <div class="card-tags">
-            <span class="card-tag">#Kotlin</span>
-            <span class="card-tag">#Scope_Functions</span>
-            <span class="card-tag">#Clean_Code</span>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۳۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/scope-functions.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
           </div>
-          <div class="card-arrow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Kotlin</li>
+              <li class="post-tag">#Scope_Functions</li>
+              <li class="post-tag">#Clean_Code</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
           </div>
-        </div>
-      </a>
+        </a>
+        <span class="post-fill" style="--fill:67%" aria-hidden="true"></span>
+      </article>
 
-      <a href="concurrency-in-kotlin.html" class="article-card" data-tags="kotlin architecture">
-        <div class="card-top">
-          <div class="card-meta-row">
-            <span class="card-time">⏱ ~۳۰ دقیقه مطالعه</span>
-            <span class="card-views" data-pv="articles/concurrency-in-kotlin.html">👁 —</span>
-            <span class="card-date">مهر ۱۴۰۵</span>
+      <article class="post-card" data-category="kotlin" data-tags="kotlin architecture" data-order="5" data-minutes="30">
+        <a class="post-card-link" href="concurrency-in-kotlin.html">
+          <div class="post-card-head">
+            <span class="post-cat">کاتلین و هم‌زمانی</span>
           </div>
-          <h3 class="card-title">همزمانی در کاتلین: از Thread تا Flow؛ راهنمای جامع و پیشرفته</h3>
-          <p class="card-excerpt">
+          <h3 class="post-title">هم‌زمانی در کاتلین: از Thread تا Flow؛ راهنمای جامع و پیشرفته</h3>
+          <p class="post-excerpt">
             چرا GlobalScope خطرناک است؟ یک async ناقص چگونه کل scope را لغو می‌کند؟ تحلیل عمیق Coroutineها، ماشین وضعیت، Flow، StateFlow، Channel، Mutex و تکنیک‌های پیشرفته تست همروندی.
           </p>
-        </div>
-        <div class="card-bottom">
-          <div class="card-tags">
-            <span class="card-tag">#Kotlin</span>
-            <span class="card-tag">#Coroutines</span>
-            <span class="card-tag">#Flow</span>
-            <span class="card-tag">#Structured_Concurrency</span>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۳۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/concurrency-in-kotlin.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
           </div>
-          <div class="card-arrow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Kotlin</li>
+              <li class="post-tag">#Coroutines</li>
+              <li class="post-tag">#Flow</li>
+              <li class="post-tag">#Structured_Concurrency</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
           </div>
-        </div>
-      </a>
+        </a>
+        <span class="post-fill" style="--fill:67%" aria-hidden="true"></span>
+      </article>
 
-      <a href="clean-architecture-mvi-compose.html" class="article-card" data-tags="compose architecture">
-        <div class="card-top">
-          <div class="card-meta-row">
-            <span class="card-time">⏱ ~۲۵ دقیقه مطالعه</span>
-            <span class="card-views" data-pv="articles/clean-architecture-mvi-compose.html">👁 —</span>
-            <span class="card-date">مهر ۱۴۰۵</span>
+      <article class="post-card" data-category="architecture" data-tags="android architecture" data-order="4" data-minutes="25">
+        <a class="post-card-link" href="clean-architecture-mvi-compose.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
           </div>
-          <h3 class="card-title">معماری تمیز و الگوی MVI در Jetpack Compose: از تئوری تا پروداکشن</h3>
-          <p class="card-excerpt">
+          <h3 class="post-title">معماری تمیز و الگوی MVI در Jetpack Compose: از تئوری تا پروداکشن</h3>
+          <p class="post-excerpt">
             راهنمای عملی پیاده‌سازی جریان تک‌جهته داده‌ها (UDF)، تفکیک State از Event و Side-Effect، معماری لایه‌های Domain و Data، و مهار Recompositionهای ناخواسته در کامپوز.
           </p>
-        </div>
-        <div class="card-bottom">
-          <div class="card-tags">
-            <span class="card-tag">#Jetpack_Compose</span>
-            <span class="card-tag">#MVI</span>
-            <span class="card-tag">#Clean_Architecture</span>
-            <span class="card-tag">#UDF</span>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۲۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/clean-architecture-mvi-compose.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
           </div>
-          <div class="card-arrow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Jetpack_Compose</li>
+              <li class="post-tag">#MVI</li>
+              <li class="post-tag">#Clean_Architecture</li>
+              <li class="post-tag">#UDF</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
           </div>
-        </div>
-      </a>
+        </a>
+        <span class="post-fill" style="--fill:56%" aria-hidden="true"></span>
+      </article>
 
-      <a href="android-performance-memory.html" class="article-card" data-tags="performance compose">
-        <div class="card-top">
-          <div class="card-meta-row">
-            <span class="card-time">⏱ ~۲۲ دقیقه مطالعه</span>
-            <span class="card-views" data-pv="articles/android-performance-memory.html">👁 —</span>
-            <span class="card-date">مهر ۱۴۰۵</span>
+      <article class="post-card" data-category="performance" data-tags="android performance" data-order="3" data-minutes="22">
+        <a class="post-card-link" href="android-performance-memory.html">
+          <div class="post-card-head">
+            <span class="post-cat">پرفورمنس و حافظه</span>
           </div>
-          <h3 class="card-title">بهینه‌سازی کارایی و مدیریت حافظه در اندروید: نشت حافظه و پروفایلینگ</h3>
-          <p class="card-excerpt">
+          <h3 class="post-title">بهینه‌سازی کارایی و مدیریت حافظه در اندروید: نشت حافظه و پروفایلینگ</h3>
+          <p class="post-excerpt">
             کالبدشکافی Garbage Collector در ART، مهار Memory Leakهای کلاسیک و مدرن با LeakCanary، تحلیل رندرینگ و فریم‌های جاافتاده (Jank)، و افزایش سرعت راه‌اندازی با Baseline Profiles.
           </p>
-        </div>
-        <div class="card-bottom">
-          <div class="card-tags">
-            <span class="card-tag">#Performance</span>
-            <span class="card-tag">#Memory_Leaks</span>
-            <span class="card-tag">#LeakCanary</span>
-            <span class="card-tag">#Profiler</span>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۲۲ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/android-performance-memory.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
           </div>
-          <div class="card-arrow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Performance</li>
+              <li class="post-tag">#Memory_Leaks</li>
+              <li class="post-tag">#LeakCanary</li>
+              <li class="post-tag">#Profiler</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
           </div>
-        </div>
-      </a>
+        </a>
+        <span class="post-fill" style="--fill:49%" aria-hidden="true"></span>
+      </article>
 
-      <a href="dependency-injection-hilt-koin.html" class="article-card" data-tags="kotlin architecture compose">
-        <div class="card-top">
-          <div class="card-meta-row">
-            <span class="card-time">⏱ ~۲۰ دقیقه مطالعه</span>
-            <span class="card-views" data-pv="articles/dependency-injection-hilt-koin.html">👁 —</span>
-            <span class="card-date">مهر ۱۴۰۵</span>
+      <article class="post-card" data-category="architecture" data-tags="kotlin android architecture" data-order="2" data-minutes="20">
+        <a class="post-card-link" href="dependency-injection-hilt-koin.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
           </div>
-          <h3 class="card-title">تزریق وابستگی در کاتلین: نبرد تن به تن Hilt و Koin در دنیای واقعی</h3>
-          <p class="card-excerpt">
+          <h3 class="post-title">تزریق وابستگی در کاتلین: نبرد تن‌به‌تن Hilt و Koin در دنیای واقعی</h3>
+          <p class="post-excerpt">
             مقایسه رویکرد زمان کامپایل (Dagger/Hilt) با Service Locator زمان اجرا (Koin)؛ مدیریت Scopeها در پروژه‌های چندماژوله، یکپارچه‌سازی با ViewModels و تست‌پذیری وابستگی‌ها.
           </p>
-        </div>
-        <div class="card-bottom">
-          <div class="card-tags">
-            <span class="card-tag">#Hilt</span>
-            <span class="card-tag">#Koin</span>
-            <span class="card-tag">#Dependency_Injection</span>
-            <span class="card-tag">#Architecture</span>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۲۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/dependency-injection-hilt-koin.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
           </div>
-          <div class="card-arrow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Hilt</li>
+              <li class="post-tag">#Koin</li>
+              <li class="post-tag">#Dependency_Injection</li>
+              <li class="post-tag">#Architecture</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
           </div>
-        </div>
-      </a>
+        </a>
+        <span class="post-fill" style="--fill:44%" aria-hidden="true"></span>
+      </article>
 
-      <a href="naming-conventions.html" class="article-card" data-tags="fundamentals">
-        <div class="card-top">
-          <div class="card-meta-row">
-            <span class="card-time">⏱ ~۲۵ دقیقه مطالعه</span>
-            <span class="card-views" data-pv="articles/naming-conventions.html">👁 —</span>
-            <span class="card-date">مهر ۱۴۰۵</span>
+      <article class="post-card" data-category="fundamentals" data-tags="fundamentals" data-order="1" data-minutes="25">
+        <a class="post-card-link" href="naming-conventions.html">
+          <div class="post-card-head">
+            <span class="post-cat">مبانی و کیفیت کد</span>
           </div>
-          <h3 class="card-title">قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا و کارآمد</h3>
-          <p class="card-excerpt">
+          <h3 class="post-title">قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا و کارآمد</h3>
+          <p class="post-excerpt">
             مقایسه کامل snake_case، camelCase، PascalCase و kebab-case با قواعد عمومی و خاص هر زبان؛ از PEP 8 و Google Java Style تا راهنمای کاتلین و Airbnb، همراه با چک‌لیست و درخت تصمیم.
           </p>
-        </div>
-        <div class="card-bottom">
-          <div class="card-tags">
-            <span class="card-tag">#Naming</span>
-            <span class="card-tag">#Clean_Code</span>
-            <span class="card-tag">#PEP8</span>
-            <span class="card-tag">#Style_Guides</span>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۲۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/naming-conventions.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
           </div>
-          <div class="card-arrow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Naming</li>
+              <li class="post-tag">#Clean_Code</li>
+              <li class="post-tag">#PEP8</li>
+              <li class="post-tag">#Style_Guides</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
           </div>
-        </div>
-      </a>
+        </a>
+        <span class="post-fill" style="--fill:56%" aria-hidden="true"></span>
+      </article>
 
       <!-- Empty state (shown when filters match nothing) -->
       <div class="empty-state" id="empty-state">
-        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🔍</div>
-        <h3 class="empty-state-title">مقاله‌ای با این مشخصات یافت نشد</h3>
-        <p class="empty-state-desc">لطفاً واژه‌ی جستجو را تغییر دهید یا دسته‌بندی دیگری را انتخاب کنید.</p>
+        <div class="empty-state-icon" aria-hidden="true">🔍</div>
+        <h3 class="empty-state-title">مقاله‌ای با این مشخصات پیدا نشد</h3>
+        <p class="empty-state-desc">عبارت جستجو را تغییر دهید یا فیلتر موضوع را روی «همه» بگذارید.</p>
+        <button type="button" class="btn btn-secondary" id="reset-filters">نمایش همهٔ مقالات</button>
       </div>
     </div>
   </main>

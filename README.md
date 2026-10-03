@@ -66,12 +66,15 @@ my-articales/
 │   ├── articles.css              # کارت‌ها و کنترل‌های فهرست مقالات
 │   ├── article-shell.css         # پوسته‌ی صفحه‌ی مقاله (سایدبار، TOC، نوار پیشرفت)
 │   ├── article-content.css       # تایپوگرافی محتوا، کد، جدول، Callout، نمودار
+│   ├── rx-stream.css             # انیمیشن‌های ماربل مقاله‌ی RxJava
+│   ├── responsive.css            # لایه‌ی نهایی واکنش‌گرایی همه‌ی صفحات
 │   ├── projects.css | libraries.css | about.css | contact.css
 │
 ├── js/
 │   ├── theme.js                  # تم تیره/روشن + کلید hf_theme
 │   ├── main.js                   # نویگیشن، منوی موبایل، toast، نوار مهارت، سال
 │   ├── article.js                # پیشرفت خواندن، کپی کد، ScrollSpy، اشتراک‌گذاری
+│   ├── rx-stream-animations.js   # موتور انیمیشن ماربل (پخش/توقف/سرعت + reduced-motion)
 │   ├── views.js                  # شمارنده بازدید (Page Views API)
 │   ├── articles.js | projects.js | libraries.js | contact.js
 │
@@ -192,6 +195,30 @@ python -m http.server 8080     # یا: npx serve .
 - HTML استاتیک خام — بدون فریم‌ورک، بدون Node، بدون build.
 - تایپوگرافی: [Vazirmatn](https://github.com/rastikerdar/vazirmatn) + [JetBrains Mono](https://www.jetbrains.com/lp/mono/) به‌صورت self-host (woff2).
 - ذخیره‌سازی ترجیح تم: `localStorage` با کلید `hf_theme` (مهاجرت خودکار از کلید قدیمی `blog_theme`).
+
+## تاریخچهٔ تغییرات
+
+### مهر ۱۴۰۵
+
+- **ریسپانسیو کامل سایت** — بازنویسی لایهٔ نهایی `responsive.css` با Mobile-First؛
+  تایپوگرافی `clamp()` در `base.css`/`layout.css`، ویژگی‌های منطقی (RTL) در layout،
+  منوی همبرگری کشویی تا عرض ۱۰۲۴px (بسته‌شدن خودکار در دسکتاپ)، هدف‌های لمسی ۴۴px،
+  جدول‌ها/نمودارها/کدها با اسکرول افقی داخلی (بدون اسکرول افقی صفحه)، گریدها با
+  `minmax(min(...), 1fr)`، پشتیبانی `prefers-reduced-motion`/`forced-colors`/چاپ؛
+  لینک `responsive.css` به همهٔ صفحات اضافه شد (دسکتاپ بدون تغییر بصری).
+- **موتور انیمیشن ماربل RxJava** — فایل‌های جدید `css/rx-stream.css` و
+  `js/rx-stream-animations.js` با ۳۱ Operator در کاتالوگ (map، filter، flatMap،
+  switchMap، debounce، Subjects، استراتژی‌های Backpressure و…)؛ کنترل پخش/توقف/
+  شروع دوباره/سرعت (۰.۵×، ۱×، ۲×)، شروع خودکار با دیده‌شدن (IntersectionObserver)،
+  مکث هنگام خروج از دید، حالت ایستا برای `prefers-reduced-motion` و برچسب‌های فارسی.
+- **مقالهٔ RxJava و RxAndroid جامع‌تر شد** — بازنویسی بخش‌های ۱ تا ۹ (مقدمهٔ
+  واکنش‌گرا، ایجاد Observable، انواع جریان، Operatorهای اصلی، زنجیره‌سازی، کاهش
+  داده، کنترل زمان، Schedulers، مدیریت خطا با retryWhen)، اصلاح بخش‌های ۱۰ تا ۱۴
+  (جدول Subjects با AsyncSubject، Disposable در برابر Subscription، استراتژی‌های
+  Backpressure، چک‌لیست و منابع)، و افزودن بخش‌های **۱۵** (ساخت جریان: just، from،
+  range، repeat، interval، timer)، **۱۶** (merge، zip، combineLatest) و **۱۷**
+  (DisposableObserver، RxBinding، تست با TestScheduler)؛ به‌همراه ۳۰ نمودار ماربل
+  متحرک، نمونه‌های LogCat، برچسب زبان کدها (`data-lang`) و جدول‌های اسکرول‌پذیر.
 
 ---
 

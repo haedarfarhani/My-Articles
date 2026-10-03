@@ -72,6 +72,14 @@
       if (e.key === 'Escape') close();
     });
 
+    // بستن خودکار منو هنگام ورود به نمای دسکتاپ (جلوگیری از قفل ماندن اسکرول صفحه)
+    const desktopMq = window.matchMedia('(min-width: 1025px)');
+    const onDesktopChange = () => { if (desktopMq.matches) close(); };
+    if (desktopMq.addEventListener) desktopMq.addEventListener('change', onDesktopChange);
+    else if (desktopMq.addListener) desktopMq.addListener(onDesktopChange);
+
+    // هنگام تغییر اندازه‌ی پنجره، منوی باز را به بالا برمی‌گردانیم
+    window.addEventListener('resize', () => { if (menu.classList.contains('open')) menu.scrollTop = 0; }, { passive: true });
     menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
   }
 

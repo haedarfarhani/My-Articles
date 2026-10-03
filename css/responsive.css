@@ -1,987 +1,452 @@
 /* ==========================================================================
-   Responsive Design System - Mobile-First RTL
-   Preserves existing visual identity while adding full responsiveness
+   Responsive — لایه‌ی نهایی واکنش‌گرایی
+   این فایل باید در «همه» صفحات، «آخرین» استایل‌شیت لود شود.
+
+   قواعد:
+   • فقط قواعد افزایشی/اصلاحی؛ ظاهر دسکتاپ (≥1025px) تغییری نمی‌کند.
+   • بریک‌پوینت‌ها: لپ‌تاپ ≤1024px، تبلت ≤768px، موبایل ≤480px.
+   • جهت‌بندی RTL: از ویژگی‌های منطقی (inline-*) استفاده شده است.
+   • Mobile-First: پایه سبک و ساده است و در بریک‌پوینت‌ها تکمیل می‌شود.
    ========================================================================== */
 
-/* ---------- Base Mobile-First Reset ---------- */
+/* ==========================================================================
+   ۱) پایه — ایمنی در برابر اسکرول افقی و رسانه‌ها (همه‌ی صفحات)
+   ========================================================================== */
+
 html {
-  scroll-behavior: smooth;
-  overflow-x: hidden;
+  /* clip به‌جای hidden: جلوگیری از اسکرول افقی بدون ساختن اسکرول‌کانتینر */
+  overflow-x: clip;
   -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-body {
-  min-width: 320px;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  touch-action: manipulation;
-  /* Prevent horizontal scroll on all devices */
-  max-width: 100vw;
-  width: 100%;
-}
-
-/* Viewport Meta Tag (should be in HTML head) */
-/* Ensure all pages have: <meta name="viewport" content="width=device-width, initial-scale=1.0"> */
-
-/* ---------- Typography - Responsive Font Sizing ---------- */
-html {
-  font-size: 16px;
-}
-
-@media (min-width: 481px) {
-  html {
-    font-size: calc(16px + 0.5vw);
-  }
-}
-
-@media (min-width: 769px) {
-  html {
-    font-size: 18px;
-  }
-}
-
-@media (min-width: 1025px) {
-  html {
-    font-size: 19px;
-  }
-}
-
-/* Use clamp() for fluid typography */
-:root {
-  --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.88rem);
-  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.1rem);
-  --text-lg: clamp(1.2rem, 1.1rem + 0.5vw, 1.35rem);
-  --text-xl: clamp(1.5rem, 1.3rem + 0.8vw, 1.8rem);
-  --text-2xl: clamp(1.8rem, 1.5rem + 1vw, 2.2rem);
-  --text-3xl: clamp(2.2rem, 1.8rem + 1.5vw, 2.8rem);
-}
-
-body {
-  font-size: var(--text-base);
-}
-
-/* ---------- RTL Layout Properties ---------- */
-/* Use logical properties for RTL support */
-* {
-  margin-inline: 0;
-  padding-inline: 0;
-}
-
-/* Replace margin-right/left with margin-inline-start/end */
-[dir="rtl"] {
-  --margin-start: margin-inline-start;
-  --margin-end: margin-inline-end;
-  --padding-start: padding-inline-start;
-  --padding-end: padding-inline-end;
-  --border-start: border-inline-start;
-  --border-end: border-inline-end;
-}
-
-/* ---------- Touch Targets ---------- */
-/* Minimum touch target: 44x44px */
-button,
-[role="button"],
-input,
-[role="input"],
-a,
-[role="link"] {
-  min-width: 44px;
-  min-height: 44px;
-  touch-action: manipulation;
-}
-
-/* Button touch targets */
-.btn,
-.btn-icon,
-.btn-fab,
-.toc-link,
-.inline-toc-link,
-.nav-link {
-  min-width: 44px;
-  min-height: 44px;
-}
-
-/* ---------- Images & Media ---------- */
+/* تصاویر و رسانه‌ها هرگز از کادر بیرون نمی‌زنند */
 img,
 video,
 iframe,
-svg,
-figure,
-pre,
-code {
+embed,
+object,
+svg {
   max-width: 100%;
+}
+
+img,
+video {
   height: auto;
 }
 
-/* Prevent horizontal overflow */
-pre {
+/* کدهای داخل <pre>: اسکرول افقی کنترل‌شده و بدون بیرون‌زدگی */
+.kl-article pre.kl-code,
+pre.kl-code {
+  max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
 }
 
-/* Code blocks on mobile */
-.kl-article pre.kl-code {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  overflow-x: auto;
-}
-
-.kl-article code {
-  word-break: break-all;
-  white-space: normal;
-}
-
-/* Code blocks in containers */
 .code-block-wrapper {
-  overflow-x: auto;
-}
-
-/* ---------- Layout Containers ---------- */
-.container,
-.nav-container,
-.blog-wrapper,
-.hero-section,
-.page-hero,
-.section-block {
-  width: 100%;
   max-width: 100%;
-  padding-inline: clamp(1rem, 4vw, 1.5rem);
-  box-sizing: border-box;
-}
-
-/* ---------- Grid & Flex Layouts ---------- */
-/* Use fr units and minmax for responsive grids */
-.blog-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-/* ---------- Navigation ---------- */
-/* Mobile Navigation */
-.nav-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 1000;
-}
-
-.nav-toggle svg {
-  width: 24px;
-  height: 24px;
-  stroke: var(--text-main);
-}
-
-/* Hamburger Menu - Mobile */
-#nav-menu {
-  position: fixed;
-  top: 60px;
-  inset-inline-start: 0;
-  inset-inline-end: 0;
-  bottom: 0;
-  background: var(--bg-surface);
-  border-top: 1px solid var(--border-subtle);
-  padding: 1rem;
-  display: none;
-  flex-direction: column;
-  z-index: 999;
-  overflow-y: auto;
-  max-height: calc(100vh - 60px);
-}
-
-#nav-menu.open {
-  display: flex;
-}
-
-#nav-menu .nav-links {
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-#nav-menu .nav-link {
-  display: block;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  border-radius: var(--radius-md);
-  white-space: nowrap;
-  text-align: right;
-}
-
-#nav-menu .nav-link:hover,
-#nav-menu .nav-link.active {
-  background: var(--color-primary-soft);
-  color: var(--color-primary-light);
-}
-
-/* Nav Actions - Mobile */
-.nav-actions {
-  gap: 0.5rem;
-}
-
-.nav-actions .btn-icon {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-}
-
-/* ---------- Mobile Drawer (TOC) ---------- */
-.mobile-drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
-  z-index: 950;
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.mobile-drawer-overlay.open {
-  opacity: 1;
-}
-
-.mobile-drawer {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  inset-inline-end: -320px;
-  width: min(320px, 90vw);
-  background: var(--bg-surface);
-  z-index: 960;
-  padding: 1.5rem;
-  box-shadow: var(--shadow-lg);
-  transition: inset-inline-end var(--transition-smooth);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.mobile-drawer.open {
-  inset-inline-end: 0;
-}
-
-.drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.drawer-header h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--text-main);
-}
-
-#btn-close-drawer {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: var(--text-muted);
-}
-
-#btn-close-drawer:hover {
-  color: var(--color-primary-light);
-}
-
-#drawer-toc {
-  flex: 1;
-  overflow-y: auto;
-}
-
-#drawer-toc .toc-list {
-  gap: 0.25rem;
-}
-
-#drawer-toc .toc-link {
-  padding: 0.65rem 0.75rem;
-  font-size: 0.9rem;
-}
-
-/* ---------- Inline TOC - Mobile ---------- */
-.inline-toc-grid {
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.5rem;
-}
-
-.inline-toc-link {
-  font-size: 0.88rem;
-  padding: 0.5rem 0.75rem;
-}
-
-/* ---------- Article Content - Mobile ---------- */
-.blog-article {
-  width: 100%;
-  max-width: 100%;
-  padding: 1.5rem;
-  border-radius: var(--radius-lg);
-}
-
-.article-hero {
-  padding-bottom: 1.5rem;
-}
-
-.post-title {
-  font-size: clamp(1.4rem, 2vw + 1rem, 2rem);
-  line-height: 1.4;
-}
-
-.hero-lead {
-  font-size: clamp(0.95rem, 1.5vw + 0.8rem, 1.1rem);
-  padding: 0.8rem 1rem;
-}
-
-.hero-meta-bar {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.meta-badges {
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.meta-badge {
-  font-size: 0.76rem;
-  padding: 0.3rem 0.7rem;
-}
-
-/* Tables - Mobile */
-.kl-article table {
-  display: block;
-  width: 100%;
-  min-width: 100%;
-}
-
-.kl-article th,
-.kl-article td {
-  padding: 0.75rem 0.5rem !important;
-  font-size: 0.85rem !important;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* SVG Diagrams - Mobile */
-.kl-article figure.kl-fig {
-  padding: 1rem;
+/* کدهای درون‌خطی: از شکستن چیدمان جلوگیری می‌کنند */
+.kl-article p code,
+.kl-article li code,
+.kl-article td code,
+.kl-article th code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-.kl-article figure.kl-fig svg {
-  min-width: 100%;
-  width: 100%;
+/* عناصر تعاملی: لمس مناسب بدون تغییر اندازه‌ی ظاهری */
+button,
+[role="button"],
+input,
+select,
+textarea {
+  touch-action: manipulation;
 }
 
-/* Callout Boxes - Mobile */
-.kl-box {
-  padding: 1rem 1.2rem;
-  font-size: 0.9rem;
+/* حداکثر عرض برای بلوک‌های متنی بلند (خوانایی) */
+.kl-article p,
+.kl-article li {
+  overflow-wrap: break-word;
 }
 
-/* ---------- Sidebar - Desktop Only ---------- */
-.blog-sidebar {
-  display: none;
+/* ---------- گریدهای صفحه‌ها: جلوگیری از سرریز در عرض کم ---------- */
+.projects-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
 }
 
-/* ---------- Floating Actions - Mobile ---------- */
-.floating-actions {
-  bottom: 20px;
-  inset-inline-end: 20px;
+.library-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
 }
 
-.btn-fab {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
-  min-height: 48px;
+.skills-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
 }
 
-/* ---------- Footer - Mobile ---------- */
-.site-footer {
-  padding: 2rem 1rem 1.5rem;
+.kl-sources {
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
 }
 
-.footer-grid {
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  text-align: center;
+.search-box {
+  min-width: min(280px, 100%);
 }
 
-.footer-col ul {
-  align-items: center;
-}
-
-.footer-bottom {
-  flex-direction: column;
-  gap: 1rem;
-  text-align: center;
+/* جداول مقاله: در عرض کم به‌صورت اسکرول‌پذیر افقی درمی‌آیند */
+.kl-article table {
+  max-width: 100%;
 }
 
 /* ==========================================================================
-   Breakpoints - Mobile-First
+   ۲) لپ‌تاپ (≤1024px)
    ========================================================================== */
-
-/* Mobile (≤480px) - Default */
-@media (max-width: 480px) {
-  /* Base mobile styles already applied */
-  
-  /* Smaller containers */
+@media (max-width: 1024px) {
+  /* فاصله‌ی کناری سبک‌تر */
   .container,
-  .blog-wrapper {
-    padding-inline: 0.75rem;
+  .section-block,
+  .articles-container,
+  .controls-wrapper,
+  .stats-row,
+  .hero-section,
+  .page-hero {
+    padding-inline: clamp(0.85rem, 3vw, 1.5rem);
   }
-  
-  /* Navigation */
-  .nav-container {
-    padding: 0.6rem 0.85rem;
-  }
-  
-  .brand-subtitle {
-    display: none;
-  }
-  
-  .brand-badge {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
-  }
-  
-  .brand-title {
-    font-size: 0.95rem;
-  }
-  
-  /* Article */
-  .blog-article {
-    padding: 1rem;
-    border-radius: var(--radius-md);
-  }
-  
-  .post-title {
-    font-size: 1.3rem;
-  }
-  
-  .hero-lead {
-    font-size: 0.9rem;
-    padding: 0.7rem 0.8rem;
-  }
-  
-  /* Inline TOC */
-  .inline-toc-box {
-    padding: 1rem;
-  }
-  
-  .inline-toc-grid {
-    grid-template-columns: 1fr;
-    gap: 0.4rem;
-  }
-  
-  .inline-toc-link {
-    font-size: 0.85rem;
-    padding: 0.4rem 0.6rem;
-  }
-  
-  /* Code blocks */
-  .kl-article pre.kl-code {
-    font-size: 0.85rem !important;
-    padding: 0.75rem !important;
-  }
-  
-  /* Tables */
-  .kl-article table {
-    font-size: 0.8rem;
-  }
-  
-  /* Buttons */
-  .btn-icon {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    min-height: 38px;
-  }
-  
-  /* Touch targets */
-  .toc-link,
-  .inline-toc-link {
-    min-height: 40px;
-  }
-  
-  /* Footer */
-  .footer-col h4 {
-    font-size: 0.88rem;
-  }
-  
-  .footer-col a {
-    font-size: 0.82rem;
-  }
-  
-  /* Hide less important elements on very small screens */
-  .post-tags-list {
-    display: none;
-  }
-  
-  /* Touch targets for all interactive elements */
-  button,
-  [role="button"],
-  a,
-  [role="link"] {
-    min-width: 44px;
-    min-height: 44px;
-  }
-}
 
-/* Small (Mobile Landscape) */
-@media (min-width: 481px) and (max-width: 768px) {
-  /* Navigation */
-  .nav-container {
-    padding: 0.6rem 1rem;
+  /* جداول مقاله اسکرول افقی می‌شوند (بدون بیرون‌زدگی) */
+  .kl-article table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: normal;
   }
-  
-  /* Article */
-  .blog-article {
-    padding: 1.5rem;
-  }
-  
-  .post-title {
-    font-size: 1.6rem;
-  }
-  
-  /* Inline TOC */
-  .inline-toc-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  /* Tables */
+
   .kl-article th,
   .kl-article td {
-    padding: 0.85rem 0.6rem !important;
-    font-size: 0.88rem !important;
+    white-space: normal;
   }
-  
-  /* SVG Diagrams */
-  .kl-article figure.kl-fig {
-    padding: 1.2rem;
-  }
-  
-  /* Mobile drawer */
-  .mobile-drawer {
-    width: min(360px, 85vw);
-  }
-  
-  /* Show brand subtitle */
-  .brand-subtitle {
-    display: inline-block;
-  }
-  
-  /* Touch targets */
-  .btn-icon {
-    min-width: 44px;
-    min-height: 44px;
-  }
-  
-  /* Footer */
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    text-align: right;
-  }
-  
-  .footer-col ul {
-    align-items: flex-start;
-  }
-  
-  .footer-bottom {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    text-align: right;
-  }
-}
 
-/* Medium (Tablet) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  /* Navigation */
-  .nav-container {
-    padding: 0.75rem 1.5rem;
-  }
-  
-  /* Show desktop nav */
-  .nav-toggle {
-    display: none;
-  }
-  
-  #nav-menu {
-    position: static;
-    display: flex;
-    inset: auto;
-    padding: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-  }
-  
-  #nav-menu .nav-links {
-    flex-direction: row;
-  }
-  
-  #nav-menu .nav-link {
-    display: inline-block;
-    padding: 0.3rem 0;
-    font-size: 0.9rem;
-    border-radius: 0;
-  }
-  
-  /* Blog Layout */
-  .blog-grid {
-    grid-template-columns: 1fr 280px;
-    gap: 2rem;
-  }
-  
-  /* Show sidebar */
+  /* نوار کناری مقاله در لپ‌تاپ جمع می‌شود (دکمه‌ی فهرست جایگزین می‌شود) */
   .blog-sidebar {
-    display: flex;
-    position: static;
-    top: auto;
-    max-height: none;
-    margin-top: 2rem;
-  }
-  
-  .blog-sidebar .sidebar-card {
-    position: static;
-    max-height: none;
-    overflow: visible;
-  }
-  
-  .toc-scroll-container {
-    overflow: visible;
-  }
-  
-  /* Article */
-  .blog-article {
-    padding: 2rem;
-  }
-  
-  .post-title {
-    font-size: 1.8rem;
-  }
-  
-  /* Hero section */
-  .hero-meta-bar {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  
-  /* Inline TOC */
-  .inline-toc-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  /* Code blocks */
-  .kl-article pre.kl-code {
-    font-size: 0.9rem !important;
-  }
-  
-  /* SVG Diagrams */
-  .kl-article figure.kl-fig svg {
-    min-width: 540px;
-  }
-  
-  /* Tables */
-  .kl-article table {
-    min-width: 620px;
-  }
-  
-  /* Hide mobile drawer toggle */
-  .btn-toc-toggle {
     display: none;
   }
-  
-  /* Footer */
-  .footer-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    text-align: right;
-  }
-  
-  .footer-col ul {
-    align-items: flex-start;
-  }
-  
-  .footer-bottom {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    text-align: right;
-  }
-  
-  .brand-subtitle {
-    display: inline-block;
-  }
-}
 
-/* Large (Desktop) */
-@media (min-width: 1025px) {
-  /* Navigation - Full desktop */
-  .nav-container {
-    padding: 0.8rem 1.5rem;
-  }
-  
-  .nav-toggle {
-    display: none;
-  }
-  
-  #nav-menu {
-    position: static;
-    display: flex;
-    inset: auto;
-    padding: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-  }
-  
-  #nav-menu .nav-links {
-    flex-direction: row;
-  }
-  
-  #nav-menu .nav-link {
-    display: inline-block;
-    padding: 0.3rem 0;
-    font-size: 0.9rem;
-    border-radius: 0;
-  }
-  
-  /* Blog Layout */
-  .blog-grid {
-    grid-template-columns: 1fr 310px;
-    gap: 2.5rem;
-  }
-  
-  /* Sidebar - Sticky */
-  .blog-sidebar {
-    display: flex;
-    position: sticky;
-    top: 85px;
-    max-height: calc(100vh - 105px);
-    margin-top: 0;
-  }
-  
-  .blog-sidebar .sidebar-card {
-    max-height: 100%;
-    overflow: hidden;
-  }
-  
-  .toc-scroll-container {
-    overflow-y: auto;
-  }
-  
-  /* Article */
-  .blog-wrapper {
-    padding: 2rem 1.5rem 5rem;
-  }
-  
-  .blog-article {
-    padding: 2.5rem 2.8rem;
-    border-radius: var(--radius-xl);
-  }
-  
-  .post-title {
-    font-size: 2.35rem;
-  }
-  
-  .hero-lead {
-    font-size: 1.15rem;
-    padding: 1.1rem 1.4rem;
-    line-height: 2.3;
-  }
-  
-  /* Hero section */
-  .hero-meta-bar {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  
-  /* Inline TOC */
-  .inline-toc-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem 1.5rem;
-  }
-  
-  /* Code blocks */
-  .kl-article pre.kl-code {
-    font-size: 13.6px !important;
-    padding: 1.25rem 1.4rem !important;
-  }
-  
-  /* SVG Diagrams */
-  .kl-article figure.kl-fig {
-    padding: 1.8rem 1.4rem 1.4rem;
-  }
-  
-  .kl-article figure.kl-fig svg {
-    min-width: 540px;
-    max-width: 770px;
-  }
-  
-  /* Tables */
-  .kl-article table {
-    min-width: 620px;
-  }
-  
-  /* Hide mobile drawer toggle */
   .btn-toc-toggle {
-    display: none;
-  }
-  
-  /* Footer */
-  .site-footer {
-    padding: 2.5rem 0;
-    margin-top: 4rem;
-  }
-  
-  .footer-grid {
-    max-width: 1200px;
-    margin: 0 auto;
-    grid-template-columns: 1.6fr 1fr 1fr;
-    gap: 2.5rem;
-    text-align: right;
-  }
-  
-  .footer-col ul {
-    align-items: flex-start;
-  }
-  
-  .footer-bottom {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    text-align: right;
-  }
-  
-  /* Floating actions */
-  .floating-actions {
-    bottom: 25px;
-    inset-inline-end: 25px;
-  }
-  
-  /* Show all elements */
-  .brand-subtitle {
-    display: inline-block;
-  }
-  
-  .post-tags-list {
     display: flex;
-  }
-  
-  /* Toast */
-  #toast {
-    bottom: 30px;
-    inset-inline-end: 50%;
-    transform: translateX(-50%) translateY(30px);
-  }
-  
-  #toast.show {
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-/* Extra Large (Wide Desktop) */
-@media (min-width: 1280px) {
-  .blog-wrapper {
-    max-width: 1340px;
-  }
-  
-  .blog-grid {
-    grid-template-columns: 1fr 320px;
-    gap: 3rem;
-  }
-  
-  .blog-article {
-    padding: 2.5rem 3rem;
-  }
-  
-  /* Inline TOC */
-  .inline-toc-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .kl-article figure.kl-fig svg {
-    max-width: 900px;
   }
 }
 
 /* ==========================================================================
-   Accessibility & Special States
+   ۳) تبلت (≤768px)
    ========================================================================== */
+@media (max-width: 768px) {
+  /* ناحیه‌ی لمسی حداقل ۴۴×۴۴ پیکسل */
+  .btn,
+  .btn-icon,
+  .btn-fab,
+  .btn-action-block,
+  .btn-copy-code,
+  .tag-btn,
+  .section-more,
+  .toc-link,
+  .inline-toc-link,
+  .social-link,
+  .project-link,
+  .card-arrow,
+  .search-input,
+  .form-input,
+  .form-textarea {
+    min-height: 44px;
+  }
 
-/* ---------- Print Styles ---------- */
-@media print {
-  /* Hide non-essential elements */
-  .site-nav,
-  .floating-actions,
-  .blog-sidebar,
-  .mobile-drawer,
-  .mobile-drawer-overlay,
-  #toast,
-  #back-to-top {
-    display: none !important;
+  .btn-icon,
+  .social-link,
+  .project-link,
+  .card-arrow {
+    min-width: 44px;
   }
-  
-  /* Print-friendly layout */
-  .blog-wrapper {
-    max-width: 100%;
-    padding: 0;
+
+  /* لینک‌های منوی موبایل */
+  .nav-menu .nav-link {
+    min-height: 44px;
   }
-  
-  .blog-grid {
-    display: block;
+
+  /* صفحه‌ی درباره */
+  .about-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .blog-article {
-    padding: 0;
-    border: none;
-    box-shadow: none;
-    background: transparent;
+
+  .about-card {
+    position: static;
+    padding: 1.5rem;
   }
-  
-  /* Print-friendly typography */
-  body {
-    background: white;
-    color: black;
-    line-height: 1.8;
+
+  /* صفحه‌ی تماس */
+  .contact-layout {
+    grid-template-columns: 1fr;
   }
-  
-  .kl-article h2,
-  .kl-article h3,
-  .kl-article h4 {
-    page-break-after: avoid;
+
+  .contact-card {
+    position: static;
   }
-  
-  .kl-article pre.kl-code {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    background: #f5f5f5 !important;
-    color: #333 !important;
+
+  /* کارت‌ها فشرده‌تر */
+  .article-card {
+    padding: 1.5rem 1.35rem;
   }
-  
-  /* Print page breaks */
-  .page-break {
-    page-break-before: always;
+
+  .project-card,
+  .library-card {
+    padding: 1.4rem;
+  }
+
+  /* نمودارهای SVG داخل مقاله: اسکرول افقی کنترل‌شده */
+  .kl-article figure.kl-fig {
+    padding: 1.1rem 0.9rem 0.9rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .kl-article figure.kl-fig svg {
+    min-width: 540px;
+  }
+
+  /* کادرهای اعلان */
+  .kl-box {
+    padding: 1rem 1.1rem;
+    font-size: 0.95rem;
+  }
+
+  /* هدر مقاله */
+  .hero-meta-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
+  }
+
+  .author-info {
+    justify-content: flex-start;
+  }
+
+  /* جعبه‌ی فهرست سریع مقاله */
+  .inline-toc-box {
+    padding: 1.1rem 1rem;
   }
 }
 
-/* ---------- Reduced Motion ---------- */
+/* ==========================================================================
+   ۴) موبایل (≤480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* تیترها و متن‌ها با clamp خودکار کوچک می‌شوند؛ اینجا فقط ظریف‌سازی */
+  .post-title {
+    font-size: clamp(1.35rem, 1.15rem + 2vw, 1.6rem);
+    letter-spacing: -0.3px;
+  }
+
+  .hero-lead {
+    font-size: clamp(0.92rem, 0.88rem + 0.4vw, 1.02rem);
+    padding: 0.8rem 0.9rem;
+  }
+
+  .section-title,
+  .section-head-text h2 {
+    font-size: 1.25rem;
+  }
+
+  /* بدنه‌ی مقاله */
+  .blog-wrapper {
+    padding: 0.75rem 0.5rem 3.5rem;
+  }
+
+  .blog-article {
+    padding: 1.15rem 0.85rem;
+    border-radius: var(--radius-lg);
+  }
+
+  /* هدر مقاله */
+  .article-hero {
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.4rem;
+  }
+
+  .hero-meta-bar {
+    padding: 0.85rem 0.9rem;
+  }
+
+  .meta-badge {
+    font-size: 0.74rem;
+    padding: 0.3rem 0.65rem;
+  }
+
+  /* کدها: فونت ریزتر برای خوانایی + اسکرول افقی */
+  .kl-article pre.kl-code {
+    font-size: 12.4px !important;
+    padding: 0.9rem 0.85rem !important;
+    line-height: 1.75 !important;
+  }
+
+  .code-block-header {
+    padding: 0.5rem 0.7rem;
+  }
+
+  /* جداول */
+  .kl-article th,
+  .kl-article td {
+    padding: 9px 10px !important;
+    font-size: 0.84rem !important;
+  }
+
+  /* نمودارها */
+  .kl-article figure.kl-fig {
+    padding: 0.9rem 0.7rem 0.75rem;
+    border-radius: var(--radius-lg);
+  }
+
+  /* فهرست سریع داخل مقاله */
+  .inline-toc-box {
+    padding: 0.95rem 0.85rem;
+  }
+
+  .inline-toc-link {
+    font-size: 0.86rem;
+    padding: 0.45rem 0.35rem;
+  }
+
+  /* ناوبری صفحه‌ی مقاله (Breadcrumb) در موبایل فشرده می‌شود */
+  .nav-center {
+    display: none;
+  }
+
+  .nav-container {
+    padding: 0.6rem 0.7rem;
+    gap: 0.5rem;
+  }
+
+  .brand-details .brand-title {
+    font-size: 1rem;
+  }
+
+  /* دکمه‌های شناور */
+  .floating-actions {
+    bottom: 14px;
+    inset-inline-start: 14px;
+  }
+
+  .btn-fab {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* دکمه‌ی بازگشت به بالا (صفحات اصلی) */
+  #back-to-top {
+    bottom: 1rem;
+    inset-inline-start: 1rem;
+    width: 44px;
+    height: 44px;
+  }
+
+  /* توست */
+  #toast {
+    bottom: 1rem;
+    max-width: calc(100vw - 2rem);
+    font-size: 0.84rem;
+    padding: 0.7rem 1.1rem;
+  }
+
+  /* کارت‌های فهرست مقالات و پروژه‌ها */
+  .article-card {
+    padding: 1.25rem 1.05rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .card-title {
+    font-size: 1.15rem;
+  }
+
+  .project-card,
+  .library-card,
+  .about-card,
+  .contact-card,
+  .contact-form-card {
+    padding: 1.25rem 1.05rem;
+  }
+
+  /* فرم تماس */
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* آمار صفحه‌ی درباره */
+  .about-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  /* جداول مقاله: فونت ریزتر */
+  .kl-article table {
+    font-size: 0.85rem;
+  }
+
+  /* چک‌لیست و منابع */
+  .kl-check li {
+    padding-inline-start: 2.4rem;
+  }
+}
+
+/* ==========================================================================
+   ۵) دسترس‌پذیری و حالت‌های خاص
+   ========================================================================== */
+
+/* ---------- تمرکز صفحه‌کلید ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+/* ---------- لینک پرش (Skip link) ---------- */
+.skip-link {
+  position: absolute;
+  top: -48px;
+  inset-inline-start: 0;
+  background: var(--color-primary);
+  color: var(--text-on-primary);
+  padding: 0.6rem 1.1rem;
+  z-index: 1200;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ---------- کاهش حرکت (prefers-reduced-motion) ---------- */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
@@ -990,85 +455,89 @@ pre {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
-  /* Disable animations */
-  .btn-primary:hover,
-  .btn-secondary:hover,
-  .btn-accent:hover,
-  .btn-icon:hover,
-  .toc-link:hover,
-  .inline-toc-link:hover {
-    transform: none !important;
-  }
-  
-  /* Disable scroll progress bar animation */
+
   #reading-progress {
     transition: none !important;
   }
 }
 
-/* ---------- High Contrast Mode ---------- */
+/* ---------- کنتراست بالا ---------- */
 @media (prefers-contrast: high) {
   :root {
-    --border-subtle: #000;
-    --border-normal: #000;
-    --border-accent: #000;
+    --border-subtle: #000000;
+    --border-normal: #000000;
   }
-  
+
   html[data-theme="dark"] {
-    --border-subtle: #fff;
-    --border-normal: #fff;
-    --border-accent: #fff;
+    --border-subtle: #ffffff;
+    --border-normal: #ffffff;
   }
 }
 
-/* ---------- Accessibility - Focus Styles ---------- */
-:focus-visible {
-  outline: 2px solid var(--color-primary-light);
-  outline-offset: 2px;
-}
-
-button:focus-visible,
-a:focus-visible,
-[role="button"]:focus-visible,
-[role="link"]:focus-visible {
-  outline: 2px solid var(--color-primary-light);
-  outline-offset: 2px;
-}
-
-/* Skip link for keyboard users */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: var(--color-primary);
-  color: var(--text-on-primary);
-  padding: 0.5rem 1rem;
-  z-index: 1000;
-  text-decoration: none;
-  font-weight: 700;
-  border-radius: 0 0 var(--radius-md) var(--radius-md);
-}
-
-.skip-link:focus {
-  top: 0;
-}
-
-/* ---------- Forced Colors Mode (Windows High Contrast) ---------- */
+/* ---------- حالت رنگ‌های اجباری ---------- */
 @media (forced-colors: active) {
-  .btn-primary {
-    border: 2px solid ButtonText !important;
-  }
-  
-  .btn-secondary {
-    border: 2px solid ButtonText !important;
-  }
-  
+  .btn-primary,
+  .btn-secondary,
   .btn-icon {
     border: 2px solid ButtonText !important;
   }
-  
+
   .toc-link.active {
-    border-right: 3px solid Highlight !important;
+    border-inline-start: 3px solid Highlight !important;
+  }
+}
+
+/* ---------- چاپ ---------- */
+@media print {
+  .site-nav,
+  .floating-actions,
+  .blog-sidebar,
+  .mobile-drawer,
+  .mobile-drawer-overlay,
+  #toast,
+  #back-to-top,
+  #reading-progress,
+  .inline-toc-box {
+    display: none !important;
+  }
+
+  .blog-wrapper {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .blog-grid {
+    display: block;
+  }
+
+  .blog-article {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  body {
+    background: #ffffff;
+    color: #000000;
+    font-size: 12pt;
+  }
+
+  .kl-article h2,
+  .kl-article h3,
+  .kl-article h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .kl-article pre.kl-code {
+    white-space: pre-wrap !important;
+    word-wrap: break-word;
+    background: #f5f5f5 !important;
+    color: #111111 !important;
+  }
+
+  .code-block-wrapper {
+    border: 1px solid #cccccc;
   }
 }

@@ -40,6 +40,27 @@
     onScroll();
   }
 
+  /* ---------- زبان کد: از data-lang خود بلوک (java، kotlin، logcat، ...) ---------- */
+  const CODE_LANG_LABELS = {
+    java: 'Java',
+    kotlin: 'Kotlin',
+    xml: 'XML',
+    gradle: 'Gradle',
+    groovy: 'Groovy',
+    logcat: 'LogCat',
+    bash: 'Bash',
+    shell: 'Shell',
+    json: 'JSON',
+    txt: 'Text',
+    text: 'Text',
+  };
+
+  function codeLangLabel(pre) {
+    const raw = ((pre.dataset && pre.dataset.lang) || 'kotlin').toLowerCase();
+    if (CODE_LANG_LABELS[raw]) return CODE_LANG_LABELS[raw];
+    return raw.charAt(0).toUpperCase() + raw.slice(1);
+  }
+
   /* ---------- Code blocks: header + copy ---------- */
   function initCodeBlocks() {
     const blocks = document.querySelectorAll('.kl-article pre.kl-code');
@@ -56,7 +77,7 @@
         '<span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>' +
         '</div>' +
         '<div class="code-block-meta">' +
-        '<span class="code-lang-tag">Kotlin</span>' +
+        '<span class="code-lang-tag">' + codeLangLabel(pre) + '</span>' +
         '<button class="btn-copy-code" type="button" title="کپی کد">' +
         '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>' +
         '<span>کپی</span></button></div>';

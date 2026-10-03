@@ -1,853 +1,1328 @@
 /**
- * RxStream Animations - Marble Diagrams for RxJava Operators
- * 
- * A pure JavaScript library for creating interactive, animated marble diagrams
- * for ReactiveX operators. These visualizations help understand how Rx operators
- * transform observable streams.
- * 
- * Features:
- * - Pure JavaScript (ES6+) with no external dependencies
- * - Interactive play/pause, restart, and speed controls
- * - Responsive design that works on mobile and desktop
- * - RTL (Right-to-Left) language support
- * - Uses IntersectionObserver for lazy loading
- * - Respects prefers-reduced-motion for accessibility
- * - Themed to match the site's color scheme
- * 
- * @author Vibe Code (for Haedar Farhani's Articles)
- * @license MIT
+ * rx-stream-animations.js — موتور انیمیشن‌های دیاگرام ماربل (Marble Diagram)
+ *
+ * قرارداد استفاده در HTML:
+ *   <figure class="rx-anim" data-rx="map" aria-label="انیمیشن عملگر map">
+ *     <figcaption>توضیح فارسی…</figcaption>
+ *   </figure>
+ *
+ * امکانات:
+ *   • شروع خودکار هنگام دیده‌شدن (IntersectionObserver)
+ *   • دکمه‌های پخش/توقف و شروع دوباره + انتخاب سرعت (0.5× / 1× / 2×)
+ *   • خط‌کش زمان و نشانگر زنده (Playhead) برای عملگرهای زمانی
+ *   • توقف خودکار خارج از دید، حالت ایستا برای prefers-reduced-motion
+ *   • برچسب‌های aria فارسی و کامنت‌های فارسی؛ بدون وابستگی به هیچ کتابخانه‌ای
+ *
+ * قرارداد ReactiveX: ماربل دایره = onNext، خط عمودی | = onComplete،
+ * دایره‌ی قرمز × = onError. محور زمان همیشه از چپ به راست است (LTR).
  */
+(function () {
+  'use strict';
 
-(function() {
-    'use strict';
+  /* مدت واقعیِ یک «واحد زمان» در سرعت ۱× (میلی‌ثانیه) */
+  var UNIT_MS = 850;
 
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    // Site theme colors (matches tokens.css)
-    const colors = {
-        primary: '#0F766E',
-        primaryLight: '#14B8A6',
-        primaryDark: '#0D4F47',
-        primarySoft: 'rgba(15, 118, 110, 0.14)',
-        secondary: '#14B8A6',
-        secondarySoft: 'rgba(20, 184, 166, 0.14)',
-        accent: '#84CC16',
-        accentSoft: 'rgba(132, 204, 22, 0.16)',
-        success: '#10B981',
-        successSoft: 'rgba(16, 185, 129, 0.16)',
-        warning: '#F59E0B',
-        warningSoft: 'rgba(245, 158, 11, 0.16)',
-        danger: '#EF4444',
-        dangerSoft: 'rgba(239, 68, 68, 0.16)',
-        info: '#06B6D4',
-        infoSoft: 'rgba(6, 182, 212, 0.16)',
-        textMain: 'var(--text-main, #E2E8F0)',
-        textMuted: 'var(--text-muted, #94A3B8)',
-        bgSurface: 'var(--bg-surface, #112623)',
-        bgSurfaceElevated: 'var(--bg-surface-elevated, #163531)',
-        borderSubtle: 'var(--border-subtle, #1E2D2B)',
-        borderNormal: 'var(--border-normal, #243533)'
-    };
+  /* نمادها (SVG درون دکمه‌های کنترل) */
+  var ICON_PLAY =
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>';
+  var ICON_PAUSE =
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>';
+  var ICON_RESTART =
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><polyline points="21 3 21 9 15 9"></polyline></svg>';
 
-    /**
-     * Marble Diagram Configuration
-     * 
-     * Each diagram is defined by a configuration object:
-     * {
-     *   input: [{time: number, value: any, type: 'next'|'error'|'complete'}],
-     *   operator: string,
-     *   output: [{time: number, value: any, type: 'next'|'error'|'complete'}],
-     *   options: {bufferSize?: number, debounceTime?: number, ...}
-     * }
-     */
-    
-    /**
-     * Event types for marble diagrams
-     */
-    const EventType = {
-        NEXT: 'next',
-        ERROR: 'error',
-        COMPLETE: 'complete'
-    };
+  /* ==========================================================================
+     کاتالوگ عملگرها
+     هر ورودی:
+       title : عنوان فارسی
+       op    : نام عملگر/عبارت داخل جعبه (LTR)
+       tracks: آرایه‌ی ردیف‌ها. هر ردیف:
+               { label, role: 'source'|'out'|'op', color?: 'info'|'warning',
+                 events: [[t, value, kind?]] }
+               kind: 'complete' | 'error' | 'drop' (پیش‌فرض onNext)
+     ========================================================================== */
+  var CATALOG = {
+    /* ---------- ساخت و انتشار جریان ---------- */
+    lifecycle: {
+      title: 'چرخه‌ی حیات Observable: onNext، onComplete و onError',
+      op: null,
+      tracks: [
+        {
+          label: 'myObservable.subscribe(observer)',
+          role: 'source',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.5, 'C'],
+            [3.5, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'جریان مقدارها را یکی‌یکی می‌فرستد (onNext) و در پایان با onComplete بسته می‌شود؛ پس از آن هیچ رویدادی نمی‌رسد.',
+    },
 
-    /**
-     * Animation state
-     */
-    const AnimationState = {
-        STOPPED: 'stopped',
-        PLAYING: 'playing',
-        PAUSED: 'paused'
-    };
+    just: {
+      title: 'just — انتشار چند مقدار ثابت',
+      op: 'just("Hello", "World")',
+      tracks: [
+        {
+          label: 'Observable.just(...)',
+          role: 'source',
+          events: [
+            [0.5, 'Hello'],
+            [1.4, 'World'],
+            [2.4, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'just مقادیر داده‌شده را به‌ترتیب منتشر می‌کند و بلافاصله onComplete می‌فرستد. («Hello» به‌دلیل عرض، کوچک‌تر نمایش داده شده است.)',
+    },
 
-    /**
-     * Default animation configuration
-     */
-    const DEFAULT_CONFIG = {
-        duration: 5000,           // Total animation duration in ms
-        marbleSize: 20,          // Size of marble (circle) in pixels
-        lineHeight: 4,           // Height of the stream line
-        spacing: 60,             // Minimum spacing between marbles
-        trackHeight: 100,        // Height of each track
-        trackSpacing: 40,       // Spacing between tracks
-        speed: 1.0,              // Playback speed (1.0 = normal)
-        marbleColors: [
-            '#14B8A6', '#0F766E', '#84CC16', '#06B6D4', '#F59E0B', '#EF4444'
-        ]
-    };
+    from: {
+      title: 'from — تبدیل آرایه/لیست به جریان',
+      op: 'fromArray(1, 2, 3)',
+      tracks: [
+        {
+          label: 'Observable.from(...)',
+          role: 'source',
+          events: [
+            [0.5, '1'],
+            [1.2, '2'],
+            [1.9, '3'],
+            [2.7, '', 'complete'],
+          ],
+        },
+      ],
+      caption: 'هر آیتم آرایه به‌صورت یک onNext منتشر می‌شود؛ سپس onComplete.',
+    },
 
-    /**
-     * Predefined operator configurations
-     */
-    const OPERATOR_CONFIGS = {
-        map: {
-            input: [
-                {time: 0, value: 'A', type: EventType.NEXT},
-                {time: 1000, value: 'B', type: EventType.NEXT},
-                {time: 2000, value: 'C', type: EventType.NEXT},
-                {time: 3000, type: EventType.COMPLETE}
-            ],
-            operator: 'map(x => x.toLowerCase())',
-            output: [
-                {time: 1000, value: 'a', type: EventType.NEXT},
-                {time: 2000, value: 'b', type: EventType.NEXT},
-                {time: 3000, value: 'c', type: EventType.NEXT},
-                {time: 4000, type: EventType.COMPLETE}
-            ]
+    range: {
+      title: 'range — تولید یک بازه‌ی عددی',
+      op: 'range(1, 5)',
+      tracks: [
+        {
+          label: 'Observable.range(1, 5)',
+          role: 'source',
+          events: [
+            [0.4, '1'],
+            [0.9, '2'],
+            [1.4, '3'],
+            [1.9, '4'],
+            [2.4, '5'],
+            [3.0, '', 'complete'],
+          ],
         },
-        filter: {
-            input: [
-                {time: 0, value: 1, type: EventType.NEXT},
-                {time: 800, value: 2, type: EventType.NEXT},
-                {time: 1600, value: 1, type: EventType.NEXT},
-                {time: 2400, value: 3, type: EventType.NEXT},
-                {time: 3200, value: 2, type: EventType.NEXT},
-                {time: 4000, type: EventType.COMPLETE}
-            ],
-            operator: 'filter(x => x > 1)',
-            output: [
-                {time: 1500, value: 2, type: EventType.NEXT},
-                {time: 3000, value: 3, type: EventType.NEXT},
-                {time: 4500, value: 2, type: EventType.NEXT},
-                {time: 5000, type: EventType.COMPLETE}
-            ]
-        },
-        take: {
-            input: [
-                {time: 0, value: 1, type: EventType.NEXT},
-                {time: 500, value: 2, type: EventType.NEXT},
-                {time: 1000, value: 3, type: EventType.NEXT},
-                {time: 1500, value: 4, type: EventType.NEXT},
-                {time: 2000, value: 5, type: EventType.NEXT},
-                {time: 2500, type: EventType.COMPLETE}
-            ],
-            operator: 'take(3)',
-            output: [
-                {time: 1000, value: 1, type: EventType.NEXT},
-                {time: 1500, value: 2, type: EventType.NEXT},
-                {time: 2000, value: 3, type: EventType.NEXT},
-                {time: 2500, type: EventType.COMPLETE}
-            ]
-        },
-        debounce: {
-            input: [
-                {time: 0, value: 'a', type: EventType.NEXT},
-                {time: 200, value: 'ab', type: EventType.NEXT},
-                {time: 400, value: 'abc', type: EventType.NEXT},
-                {time: 1500, value: 'abcd', type: EventType.NEXT}
-            ],
-            operator: 'debounce(300ms)',
-            output: [
-                {time: 1800, value: 'abcd', type: EventType.NEXT}
-            ],
-            options: {debounceTime: 300}
-        },
-        throttleFirst: {
-            input: [
-                {time: 0, value: 'click', type: EventType.NEXT},
-                {time: 200, value: 'click', type: EventType.NEXT},
-                {time: 400, value: 'click', type: EventType.NEXT},
-                {time: 1500, value: 'click', type: EventType.NEXT}
-            ],
-            operator: 'throttleFirst(500ms)',
-            output: [
-                {time: 1000, value: 'click', type: EventType.NEXT},
-                {time: 2000, value: 'click', type: EventType.NEXT}
-            ],
-            options: {throttleTime: 500}
-        },
-        flatMap: {
-            input: [
-                {time: 0, value: 'A', type: EventType.NEXT},
-                {time: 1500, value: 'B', type: EventType.NEXT},
-                {time: 3000, type: EventType.COMPLETE}
-            ],
-            operator: 'flatMap(x => of(x+1, x+2))',
-            output: [
-                {time: 500, value: 'A1', type: EventType.NEXT},
-                {time: 800, value: 'A2', type: EventType.NEXT},
-                {time: 1800, value: 'B1', type: EventType.NEXT},
-                {time: 2100, value: 'B2', type: EventType.NEXT},
-                {time: 3500, type: EventType.COMPLETE}
-            ]
-        },
-        concatMap: {
-            input: [
-                {time: 0, value: 'A', type: EventType.NEXT},
-                {time: 1500, value: 'B', type: EventType.NEXT},
-                {time: 3000, type: EventType.COMPLETE}
-            ],
-            operator: 'concatMap(x => of(x+1, x+2))',
-            output: [
-                {time: 500, value: 'A1', type: EventType.NEXT},
-                {time: 1000, value: 'A2', type: EventType.NEXT},
-                {time: 2000, value: 'B1', type: EventType.NEXT},
-                {time: 2500, value: 'B2', type: EventType.NEXT},
-                {time: 3500, type: EventType.COMPLETE}
-            ]
-        },
-        switchMap: {
-            input: [
-                {time: 0, value: 'A', type: EventType.NEXT},
-                {time: 800, value: 'B', type: EventType.NEXT},
-                {time: 1600, value: 'C', type: EventType.NEXT},
-                {time: 2400, type: EventType.COMPLETE}
-            ],
-            operator: 'switchMap(x => timer(500).mapTo(x))',
-            output: [
-                {time: 1300, value: 'B', type: EventType.NEXT},
-                {time: 2100, value: 'C', type: EventType.NEXT},
-                {time: 3000, type: EventType.COMPLETE}
-            ]
-        },
-        zip: {
-            input: [
-                {time: 0, value: 'A', type: EventType.NEXT, track: 0},
-                {time: 1000, value: 'B', type: EventType.NEXT, track: 0},
-                {time: 500, value: 1, type: EventType.NEXT, track: 1},
-                {time: 1500, value: 2, type: EventType.NEXT, track: 1},
-                {time: 2000, type: EventType.COMPLETE, track: 0},
-                {time: 2000, type: EventType.COMPLETE, track: 1}
-            ],
-            operator: 'zip',
-            output: [
-                {time: 1500, value: '(A,1)', type: EventType.NEXT},
-                {time: 2000, value: '(B,2)', type: EventType.NEXT},
-                {time: 2500, type: EventType.COMPLETE}
-            ]
-        },
-        merge: {
-            input: [
-                {time: 0, value: 'A', type: EventType.NEXT, track: 0},
-                {time: 1000, value: 'B', type: EventType.NEXT, track: 0},
-                {time: 500, value: 1, type: EventType.NEXT, track: 1},
-                {time: 1500, value: 2, type: EventType.NEXT, track: 1},
-                {time: 2000, type: EventType.COMPLETE, track: 0},
-                {time: 2000, type: EventType.COMPLETE, track: 1}
-            ],
-            operator: 'merge',
-            output: [
-                {time: 500, value: 1, type: EventType.NEXT},
-                {time: 1000, value: 'A', type: EventType.NEXT},
-                {time: 1500, value: 'B', type: EventType.NEXT},
-                {time: 1500, value: 2, type: EventType.NEXT},
-                {time: 2500, type: EventType.COMPLETE}
-            ]
-        },
-        buffer: {
-            input: [
-                {time: 0, value: 1, type: EventType.NEXT},
-                {time: 200, value: 2, type: EventType.NEXT},
-                {time: 400, value: 3, type: EventType.NEXT},
-                {time: 600, value: 4, type: EventType.NEXT},
-                {time: 800, value: 5, type: EventType.NEXT},
-                {time: 1000, type: EventType.COMPLETE}
-            ],
-            operator: 'buffer(3)',
-            output: [
-                {time: 1000, value: '[1,2,3]', type: EventType.NEXT},
-                {time: 1500, value: '[4,5]', type: EventType.NEXT},
-                {time: 2000, type: EventType.COMPLETE}
-            ],
-            options: {bufferSize: 3}
-        }
-    };
+      ],
+      caption: 'range(start, count) پنج مقدار پشت‌سرهم می‌فرستد و تمام می‌شود.',
+    },
 
-    /**
-     * Marble Diagram Animation Class
-     * 
-     * Creates and manages animated marble diagrams for Rx operators
-     */
-    class MarbleDiagram {
-        constructor(container, config) {
-            this.container = container;
-            this.config = config;
-            this.state = AnimationState.STOPPED;
-            this.startTime = 0;
-            this.pauseTime = 0;
-            this.animationFrame = null;
-            this.observer = null;
-            
-            // Merge default config with provided config
-            this.settings = {...DEFAULT_CONFIG, ...config};
-            
-            // Initialize the diagram
-            this.init();
-        }
-        
-        init() {
-            // Create the diagram structure
-            this.createContainer();
-            this.createHeader();
-            this.createTracks();
-            this.createControls();
-            this.createTimer();
-            
-            // Setup IntersectionObserver for lazy loading
-            this.setupIntersectionObserver();
-            
-            // Setup reduced motion
-            if (prefersReducedMotion) {
-                this.reduceMotion();
-            }
-        }
-        
-        createContainer() {
-            this.container.style.position = 'relative';
-            this.container.style.direction = 'ltr';
-            this.container.style.fontFamily = 'var(--font-sans, sans-serif)';
-            this.container.style.margin = '2rem 0';
-            this.container.style.padding = '1.5rem';
-            this.container.style.borderRadius = 'var(--radius-lg)';
-            this.container.style.background = colors.bgSurfaceElevated;
-            this.container.style.border = '1px solid ' + colors.borderSubtle;
-            this.container.style.boxShadow = 'var(--shadow-sm)';
-            this.container.style.overflow = 'hidden';
-        }
-        
-        createHeader() {
-            const header = document.createElement('div');
-            header.style.display = 'flex';
-            header.style.alignItems = 'center';
-            header.style.justifyContent = 'space-between';
-            header.style.paddingBottom = '1rem';
-            header.style.borderBottom = '1px solid ' + colors.borderSubtle;
-            header.style.marginBottom = '1rem';
-            
-            const title = document.createElement('span');
-            title.textContent = 'Marble Diagram: ' + this.config.operator;
-            title.style.fontSize = '1.1rem';
-            title.style.fontWeight = '800';
-            title.style.color = colors.primaryLight;
-            
-            header.appendChild(title);
-            this.container.appendChild(header);
-        }
-        
-        createTracks() {
-            const tracksContainer = document.createElement('div');
-            tracksContainer.style.position = 'relative';
-            tracksContainer.style.minHeight = '200px';
-            
-            // Create input track(s)
-            this.inputTracks = this.createTrackGroup('input', this.config.input);
-            
-            // Create operator label
-            this.createOperatorLabel(tracksContainer);
-            
-            // Create output track
-            this.outputTrack = this.createTrackGroup('output', this.config.output);
-            
-            tracksContainer.appendChild(this.inputTracks);
-            tracksContainer.appendChild(this.outputTrack);
-            this.container.appendChild(tracksContainer);
-        }
-        
-        createTrackGroup(type, events) {
-            const group = document.createElement('div');
-            group.style.position = 'relative';
-            group.style.display = 'flex';
-            group.style.flexDirection = 'column';
-            group.style.gap = '8px';
-            group.style.marginBottom = '1rem';
-            
-            // Group events by track
-            const eventsByTrack = {};
-            events.forEach((event, index) => {
-                const track = event.track || 0;
-                if (!eventsByTrack[track]) {
-                    eventsByTrack[track] = [];
-                }
-                eventsByTrack[track].push(event);
-            });
-            
-            // Create a track for each group
-            for (const trackNum in eventsByTrack) {
-                const trackEvents = eventsByTrack[trackNum];
-                const track = this.createTrack(type + '-' + trackNum, trackEvents);
-                group.appendChild(track);
-            }
-            
-            return group;
-        }
-        
-        createTrack(name, events) {
-            const track = document.createElement('div');
-            track.className = 'rx-marble-track';
-            track.dataset.name = name;
-            track.style.position = 'relative';
-            track.style.height = this.settings.trackHeight + 'px';
-            track.style.background = 'transparent';
-            
-            // Create track line
-            const line = document.createElement('div');
-            line.className = 'rx-marble-line';
-            line.style.position = 'absolute';
-            line.style.left = '0';
-            line.style.top = '50%';
-            line.style.width = '100%';
-            line.style.height = this.settings.lineHeight + 'px';
-            line.style.background = colors.borderNormal;
-            line.style.borderRadius = (this.settings.lineHeight / 2) + 'px';
-            line.style.transform = 'translateY(-50%)';
-            track.appendChild(line);
-            
-            // Create completion marker
-            const completeMarker = document.createElement('div');
-            completeMarker.className = 'rx-marble-complete';
-            completeMarker.style.position = 'absolute';
-            completeMarker.style.right = '0';
-            completeMarker.style.top = '50%';
-            completeMarker.style.width = '20px';
-            completeMarker.style.height = '20px';
-            completeMarker.style.background = colors.success;
-            completeMarker.style.borderRadius = '50%';
-            completeMarker.style.transform = 'translate(50%, -50%)';
-            completeMarker.style.opacity = '0';
-            completeMarker.style.transition = 'opacity 0.3s';
-            completeMarker.textContent = '|';
-            completeMarker.style.display = 'flex';
-            completeMarker.style.alignItems = 'center';
-            completeMarker.style.justifyContent = 'center';
-            completeMarker.style.color = '#fff';
-            completeMarker.style.fontSize = '12px';
-            completeMarker.style.fontWeight = 'bold';
-            track.appendChild(completeMarker);
-            
-            // Store for later reference
-            track.dataset.completeMarker = 'rx-marble-complete';
-            
-            // Create marbles for each event
-            events.forEach((event, index) => {
-                const marble = this.createMarble(event, index);
-                track.appendChild(marble);
-            });
-            
-            return track;
-        }
-        
-        createMarble(event, index) {
-            const marble = document.createElement('div');
-            marble.className = 'rx-marble';
-            marble.dataset.index = index;
-            marble.dataset.type = event.type;
-            marble.dataset.value = event.value || '';
-            marble.dataset.time = event.time || 0;
-            
-            // Position will be set during animation
-            marble.style.position = 'absolute';
-            marble.style.left = '0';
-            marble.style.top = '50%';
-            marble.style.width = this.settings.marbleSize + 'px';
-            marble.style.height = this.settings.marbleSize + 'px';
-            marble.style.borderRadius = '50%';
-            marble.style.transform = 'translate(-50%, -50%)';
-            marble.style.transition = 'left 0.3s ease-out';
-            
-            // Set color based on type
-            if (event.type === EventType.ERROR) {
-                marble.style.background = colors.danger;
-                marble.textContent = 'X';
-                marble.style.display = 'flex';
-                marble.style.alignItems = 'center';
-                marble.style.justifyContent = 'center';
-                marble.style.color = '#fff';
-                marble.style.fontSize = '12px';
-                marble.style.fontWeight = 'bold';
-            } else if (event.type === EventType.COMPLETE) {
-                marble.style.background = colors.success;
-                marble.textContent = '|';
-                marble.style.display = 'flex';
-                marble.style.alignItems = 'center';
-                marble.style.justifyContent = 'center';
-                marble.style.color = '#fff';
-                marble.style.fontSize = '14px';
-                marble.style.fontWeight = 'bold';
-            } else {
-                // NEXT event - use color from palette
-                const colorIndex = index % this.settings.marbleColors.length;
-                marble.style.background = this.settings.marbleColors[colorIndex];
-                marble.textContent = event.value || '';
-                marble.style.display = 'flex';
-                marble.style.alignItems = 'center';
-                marble.style.justifyContent = 'center';
-                marble.style.color = '#fff';
-                marble.style.fontSize = '11px';
-                marble.style.fontWeight = 'bold';
-            }
-            
-            return marble;
-        }
-        
-        createOperatorLabel(container) {
-            const label = document.createElement('div');
-            label.className = 'rx-marble-operator';
-            label.textContent = this.config.operator;
-            label.style.position = 'absolute';
-            label.style.left = '50%';
-            label.style.top = '50%';
-            label.style.transform = 'translate(-50%, -50%)';
-            label.style.padding = '8px 16px';
-            label.style.background = colors.primary;
-            label.style.color = '#fff';
-            label.style.fontSize = '0.9rem';
-            label.style.fontWeight = '800';
-            label.style.borderRadius = 'var(--radius-md)';
-            label.style.zIndex = '10';
-            label.style.whiteSpace = 'nowrap';
-            label.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
-            
-            container.appendChild(label);
-        }
-        
-        createControls() {
-            const controls = document.createElement('div');
-            controls.className = 'rx-marble-controls';
-            controls.style.display = 'flex';
-            controls.style.gap = '0.75rem';
-            controls.style.marginTop = '1rem';
-            controls.style.justifyContent = 'center';
-            
-            // Play/Pause button
-            const playBtn = document.createElement('button');
-            playBtn.className = 'rx-marble-btn rx-marble-play';
-            playBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-            playBtn.title = 'Play';
-            playBtn.style.padding = '0.5rem';
-            playBtn.style.background = colors.primary;
-            playBtn.style.color = '#fff';
-            playBtn.style.border = 'none';
-            playBtn.style.borderRadius = 'var(--radius-md)';
-            playBtn.style.cursor = 'pointer';
-            playBtn.style.transition = 'all 0.2s';
-            playBtn.addEventListener('click', () => this.togglePlay());
-            
-            // Restart button
-            const restartBtn = document.createElement('button');
-            restartBtn.className = 'rx-marble-btn rx-marble-restart';
-            restartBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 5-5 5 5-5 5z"/></svg>';
-            restartBtn.title = 'Restart';
-            restartBtn.style.padding = '0.5rem';
-            restartBtn.style.background = colors.secondary;
-            restartBtn.style.color = '#fff';
-            restartBtn.style.border = 'none';
-            restartBtn.style.borderRadius = 'var(--radius-md)';
-            restartBtn.style.cursor = 'pointer';
-            restartBtn.style.transition = 'all 0.2s';
-            restartBtn.addEventListener('click', () => this.restart());
-            
-            // Speed control
-            const speedControl = document.createElement('div');
-            speedControl.className = 'rx-marble-speed';
-            speedControl.style.display = 'flex';
-            speedControl.style.alignItems = 'center';
-            speedControl.style.gap = '0.5rem';
-            
-            const speedLabel = document.createElement('span');
-            speedLabel.textContent = 'Speed:';
-            speedLabel.style.fontSize = '0.85rem';
-            speedLabel.style.color = colors.textMuted;
-            
-            const speedSlider = document.createElement('input');
-            speedSlider.type = 'range';
-            speedSlider.min = '0.5';
-            speedSlider.max = '2';
-            speedSlider.step = '0.1';
-            speedSlider.value = this.settings.speed;
-            speedSlider.style.width = '100px';
-            speedSlider.addEventListener('input', (e) => {
-                this.settings.speed = parseFloat(e.target.value);
-            });
-            
-            speedControl.appendChild(speedLabel);
-            speedControl.appendChild(speedSlider);
-            
-            controls.appendChild(playBtn);
-            controls.appendChild(restartBtn);
-            controls.appendChild(speedControl);
-            
-            this.container.appendChild(controls);
-            
-            // Store references
-            this.playBtn = playBtn;
-            this.restartBtn = restartBtn;
-        }
-        
-        createTimer() {
-            const timer = document.createElement('div');
-            timer.className = 'rx-marble-timer';
-            timer.textContent = '0.0s / ' + (this.settings.duration / 1000) + 's';
-            timer.style.textAlign = 'center';
-            timer.style.marginTop = '0.5rem';
-            timer.style.fontSize = '0.85rem';
-            timer.style.color = colors.textMuted;
-            
-            this.container.appendChild(timer);
-            this.timerElement = timer;
-        }
-        
-        setupIntersectionObserver() {
-            if (!('IntersectionObserver' in window)) {
-                // Fallback: start animation immediately
-                this.start();
-                return;
-            }
-            
-            this.observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Start animation when visible
-                        this.start();
-                        // Stop observing after first intersection
-                        this.observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.5
-            });
-            
-            this.observer.observe(this.container);
-        }
-        
-        reduceMotion() {
-            // For users who prefer reduced motion, show static diagram
-            this.start();
-            this.pause();
-            
-            // Position all marbles at their final positions
-            const now = Date.now();
-            this.updateMarblePositions(now, this.settings.duration);
-        }
-        
-        start() {
-            if (prefersReducedMotion) return;
-            
-            if (this.state === AnimationState.PLAYING) return;
-            
-            this.state = AnimationState.PLAYING;
-            this.startTime = Date.now() - (this.pauseTime || 0);
-            this.pauseTime = 0;
-            
-            // Update button icon
-            this.playBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
-            this.playBtn.title = 'Pause';
-            
-            // Start animation loop
-            this.animate();
-        }
-        
-        pause() {
-            if (prefersReducedMotion) return;
-            
-            if (this.state !== AnimationState.PLAYING) return;
-            
-            this.state = AnimationState.PAUSED;
-            this.pauseTime = Date.now() - this.startTime;
-            
-            // Update button icon
-            this.playBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-            this.playBtn.title = 'Play';
-            
-            // Cancel animation frame
-            if (this.animationFrame) {
-                cancelAnimationFrame(this.animationFrame);
-                this.animationFrame = null;
-            }
-        }
-        
-        togglePlay() {
-            if (this.state === AnimationState.PLAYING) {
-                this.pause();
-            } else {
-                this.start();
-            }
-        }
-        
-        restart() {
-            if (prefersReducedMotion) return;
-            
-            this.state = AnimationState.STOPPED;
-            this.startTime = 0;
-            this.pauseTime = 0;
-            
-            // Reset all marbles to start position
-            this.resetMarbles();
-            
-            // Update button icon
-            this.playBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-            this.playBtn.title = 'Play';
-            
-            // Update timer
-            if (this.timerElement) {
-                this.timerElement.textContent = '0.0s / ' + (this.settings.duration / 1000) + 's';
-            }
-            
-            // Cancel animation frame
-            if (this.animationFrame) {
-                cancelAnimationFrame(this.animationFrame);
-                this.animationFrame = null;
-            }
-            
-            // Start again
-            this.start();
-        }
-        
-        resetMarbles() {
-            const marbles = this.container.querySelectorAll('.rx-marble');
-            marbles.forEach(marble => {
-                marble.style.left = '0';
-                marble.style.transform = 'translate(-50%, -50%)';
-            });
-            
-            const completeMarkers = this.container.querySelectorAll('.rx-marble-complete');
-            completeMarkers.forEach(marker => {
-                marker.style.opacity = '0';
-            });
-        }
-        
-        animate() {
-            if (prefersReducedMotion) return;
-            
-            if (this.state !== AnimationState.PLAYING) return;
-            
-            const now = Date.now();
-            const elapsed = now - this.startTime;
-            
-            // Update marble positions
-            this.updateMarblePositions(now, elapsed);
-            
-            // Update timer
-            this.updateTimer(elapsed);
-            
-            // Continue animation
-            this.animationFrame = requestAnimationFrame(() => this.animate());
-        }
-        
-        updateMarblePositions(now, elapsed) {
-            const progress = Math.min(elapsed / this.settings.duration, 1);
-            
-            // Get all tracks
-            const tracks = this.container.querySelectorAll('.rx-marble-track');
-            
-            tracks.forEach(track => {
-                const marbles = track.querySelectorAll('.rx-marble');
-                const trackWidth = track.offsetWidth;
-                
-                marbles.forEach(marble => {
-                    const eventTime = parseInt(marble.dataset.time) || 0;
-                    const eventDuration = this.settings.duration;
-                    
-                    // Calculate position based on event time and elapsed time
-                    let position = 0;
-                    if (elapsed >= eventTime) {
-                        const timeSinceEvent = elapsed - eventTime;
-                        const eventProgress = Math.min(timeSinceEvent / (eventDuration - eventTime), 1);
-                        position = (trackWidth * eventProgress) * this.settings.speed;
-                    }
-                    
-                    marble.style.left = position + 'px';
-                });
-                
-                // Update complete marker
-                const completeMarker = track.querySelector('.rx-marble-complete');
-                if (completeMarker && progress >= 1) {
-                    completeMarker.style.opacity = '1';
-                }
-            });
-        }
-        
-        updateTimer(elapsed) {
-            if (!this.timerElement) return;
-            
-            const currentTime = (elapsed / 1000).toFixed(1);
-            const totalTime = this.settings.duration / 1000;
-            this.timerElement.textContent = currentTime + 's / ' + totalTime + 's';
-        }
-        
-        destroy() {
-            // Clean up
-            if (this.animationFrame) {
-                cancelAnimationFrame(this.animationFrame);
-                this.animationFrame = null;
-            }
-            
-            if (this.observer) {
-                this.observer.disconnect();
-                this.observer = null;
-            }
-        }
+    repeat: {
+      title: 'repeat — تکرار جریان',
+      op: 'range(1, 3).repeat(2)',
+      tracks: [
+        {
+          label: 'source',
+          role: 'source',
+          events: [
+            [0.4, '1'],
+            [0.9, '2'],
+            [1.4, '3'],
+            [2.2, '1'],
+            [2.7, '2'],
+            [3.2, '3'],
+            [3.9, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'repeat(2) کل جریان را دوبار از سر می‌گیرد. اگر بدون آرگومان صدا شود، جریان برای همیشه تکرار می‌شود و هرگز complete نمی‌شود.',
+    },
+
+    interval: {
+      title: 'interval — انتشار دوره‌ای بی‌نهایت',
+      op: 'interval(1000)',
+      tracks: [
+        {
+          label: 'Observable.interval(1s)',
+          role: 'source',
+          events: [
+            [1, '0'],
+            [2, '1'],
+            [3, '2'],
+            [4, '3'],
+            [5, '4'],
+          ],
+        },
+      ],
+      caption:
+        'interval هر ثانیه یک عدد صفر‌محور می‌فرستد و هرگز complete نمی‌شود؛ برای محدودکردن از take(n) استفاده کنید.',
+    },
+
+    timer: {
+      title: 'timer — یک مقدار پس از تأخیر',
+      op: 'timer(2000)',
+      tracks: [
+        {
+          label: 'Observable.timer(2s)',
+          role: 'source',
+          events: [
+            [2, '0'],
+            [2.7, '', 'complete'],
+          ],
+        },
+      ],
+      caption: 'timer پس از تأخیر مشخص‌شده یک مقدار منتشر می‌کند و جریان را می‌بندد.',
+    },
+
+    /* ---------- تبدیل (Transformation) ---------- */
+    map: {
+      title: 'map — تبدیل هر المان',
+      op: 'map(x -> x * 2)',
+      tracks: [
+        {
+          label: 'ObservableSource',
+          role: 'source',
+          events: [
+            [0.5, '1'],
+            [1.5, '2'],
+            [2.5, '3'],
+            [3.5, '', 'complete'],
+          ],
+        },
+        { label: 'map(x * 2)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.5, '2'],
+            [1.5, '4'],
+            [2.5, '6'],
+            [3.5, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'map روی هر مقدار اعمال می‌شود و در همان لحظه‌ی انتشار، مقدار جدید به پایین می‌رود؛ زمان‌بندی جریان عوض نمی‌شود.',
+    },
+
+    filter: {
+      title: 'filter — عبور فقط المان‌های شرطی',
+      op: 'filter(x -> x % 2 == 0)',
+      tracks: [
+        {
+          label: 'source: 1, 2, 3, 4',
+          role: 'source',
+          events: [
+            [0.5, '1'],
+            [1.2, '2'],
+            [1.9, '3'],
+            [2.6, '4'],
+            [3.4, '', 'complete'],
+          ],
+        },
+        { label: 'filter(even)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [1.2, '2'],
+            [2.6, '4'],
+            [3.4, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'المان‌های ردشده هرگز به Observer نمی‌رسند؛ onComplete و onError همیشه از فیلتر عبور می‌کنند.',
+    },
+
+    distinct: {
+      title: 'distinct — حذف مقادیر تکراری',
+      op: 'distinct()',
+      tracks: [
+        {
+          label: 'source: 1, 2, 1, 3, 2',
+          role: 'source',
+          events: [
+            [0.5, '1'],
+            [1.1, '2'],
+            [1.7, '1'],
+            [2.3, '3'],
+            [2.9, '2'],
+            [3.6, '', 'complete'],
+          ],
+        },
+        { label: 'distinct()', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.5, '1'],
+            [1.1, '2'],
+            [2.3, '3'],
+            [3.6, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'هر مقدار فقط بار اول منتشر می‌شود؛ تکرارهای بعدی (۱ در t=1.7 و ۲ در t=2.9) حذف می‌شوند.',
+    },
+
+    take: {
+      title: 'take — فقط n المان اول',
+      op: 'take(3)',
+      tracks: [
+        {
+          label: 'source',
+          role: 'source',
+          events: [
+            [0.4, '1'],
+            [0.9, '2'],
+            [1.4, '3'],
+            [1.9, '4'],
+            [2.4, '5'],
+            [2.9, '', 'complete'],
+          ],
+        },
+        { label: 'take(3)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.4, '1'],
+            [0.9, '2'],
+            [1.4, '3'],
+            [1.45, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'پس از رسیدن المان سوم، خروجی بلافاصله onComplete می‌فرستد و جریان منبع (4 و 5) دیگر اهمیتی ندارد.',
+    },
+
+    skip: {
+      title: 'skip — نادیده‌گرفتن n المان اول',
+      op: 'skip(2)',
+      tracks: [
+        {
+          label: 'source: 1..5',
+          role: 'source',
+          events: [
+            [0.4, '1'],
+            [0.9, '2'],
+            [1.4, '3'],
+            [1.9, '4'],
+            [2.4, '5'],
+            [2.9, '', 'complete'],
+          ],
+        },
+        { label: 'skip(2)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [1.4, '3'],
+            [1.9, '4'],
+            [2.4, '5'],
+            [2.9, '', 'complete'],
+          ],
+        },
+      ],
+      caption: 'دو المان اول در منبع منتشر می‌شوند ولی به Observer نمی‌رسند.',
+    },
+
+    takeWhile: {
+      title: 'takeWhile — تا وقتی شرط برقرار است',
+      op: 'takeWhile(x -> x < 4)',
+      tracks: [
+        {
+          label: 'source: 1..5',
+          role: 'source',
+          events: [
+            [0.4, '1'],
+            [0.9, '2'],
+            [1.4, '3'],
+            [1.9, '4'],
+            [2.4, '5'],
+          ],
+        },
+        { label: 'takeWhile(x < 4)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.4, '1'],
+            [0.9, '2'],
+            [1.4, '3'],
+            [1.9, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'به‌محض اینکه اولین مقدار نامطلوب (۴) برسد، جریان خروجی کامل می‌شود؛ مقدار ۴ و ۵ هرگز دیده نمی‌شوند.',
+    },
+
+    /* ---------- ترکیب جریان‌ها (Combination) ---------- */
+    flatMap: {
+      title: 'flatMap — اتصال موازی جریان‌های داخلی',
+      op: 'flatMap(id -> fetchDetails(id))',
+      tracks: [
+        {
+          label: 'source: A, B',
+          role: 'source',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.6, '', 'complete'],
+          ],
+        },
+        { label: 'flatMap(fetch)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.9, 'A₁'],
+            [1.3, 'A₂'],
+            [1.9, 'B₁'],
+            [2.3, 'B₂'],
+            [2.6, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'برای هر مقدار منبع، یک جریان داخلی ساخته و نتایج با هم ترکیب می‌شوند؛ ترتیب تضمینی ندارد و خروجی‌ها می‌توانند به‌هم بخورند.',
+    },
+
+    concatMap: {
+      title: 'concatMap — اتصال ترتیبی جریان‌های داخلی',
+      op: 'concatMap(id -> fetchDetails(id))',
+      tracks: [
+        {
+          label: 'source: A, B',
+          role: 'source',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.7, '', 'complete'],
+          ],
+        },
+        { label: 'concatMap(fetch)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.9, 'A₁'],
+            [1.4, 'A₂'],
+            [1.9, 'B₁'],
+            [2.4, 'B₂'],
+            [2.7, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'جریان داخلی بعدی فقط بعد از اتمام قبلی شروع می‌شود؛ خروجی همیشه ترتیبی و قطعی است.',
+    },
+
+    switchMap: {
+      title: 'switchMap — پرش به جریان داخلیِ آخر',
+      op: 'switchMap(id -> fetchDetails(id))',
+      tracks: [
+        {
+          label: 'source: A, B',
+          role: 'source',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.6, '', 'complete'],
+          ],
+        },
+        { label: 'switchMap(fetch)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.9, 'A₁'],
+            [1.3, 'A₂'],
+            [1.75, 'A₃', 'drop'],
+            [1.9, 'B₁'],
+            [2.3, 'B₂'],
+            [2.6, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'با رسیدن مقدار جدید، جریان داخلی قبلی لغو و نتایج آن (A₃ با دایره‌ی خاکستری) دور ریخته می‌شود؛ ایده‌آل برای جستجوی زنده.',
+    },
+
+    merge: {
+      title: 'merge — ادغام موازی چند جریان',
+      op: 'sourceA.mergeWith(sourceB)',
+      tracks: [
+        {
+          label: 'sourceA',
+          role: 'source',
+          color: 'info',
+          events: [
+            [0.5, 'a₁'],
+            [1.5, 'a₂'],
+            [2.8, '', 'complete'],
+          ],
+        },
+        {
+          label: 'sourceB',
+          role: 'source',
+          color: 'warning',
+          events: [
+            [1.0, 'b₁'],
+            [2.0, 'b₂'],
+            [2.8, '', 'complete'],
+          ],
+        },
+        { label: 'merge(a, b)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.5, 'a₁'],
+            [1.0, 'b₁'],
+            [1.5, 'a₂'],
+            [2.0, 'b₂'],
+            [2.8, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'هر دو جریان موازی اندونامیک ادغام می‌شوند؛ ترتیب بر اساس زمان وقوع است و خروجی وقتی هر دو کامل شدند، کامل می‌شود.',
+    },
+
+    zip: {
+      title: 'zip — جفت‌کردن المان‌های هم‌شماره',
+      op: 'zip(sourceB)',
+      tracks: [
+        {
+          label: 'sourceA: 1, 2, 3',
+          role: 'source',
+          color: 'info',
+          events: [
+            [0.5, '1'],
+            [1.5, '2'],
+            [2.5, '3'],
+          ],
+        },
+        {
+          label: 'sourceB: a, b',
+          role: 'source',
+          color: 'warning',
+          events: [
+            [0.9, 'a'],
+            [1.9, 'b'],
+            [2.6, '', 'complete'],
+          ],
+        },
+        { label: 'zip(a, b)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.9, '1a'],
+            [1.9, '2b'],
+            [2.7, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'zip فقط زمانی منتشر می‌کند که هر دو جریان المانِ هم‌شماره داشته باشند؛ «۳» هرگز جفت پیدا نکرد و منتشر نشد.',
+    },
+
+    combineLatest: {
+      title: 'combineLatest — ترکیب آخرین مقادیر',
+      op: 'combineLatestWith(sourceB)',
+      tracks: [
+        {
+          label: 'sourceA: 1, 2',
+          role: 'source',
+          color: 'info',
+          events: [
+            [0.5, '1'],
+            [1.5, '2'],
+            [2.5, '', 'complete'],
+          ],
+        },
+        {
+          label: 'sourceB: a',
+          role: 'source',
+          color: 'warning',
+          events: [
+            [1.0, 'a'],
+            [2.0, '', 'complete'],
+          ],
+        },
+        { label: 'combineLatest(a, b)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [1.0, '1a'],
+            [1.5, '2a'],
+            [2.5, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'به‌محض رسیدن هر مقدار جدید، ترکیبِ «آخرین» مقادیر هر دو جریان منتشر می‌شود؛ قبل از رسیدن اولین مقدارِ هر دو، چیزی منتشر نمی‌شود.',
+    },
+
+    /* ---------- زمان‌بندی (Timing) ---------- */
+    buffer: {
+      title: 'buffer — بسته‌بندی المان‌ها در بازه‌های زمانی',
+      op: 'buffer(1000)',
+      tracks: [
+        {
+          label: 'source',
+          role: 'source',
+          events: [
+            [0.3, 'A'],
+            [0.6, 'B'],
+            [0.9, 'C'],
+            [1.3, 'D'],
+            [1.6, 'E'],
+            [1.9, 'F'],
+            [2.5, '', 'complete'],
+          ],
+        },
+        { label: 'buffer(1s)', role: 'op' },
+        {
+          label: 'Observer (List)',
+          role: 'out',
+          events: [
+            [1.0, '[A,B,C]', 'next'],
+            [2.0, '[D,E,F]', 'next'],
+            [2.5, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'المان‌های هر بازه‌ی یک‌ثانیه‌ای در یک لیست جمع و به‌صورت یک onNext منتشر می‌شوند.',
+    },
+
+    debounce: {
+      title: 'debounce — انتشار فقط پس از سکوت جریان',
+      op: 'debounce(600)',
+      tracks: [
+        {
+          label: 'source (تایپ کاربر)',
+          role: 'source',
+          events: [
+            [0.3, 'A'],
+            [0.6, 'B'],
+            [0.9, 'C'],
+            [2.2, 'D'],
+            [4.0, '', 'complete'],
+          ],
+        },
+        { label: 'debounce(600ms)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [1.5, 'C'],
+            [2.8, 'D'],
+            [4.0, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'منتظر آخرین مقدار می‌ماند؛ وقتی ۶۰۰ میلی‌ثانیه هیچ رویدادی نرسید، همان را منتشر می‌کند. ایده‌آل برای جستجوی زنده و جلوگیری از درخواست‌های بی‌مورد.',
+    },
+
+    throttleFirst: {
+      title: 'throttleFirst — انتشار اولین رویداد هر پنجره',
+      op: 'throttleFirst(1000)',
+      tracks: [
+        {
+          label: 'source',
+          role: 'source',
+          events: [
+            [0.2, 'A'],
+            [0.6, 'B'],
+            [1.2, 'C'],
+            [1.8, 'D'],
+            [2.4, 'E'],
+            [3.2, '', 'complete'],
+          ],
+        },
+        { label: 'throttleFirst(1s)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.2, 'A'],
+            [1.2, 'C'],
+            [2.4, 'E'],
+            [3.2, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'در هر پنجره‌ی یک‌ثانیه‌ای فقط اولین رویداد عبور می‌کند و بقیه نادیده گرفته می‌شوند؛ مناسب جلوگیری از کلیک‌های پشت‌سرهم.',
+    },
+
+    throttleLast: {
+      title: 'throttleLast (sample) — انتشار آخرین رویداد هر پنجره',
+      op: 'sample(1000)',
+      tracks: [
+        {
+          label: 'source',
+          role: 'source',
+          events: [
+            [0.2, 'A'],
+            [0.6, 'B'],
+            [1.2, 'C'],
+            [1.8, 'D'],
+            [3.0, '', 'complete'],
+          ],
+        },
+        { label: 'sample(1s)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [1.0, 'B'],
+            [2.0, 'D'],
+            [3.0, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'در پایان هر پنجره، آخرین مقدارِ رسیده منتشر می‌شود؛ مناسب گزارش‌دهی دوره‌ای از وضعیت‌های متغیر.',
+    },
+
+    /* ---------- Flowable و بک‌پرسچر ---------- */
+    flowableBuffer: {
+      title: 'Flowable + onBackpressureBuffer — هیچ چیز از دست نمی‌رود',
+      op: 'onBackpressureBuffer()',
+      tracks: [
+        {
+          label: 'منبع سریع (6 رویداد)',
+          role: 'source',
+          events: [
+            [0.2, '0'],
+            [0.4, '1'],
+            [0.6, '2'],
+            [0.8, '3'],
+            [1.0, '4'],
+            [1.2, '5'],
+            [1.5, '', 'complete'],
+          ],
+        },
+        { label: 'onBackpressureBuffer()', role: 'op' },
+        {
+          label: 'Observer کند',
+          role: 'out',
+          events: [
+            [1.8, '0'],
+            [2.2, '1'],
+            [2.6, '2'],
+            [3.0, '3'],
+            [3.4, '4'],
+            [3.8, '5'],
+            [4.2, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'رویدادهایی که Observer فرصت دریافت نداشته در بافر جمع و بعداً به‌ترتیب تحویل می‌شوند؛ حافظه‌ی بافر را محدود نگه دارید.',
+    },
+
+    flowableDrop: {
+      title: 'onBackpressureDrop — ریختن رویدادهای اضافه',
+      op: 'onBackpressureDrop()',
+      tracks: [
+        {
+          label: 'منبع سریع (دایره‌های خاکستری = ریخته‌شده)',
+          role: 'source',
+          events: [
+            [0.2, '0'],
+            [0.4, '1', 'drop'],
+            [0.6, '2'],
+            [0.8, '3', 'drop'],
+            [1.0, '4'],
+            [1.2, '5', 'drop'],
+            [1.5, '', 'complete'],
+          ],
+        },
+        { label: 'onBackpressureDrop()', role: 'op' },
+        {
+          label: 'Observer کند',
+          role: 'out',
+          events: [
+            [1.8, '0'],
+            [2.4, '2'],
+            [3.0, '4'],
+            [3.6, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'وقتی Observer آماده نیست، رویداد جدید بلافاصله ریخته می‌شود؛ برای داده‌های قابل‌تجدید (مثل نمونه‌برداری سنسور) مناسب است.',
+    },
+
+    flowableLatest: {
+      title: 'onBackpressureLatest — نگه‌داشتن فقط آخرین مقدار',
+      op: 'onBackpressureLatest()',
+      tracks: [
+        {
+          label: 'منبع سریع (خاکستری‌ها جایگزین شدند)',
+          role: 'source',
+          events: [
+            [0.2, '0'],
+            [0.4, '1', 'drop'],
+            [0.6, '2', 'drop'],
+            [0.8, '3', 'drop'],
+            [1.0, '4', 'drop'],
+            [1.2, '5'],
+            [1.5, '', 'complete'],
+          ],
+        },
+        { label: 'onBackpressureLatest()', role: 'op' },
+        {
+          label: 'Observer کند',
+          role: 'out',
+          events: [
+            [1.8, '0'],
+            [2.8, '5'],
+            [3.6, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'بافر همیشه فقط یک مقدار (آخرین) را نگه می‌دارد؛ مقادیر میانی با آخرین جایگزین می‌شوند و در نهایت همان آخرین تحویل می‌شود.',
+    },
+
+    /* ---------- Subjectها (جریان داغ) ---------- */
+    publishSubject: {
+      title: 'PublishSubject — انتشار فقط به شنونده‌های فعلی',
+      op: 'PublishSubject<String>',
+      tracks: [
+        {
+          label: 'subject (جریان داغ)',
+          role: 'source',
+          color: 'info',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.6, '', 'complete'],
+          ],
+        },
+        {
+          label: 'Observer۱ (از ابتدا)',
+          role: 'out',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.6, '', 'complete'],
+          ],
+        },
+        {
+          label: 'Observer۲ (از t=1)',
+          role: 'out',
+          color: 'warning',
+          events: [
+            [1.5, 'B'],
+            [2.6, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'Subject هم Observer است هم Observable: شنونده‌ای که دیر برسد، رویدادهای قبلی را از دست می‌دهد.',
+    },
+
+    behaviorSubject: {
+      title: 'BehaviorSubject — بازپخش آخرین مقدار به شنونده‌ی جدید',
+      op: 'BehaviorSubject("A")',
+      tracks: [
+        {
+          label: 'subject (آخرین مقدار: A)',
+          role: 'source',
+          color: 'info',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.6, '', 'complete'],
+          ],
+        },
+        {
+          label: 'Observer۱ (از ابتدا)',
+          role: 'out',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.6, '', 'complete'],
+          ],
+        },
+        {
+          label: 'Observer۲ (از t=1)',
+          role: 'out',
+          color: 'warning',
+          events: [
+            [1.0, 'A'],
+            [1.5, 'B'],
+            [2.6, '', 'complete'],
+          ],
+        },
+      ],
+      caption:
+        'شنونده‌ی جدید بلافاصله آخرین مقدار را می‌گیرد (اینجا «A» در t=1) و سپس رویدادهای بعدی را؛ مناسب حالت فعلی UI.',
+    },
+
+    asyncSubject: {
+      title: 'AsyncSubject — فقط مقدار نهاییِ هنگام complete',
+      op: 'AsyncSubject<String>',
+      tracks: [
+        {
+          label: 'subject',
+          role: 'source',
+          color: 'info',
+          events: [
+            [0.5, 'A'],
+            [1.5, 'B'],
+            [2.5, 'C'],
+            [3.0, '', 'complete'],
+          ],
+        },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [[3.0, 'C'], [3.05, '', 'complete']],
+        },
+      ],
+      caption:
+        'تا جریان کامل نشود چیزی منتشر نمی‌شود؛ در لحظه‌ی onComplete فقط آخرین مقدار («C») به شنونده‌ها می‌رسد — مثل نتیجه‌ی یک فراخوانی شبکه.',
+    },
+
+    /* ---------- خطا ---------- */
+    error: {
+      title: 'onError — توقف جریان با خطا',
+      op: 'map(x -> x / 0)',
+      tracks: [
+        {
+          label: 'source',
+          role: 'source',
+          events: [
+            [0.5, '1'],
+            [1.5, '2'],
+            [2.5, '✕', 'error'],
+          ],
+        },
+        { label: 'map (استثنا)', role: 'op' },
+        {
+          label: 'Observer',
+          role: 'out',
+          events: [
+            [0.5, '2'],
+            [1.5, '4'],
+            [2.5, '✕', 'error'],
+          ],
+        },
+      ],
+      caption:
+        'onError جریان را برای همیشه می‌بندد؛ بعد از آن نه onNext دیگری می‌رسد نه onComplete. همیشه onError را در subscribe مدیریت کنید.',
+    },
+  };
+
+  /* ==========================================================================
+     کمکی‌های عمومی
+     ========================================================================== */
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function parseEvents(track) {
+    /* رویدادها → آرایه‌ی مرتب‌شده با زمان + مقدار مطلق نمایش */
+    var list = (track.events || []).map(function (e) {
+      return { t: e[0], v: e[1] == null ? '' : String(e[1]), kind: e[2] || 'next' };
+    });
+    list.sort(function (a, b) {
+      return a.t - b.t;
+    });
+    return list;
+  }
+
+  function maxTime(tracks) {
+    var m = 0;
+    tracks.forEach(function (tr) {
+      parseEvents(tr).forEach(function (e) {
+        if (e.t > m) m = e.t;
+      });
+    });
+    return m;
+  }
+
+  /* ==========================================================================
+     نمونه‌ی یک انیمیشن
+     ========================================================================== */
+  function RxStreamAnim(figure) {
+    this.fig = figure;
+    this.key = figure.getAttribute('data-rx');
+    this.cfg = CATALOG[this.key];
+    this.speed = 1;
+    this.playing = false;
+    this.wantsPlay = false;
+    this.done = false;
+    this.elapsed = 0; /* زمان سپری‌شده بر حسب میلی‌ثانیه در سرعت ۱× */
+    this.rafId = 0;
+    this.lastTs = 0;
+    this.visible = false;
+    this.reduced = false;
+    this.marbles = []; /* {el, at} */
+    this.obs = null;
+
+    try {
+      this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (e) {
+      this.reduced = false;
+    }
+  }
+
+  RxStreamAnim.prototype.init = function () {
+    if (!this.cfg) {
+      if (window.console && console.warn) {
+        console.warn('[rx-stream] عملگر ناشناخته:', this.key);
+      }
+      return false;
     }
 
-    /**
-     * Initialize all marble diagrams on the page
-     */
-    function initMarbleDiagrams() {
-        const containers = document.querySelectorAll('.rx-marble-diagram');
-        
-        containers.forEach(container => {
-            const operator = container.dataset.operator;
-            let config = {};
-            
-            // Try to parse config from data attribute
-            try {
-                const configStr = container.dataset.config;
-                if (configStr) {
-                    config = JSON.parse(configStr);
-                }
-            } catch (e) {
-                console.warn('Invalid marble diagram config:', e);
-            }
-            
-            // Use predefined config or custom config
-            const finalConfig = OPERATOR_CONFIGS[operator] || config;
-            
-            if (finalConfig) {
-                // Create diagram
-                new MarbleDiagram(container, finalConfig);
-            }
-        });
-    }
+    /* محاسبه‌ی بازه‌ی زمانی: بیشینه‌ی رویدادها + کمی فاصله برای پایان خط */
+    var tMax = maxTime(this.cfg.tracks);
+    this.span = Math.ceil(tMax) + 0.5;
+    if (this.span < 1) this.span = 1;
+    this.duration = this.span * UNIT_MS; /* مدت در سرعت ۱× */
 
-    /**
-     * Initialize when DOM is ready
-     */
-    function init() {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initMarbleDiagrams);
+    this.build();
+    this.bindControls();
+
+    if (this.reduced) {
+      /* حالت ایستا: نمایش نتیجه‌ی نهایی بدون حرکت */
+      this.fig.classList.add('is-reduced');
+      this.setElapsed(this.duration);
+      this.grid.classList.add('is-static');
+    } else {
+      this.observeVisibility();
+    }
+    return true;
+  };
+
+  RxStreamAnim.prototype.xPct = function (t) {
+    /* موقعیت افقی یک رویداد روی خط زمان (درصد، از چپ) */
+    return (t / this.span) * 100;
+  };
+
+  /* ---------- ساخت DOM ---------- */
+  RxStreamAnim.prototype.build = function () {
+    var cfg = this.cfg;
+    var fig = this.fig;
+    var caption = fig.querySelector('figcaption');
+
+    /* سربرگ */
+    var title = el('div', 'rx-anim-title');
+    title.appendChild(el('span', null, cfg.title));
+    if (cfg.op) title.appendChild(el('span', 'rx-anim-op', cfg.op));
+    fig.insertBefore(title, caption);
+
+    /* صحنه (قابل اسکرول افقی) */
+    var scroll = el('div', 'rx-stage-scroll');
+    var grid = el('div', 'rx-grid');
+    scroll.appendChild(grid);
+    fig.insertBefore(scroll, caption);
+    this.grid = grid;
+
+    /* خط‌کش زمان (همیشه؛ برای عملگرهای زمانی حیاتی است) */
+    var rulerRow = el('div', 'rx-row is-ruler');
+    rulerRow.appendChild(el('div', 'rx-row-label', null));
+    var rulerLine = el('div', 'rx-line');
+    rulerLine.appendChild(el('div', 'rx-axis'));
+    for (var i = 0; i <= Math.floor(this.span); i++) {
+      var tick = el('div', 'rx-tick');
+      tick.style.left = this.xPct(i) + '%';
+      tick.appendChild(el('span', null, String(i)));
+      rulerLine.appendChild(tick);
+    }
+    rulerRow.appendChild(rulerLine);
+    grid.appendChild(rulerRow);
+
+    /* ردیف‌های جریان */
+    var self = this;
+    var outCount = 0;
+    cfg.tracks.forEach(function (track) {
+      var row, line, marbles;
+
+      if (track.role === 'op') {
+        row = el('div', 'rx-row is-op');
+        row.appendChild(el('div', 'rx-row-label', null));
+        line = el('div', 'rx-line');
+        line.appendChild(el('span', 'rx-op-box', track.label));
+        row.appendChild(line);
+        grid.appendChild(row);
+        return;
+      }
+
+      row = el('div', 'rx-row ' + (track.role === 'source' ? 'is-source' : 'is-out'));
+      row.appendChild(el('div', 'rx-row-label', track.label));
+      line = el('div', 'rx-line');
+      row.appendChild(line);
+      grid.appendChild(row);
+
+      var colorClass =
+        track.color === 'info'
+          ? ' c-info'
+          : track.color === 'warning'
+          ? ' c-warning'
+          : track.role === 'out' && outCount > 0
+          ? ' c-alt'
+          : '';
+      if (track.role === 'out') outCount++;
+
+      parseEvents(track).forEach(function (ev) {
+        var m = el('span', 'rx-marble' + colorClass);
+        m.style.left = self.xPct(ev.t) + '%';
+
+        if (ev.kind === 'complete') {
+          m.classList.add('is-complete');
+          m.setAttribute('aria-hidden', 'true');
+        } else if (ev.kind === 'error') {
+          m.classList.add('is-error');
+          m.textContent = '✕';
         } else {
-            initMarbleDiagrams();
+          if (ev.kind === 'drop') m.classList.add('is-dropped');
+          if (ev.v.length > 3) m.classList.add('is-wide');
+          m.textContent = ev.v;
         }
+
+        line.appendChild(m);
+        self.marbles.push({ el: m, at: ev.t * UNIT_MS });
+      });
+    });
+
+    /* نشانگر زنده */
+    this.playhead = el('div', 'rx-playhead');
+    this.playhead.setAttribute('aria-hidden', 'true');
+    grid.appendChild(this.playhead);
+
+    /* کنترل‌ها */
+    var controls = el('div', 'rx-controls');
+    controls.setAttribute('role', 'group');
+    controls.setAttribute('aria-label', 'کنترل‌های انیمیشن');
+
+    this.playBtn = el('button', 'rx-btn rx-btn-play');
+    this.playBtn.type = 'button';
+    this.playBtn.setAttribute('aria-label', 'پخش انیمیشن');
+    this.playBtn.setAttribute('title', 'پخش / توقف');
+    this.playBtn.innerHTML = ICON_PLAY;
+    controls.appendChild(this.playBtn);
+
+    var restartBtn = el('button', 'rx-btn rx-btn-restart');
+    restartBtn.type = 'button';
+    restartBtn.setAttribute('aria-label', 'پخش از ابتدا');
+    restartBtn.setAttribute('title', 'شروع دوباره');
+    restartBtn.innerHTML = ICON_RESTART;
+    controls.appendChild(restartBtn);
+    this.restartBtn = restartBtn;
+
+    var speedWrap = el('label', 'rx-speed');
+    speedWrap.appendChild(el('span', null, 'سرعت'));
+    var select = el('select');
+    select.setAttribute('aria-label', 'سرعت پخش انیمیشن');
+    [
+      ['0.5', '0.5×'],
+      ['1', '1×'],
+      ['2', '2×'],
+    ].forEach(function (opt) {
+      var o = el('option', null, opt[1]);
+      o.value = opt[0];
+      if (opt[0] === '1') o.selected = true;
+      select.appendChild(o);
+    });
+    speedWrap.appendChild(select);
+    controls.appendChild(speedWrap);
+    this.speedSelect = select;
+
+    this.timeEl = el('span', 'rx-time', 't = 0.0s');
+    this.timeEl.setAttribute('aria-live', 'off');
+    controls.appendChild(this.timeEl);
+
+    fig.insertBefore(controls, caption);
+
+    /* یادداشت حالت کاهش حرکت */
+    var note = el('div', 'rx-anim-motion-note', 'به دلیل فعال‌بودن «کاهش حرکت»، انیمیشن به‌صورت ایستا نمایش داده شد.');
+    fig.insertBefore(note, caption);
+  };
+
+  /* ---------- کنترل‌ها ---------- */
+  RxStreamAnim.prototype.bindControls = function () {
+    var self = this;
+
+    this.playBtn.addEventListener('click', function () {
+      if (self.playing) {
+        self.wantsPlay = false;
+        self.pause();
+      } else {
+        if (self.done || self.elapsed >= self.duration) self.restart(true);
+        self.wantsPlay = true;
+        self.play();
+      }
+    });
+
+    this.restartBtn.addEventListener('click', function () {
+      self.wantsPlay = true;
+      self.restart(true);
+    });
+
+    this.speedSelect.addEventListener('change', function () {
+      var v = parseFloat(self.speedSelect.value);
+      self.speed = isNaN(v) || v <= 0 ? 1 : v;
+      /* زمان سپری‌شده بر حسب محتواست؛ فقط نرخ پخش عوض می‌شود → پرشی رخ نمی‌دهد */
+    });
+  };
+
+  /* ---------- پخش / توقف / شروع دوباره ---------- */
+  RxStreamAnim.prototype.play = function () {
+    if (this.playing) return;
+    if (this.done || this.elapsed >= this.duration) this.restart(false);
+    this.playing = true;
+    this.lastTs = 0;
+    this.grid.classList.remove('is-static');
+    this.fig.classList.remove('is-paused');
+    this.playBtn.classList.add('is-playing');
+    this.playBtn.innerHTML = ICON_PAUSE;
+    this.playBtn.setAttribute('aria-label', 'توقف انیمیشن');
+    var self = this;
+    this.rafId = window.requestAnimationFrame(function tick(ts) {
+      if (!self.playing) return;
+      if (!self.lastTs) self.lastTs = ts;
+      var dt = ts - self.lastTs;
+      self.lastTs = ts;
+      self.elapsed += dt * self.speed;
+      if (self.elapsed >= self.duration) {
+        self.elapsed = self.duration;
+        self.render();
+        self.finish();
+        return;
+      }
+      self.render();
+      self.rafId = window.requestAnimationFrame(tick);
+    });
+  };
+
+  RxStreamAnim.prototype.pause = function () {
+    if (!this.playing) return;
+    this.playing = false;
+    window.cancelAnimationFrame(this.rafId);
+    this.fig.classList.add('is-paused');
+    this.playBtn.classList.remove('is-playing');
+    this.playBtn.innerHTML = ICON_PLAY;
+    this.playBtn.setAttribute('aria-label', 'پخش انیمیشن');
+  };
+
+  RxStreamAnim.prototype.restart = function (autoplay) {
+    this.pause();
+    this.elapsed = 0;
+    this.done = false;
+    this.grid.classList.remove('is-static');
+    this.marbles.forEach(function (m) {
+      m.el.classList.remove('is-shown');
+    });
+    this.render();
+    if (autoplay) this.play();
+  };
+
+  RxStreamAnim.prototype.finish = function () {
+    this.playing = false;
+    this.done = true;
+    this.wantsPlay = false;
+    window.cancelAnimationFrame(this.rafId);
+    this.fig.classList.add('is-paused');
+    this.playBtn.classList.remove('is-playing');
+    this.playBtn.innerHTML = ICON_PLAY;
+    this.playBtn.setAttribute('aria-label', 'پخش دوباره انیمیشن');
+  };
+
+  RxStreamAnim.prototype.setElapsed = function (ms) {
+    this.elapsed = ms;
+    this.render();
+  };
+
+  /* ---------- رندر هر فریم ---------- */
+  RxStreamAnim.prototype.render = function () {
+    var p = this.duration ? Math.min(this.elapsed / this.duration, 1) : 1;
+    this.grid.style.setProperty('--rx-p', p.toFixed(4));
+
+    for (var i = 0; i < this.marbles.length; i++) {
+      var m = this.marbles[i];
+      var shown = this.elapsed >= m.at;
+      if (shown !== m.shown) {
+        m.el.classList.toggle('is-shown', shown);
+        m.shown = shown;
+      }
     }
 
-    // Initialize
-    init();
+    this.timeEl.textContent = 't = ' + (this.elapsed / UNIT_MS).toFixed(1) + 's';
+  };
 
-    // Export for external use
-    window.RxMarbleDiagrams = {
-        init: initMarbleDiagrams,
-        MarbleDiagram: MarbleDiagram,
-        OPERATOR_CONFIGS: OPERATOR_CONFIGS
-    };
+  /* ---------- شروع/توقف هنگام دیده‌شدن ---------- */
+  RxStreamAnim.prototype.observeVisibility = function () {
+    var self = this;
+    if (!('IntersectionObserver' in window)) {
+      /* مرورگر قدیمی: بلافاصله ایستا + پخش‌پذیر */
+      this.setElapsed(this.duration);
+      this.wantsPlay = true;
+      this.play();
+      return;
+    }
+
+    this.obs = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          self.visible = entry.isIntersecting;
+          if (self.visible) {
+            /* شروع خودکار فقط برای بار اول دیده‌شدن */
+            if (!self.started && !self.done) {
+              self.started = true;
+              self.wantsPlay = true;
+              self.play();
+            } else if (self.wantsPlay && !self.playing && !self.done) {
+              self.play(); /* ادامه بعد از خروج از دید */
+            }
+          } else if (self.playing) {
+            self.pause(); /* خارج از دید: توقف برای صرفه‌جویی در پردازش */
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+    this.obs.observe(this.fig);
+  };
+
+  /* ==========================================================================
+     راه‌اندازی
+     ========================================================================== */
+  function init() {
+    var nodes = document.querySelectorAll('.rx-anim[data-rx]');
+    Array.prototype.forEach.call(nodes, function (fig) {
+      if (fig.getAttribute('data-rx-ready')) return;
+      var anim = new RxStreamAnim(fig);
+      if (anim.init()) fig.setAttribute('data-rx-ready', '1');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  /* برای استفاده‌ی احتمالی از بیرون (تست/گسترش) */
+  window.RxStreamAnimations = { CATALOG: CATALOG, init: init, UNIT_MS: UNIT_MS };
 })();
