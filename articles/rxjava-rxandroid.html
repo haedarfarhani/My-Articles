@@ -271,20 +271,20 @@ z.onNext(10)                         // بدون هیچ فراخوانی دست�
     </marker>
   </defs>
 
-  <rect class="s-bad" x="20" y="28" width="340" height="150" rx="13"/>
+  <rect class="s-bad" x="20" y="28" width="340" height="158" rx="13"/>
   <text class="s-tbad" x="190" y="56" text-anchor="middle" font-size="15">بدون Rx: تودرتویی فراخوانی</text>
-  <text class="s-t" x="42" y="86" font-size="11.5">fetchUser(user -&gt;</text>
-  <text class="s-t" x="58" y="108" font-size="11.5">fetchPosts(posts -&gt;</text>
-  <text class="s-t" x="74" y="130" font-size="11.5">fetchComments(c -&gt;</text>
-  <text class="s-t" x="90" y="152" font-size="11.5">render(user, posts, c)</text>
+  <text class="s-t" x="42" y="84" font-size="11.5">fetchUser(user -&gt;</text>
+  <text class="s-t" x="58" y="106" font-size="11.5">fetchPosts(posts -&gt;</text>
+  <text class="s-t" x="74" y="128" font-size="11.5">fetchComments(c -&gt;</text>
+  <text class="s-t" x="90" y="150" font-size="11.5">render(user, posts, c)</text>
 
-  <rect class="s-ok" x="410" y="28" width="340" height="150" rx="13"/>
+  <rect class="s-ok" x="410" y="28" width="340" height="158" rx="13"/>
   <text class="s-tok" x="580" y="56" text-anchor="middle" font-size="15">با Rx: یک زنجیرهٔ خطی</text>
-  <text class="s-t" x="432" y="86" font-size="11.5">fetchUser()</text>
-  <text class="s-t" x="432" y="108" font-size="11.5">.flatMap { fetchPosts(it) }</text>
-  <text class="s-t" x="432" y="130" font-size="11.5">.flatMap { fetchComments(it) }</text>
-  <text class="s-tok" x="432" y="152" font-size="11.5">.observeOn(mainThread)</text>
-  <text class="s-tok" x="432" y="170" font-size="11.5">.subscribe { render(it) }</text>
+  <text class="s-t" x="432" y="84" font-size="11.5">fetchUser()</text>
+  <text class="s-t" x="432" y="106" font-size="11.5">.flatMap { fetchPosts(it) }</text>
+  <text class="s-t" x="432" y="128" font-size="11.5">.flatMap { fetchComments(it) }</text>
+  <text class="s-tok" x="432" y="150" font-size="11.5">.observeOn(mainThread)</text>
+  <text class="s-tok" x="432" y="172" font-size="11.5">.subscribe { render(it) }</text>
 </svg>
   <figcaption>
     <b>نکتهٔ کلیدی:</b> با RxJava و RxAndroid به‌جای تودرتو کردن فراخوانی‌ها، یک زنجیره از
@@ -841,19 +841,19 @@ view.clicks()
     </marker>
   </defs>
 
-  <rect class="s-ok" x="20" y="30" width="340" height="140" rx="13"/>
+  <rect class="s-ok" x="20" y="30" width="340" height="152" rx="13"/>
   <text class="s-tok" x="190" y="56" text-anchor="middle" font-size="14">throttleFirst: هر ۵۰۰ میلی‌ثانیه</text>
   <text class="s-t" x="42" y="90" font-size="12">رویدادها: ۱  ۲  ۳  ۴  ۵  ۶</text>
-  <text class="s-t" x="42" y="114" font-size="11.5">در شروع هر بازه، اولین رویداد فوراً</text>
-  <text class="s-t" x="42" y="132" font-size="11.5">منتشر می‌شود و بقیه‌ی آن بازه حذف می‌شوند.</text>
-  <text class="s-tok" x="42" y="158" font-size="12">منتشرشده: ۱  ۴</text>
+  <text class="s-t" x="42" y="116" font-size="11.5">در شروع هر بازه، اولین رویداد فوراً</text>
+  <text class="s-t" x="42" y="138" font-size="11.5">منتشر می‌شود و بقیه‌ی آن بازه حذف می‌شوند.</text>
+  <text class="s-tok" x="42" y="166" font-size="12">منتشرشده: ۱  ۴</text>
 
-  <rect class="s-ok" x="410" y="30" width="340" height="140" rx="13"/>
+  <rect class="s-ok" x="410" y="30" width="340" height="152" rx="13"/>
   <text class="s-tok" x="580" y="56" text-anchor="middle" font-size="14">debounce: پس از ۳۰۰ میلی‌ثانیه سکوت</text>
   <text class="s-t" x="432" y="90" font-size="12">رویدادها: ۱  ۲  ۳  ۴  ۵  ۶</text>
-  <text class="s-t" x="432" y="114" font-size="11.5">تا وقتی ورودی‌های پیاپی می‌آیند چیزی</text>
-  <text class="s-t" x="432" y="132" font-size="11.5">منتشر نمی‌شود؛ فقط آخرین مقدار می‌آید.</text>
-  <text class="s-tok" x="432" y="158" font-size="12">منتشرشده: ۶</text>
+  <text class="s-t" x="432" y="116" font-size="11.5">تا وقتی ورودی‌های پیاپی می‌آیند چیزی</text>
+  <text class="s-t" x="432" y="138" font-size="11.5">منتشر نمی‌شود؛ فقط آخرین مقدار می‌آید.</text>
+  <text class="s-tok" x="432" y="166" font-size="12">منتشرشده: ۶</text>
 </svg>
   <figcaption>
     <b>تفاوت کلیدی:</b> <code>throttleFirst</code> در شروع هر بازه اولین رویداد را نگه می‌دارد
@@ -998,23 +998,23 @@ Scheduler در RxJava جایی است که جریان از دسته‌ای به 
 
   <rect class="s-bad" x="20" y="26" width="352" height="92" rx="13"/>
   <text class="s-tbad" x="196" y="56" text-anchor="middle" font-size="14">onError</text>
-  <text class="s-t" x="196" y="82" text-anchor="middle" font-size="11.5">خطا نادیده گرفته می‌شود و جریان</text>
-  <text class="s-t" x="196" y="102" text-anchor="middle" font-size="11.5">توقف می‌کند؛ برنامه ممکن است کرش کند</text>
+  <text class="s-t" x="196" y="84" text-anchor="middle" font-size="11.5">خطا نادیده گرفته می‌شود و جریان</text>
+  <text class="s-t" x="196" y="108" text-anchor="middle" font-size="11.5">توقف می‌کند؛ برنامه ممکن است کرش کند</text>
 
   <rect class="s-ok" x="398" y="26" width="352" height="92" rx="13"/>
   <text class="s-tok" x="574" y="56" text-anchor="middle" font-size="14">onErrorReturn</text>
-  <text class="s-t" x="574" y="82" text-anchor="middle" font-size="11.5">به‌جای خطا یک مقدار پیش‌فرض</text>
-  <text class="s-t" x="574" y="102" text-anchor="middle" font-size="11.5">برمی‌گرداند و جریان ادامه پیدا می‌کند</text>
+  <text class="s-t" x="574" y="84" text-anchor="middle" font-size="11.5">به‌جای خطا یک مقدار پیش‌فرض</text>
+  <text class="s-t" x="574" y="108" text-anchor="middle" font-size="11.5">برمی‌گرداند و جریان ادامه پیدا می‌کند</text>
 
   <rect class="s-ok" x="20" y="132" width="352" height="92" rx="13"/>
   <text class="s-tok" x="196" y="162" text-anchor="middle" font-size="14">onErrorResumeNext</text>
-  <text class="s-t" x="196" y="188" text-anchor="middle" font-size="11.5">کل جریان را با یک جریان جایگزین</text>
-  <text class="s-t" x="196" y="208" text-anchor="middle" font-size="11.5">عوض می‌کند؛ مناسب بازیابی کامل</text>
+  <text class="s-t" x="196" y="190" text-anchor="middle" font-size="11.5">کل جریان را با یک جریان جایگزین</text>
+  <text class="s-t" x="196" y="214" text-anchor="middle" font-size="11.5">عوض می‌کند؛ مناسب بازیابی کامل</text>
 
   <rect class="s-ok" x="398" y="132" width="352" height="92" rx="13"/>
   <text class="s-tok" x="574" y="162" text-anchor="middle" font-size="14">retry</text>
-  <text class="s-t" x="574" y="188" text-anchor="middle" font-size="11.5">همان درخواست را تا N بار دوباره</text>
-  <text class="s-t" x="574" y="208" text-anchor="middle" font-size="11.5">اجرا می‌کند؛ مناسب خطاهای موقتی</text>
+  <text class="s-t" x="574" y="190" text-anchor="middle" font-size="11.5">همان درخواست را تا N بار دوباره</text>
+  <text class="s-t" x="574" y="214" text-anchor="middle" font-size="11.5">اجرا می‌کند؛ مناسب خطاهای موقتی</text>
 </svg>
   <figcaption>
     <b>انتخاب راهبرد:</b> اگر همیشه می‌توانید یک مقدار پیش‌فرض برگردانید، <code>onErrorReturn</code>
@@ -1262,23 +1262,23 @@ source.observeOn(Schedulers.io())
 
   <rect class="s-bad" x="20" y="26" width="352" height="92" rx="13"/>
   <text class="s-tbad" x="196" y="56" text-anchor="middle" font-size="14">BUFFER</text>
-  <text class="s-t" x="196" y="82" text-anchor="middle" font-size="11.5">همهٔ آیتم‌ها در بافر داخلی نگه داشته</text>
-  <text class="s-t" x="196" y="102" text-anchor="middle" font-size="11.5">می‌شوند؛ خطر پرشدن حافظه</text>
+  <text class="s-t" x="196" y="84" text-anchor="middle" font-size="11.5">همهٔ آیتم‌ها در بافر داخلی نگه داشته</text>
+  <text class="s-t" x="196" y="108" text-anchor="middle" font-size="11.5">می‌شوند؛ خطر پرشدن حافظه</text>
 
   <rect class="s-ok" x="398" y="26" width="352" height="92" rx="13"/>
   <text class="s-tok" x="574" y="56" text-anchor="middle" font-size="14">DROP</text>
-  <text class="s-t" x="574" y="82" text-anchor="middle" font-size="11.5">وقتی بافر پر است، آیتم‌های جدید</text>
-  <text class="s-t" x="574" y="102" text-anchor="middle" font-size="11.5">بی‌سروصدا حذف می‌شوند</text>
+  <text class="s-t" x="574" y="84" text-anchor="middle" font-size="11.5">وقتی بافر پر است، آیتم‌های جدید</text>
+  <text class="s-t" x="574" y="108" text-anchor="middle" font-size="11.5">بی‌سروصدا حذف می‌شوند</text>
 
   <rect class="s-ok" x="20" y="132" width="352" height="92" rx="13"/>
   <text class="s-tok" x="196" y="162" text-anchor="middle" font-size="14">LATEST</text>
-  <text class="s-t" x="196" y="188" text-anchor="middle" font-size="11.5">فقط آخرین آیتم نگه داشته می‌شود</text>
-  <text class="s-t" x="196" y="208" text-anchor="middle" font-size="11.5">و بقیه دور ریخته می‌شوند</text>
+  <text class="s-t" x="196" y="190" text-anchor="middle" font-size="11.5">فقط آخرین آیتم نگه داشته می‌شود</text>
+  <text class="s-t" x="196" y="214" text-anchor="middle" font-size="11.5">و بقیه دور ریخته می‌شوند</text>
 
   <rect class="s-ok" x="398" y="132" width="352" height="92" rx="13"/>
   <text class="s-tok" x="574" y="162" text-anchor="middle" font-size="14">ERROR</text>
-  <text class="s-t" x="574" y="188" text-anchor="middle" font-size="11.5">به‌محض پر شدن بافر، خطا به</text>
-  <text class="s-t" x="574" y="208" text-anchor="middle" font-size="11.5">گیرنده تحویل داده می‌شود</text>
+  <text class="s-t" x="574" y="190" text-anchor="middle" font-size="11.5">به‌محض پر شدن بافر، خطا به</text>
+  <text class="s-t" x="574" y="214" text-anchor="middle" font-size="11.5">گیرنده تحویل داده می‌شود</text>
 </svg>
   <figcaption>
     <b>نکته:</b> استراتژی <code>BUFFER</code> می‌تواند حافظه را زیاد اشغال کند؛ در جریان‌های پرتکرار
