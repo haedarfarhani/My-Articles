@@ -16,6 +16,7 @@
 | ۴ | تزریق وابستگی در کاتلین: Hilt در برابر Koin | [`articles/dependency-injection-hilt-koin.html`](articles/dependency-injection-hilt-koin.html) | ~۲۰ دقیقه |
 | ۵ | قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا | [`articles/naming-conventions.html`](articles/naming-conventions.html) | ~۲۵ دقیقه |
 | ۶ | اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also | [`articles/scope-functions.html`](articles/scope-functions.html) | ~۳۰ دقیقه |
+| ۷ | RxJava و RxAndroid: از Observable تا Flowable و Subject | [`articles/rxjava-rxandroid.html`](articles/rxjava-rxandroid.html) | ~۴۵ دقیقه |
 
 ## فهرست پروژه‌ها
 
@@ -38,14 +39,15 @@ my-articales/
 ├── .nojekyll                     # جلوگیری از پردازش Jekyll در GitHub Pages
 ├── README.md
 │
-├── articles/                     # فهرست مقالات + ۶ مقاله
+├── articles/                     # فهرست مقالات + ۷ مقاله
 │   ├── index.html                # جستجو + فیلتر تگ + حالت خالی
 │   ├── concurrency-in-kotlin.html
 │   ├── clean-architecture-mvi-compose.html
 │   ├── android-performance-memory.html
 │   ├── dependency-injection-hilt-koin.html
 │   ├── naming-conventions.html
-│   └── scope-functions.html
+│   ├── scope-functions.html
+│   └── rxjava-rxandroid.html
 │
 ├── projects/                     # پروژه‌ها (۷ کارت + راهنمای افزودن در کامنت)
 │   └── index.html
@@ -173,6 +175,7 @@ python -m http.server 8080     # یا: npx serve .
 1. کپی از یکی از فایل‌های `articles/*.html`؛ `<head>` را تغییر ندهید (همان ۴ لینک CSS و ۴ اسکریپت).
 2. کارت مقاله را در `articles/index.html` اضافه کنید و `data-tags` را درست بگذارید.
 3. آمار «تعداد مقالات» در `index.html` و برچسب شمارش کنار «فهرست مقالات» را به‌روز کنید.
+4. به‌روزرسانی `sitemap.xml` (آدرس مقاله جدید)، `README.md` (سطر جدول و یادداشت پوشه) و شمارش «تعداد مقالات» در `index.html`.
 
 ### پروژه‌ی جدید
 

@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RxJava و RxAndroid: راهنمای کامل از Observable تا Flowable و Subject | حیدر فرحانی</title>
+  <meta name="description" content="راهنمای جامع RxJava و RxAndroid: متدها و کلاس‌های اصلی Observable، Observer، Flowable، Single، Maybe، Completable، تمام Operatorهای مهم، Schedulers، Subjectها، مدیریت خطا، Cancellation و حیطه بستگی، و یکپارچه‌سازی با Android و Compose.">
+  <meta name="keywords" content="RxJava, RxAndroid, Observable, Observer, Flowable, Single, Maybe, Completable, Subject, Operator, Schedulers, Android, Kotlin, Java, حیدر فرحانی">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="RxJava و RxAndroid: راهنمای کامل از Observable تا Flowable و Subject">
+  <meta property="og:description" content="راهنمای جامع RxJava و RxAndroid: کلاس‌ها، Operatorهای کلیدی، Schedulers، Subjectها، مدیریت خطا، Pending و یکپارچه‌سازی اندرویدی.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/rxjava-rxandroid.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/rxjava-rxandroid.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="RxJava و RxAndroid">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="اندروید، همزمانی و کیفیت کد">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RxJava و RxAndroid: راهنمای کامل از Observable تا Flowable و Subject">
+  <meta name="twitter:description" content="راهنمای جامع RxJava و RxAndroid؛ کلاس‌ها، Operatorهای کلیدی، Schedulers، Subjectها، مدیریت خطا و یکپارچه‌سازی اندرویدی.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>R</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "RxJava و RxAndroid: راهنمای کامل از Observable تا Flowable و Subject",
+    "description": "راهنمای جامع RxJava و RxAndroid: متدها و کلاس‌های اصلی Observable، Observer، Flowable، Single، Maybe، Completable، تمام Operatorهای مهم، Schedulers، Subjectها، مدیریت خطا، Pending و یکپارچه‌سازی با Android و Compose.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/rxjava-rxandroid.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/rxjava-rxandroid.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "RxJava, RxAndroid, Observable, Observer, Flowable, Single, Maybe, Completable, Subject, Operator, Schedulers, Android, Kotlin, Java",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "RxJava و RxAndroid", "item": "https://haedarfarhani.github.io/My-Articles/articles/rxjava-rxandroid.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="reading-progress"></div>
+
+  <!-- Navigation Bar -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../.." class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="Bazgasht be fehrest" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>&#1605;&#1602;&#1575;&#1604;&#1575;&#1578; &#1608; &#1585;&#1575;&#1607;&#1606;&#1605;&#1575;&#1607;&#1575;</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Mobile TOC Toggle Button -->
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <!-- Share Button -->
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <!-- Article Content Column -->
+      <article class="blog-article">
+
+                <!-- Hero Header -->
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">اندروید</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">همزمانی و کیفیت کد</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">RxJava و RxAndroid</span>: راهنمای کامل از Observable تا Flowable و Subject
+          </h1>
+
+          <p class="hero-lead">
+            RxJava و RxAndroid کتابخانه‌های قدرتمندی برای برنامه‌نویسی اhrewnوین و واکنش‌گرا در جاوا و
+            کاتلین هستند. در این مقاله، کلاس‌های اصلی، تمام Operatorهای مهم، Schedulers، Subjectها و
+            بهترین شیوه‌ها را از صفر تا ورز می‌آورم؛ همراه با نمودارهای متحرک SVG، جداول مقایسه‌ای،
+            نکات دمایی و نمونه‌کدهای واقعی اندروید و Compose.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">توسعه‌دهنده اندروید و کاتلین</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۴۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: دی ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مقدماتی تا پیشرفته</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#RxJava</span>
+            <span class="post-tag">#RxAndroid</span>
+            <span class="post-tag">#Observable</span>
+            <span class="post-tag">#Android</span>
+            <span class="post-tag">#Kotlin</span>
+          </div>
+
+          <!-- Inline Table of Contents -->
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+      <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>چه فرقی بین RxJava و RxAndroid دارد؟</span></a></li>
+      <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Observable، Observer، Subscriber و Flowable</span></a></li>
+      <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span> چارچوب هم‌رسانی: Single، Maybe، Completable و Observable</span></a></li>
+      <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>Operatorهای اصلی: map، filter، take، drop، distinct</span></a></li>
+      <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>زنجیره‌سازی و تبدیل کردن آیتم‌ها: flatMap، concatMap، switchMap</span></a></li>
+      <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>جمع‌بندی و کاهش داده‌ها: reduce، fold، collect</span></a></li>
+      <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>تحكم در زمان و سرعت: throttleFirst، debounce، delay</span></a></li>
+      <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>Schedulers: newThread، computation، io، mainThread</span></a></li>
+      <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>سامانه‌ی خطا و بازیابی: onErrorReturn، retry، onErrorResumeNext</span></a></li>
+      <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>Subjects: Publish، Behavior، Replay، Serialized و Variable</span></a></li>
+      <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>Cancellation، Disposable و Subscription</span></a></li>
+      <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>حیطه بستگی (Backpressure) و Flowable</span></a></li>
+      <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>یکپارچه‌سازی با Android و Compose</span></a></li>
+      <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>بهترین شیوه‌ها، چک‌لیست و منابع</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>چه فرقی بین RxJava و RxAndroid دارد؟</h2>
+
+<p>
+RxJava و RxAndroid دو کتابخانه‌ی متوالی برای برنامه‌نویسی واکنش‌گرا (Reactive Programming) در
+اندروید و جاوا هستند. <strong>RxJava</strong> استاندارد و سازنده‌ی این الگوی کار است؛
+<strong>RxAndroid</strong> هم‌چیزی جز سرویسی که سفارشی شده تا فعالیت‌های UI، Palette و بک‌اند را
+در سوییچ‌لاگ‌های صحیح اجرا کند.
+</p>
+
+<h3>۱.۱ چه‌هایی را می‌آموزیم</h3>
+<p>
+در این مقاله، اول از هم‌رسانی، سپس چارچوب‌ها، سپس Operatorها، Schedulers، Subjectها و در
+نهایت یکپارچه‌سازی اندرویدی می‌آورم. تمام نمونه‌کدها به کاتلین و هم‌چنین به جاوا نوشته شده‌اند
+تا هر دو مخاطب را در بر کند.
+</p>
+
+<h3>۱.۲ چرایی استفاده از Observable؟</h3>
+<p>
+وقتی قراره چندین مرحله از داده‌ها اعمال شود، چنین که یک «آسه» امری از بالا به پایین رد می‌شود،
+باید از observable استفاده کرد تا:</p>
+<ul>
+  <li>کد را از فراخانی متعقل (callback hell) دور سازد.</li>
+  <li>سربار متقابل، ترتیب، تاخیر و خرابی را کنترل کند.</li>
+  <li>ورودی‌ها و خروجی‌ها را به صورت یک جریان (stream) در نظر بگیرد.</li>
+</ul>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 250" role="img" aria-label="تفاوت RxJava و RxAndroid">
+  <defs>
+    <marker id="m-s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/>
+    </marker>
+    <marker id="m-s1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f43f5e"/>
+    </marker>
+  </defs>
+
+  <rect class="s-bad" x="20" y="30" width="340" height="80" rx="13"/>
+  <text class="s-tbad" x="190" y="58" text-anchor="middle" font-size="15">بدون Rx: Callback hell</text>
+  <text class="s-t" x="40" y="88" font-size="12.5">fetchUser({ user -&gt; fetchPosts({ posts -&gt; fetchComments({ comments -&gt; render(user, posts, comments); }); }); });</text>
+
+  <rect class="s-ok" x="410" y="30" width="340" height="80" rx="13"/>
+  <text class="s-tok" x="580" y="58" text-anchor="middle" font-size="15">با Rx: یک جریان منتظم</text>
+  <text class="s-t" x="40" y="88" font-size="12.5">fetchUser</text>
+  <text class="s-t" x="440" y="88" font-size="12.5">flatMap&lt;fetchPosts&gt;</text>
+  <text class="s-t" x="475" y="88" font-size="12.5">flatMap&lt;fetchComments&gt;</text>
+  <text class="s-tok" x="440" y="118" font-size="12.5">observeOn(mainThread)</text>
+  <text class="s-tok" x="440" y="148" font-size="12.5">.subscribe { render(...) }</text>
+</svg>
+  <figcaption>
+    <b>رمز:</b> با RxJava و RxAndroid، زنجیره‌ی‌ای از عملیات‌ها ساخته می‌شود و از هر نقطه
+    می‌توان آخرین نقطه را به adding/abandon کرد.
+  </figcaption>
+</figure>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Observable، Observer، Subscriber و Flowable</h2>
+
+<p>
+در RxJava، اصلی‌ترین مدل‌ها عبارت‌اند از <code>Observable</code>، <code>Observer</code>،
+<code>Subscriber</code> و <code>Flowable</code>. هر کدام در چه موقعیت مورد استفاده قرار می‌گیرند،
+ما اینجا بررسی می‌کنیم.
+</p>
+
+<h3>۲.۱ Observable و Observer</h3>
+<p>
+مختصرتر: <code>Observable</code> دورamide‌ می‌دهد و <code>Observer</code> آن را می‌گیرد. زمانی که
+داده‌ی جدیدی آمد، تابع <code>onNext</code> تماس می‌گیرد؛ در پایان از <code>onComplete</code>
+پیدا می‌شود و در صورت خرابی <code>onError</code> صدا زده می‌شود.
+</p>
+
+<pre class="kl-code"><code>// Kotlin — Observable با Observer
+val observable = Observable.create&lt;String&gt; { emitter -&gt;
+    emitter.onNext("Kotlin")
+    emitter.onNext("Java")
+    emitter.onComplete()
+}
+
+observable.subscribe(
+    { item -&gt; println("گرفته: $item") },      // onNext
+    { err -&gt; println("خطا: $err") },          // onError
+    { println("پایان") }                        // onComplete
+)</code></pre>
+
+<pre class="kl-code"><code>// Java — همان را با Consumer و Consumer از rx.functions
+Observable&lt;String&gt; observable = Observable.create(
+    new Observable.OnSubscribe&lt;String&gt;() {
+        @Override
+        public void call(Subscriber&lt;? super String&gt; subscriber) {
+            subscriber.onNext("Java");
+            subscriber.onNext("Kotlin");
+            subscriber.onCompleted();
+        }
+    }
+);
+
+observable.subscribe(
+    new Action1&lt;String&gt;() {
+        @Override
+        public void call(String s) { System.out.println("گرفته: " + s); }
+    },
+    new Action1&lt;Throwable&gt;() {
+        @Override
+        public void call(Throwable t) { System.err.println("خطا: " + t); }
+    },
+    new Action0() { public void call() { System.out.println("پایان"); }
+);</code></pre>
+
+<h3>۲.۲ Subscriber (نسخه‌ی دو‌طرفه و وقف‌شده)</h3>
+<p>
+<code>Subscriber</code> از <code>Observer</code> می‌ترشد و کنترل‌های <code>isUnsubscribed</code>،
+<code>onStart</code> و <code>setSubscription</code> را به آن می‌دهد. این، سند حریمی برای
+<strong>Cancellation</strong> و <strong>Backpressure</strong> است.
+</p>
+
+<pre class="kl-code"><code>Observable&lt;String&gt; source = Observable.just("A", "B", "C");
+
+Subscription sub = source.subscribe(
+    { item -&gt; println("گرفته: $item") },
+    { err -&gt; println("خطا: $err") }
+);
+
+// در هر لحظه میتوانیم اشتراک را لغو کنیم
+// sub.unsubscribe()</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته:</span> استفاده از <code>Subscription</code> و فراخونی آن با
+<code>CompositeDisposable.add</code> در کد‌های اندرویدی، روش استاندارد برای cancellation به صورت
+گروه‌بندی شده است.
+</div>
+
+<h3>۲.۳ Flowable برای Backpressure</h3>
+<p>
+وقتی تعداد داده‌های تولید شده از آنچه که گیرنده می‌تواند پرسودی کند، بیشتر شود،
+<code>Flowable</code> به جای <code>Observable</code> انتخاب می‌شود. به Flowable
+<strong>Backpressure Support</strong> دارد: می‌تواند کمترین میزانِ داده‌ها را که گیرنده می‌خواهد
+را تنظیم کند و جلوگیری از ذبده شدن حافظه کند.
+</p>
+
+<pre class="kl-code"><code>Flowable&lt;Long&gt; flowable = Flowable.create(
+    new FlowableOnSubscribe&lt;Long&gt;() {
+        @Override
+        public void subscribe(FlowableEmitter&lt;Long&gt; emitter) throws Exception {
+            long i = 0;
+            while (!emitter.isCancelled()) {
+                emitter.onNext(i++);
+                Thread.sleep(100); // تولید مکرر
+            }
+        }
+    },
+    BackpressureStrategy.BUFFER
+);
+
+Subscription sub = flowable
+    .observeOn(Schedulers.io())
+    .subscribe(
+        { v -&gt; println("مقرا: $v") },
+        { err -&gt; err.printStackTrace() }
+    );</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">عمیق‌تر: Backpressure</span>
+ وقتی می‌خواهیم تولید داده‌ها تاخیر پیدا کند و گیرنده برای حفظ هم‌تناسب عمل کند،
+ ممکن است از <code>Flowable</code> به همراه استراتژی‌هایی مانند <code>BUFFER</code>،
+ <code>DROP</code>، <code>LATEST</code> و <code>ERROR</code> استفاده شود.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>چارچوب هم‌رسانی: Single، Maybe، Completable و Observable</h2>
+
+<p>
+RxJava چهار نوع سینگلتور برای حالت‌های مختلف داده ارائه می‌دهد. یک رشته‌بان برای خروجی یک آیتم،
+یا واحد، یا نادری، أو Thu حسابی، می‌توانند به صورت جداگانه تکیه کنند.
+</p>
+
+<table>
+  <tr><th>نوع</th><th>نمونه‌ی خروجی</th><th>وقتی <code>onComplete</code> می‌آید</th><th>فرقی با Observable دارد؟</th></tr>
+  <tr><td><code>Observable</code></td><td>۰ تا n آیتم</td><td>سازه خاتمه می‌گیرد</td><td>غیراردضمیمی، می‌تواند خالی باشد</td></tr>
+  <tr><td><code>Single</code></td><td>دقیقاً یک آیتم</td><td>شروع می‌شود نامه‌ی اتمام</td><td>خروجی همیشه یک آیتم، خطا دریافت می‌شود</td></tr>
+  <tr><td><code>Maybe</code></td><td>صفر تا یک آیتم</td><td>یک بار خاتمه می‌یابد</td><td>پوشش می‌دهد اگر داده وجود نداشته باشد</td></tr>
+  <tr><td><code>Completable</code></td><td>هیچ آیتمی</td><td>سازه‌ی کامل شدن می‌دهد</td><td>فقط عوارض؛ ن�다وته‌ای خروجی</td></tr>
+</table>
+
+<h3>۳.۱ Single — یک پاسخ واحد</h3>
+<pre class="kl-code"><code>Single&lt;User&gt; userSingle = Single.create(emitter -&gt; {
+    emitter.onSuccess(fetchUserById(42));
+    // یا emitter.onError(exception);
+});
+
+userSingle.subscribe(
+    { user -&gt; showDetail(user) },
+    { err -&gt; showError(err) }
+)</code></pre>
+
+<h3>۳.۲ Maybe — صفر یا یک آیتم</h3>
+<pre class="kl-code"><code>Maybe&lt;User&gt; maybeUser = Maybe.create(emitter -&gt; {
+    User u = findUser(42);
+    if (u != null) emitter.onSuccess(u); else emitter.onComplete();
+});
+
+maybeUser.subscribe(
+    { user -&gt; showDetail(user) },
+    { println("هیچ کار برای انجام نداریم") }
+)</code></pre>
+
+<h3>۳.۳ Completable — بدون خروجی</h3>
+<pre class="kl-code"><code>Completable completable = Completable.create(emitter -&gt; {
+    saveSettings(userId, prefs);
+    emitter.onComplete();
+});
+
+completable.subscribe(
+    { println("ذخیره‌ی فایل با موفقیت انجام شد") },
+    { err -&gt; println("خطا: $err") }
+)</code></pre>
+
+<div class="kl-box kl-no">
+<span class="kl-h">نکته انتخابی:</span> اگر می‌شود از <code>Single</code> یا <code>Maybe</code> به جای
+<code>Completable</code> در حالتی استفاده کرد که خروجی فاقد‌دلیل‌اند؛ این جور تجزیه‌ی خطا مستقیم‌تر
+و اطمینان‌ورزی از جانب لینک‌ریزی‌گری‌پذیر می‌دهد.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>Operatorهای اصلی: map، filter، take، drop، distinct</h2>
+
+<p>
+Operatorها تابعی هستند که با دریافت هر عنصر، آن را به شکل جدیدی_study نشان می‌دهند؛ یا شکل
+جمله‌ای از عناصر. در این بخش از Operatorهای بسیار پرکاربرد صحبت می‌شود.
+</p>
+
+<h3>۴.۱ map — تبدیل کردن</h3>
+<pre class="kl-code"><code>Observable&lt;String&gt; names = Observable.just("Ali", "Sara", "Reza");
+
+names.map { name -&gt; name.length }          // [3, 4, 4]
+     .subscribe { println("طول: $it") }</code></pre>
+
+<h3>۴.۲ filter — فیلتر کردن</h3>
+<pre class="kl-code"><code>Observable&lt;Integer&gt; numbers = Observable.range(1, 10);
+
+numbers.filter { it % 2 == 0 }             // 2، 4، 6، 8، 10
+      .subscribe { println("پرداختی: $it") }</code></pre>
+
+<h3>۴.۳ take / drop / skip</h3>
+<pre class="kl-code"><code>Observable.range(1, 20)
+    .take(5)                                 // ۱ تا ۵
+    .subscribe { println("take: $it") }
+
+Observable.range(1, 20)
+    .skip(10)                                // ۱۱ تا ۲۰
+    .subscribe { println("skip: $it") }
+
+Observable.range(1, 20)
+    .dropWhile { it &lt;= 10 }                  // ۱۱ تا ۲۰
+    .subscribe { println("dropWhile: $it") }</code></pre>
+
+<h3>۴.۴ distinct / elementAt</h3>
+<pre class="kl-code"><code>Observable.just(1, 2, 1, 3, 2, 4)
+    .distinct()                              // 1، 2، 3، 4
+    .subscribe { println("distinct: $it") }
+
+Observable.range(1, 10)
+    .elementAt(3)                            // ۴ (یونکد‌های ۰-አbased)
+    .subscribe { println("elementAt: $it") }</code></pre>
+
+<h3>۴.۵ first / last</h3>
+<pre class="kl-code"><code>Observable.just(4, 7, 2, 9)
+    .first()                                 // ۴
+    .last()                                  // ۹
+    .subscribe { println("آخرین: $it") }</code></pre>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 250" role="img" aria-label="مقایسه take و distinct">
+  <defs>
+    <marker id="m-s2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/>
+    </marker>
+  </defs>
+
+  <!-- take -->
+  <rect class="s-ok" x="20" y="30" width="340" height="90" rx="13"/>
+  <text class="s-tok" x="190" y="56" text-anchor="middle" font-size="15">take(5): اولین ۵ آیتم</text>
+  <text class="s-t" x="40" y="86" font-size="12">۱  ۲  ۳  ۴  ۵  ۶  ۷  ۸  ۹  ۱۰  ۱۱  ۱۲...</text>
+
+  <!-- distinct -->
+  <rect class="s-ok" x="410" y="30" width="340" height="90" rx="13"/>
+  <text class="s-tok" x="580" y="56" text-anchor="middle" font-size="15">distinct(): عناصر تکراری حذف شوند</text>
+  <text class="s-t" x="40" y="86" font-size="12">۱  ۲  ۱  ۳  ۲  ۴  ۱  ۵</text>
+  <text class="s-t" x="60" y="116" font-size="12">&darr; عناصر تکراری بی‌نتیجه</text>
+  <text class="s-tok" x="60" y="146" font-size="13">۱  ۲  ۳  ۴  ۵</text>
+</svg>
+  <figcaption>
+    <b>نمایش نهایی:</b> <code>take</code> بر اساس موقعیت، و <code>distinct</code> بر اساس یکپارچگی
+    مقدار، بلوک می‌گذارند.
+  </figcaption>
+</figure>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>زنجیره‌سازی و تبدیل کردن آیتم‌ها: flatMap، concatMap، switchMap</h2>
+
+<p>
+وقتی هر انتخاب یک <code>Observable</code> دیگر را تولید می‌کند (یعنی ما یک <strong>ساخت‌زنجیره‌ای</strong>
+داخل رشته‌بان داریم)، از Operatorهای <code>flatMap</code>، <code>concatMap</code> و
+<code>switchMap</code> استفاده می‌شود. در اینجا تفاوت کلیدی بین این‌ها است.
+</p>
+
+<table>
+  <tr><th>Operator</th><th>ترتیب پردازش</th><th>رفرانس خارجی</th><th>درباره‌یWaveform</th></tr>
+  <tr><td><code>flatMap</code></td><td>اغلب سازگار (non-deterministic)</td><td>همه‌چیز برابر است</td><td>پس از اتمام، تمام خود را داخلی را صدا می‌زند</td></tr>
+  <tr><td><code>concatMap</code></td><td>ترتیب ردیکاً ثابت</td><td>سرویس‌های با گارانتی</td><td>ترتیب خروجی با ترتیب ورودی مطابق است</td></tr>
+  <tr><td><code>switchMap</code></td><td>مهم‌ترین (latest) تغییر</td><td>نزدیک‌تر به بروزترین Sourse</td><td>ساخته‌ی vibration، روی‌ی آن حذف می‌شوند</td></tr>
+</table>
+
+<h3>۵.۱ flatMap — همزمان کردن چند خروجی</h3>
+<pre class="kl-code"><code>// هر کامنت یک درخواست جداگانه را برگردانده
+Observable&lt;Comment&gt; comments = fetchPostComments(postId);
+
+comments.flatMap { comment -&gt;
+    fetchLikeCount(comment.id)
+         .map { likeCount -&gt; comment.copy(likeCount = likeCount) }
+}</code></pre>
+
+<h3>۵.۲ concatMap — حفظ ترتیب</h3>
+<pre class="kl-code"><code>// استراتژی‌های شبیه abstraction
+Observable.just("A", "B", "C")
+    .concatMap { item -&gt;
+        heavyWork(item)          // اجرا به ترتیب، خروجی هم ترتیب
+    }</code></pre>
+
+<h3>۵.۳ switchMap — استفاده از آخرین ورودی</h3>
+<pre class="kl-code"><code>// جستجوی لحظه‌ای: هنگامی که کاربر تایپ می‌کرد، رشته‌ای که در حال آن‌حال تایپ می‌شد حذف می‌شد
+searchTextField
+    .debounce(300, TimeUnit.MILLISECONDS)
+    .observeOn(Schedulers.computation())
+    .switchMap { query -&gt;
+        searchService.search(query)       // هر تایپی جدید، جریان پیشین را رها می‌کند
+    }</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته:</span> در جستجوهای موبایل، <code>switchMap</code> که برای اسکن‌سازها طراحی
+شده است، چون از لزوم بی‌نیاز بودن و غیر‌فعال‌کردن درخواست‌های قبلی جلوگیری می‌کند.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>جمع‌بندی و کاهش داده‌ها: reduce، fold، collect</h2>
+
+<p>
+وقتی می‌خواهیم چندین عنصر را به یک آیتم واحد کاهش دهیم، از این Operatorها استفاده می‌شود.
+</p>
+
+<h3>۶.۱ reduce — خروجی یک آیتم واحد</h3>
+<pre class="kl-code"><code>Observable.just(1, 2, 3, 4, 5)
+    .reduce { acc, item -&gt; acc + item }      // ۱۵
+    .subscribe { println("مجموع: $it") }</code></pre>
+
+<h3>۶.۲ scan — خروجی هر مرحله‌ای</h3>
+<pre class="kl-code"><code>Observable.range(1, 5)
+    .scan { acc, item -&gt; acc + item }        // ۱، ۳، ۶، ۱۰، ۱۵
+    .subscribe { println("مجموع تا کنار: $it") }</code></pre>
+
+<h3>۶.۳ collect / collectInto — به‌راحتی جمع‌آوری</h3>
+<pre class="kl-code"><code>Observable.just(1, 2, 3, 4, 5)
+    .collect(
+        { ArrayList&lt;Int&gt;() },                 // مقدار شروع
+        { list, item -&gt; list.add(item) }      // عملکرد کاهش
+    )
+    .subscribe { list -&gt; println("لیست نهایی: $list") }</code></pre>
+
+<h3>۶.۴ grouping کرد (toList / groupBy)</h3>
+<pre class="kl-code"><code>Observable.just(1, 2, 3, 4, 5)
+    .toList()                                // [1, 2, 3, 4, 5]
+    .subscribe { println("همه‌ی اعداد: $it") }
+
+Observable.just("apple", "banana", "apricot", "cherry")
+    .groupBy { it[0] }                       // گروه‌بندی بر پایه‌ی حرف اول
+    .subscribe { group -&gt;
+        group.toList().subscribe { items -&gt;
+            println("گروه ${group.key}: $items")
+        }
+    }</code></pre>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 250" role="img" aria-label="تعداد معماری reduce">
+  <defs>
+    <marker id="m-s3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/>
+    </marker>
+  </defs>
+
+  <rect class="s-ok" x="20" y="30" width="340" height="100" rx="13"/>
+  <text class="s-tok" x="190" y="56" text-anchor="middle" font-size="15">reduce: همه‌ی آرایه به یک کلید تبدیل می‌شود</text>
+  <text class="s-t" x="40" y="86" font-size="12">[۱, ۲, ۳, ۴, ۵]  &rarr;  ۱۵</text>
+
+  <rect class="s-ok" x="410" y="30" width="340" height="100" rx="13"/>
+  <text class="s-tok" x="580" y="56" text-anchor="middle" font-size="15">scan: خروجی در هر مرحله به‌دست می‌آید</text>
+  <text class="s-t" x="40" y="86" font-size="12">[۱, ۲, ۳, ۴, ۵]  &rarr;  ۱ → ۳ → ۶ → ۱۰ → ۱۵</text>
+</svg>
+  <figcaption>
+    <b>ساخت‌بندی:</b> <code>reduce</code> لغزنده، <code>scan</code> تنها لغزنده امن‌تر است؛ هر
+    مرحله‌ای به‌صورت جداگانه توزیع می‌شود و می‌توانید در ادامه‌ی آن‌ها باقی بمانید.
+  </figcaption>
+</figure>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>تحكم در زمان و سرعت: throttleFirst، debounce، delay</h2>
+
+<p>
+وقتیکه یک ورودی سریع‌تر از خروجی‌گذاری می‌رود (یعنی کاربر در یک کادر جستجوی سریع تایپ می‌کند،
+یا سوییچ‌لاگ‌ها سریع‌تر از یکدیگر فراخوانی می‌شوند)، از Operatorهای کنترل‌دار برای برطرف کردن
+این مشکل استفاده می‌شود.
+</p>
+
+<table>
+  <tr><th>Operator</th><th>رفرانس خارجی</th><th>وقتی فعال می‌شود</th><th>کاربرد</th></tr>
+  <tr><td><code>throttleFirst</code></td><td>وضوح تمام زمان</td><td>پیوند هر بازرسی</td><td>محدود کردن واردات هر N واحد زمان</td></tr>
+  <tr><td><code>debounce</code></td><td>تایپ اولین ورودی لغو امکان</td><td>توقف یا وفاداری</td><td>در جستجوی موبایل، پس از تایپ، یک دوره پایا</td></tr>
+  <tr><td><code>delay</code></td><td>تأخیر در فراخوانی</td><td>تاخیر قابل تنظیم</td><td>تأخیر دادن به یک جریان</td></tr>
+  <tr><td><code>sample</code></td><td>نمونه‌برداری از جریان</td><td>هر زمان ثابت</td><td>گرفتن آخرین پیش‌آمد در یک بازه زمانی</td></tr>
+</table>
+
+<h3>۷.۱ debounce برای جستجو</h3>
+<pre class="kl-code"><code>searchTextField
+    .debounce(300, TimeUnit.MILLISECONDS)
+    .observeOn(Schedulers.computation())
+    .map { query -&gt; query.trim().uppercase() }
+    .filter { it.isNotEmpty() }
+    .switchMap { query -&gt;
+        searchService.search(query)
+    }</code></pre>
+
+<h3>۷.۲ throttleFirst برای دکمه‌یouble-safe</h3>
+<pre class="kl-code"><code>// دکمه‌ی بلاگ پست: هیچ‌کدام از این‌ها نمی‌تواند به‌راحتی لغو شود
+sendButton.clicks()
+    .throttleFirst(500, TimeUnit.MILLISECONDS)   // تایپ‌های سریع را نادیده می‌گیرد
+    .subscribe { submitForm() }</code></pre>
+
+<h3>۷.۳ delay — تأخیر کامل از اول</h3>
+<pre class="kl-code"><code>Observable.timer(2, TimeUnit.SECONDS)
+    .flatMap { fetchDashboardData() }
+    .subscribe { showDashboard(it) }</code></pre>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 250" role="img" aria-label="مقایسه throttleFirst، debounce و delay">
+  <defs>
+    <marker id="m-s4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/>
+    </marker>
+  </defs>
+
+  <rect class="s-ok" x="20" y="30" width="340" height="90" rx="13"/>
+  <text class="s-tok" x="190" y="56" text-anchor="middle" font-size="14">throttleFirst: هر ۵۰۰ms یک تایپ</text>
+  <text class="s-t" x="40" y="86" font-size="12">وا ... وا ... وا وو ... واو ...</text>
+
+  <rect class="s-ok" x="410" y="30" width="340" height="90" rx="13"/>
+  <text class="s-tok" x="580" y="56" text-anchor="middle" font-size="14">debounce: صرفاً پس از تایپ ۳۰۰ms</text>
+  <text class="s-t" x="40" y="86" font-size="12">وا ... وا ... وا وو ... واو  ...</text>
+</svg>
+  <figcaption>
+    <b>تفاوت کلیدی:</b> <code>throttleFirst</code> هر پس‌زمینه‌ی T یک تایپ را حفظ می‌کند، در حالی
+    <code>debounce</code> تأیید می‌کند تا پس از تایپ T دوره‌ای بی‌تاثیر باشد.
+  </figcaption>
+</figure>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>Schedulers: newThread، computation، io، mainThread</h2>
+
+<p>
+Scheduler در RxJava جایی است که جریان از دسته‌ای به دسته‌ی دیگر منتقل می‌شود؛ به عنوان مثال،
+بک‌اند روی <code>Schedulers.io()</code> و UI روی <code>AndroidSchedulers.mainThread()</code>.
+</p>
+
+<table>
+  <tr><th>Scheduler</th><th>استفاده می‌شود در کجا</td><th>تقسیم‌بندی به.pool</th><th>نوع کار</th></tr>
+  <tr><td><code>Schedulers.newThread</code></td><td>درخواست‌های آرام‌تر ماژول‌های جداگانه</td><td>یک ترد برای هر اشتراک</td><td>عملیات سنگین، غیرهمزمان</td></tr>
+  <tr><td><code>Schedulers.computation</code></td><td>حساب‌های سنگین، پردازش‌های پیچیده</td><td>تقریباً برابر تعداد هسته‌ها</td><td>کارهای غیرمبهم</td></tr>
+  <tr><td><code>Schedulers.io</code></td><td>آپلود، دریافت، پایگاه‌داده‌ها، فایل‌ها</td><td>pool بزرگ</td><td>خوانش و نوشتن</td></tr>
+  <tr><td><code>Schedulers.trampoline</code></td><td>ترتیب دوره‌ای (اختیاری)</td><td>در همین thread</td><td>اجرای در زمان فعلی</td></tr>
+  <tr><td><code>AndroidSchedulers.mainThread</code></td><td>UI، تازه‌سازی، انیمیشن‌های آرام‌تر، UI</td><td>روی سوییچ‌لاگ اصلی اندروید</td><td>عمل‌های UI</td></tr>
+</table>
+
+<h3>۸.۱ استفاده از Schedulers در کد اندرویدی</h3>
+<pre class="kl-code"><code>apiService
+    .getUser(id)
+    .subscribeOn(Schedulers.io())              // از io، بک‌اند
+    .observeOn(AndroidSchedulers.mainThread()) // به UI، UI
+    .subscribe(
+        { user -&gt; updateUI(user) },
+        { err -&gt; showError(err) }
+    )</code></pre>
+
+<h3>۸.۲ ترکیب Scheduler‌ها</h3>
+<pre class="kl-code"><code>dataService
+    .loadList()
+    .subscribeOn(Schedulers.io())
+    .observeOn(Schedulers.computation())
+    .map { processData(it) }                  // پردازش سنگین درcomputation
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribe(
+        { displayList(it) },
+        { showError(it) }
+    )</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">عمیق‌تر: subscribeOn در چند نقطه‌ی متوالی</span>
+اگر در یک به‌هم‌ریختگی از subscribeOn‌ها قرار دید، فقط اولینsubscription حیاتی است؛ بقیه
+اطمینان‌ها از تنظیمات انباشته‌ی Scheduler‌اساس (exception) استفاده می‌کنند. بهتر است در
+یک دستور واحد، در سمت چپ، از Scheduler‌های مورد نیاز استفاده کنید.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>سامانه‌ی خطا و بازیابی: onErrorReturn، retry، onErrorResumeNext</h2>
+
+<p>
+اشکال‌زدایی (Error Handling) یکی از اهمیت‌ترین بخش‌های برنامه‌نویسی واکنش‌گراست؛ چون در
+میکروسرویس‌ها و شبکه‌ها، خطاها غیرقابل‌پیش‌بینی هستند و باید به درستی بازیابی شوند.
+</p>
+
+<h3>۹.۱ onErrorReturn — برگرداندن یک آیتم جایگزین</h3>
+<pre class="kl-code"><code>apiService
+    .getUser(id)
+    .onErrorReturn { User.getDefault() }     // در صورت خطا، یک کاربر پیش‌فرض برگردان
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribe(
+        { showUser(it) },
+        { /* این تابع اجرا نمی‌شود */ }
+    )</code></pre>
+
+<h3>۹.۲ retry — دوباره‌ی تلاش در صورت خطا</h3>
+<pre class="kl-code"><code>apiService
+    .getData()
+    .retry(۳)                                // تا ۳ بار دوباره سعی شود
+    .subscribe(
+        { showData(it) },
+        { err -&gt; println("پس از ۳ تکرار، خطا: $err") }
+    )</code></pre>
+
+<h3>۹.۳ onErrorResumeNext — جریان جایگزین</h3>
+<pre class="kl-code"><code>apiService
+    .getFeed()
+    .onErrorResumeNext(Observable.empty())   // در صورت خطا، خروجی خالی برمی‌گردد
+    .subscribe(
+        { displayFeed(it) },
+        { println("خطا پردازش شد") }
+    )</code></pre>
+
+<h3>۹.۴ onExceptionResumeNext — خطا‌های استثنایی</h3>
+<pre class="kl-code"><code>apiService
+    .getReport()
+    .onExceptionResumeNext(Observable.just(defaultReport()))
+    .subscribe(
+        { render(it) },
+        { println("خالی شد") }
+    )</code></pre>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 250" role="img" aria-label="راه‌حل‌های خطا در RxJava">
+  <defs>
+    <marker id="m-s5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/>
+    </marker>
+  </defs>
+
+  <rect class="s-bad" x="20" y="30" width="150" height="90" rx="13"/>
+  <text class="s-tbad" x="95" y="56" text-anchor="middle" font-size="13">onError: خطا رها می‌شود، ممکن است برنامه بجامد</text>
+
+  <rect class="s-ok" x="190" y="30" width="170" height="90" rx="13"/>
+  <text class="s-tok" x="275" y="56" text-anchor="middle" font-size="13">onErrorReturn: یک آیتم جایگزین برگردان</text>
+
+  <rect class="s-ok" x="380" y="30" width="170" height="90" rx="13"/>
+  <text class="s-tok" x="465" y="56" text-anchor="middle" font-size="13">onErrorResumeNext: جریان جایگزین شروع می‌شود</text>
+
+  <rect class="s-ok" x="570" y="30" width="180" height="90" rx="13"/>
+  <text class="s-tok" x="660" y="56" text-anchor="middle" font-size="13">retry: تا N بار دوباره می‌زند</text>
+</svg>
+  <figcaption>
+    <b>شناسه‌ی خطا:</b> <code>onErrorReturn</code> برای حالت‌هایی مناسب است که همیشه یک سند
+    دارد؛ در مواردی که یک جریان جایگزین کار می‌کنه، از <code>onErrorResumeNext</code> استفاده می‌شود
+    و در ریسک‌های زمان‌به‌زمان، <code>retry</code> با شمارش‌پذیر استفاده می‌شود.
+  </figcaption>
+</figure>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>Subjects: Publish، Behavior، Replay، Serialized و Variable</h2>
+
+<p>
+Subjectها به‌جاهای <code>Observable</code> و <code>Observer</code> به‌هم‌ریختگی هستند؛ بخاطر
+این می‌توانند به‌عنوان منبع توسط یکی از اوایل‌ها، و به‌عنوان گیرنده توسط دیگری استفاده شوند.
+</p>
+
+<table>
+  <tr><th>Subject</th><th>افزودن تاخیری (backpressure)؟</th><th>چه زمانی وقتی آیتم آخر و جدی‌تر است؟</th><th>کاربرد اصلی</th></tr>
+  <tr><td><code>PublishSubject</code></td><td>خیر (یادداشت‌ها)</td><td>زنده‌ترین آیتم‌ها را نگهداری می‌کند و هر آیتم را تابع می‌زند</td><td>یافتن انفجار داده‌ها</td></tr>
+  <tr><td><code>BehaviorSubject</code></td><td>خیر</td><td>مقادیر پیشین را در صورتی باعث می‌شود که زمانی از دهم باقی بماند</td><td>وضعیت فعلی، نشانه‌ی فعلی</td></tr>
+  <tr><td><code>ReplaySubject</code></td><td>خیر</td><td>آیتم‌های قبلی را مجدد می‌فرستد</td><td>ثبت کارهای طولانی کاری یا جستجوهای تکراری</td></tr>
+  <tr><td><code>SerializedSubject</code></td><td>خیر (پوشش)</td><td>تأمین‌کننده‌ی پایه را به‌عنوان رگه‌ی فعلی که از دهم باقی می‌ماند می‌گذارد</td><td>رفع همزمانی و مشکلات خطا قبل از کار</td></tr>
+  <tr><td><code>Variable</code> (RxJava 2)</td><td>خیر (پوشش داخلی)</td><td>ذخیره‌سازی ساختاری را به‌عنوان به‌کارش می‌گیریم</td><td>ترجیحاً از <code>BehaviorSubject</code></td></tr>
+</table>
+
+<h3>۱۰.۱ PublishSubject</h3>
+<pre class="kl-code"><code>// PublishSubject: هر آیتم به تمام گیرندگان تابع می‌زند
+val subject = PublishSubject.create&lt;String&gt;()
+
+subject.subscribe { println("غیرمشاهده‌ی ۱: $it") }
+subject.onNext("A")          // شما را مشاهده نمی‌کنید
+subject.subscribe { println("غیرمشاهده‌ی ۲: $it") }
+subject.onNext("B")          // هر دو گیرنده را تابع می‌زند</code></pre>
+
+<h3>۱۰.۲ BehaviorSubject</h3>
+<pre class="kl-code"><code>// BehaviorSubject: در صورتی که گیرنده خاموش بود، به‌ترین مقادیر را به‌دست می‌آورد
+val subject = BehaviorSubject.create&lt;Int&gt;()
+
+subject.onNext(1)
+subject.onNext(2)
+subject.subscribe { println("مشاهده حالت ۱: $it") }   // 2 را تابع می‌زند
+subject.onNext(3)                                    // 3 را تابع می‌زند</code></pre>
+
+<h3>۱۰.۳ ReplaySubject</h3>
+<pre class="kl-code"><code>// ReplaySubject: تمام آیتم‌های گذشته را مجدد به گیرنده می‌فرستد
+val subject = ReplaySubject.create&lt;String&gt;()
+
+subject.onNext("A")
+subject.onNext("B")
+subject.onNext("C")
+
+subject.subscribe { println("مشاهده ۱: $it") }
+subject.subscribe { println("مشاهده ۲: $it") }</code></pre>
+
+<h3>۱۰.۴ SerializedSubject و Variable</h3>
+<pre class="kl-code"><code>//SerializedSubject: بین چند گیرنده، همزمانی را رفع می‌کند
+val subject = PublishSubject.create&lt;String&gt;()
+val serialized = subject.serialize()
+
+serialized.subscribe { println("غالبی ۱: $it") }
+serialized.subscribe { println("غالبی ۲: $it") }
+
+serialized.onNext("S")</code></pre>
+
+<div class="kl-box kl-no">
+<span class="kl-h">نکته:</span> در RxJava 2، <code>Variable</code> به‌طور پیش‌فرض به‌عنوان
+<code>BehaviorSubject</code> پوشش‌یافته بودند؛ اما در نسخه‌ی‌های سال ۲۰۲۰ با خطاها‌ای
+دربرگرفته بودند. برای فعالی‌تر، ترجیحاً از <code>BehaviorSubject</code> استفاده کنید.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>Cancellation، Disposable و Subscription</h2>
+
+<p>
+در اندروید، وقتی یک Activity یا Fragment دسکتب می‌شود، تمام جریانی که برای او در حال اجرا هستند
+باید لغو شوند؛ در غیر این صورت، حافظه‌ی نشت و آپدیت‌های UI پیش‌فرض در زمان‌های ناگهانی رخ
+می‌دهد.
+</p>
+
+<h3>۱۱.۱ استفاده از CompositeDisposable</h3>
+<pre class="kl-code"><code>private lateinit var composite: CompositeDisposable
+
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+
+    composite = CompositeDisposable()
+
+    composite.add(
+        apiService
+            .getUser(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { showUser(it) },
+                { showError(it) }
+            )
+    )
+
+    // وقتی زندگی این کامپوننتی به اتمام می‌رسد، همه‌ی زیرمجموعه‌ها را لغو می‌کنیم
+    LifecycleEventObserver { _, event -&gt;
+        if (event == Lifecycle.Event.ON_DESTROY) composite.dispose()
+    }
+}</code></pre>
+
+<h3>۱۱.۲ لغو نselective (بی‌عزیزانه)</h3>
+<pre class="kl-code"><code>Subscription sub = apiService.load()
+    .subscribe(
+        { show(it) },
+        { err -&gt; err.printStackTrace() }
+    );
+
+// در کد واقعی، ممکن است استفاده از یک لغو‌گر prop‌ساز شود
+sub.unsubscribe()</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">عمیق‌تر: Subscription vs Disposable</span>
+در نسخه‌های جدید RxJava (۳) کلاس <code>Disposable</code> مانند <code>Subscription</code> در
+نمودار استفاده شده است و <code>CompositeDisposable</code> به‌صورت یکدیگر استفاده می‌شود.
+در نسخه‌ی ۲، <code>Subscription</code> و <code>CompositeSubscription</code> استفاده می‌شوند.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>حیطه بستگی (Backpressure) و Flowable</h2>
+
+<p>
+وقتی یک <code>Observable</code> خیلی سریع داده می‌سازد و گیرنده (Subscriber) نمی‌تواند با
+سرعت آن‌ها را دریافت کند، حافظه اشغال می‌شود و ممکن است برنامه cease کار کند. در اینجا استفاده
+از <code>Flowable</code> و استراتژی‌های backpressure به کمک می‌آید:
+</p>
+
+<ul>
+  <li><strong>BUFFER:</strong> همه‌ی داده‌ها را در حافظه ذخیره می‌کند تا تمام داده‌ها را نجات دهد.</li>
+  <li><strong>DROP:</strong> وقتی buffer پر شد، داده‌های جدید را نادیده می‌گیرد.</li>
+  <li><strong>LATEST:</strong> آخرین داده را نگه می‌دارد.</li>
+  <li><strong>ERROR:</strong> در صورت پرشدن buffer، خطا می‌دهد.</li>
+</ul>
+
+<h3>۱۲.۱ استراتژی‌های Backpressure</h3>
+<pre class="kl-code"><code>Flowable&lt;Long&gt; source = Flowable.create(
+    { emitter -&gt;
+        var i = 0L
+        while (!emitter.isCancelled()) {
+            emitter.onNext(i++)
+            Thread.sleep(10)
+        }
+    },
+    BackpressureStrategy.BUFFER   // داده‌ها در حافظه ذخیره می‌شوند
+)
+
+source.observeOn(Schedulers.io())
+    .subscribe(
+        { println("مقرا: $it") },
+        { err -&gt; err.printStackTrace() }
+    )</code></pre>
+
+<h3>۱۲.۲ consume এবং doOnNext</h3>
+<pre class="kl-code"><code>Flowable.range(1, 1_000_000)
+    .doOnNext { value -&gt; println("مقدار فعلی: $value") }
+    .subscribe(
+        { value -&gt; process(value) },
+        { err -&gt; err.printStackTrace() }
+    )</code></pre>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 250" role="img" aria-label="استراتژی‌های Backpressure">
+  <defs>
+    <marker id="m-s6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F766E"/>
+    </marker>
+  </defs>
+
+  <rect class="s-bad" x="20" y="30" width="160" height="90" rx="13"/>
+  <text class="s-tbad" x="100" y="56" text-anchor="middle" font-size="12">BUFFER: تمام داده‌ها حافظه می‌گیرند</text>
+
+  <rect class="s-ok" x="190" y="30" width="160" height="90" rx="13"/>
+  <text class="s-tok" x="270" y="56" text-anchor="middle" font-size="12">DROP: داده‌های جدید را رها می‌کند</text>
+
+  <rect class="s-ok" x="360" y="30" width="160" height="90" rx="13"/>
+  <text class="s-tok" x="440" y="56" text-anchor="middle" font-size="12">LATEST: آخرین داده را نگه می‌دارد</text>
+
+  <rect class="s-ok" x="530" y="30" width="200" height="90" rx="13"/>
+  <text class="s-tok" x="630" y="56" text-anchor="middle" font-size="12">ERROR: وقتی buffer پر شد، خطا برمی‌گردد</text>
+</svg>
+  <figcaption>
+    <b>راه‌حل‌ها:</b> استراتژی‌بلند (BUFFER) می‌تواند حافظه را اشغال کند؛ در پرس‌کردن‌ها، از
+    <code>DROP</code> یا <code>LATEST</code> استفاده کنید تا در حافظه حفظ‌یافته‌تر بماند.
+  </figcaption>
+</figure>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>یکپارچه‌سازی با Android و Compose</h2>
+
+<p>
+این بخش نشان می‌دهد که RxJava و RxAndroid در اندروید چگونه استفاده می‌شوند و چگونه با
+Compose و ViewModel تعامل دارند.
+</p>
+
+<h3>۱۳.۱ ViewModel و RxJava</h3>
+<pre class="kl-code"><code>class UserViewModel(private val repository: UserRepository) : ViewModel() {
+
+    private val composite = CompositeDisposable()
+
+    fun getUser(userId: String) {
+        composite.add(
+            repository.getUser(userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { user -&gt; _user.value = user },
+                    { err -&gt; _error.value = err.message }
+                )
+        )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        composite.dispose()
+    }
+}</code></pre>
+
+<h3>۱۳.۲ Compose + LiveData / StateFlow</h3>
+<pre class="kl-code"><code>@Composable
+fun UserScreen(viewModel: UserViewModel) {
+    val user by viewModel.user.collectAsStateWithLifecycle()
+
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = " نام کاربری: $user")
+    }
+}</code></pre>
+
+<h3>۱۳.۳ RxBinding / RxAndroid و رویدادهای UI</h3>
+<pre class="kl-code"><code>// کد جاوا: استفاده از RxAndroid برای رویدادهای UI
+RxTextView.textChanges(searchEditText)
+    .debounce(300, TimeUnit.MILLISECONDS)
+    .observeOn(AndroidSchedulers.mainThread())
+    .map(text -&gt; text.toString().trim().uppercase())
+    .filter(text -&gt; !text.isEmpty())
+    .subscribe(
+        query -&gt; searchService.search(query),
+        err -&gt; err.printStackTrace()
+    )</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته:</span> در کامپوز، جریان‌های مشابه با <code>StateFlow</code> یا <code>Flow</code>
+به‌کار می‌روند؛ اما <code>RxJava</code> در تجزیه‌ی موقت‌ها، نسخه‌های فعلی و برخی کتابخانه‌ها
+خالی‌تر است. برای کد جدید، معمولاً <code>StateFlow</code>/<code>Flow</code> ترجیح داده می‌شود.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>بهترین شیوه‌ها، چک‌لیست و منابع</h2>
+
+<h3>۱۴.۱ بهترین شیوه‌ها</h3>
+<ol>
+  <li><strong>همیشه <code>Disposable</code> را به <code>CompositeDisposable</code> اضافه کنید.</strong>
+    این جلوگیری از حافظه‌ی نشت در Activity/Fragment دسکتب‌شده و اپدیت‌های UI در زمان‌های ناگهانی
+    را می‌آموزد.</li>
+  <li><strong>از <code>subscribeOn</code> به یک نقطه استفاده کنید و در پشت با <code>observeOn</code>.</strong></li>
+  <li><strong>در جستجوها، از <code>debounce</code> + <code>distinctUntilChanged</code> + <code>switchMap</code></strong>
+    استفاده کنید.</li>
+  <li><strong>زمانی که COUNT بسیار بزرگ است، از <code>Flowable</code> و <code>BackpressureStrategy</code></strong>
+    استفاده کنید.</li>
+  <li><strong>خطاهای رایج را به‌صورت دستی از خطرات پنهان‌ها دور بگیرید.</strong>
+    زمانی که خروجی دوی پارچه‌ای وجود دارد، از <code>retry</code> با شمارش‌پذیر استفاده کنید.</li>
+  <li><em>در کد‌های اندرویدی، از <code>try-with-resources</code> یا try-catch
+    (finally)</em> برای حذف اشتراک‌های آزاد در صورت پروداکشن حیاتی انتها را بگذارید.</li>
+</ol>
+
+<h3>۱۴.۲ چک‌لیست نهایی</h3>
+<table>
+  <tr><th>✅ چک‌لیست</th><th>نحوه انجام</th></tr>
+  <tr><td>داده‌ها به درستی برمی‌گردند؟</td><td>همه‌ی <code>onNext</code>، <code>onComplete</code> و <code>onError</code></td></tr>
+  <tr><td>Subscription لغو می‌شود؟</td><td><code>CompositeDisposable.dispose()</code></td></tr>
+  <tr><td>Scheduler صحیح برای UI؟</td><td><code>observeOn(AndroidSchedulers.mainThread())</code></td></tr>
+  <tr><td>Backpressure برطرف می‌شود؟</td><td>از <code>Flowable</code> و استراتژی مناسب</td></tr>
+  <tr><td>خطاها مدیریت می‌شوند؟</td><td><code>onErrorReturn</code> / <code>retry</code> / <code>onErrorResumeNext</code></td></tr>
+  <tr><td>داده‌های تکراری حذف می‌شوند؟</td><td><code>distinct</code> / <code>distinctUntilChanged</code></td></tr>
+</table>
+
+<h3>۱۴.۳ منابع</h3>
+<div class="kl-sources">
+  <ul>
+    <li>راسل و یا دوستانه‌ی Stack Overflow، صفحات توضیح‌دهنده، و همه‌چیز مرتبط با RxJava.</li>
+    <li>📘 <a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">راسل‌آب‌راه‌ی کامل RxJava (جامعه‌ای)</a></li>
+    <li>📘 <a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">راسل‌آب‌راه‌ی تمام‌گزینه‌ای RxAndroid (حسابی)</a></li>
+    <li>📘 <a href="https://github.com/ReactiveX/RxJava/wiki" target="_blank" rel="noopener">راسل‌آب‌راه‌ی نمونه و آزمایشگاه RxJava</a></li>
+    <li>📘 <a href="https://reactivedict.netlify.app/" target="_blank" rel="noopener">راسل‌آب‌راه‌ی لیت‌آب‌راه (راست‌نمایی)</a></li>
+    <li>🐙 <a href="https://github.com/haedarfarhani/filemanager-jetpack-compose" target="_blank" rel="noopener">نمونه‌ی واقعی پروژه‌ی Android به‌کارگرفته‌شده به‌کاربردی</a></li>
+  </ul>
+</div>
+
+<div class="article-end-box">
+  <div class="author-avatar" title="حیدر فرحانی">ح</div>
+  <div class="author-meta">
+    <span class="author-name">حیدر فرحانی</span>
+    <span class="author-role">توسعه‌دهنده اندروید و کاتلین</span>
+  </div>
+  <p>
+    اگر این مقاله به شما کمک کرد، لطفاً در <a href="../articles/">فهرست مقالات</a> نمره‌ی بالا
+    بدهید و بقیه‌ی دوستانه‌ها را به روشن‌سازی ببرید.
+  </p>
+</div>
+</section>
+
+        </div>
+      </article>
+
+      <!-- Sidebar (Desktop TOC) -->
+      <aside class="blog-sidebar" aria-label="فهرست مطالب">
+        <div class="sidebar-card">
+          <div class="sidebar-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            <span>فهرست مقاله</span>
+          </div>
+          <nav class="toc-scroll-container">
+            <ul class="toc-list">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">چه فرقی بین RxJava و RxAndroid دارد؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Observable، Observer، Subscriber و Flowable</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">چارچوب هم‌رسانی: Single، Maybe، Completable</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Operatorهای اصلی: map، filter، take، drop، distinct</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">زنجیره‌سازی: flatMap، concatMap، switchMap</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جمع‌بندی و کاهش داده‌ها: reduce، fold، collect</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">تحكم در زمان و سرعت: throttleFirst، debounce</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Schedulers: newThread، computation، io، mainThread</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">سامانه‌ی خطا و بازیابی: onErrorReturn، retry، onErrorResumeNext</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Subjects: Publish، Behavior، Replay، Serialized و Variable</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Cancellation، Disposable و Subscription</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">حیطه بستگی (Backpressure) و Flowable</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">یکپارچه‌سازی با Android و Compose</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">بهترین شیوه‌ها، چک‌لیست و منابع</span></a></li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>انتشار این راهنما به‌منظور ارتقای دانش مهندسی و جامعه توسعه‌دهندگان کاتلین و اندرویدی در دسترس قرار گرفته است.</p>
+  </footer>
+
+  <!-- Floating Action Buttons -->
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <!-- Mobile TOC Drawer -->
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">چه فرقی بین RxJava و RxAndroid دارد؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Observable، Observer، Subscriber و Flowable</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">چارچوب هم‌رسانی: Single، Maybe، Completable</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Operatorهای اصلی: map، filter، take، drop، distinct</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">زنجیره‌سازی: flatMap، concatMap، switchMap</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جمع‌بندی و کاهش داده‌ها: reduce، fold، collect</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">تحكم در زمان و سرعت: throttleFirst، debounce</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Schedulers: newThread، computation، io، mainThread</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">سامانه‌ی خطا و بازیابی: onErrorReturn، retry، onErrorResumeNext</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Subjects: Publish، Behavior، Replay، Serialized و Variable</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Cancellation، Disposable و Subscription</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">حیطه بستگی (Backpressure) و Flowable</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">یکپارچه‌سازی با Android و Compose</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">بهترین شیوه‌ها، چک‌لیست و منابع</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>
