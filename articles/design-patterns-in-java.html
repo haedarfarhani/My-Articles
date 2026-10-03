@@ -1,0 +1,2778 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Patterns در Java چیست؟ آموزش کامل الگوهای طراحی با مثال و تست | حیدر فرحانی</title>
+  <meta name="description" content="در این آموزش Design Patterns در Java را از پایه یاد می‌گیرید؛ از مفهوم Design Pattern و GoF تا Strategy، Factory، Builder، Observer و سایر الگوهای طراحی همراه با مثال Java و Unit Test.">
+  <meta name="keywords" content="Design Patterns در Java, Design Pattern چیست, آموزش Design Patterns, Design Patterns Java, الگوهای طراحی در جاوا, Design Pattern در برنامه نویسی, الگوهای طراحی نرم افزار, GoF Design Patterns, Java Design Patterns, آموزش Design Pattern جاوا, SOLID, JUnit 5">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Design Patterns در Java چیست؟ آموزش کامل الگوهای طراحی با مثال و تست">
+  <meta property="og:description" content="از مفهوم Design Pattern و GoF تا Strategy، Factory، Builder، Observer و سایر الگوهای طراحی همراه با مثال Java و Unit Test.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/design-patterns-in-java.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/design-patterns-in-java.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Design Patterns در Java">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Design Patterns در Java چیست؟ آموزش کامل الگوهای طراحی">
+  <meta name="twitter:description" content="از مفهوم Design Pattern و GoF تا Strategy، Factory، Builder، Observer همراه با مثال Java و Unit Test.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Design Patterns در Java چیست؟ آموزش کامل الگوهای طراحی با مثال و تست",
+    "description": "از مفهوم Design Pattern و GoF تا Strategy، Factory، Builder، Observer و سایر الگوهای طراحی همراه با مثال Java و Unit Test.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/design-patterns-in-java.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/design-patterns-in-java.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Design Patterns, Java, GoF, SOLID, Strategy, Factory, Builder, Observer, JUnit 5",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Design Patterns در Java", "item": "https://haedarfarhani.github.io/My-Articles/articles/design-patterns-in-java.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="reading-progress"></div>
+
+  <!-- Navigation Bar -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Mobile TOC Toggle Button -->
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <!-- Share Button -->
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <!-- Article Content Column -->
+      <article class="blog-article">
+
+        <!-- Hero Header -->
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">Java و طراحی</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Design Patterns در Java</span>؛ از مسئله تا الگو
+          </h1>
+
+          <p class="hero-lead">
+            بیشتر کدِ بد از ندانستن سینتکس نمی‌آید؛ از طراحی بد می‌آید. این راهنما یک دوره‌ی کامل و کاربردی است:
+            تعریف دقیق Design Pattern، تفاوتش با Algorithm و Architecture، رابطه‌اش با SOLID، سپس پیاده‌سازی
+            جاوا ۲۱ برای الگوهای مهم همراه با <code>JUnit 5</code> — و مهم‌تر از همه، یاد می‌گیرید کجا از الگو
+            استفاده <strong>نکنید</strong>.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری، کاتلین و اندروید</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۶۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مقدماتی تا پیشرفته (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Design_Patterns</span>
+            <span class="post-tag">#Java</span>
+            <span class="post-tag">#GoF</span>
+            <span class="post-tag">#SOLID</span>
+            <span class="post-tag">#Clean_Code</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <!-- Inline Table of Contents -->
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: کدِ بد از ندانستن سینتکس نمی‌آید</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Design Pattern دقیقاً چیست؟ (و چه چیزی نیست)</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>یک مثال واقعی: سیستم Notification</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>Patternها کدام مشکل را حل می‌کنند؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>چرا از Design Pattern استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>چه زمانی استفاده از Pattern ضروری است؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>چه زمانی نباید Pattern استفاده کرد؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>Design Pattern و SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>Pattern در برابر Architecture</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>Pattern در برابر Algorithm و Data Structure</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>دسته‌بندی Patternها (GoF): سه خانواده</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>قالب آموزش هر Pattern</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>Singleton (Creation)</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>Factory Method (Creation)</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>Abstract Factory (Creation)</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>Builder (Creation)</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>Prototype (Creation)</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>Adapter (Structural)</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Decorator (Structural)</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>Facade (Structural)</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>Composite، Bridge، Flyweight و Proxy</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Strategy (Behavioral)</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>Observer (Behavioral)</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>State (Behavioral)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Command (Behavioral)</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>بقیه‌ی الگوهای رفتاری</span></a></li>
+              <li class="inline-toc-item"><a href="#s27" class="inline-toc-link"><span class="inline-toc-num">۲۷</span><span>Unit Testing الگوها با JUnit 5</span></a></li>
+              <li class="inline-toc-item"><a href="#s28" class="inline-toc-link"><span class="inline-toc-num">۲۸</span><span>پروژه‌ی کوچک واقعی: Notification System</span></a></li>
+              <li class="inline-toc-item"><a href="#s29" class="inline-toc-link"><span class="inline-toc-num">۲۹</span><span>Patternها در پروژه‌ی واقعی و اندروید</span></a></li>
+              <li class="inline-toc-item"><a href="#s30" class="inline-toc-link"><span class="inline-toc-num">۳۰</span><span>اشتباهات رایج در استفاده از Pattern</span></a></li>
+              <li class="inline-toc-item"><a href="#s31" class="inline-toc-link"><span class="inline-toc-num">۳۱</span><span>انتخاب Pattern و چک‌لیست</span></a></li>
+              <li class="inline-toc-item"><a href="#s32" class="inline-toc-link"><span class="inline-toc-num">۳۲</span><span>۱۰ تمرین عملی</span></a></li>
+              <li class="inline-toc-item"><a href="#s33" class="inline-toc-link"><span class="inline-toc-num">۳۳</span><span>پروژه‌ی نهایی: E-Commerce Order System</span></a></li>
+              <li class="inline-toc-item"><a href="#s34" class="inline-toc-link"><span class="inline-toc-num">۳۴</span><span>Performance، پیچیدگی و Clean Code</span></a></li>
+              <li class="inline-toc-item"><a href="#s35" class="inline-toc-link"><span class="inline-toc-num">۳۵</span><span>Cheat Sheet الگوهای مهم</span></a></li>
+              <li class="inline-toc-item"><a href="#s36" class="inline-toc-link"><span class="inline-toc-num">۳۶</span><span>بیست سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s37" class="inline-toc-link"><span class="inline-toc-num">۳۷</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s38" class="inline-toc-link"><span class="inline-toc-num">۳۸</span><span>مسیر یادگیری، پیش‌نیازها و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <!-- Sections Content -->
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: کدِ بد از ندانستن سینتکس نمی‌آید</h2>
+
+<p>
+تصور کنید یک توسعه‌دهنده‌ی جاوا هستید که سینتکس زبان را خوب می‌دانید: کلاس، ارث‌بری، interface، generic و stream را می‌شناسید.
+با این حال، پروژه‌ای که تحویل می‌گیرید پر از کلاس‌هایی است که مستقیم به هم گره خورده‌اند. مشکل اینجا کمبود دانش زبان نیست؛
+مشکل، <strong>طراحی</strong> (Design) است. کدی که کار می‌کند و کدی که <em>برای تغییر ساخته شده</em>، دو چیز متفاوت‌اند.
+</p>
+
+<p>
+به این زنجیره توجه کنید. هر کلاس، جزئیات پیاده‌سازی کلاس بعدی را می‌داند:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>OrderService  →  PaymentProcessor  →  StripeClient  →  HttpClient
+</code></pre>
+
+<p>
+حالا فرض کنید می‌خواهیم درگاه پرداخت را عوض کنیم. اگر <code>PaymentProcessor</code> مستقیماً نوع <code>StripeClient</code> را
+سازد و به آن وابسته باشد، تغییر درگاه به معنای دست‌زدن به چند فایل است. اگر <code>OrderService</code> هم مستقیماً
+به <code>PaymentProcessor</code> وابسته باشد، یک تغییر ساده در لایه‌ی پایین، تا لایه‌ی بالای دامنه نشت می‌کند.
+</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">علامت هشدار طراحی</span>
+هر جمله‌ای در ذهن شما که با «اگر فردا این را عوض کردند، مجبورم...» شروع شود،
+یک علامت است که در آن نقطه به یک <strong>مرز طراحی</strong> (design boundary) نیاز دارید — و همین‌جاست که الگوهای طراحی وارد می‌شوند.
+</div>
+
+<p>
+<strong>Design Pattern</strong> (الگوی طراحی) یک راه‌حل عمومی، شناخته‌شده و آزموده‌شده برای یک مسئله‌ی
+<em>تکرارشونده</em> در طراحی نرم‌افزار است. آن را «سینتکس» در نظر نگیرید؛ یک الگو، واژگان مشترکی است برای
+حرف‌زدن درباره‌ی ساختار و رابطه‌ی اجزا. در ادامه اول دقیقاً روشن می‌کنیم که یک الگو چیست و چه چیزی <strong>نیست</strong>.
+</p>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Design Pattern دقیقاً چیست؟ (و چه چیزی نیست)</h2>
+
+<p>
+تعریف دقیق: <strong>الگوی طراحی، توصیفی از یک راه‌حل برای یک مسئله‌ی طراحی تکرارشونده است</strong>، به‌همراه
+شرح اینکه چرا این راه‌حل کار می‌کند و در چه شرایطی به آن نیاز دارید. الگو نامی برای یک ساختار راه‌حل است، نه کدی که کپی کنید.
+</p>
+
+<h3>۲.۱ الگو چه چیزی نیست</h3>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>چیست؟</th><th>چرا این‌طور نیست</th></tr>
+  <tr><td>Library یا Framework</td><td>الگو کد نیست، پس نمی‌توانید آن را «اضافه» یا «نصب» کنید.</td></tr>
+  <tr><td>Package</td><td>هیچ بسته‌ای وجود ندارد که «Strategy» را برای شما بیاورد؛ هر بار خودتان می‌سازید.</td></tr>
+  <tr><td>کلاس آماده</td><td>الگو ساختاری از چند type و رابطه‌ی آن‌هاست، نه یک کلاس مشخص.</td></tr>
+  <tr><td>Algorithm یا Data Structure</td><td>الگوریتم «گام‌های محاسبه» را می‌گوید؛ الگو «ساختار و تعامل» را.</td></tr>
+  <tr><td>کد قابل Copy/Paste</td><td>محیط، زبان و مسئله‌ی شما متفاوت است؛ الگو باید هر بار اقتباس شود.</td></tr>
+</table>
+</div>
+
+<p>
+مثال ملموس: بارها پیش می‌آید که ساخت یک شیء پیچیده شده است (پارامترهای زیاد، فیلدهای اختیاری و ترتیب مبهم).
+این یک مسئله‌ی تکرارشونده در خانواده‌ی <strong>Creation</strong> (ساخت) است و الگوی <strong>Builder</strong> برایش راه‌حل دارد.
+نکته‌ی مهم این است که الگو برای <em>مسئله‌ی درست</em> به کار می‌رود؛ Builder راه‌حل «ساخت پیچیده» است،
+نه راه‌حل همه‌ی مسائل.
+</p>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>یک مثال واقعی: سیستم Notification</h2>
+
+<p>
+با یک نمونه‌ی ساده ولی واقعی شروع می‌کنیم. یک سرویس اعلان داریم که نوع ارسال را با <code>String</code> می‌گیرد:
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public class NotificationService {
+
+    public void send(String type, String message) {
+        if (type.equals("email")) {
+            // send email
+        } else if (type.equals("sms")) {
+            // send sms
+        } else if (type.equals("push")) {
+            // send push notification
+        }
+    }
+}
+</code></pre>
+
+<p>
+در ابتدا این کد ساده و بی‌آزار است. اما با بزرگ‌شدن محصول، نوع‌ها زیاد می‌شوند:
+<code>Email</code>، <code>SMS</code>، <code>Push</code>، <code>WhatsApp</code>، <code>Telegram</code>، <code>Slack</code> و... .
+هر نوع جدید، یک <code>else if</code> تازه به همین متد اضافه می‌کند.
+</p>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مسئله فقط تعداد ifها نیست</span>
+اگر مسئله فقط تعداد <code>if</code> بود، با <code>switch</code> یا <code>Map</code> هم می‌شد جمعش کرد.
+مسئله‌ی واقعی این است که این کلاس هم‌زمان سه کار می‌کند: تشخیص نوع، ساخت متن، و ارسال.
+این یعنی <strong>وابستگی زیاد (Tight Coupling)</strong>، نقض <strong>مسئولیت واحد</strong>، و دشواری تست.
+</div>
+
+<p>
+حالا همان مسئله را با یک interface و الگوی <strong>Strategy</strong> بازطراحی می‌کنیم. این فقط یک تغییر ظاهری نیست؛
+ما <em>محور تغییر</em> (axis of change) را جدا می‌کنیم:
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public interface NotificationChannel {
+    void send(String message);
+}
+
+public final class EmailChannel implements NotificationChannel {
+    @Override public void send(String message) {
+        // send email
+    }
+}
+
+public final class SmsChannel implements NotificationChannel {
+    @Override public void send(String message) {
+        // send sms
+    }
+}
+
+public final class NotificationService {
+    private final NotificationChannel channel;
+
+    public NotificationService(NotificationChannel channel) {
+        this.channel = channel;
+    }
+
+    public void send(String message) {
+        channel.send(message);
+    }
+}
+</code></pre>
+
+<p>
+اکنون نوع جدید یعنی <code>WhatsApp</code> فقط یک کلاس جدید است؛ <code>NotificationService</code> دست‌نخورده می‌ماند.
+در بخش ۲۸ همین سیستم را قدم‌به‌قدم بازسازی می‌کنیم و Unit Test می‌نویسیم.
+</p>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>Patternها کدام مشکل را حل می‌کنند؟</h2>
+
+<p>
+الگوها برای «زیباتر کردن کد» نیستند؛ برای حل مجموعه‌ای از دردهای مشخص طراحی‌اند. در ادامه هفت نشانه‌ی رایج را با مثال می‌بینیم.
+</p>
+
+<h3>۴.۱ وابستگی شدید (Tight Coupling)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public class OrderService {
+    private final MySqlOrderRepository repository = new MySqlOrderRepository();
+}
+</code></pre>
+
+<p>
+<code>OrderService</code> هم تصمیم ساخت گرفته، هم به یک پیاده‌سازی خاص وابسته است. نتیجه: نمی‌توان بدون دیتابیس واقعی تست کرد و تعویض دیتابیس به یک بازنویسی تبدیل می‌شود.
+</p>
+
+<h3>۴.۲ تکرار کد (Code Duplication)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public void sendEmail(String to, String body) { /* retry + logging + template */ }
+public void sendSms(String to, String body)   { /* retry + logging + template */ }
+</code></pre>
+
+<p>
+منطق retry و logging دو بار تکرار شده. الگوهایی مثل <strong>Template Method</strong> یا <strong>Decorator</strong> این تکرار را جمع می‌کنند.
+</p>
+
+<h3>۴.۳ کدی که به‌سختی تغییر می‌کند (Hard-to-change)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public double calculateTotal(String customerType) {
+    if (customerType.equals("regular")) return base;
+    if (customerType.equals("vip")) return base * 0.9;
+    if (customerType.equals("employee")) return base * 0.7;
+    return base;
+}
+</code></pre>
+
+<p>
+هر نوع مشتری جدید، این متد را تغییر می‌دهد. الگوی <strong>Strategy</strong> هر قاعده را به یک کلاس جدا می‌برد تا افزودن قاعده، ویرایش نباشد بلکه افزودن باشد.
+</p>
+
+<h3>۴.۴ تست دشوار (Difficult Testing)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public class BookingService {
+    private final PaymentGateway gateway = PaymentGateway.live(); // اتصال واقعی
+}
+</code></pre>
+
+<p>
+هر تست واحد باید به شبکه بزند. اگر وابستگی از بیرون تزریق شود (<code>BookingService(PaymentGateway g)</code>)، در تست یک fake ساده کافی است. این همان <strong>Dependency Injection</strong> است که الگوها را تست‌پذیر می‌کند.
+</p>
+
+<h3>۴.۵ ساخت شیء پیچیده (Complex Object Creation)</h3>
+
+<pre class="kl-code" data-lang="java"><code>new User("ali", "ali@mail.com", "0912...", "Tehran", null, null, 30, true, false, "fa");
+</code></pre>
+
+<p>
+این «فاجعه‌ی پارامترهای موقعیتی» است: خواندن ندارد، ترتیب مهم است و مقادیر اختیاری گیج‌کننده‌اند. الگوی <strong>Builder</strong> این را به زنجیره‌ی خوانا تبدیل می‌کند.
+</p>
+
+<h3>۴.۶ منطق شرطی بزرگ (Large Conditional Logic)</h3>
+
+<pre class="kl-code" data-lang="java"><code>switch (action) {
+    case "create" -> create();
+    case "update" -> update();
+    case "delete" -> delete();
+    // ...
+}
+</code></pre>
+
+<p>
+وقتی هر شاخه منطق جدی دارد، <strong>Command</strong> یا <strong>Strategy</strong> هر شاخه را به یک شیء تبدیل می‌کند.
+</p>
+
+<h3>۴.۷ تفکیک ضعیف مسئولیت‌ها (Poor Separation)</h3>
+
+<p>
+وقتی یک کلاس هم اعتبارسنجی می‌کند، هم ذخیره، هم ایمیل می‌فرستد، الگوهایی مثل <strong>Facade</strong> و <strong>Repository</strong> مرزها را روشن می‌کنند.
+</p>
+
+<div class="kl-box">
+<span class="kl-h">جمع‌بندی بخش</span>
+هر الگو یکی از این دردها را هدف می‌گیرد، اما هیچ الگویی همه‌ی آن‌ها را هم‌زمان حل نمی‌کند.
+قبل از انتخاب الگو، مشخص کنید کدام درد واقعاً در پروژه‌ی شما وجود دارد.
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>چرا از Design Pattern استفاده می‌کنیم؟</h2>
+
+<p>
+الگوها در اصل ارزش خود را از چند ویژگی می‌گیرند که کیفیت بلندمدت پروژه را تعیین می‌کنند:
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>هدف</th><th>تأثیر الگو</th><th>مثال</th></tr>
+  <tr><td>کاهش وابستگی (Low Coupling)</td><td>وابستگی به interface جای وابستگی به implementation</td><td>Strategy، Factory</td></tr>
+  <tr><td>افزایش چسبندگی (High Cohesion)</td><td>هر کلاس یک مسئولیت روشن دارد</td><td>SRP در همه‌ی الگوها</td></tr>
+  <tr><td>قابلیت نگهداری (Maintainability)</td><td>تغییر در یک جای مشخص محدود می‌ماند</td><td>Facade، Adapter</td></tr>
+  <tr><td>قابلیت تست (Testability)</td><td>جایگزینی وابستگی با fake در تست</td><td>DI + Strategy</td></tr>
+  <tr><td>استفاده‌ی مجدد (Reusability)</td><td>رفتار مشترک قابل ترکیب است</td><td>Decorator، Template Method</td></tr>
+  <tr><td>انعطاف‌پذیری (Flexibility)</td><td>افزودن قابلیت بدون تغییر کد موجود</td><td>Observer، Factory Method</td></tr>
+  <tr><td>کنترل پیچیدگی</td><td>مرزهای روشن بین بخش‌های سیستم</td><td>Facade، Mediator</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مهم‌ترین هشدار این مقاله</span>
+<strong>الگو هدف نیست؛ ابزار است.</strong> اگر الگو را فقط برای حرفه‌ای‌تر به‌نظررسیدن استفاده کنید،
+خروجی معمولاً کدی است با تعداد کلاس بیشتر، پیچیدگی بیشتر و خوانایی کمتر — یعنی دقیقاً برعکس هدف.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>چه زمانی استفاده از Pattern ضروری است؟</h2>
+
+<p>
+تقریباً هیچ الگویی ذاتاً و همیشه «ضروری» نیست. الگو وقتی ارزشمند می‌شود که یک مسئله‌ی <strong>واقعی و تکرارشونده</strong> داشته باشید.
+این زنجیره را در نظر بگیرید:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Requirement Change
+        ↓
+Existing Design
+        ↓
+Modification becomes difficult
+        ↓
+Repeated problem
+        ↓
+Suitable Pattern
+</code></pre>
+
+<p>
+نکته‌ی کلیدی کلمه‌ی «تکرارشونده» است. یک بار سخت بودن یک تغییر، هنوز الگو توجیه نمی‌کند؛
+وقتی <em>الگو‌ی همین درد</em> چند بار در پروژه دیده شد، آن‌وقت الگو هزینه‌ی خود را جبران می‌کند.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز واقعی</th><th>الگوی پیشنهادی</th></tr>
+  <tr><td>چند نوع رفتار قابل تعویض در زمان اجرا</td><td>Strategy</td></tr>
+  <tr><td>چند implementation زیر یک abstraction</td><td>Factory</td></tr>
+  <tr><td>ساخت شیء با پارامترهای زیاد و اختیاری</td><td>Builder</td></tr>
+  <tr><td>یک نمونه‌ی کنترل‌شده و مشترک (با احتیاط)</td><td>Singleton</td></tr>
+  <tr><td>اطلاع‌رسانی یک رویداد به چند شنونده</td><td>Observer</td></tr>
+  <tr><td>پردازش زنجیره‌ای یک درخواست</td><td>Chain of Responsibility</td></tr>
+  <tr><td>افزودن رفتار بدون تغییر کلاس اصلی</td><td>Decorator</td></tr>
+</table>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">قانون سرانگشتی</span>
+اگر بتوانید با کمی refactor یا جداسازی ساده مشکل را حل کنید، همان را انجام دهید.
+الگو زمانی وارد می‌شود که مرزهای طراحی واقعاً لازم شده باشند.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>چه زمانی نباید Pattern استفاده کرد؟</h2>
+
+<p>
+این بخش از مهم‌ترین بخش‌های مقاله است. اگر مسئله ساده است، الگو <strong>اضافه نکنید</strong>.
+به این مثال نگاه کنید: برای برگرداندن یک نام ثابت، یک interface و یک کلاس ساخته شده است.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>interface UserNameProvider {
+    String getUserName();
+}
+
+class DefaultUserNameProvider implements UserNameProvider {
+    @Override
+    public String getUserName() {
+        return "Heydar";
+    }
+}
+</code></pre>
+
+<p>
+وقتی فقط یک implementation وجود دارد و هیچ نیاز واقعی به abstraction نیست، این لایه فقط پیچیدگی است.
+در عین حال، این معادل کاملاً کافی است:
+</p>
+
+<pre class="kl-code" data-lang="java"><code>String getUserName() {
+    return "Heydar";
+}
+</code></pre>
+
+<h3>۷.۱ واژه‌های مهم این بخش</h3>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>معنی</th></tr>
+  <tr><td>Overengineering (مهندسی بیش از حد)</td><td>حل مسئله‌ی ساده با راه‌حل پیچیده و زودتر از موعد.</td></tr>
+  <tr><td>Premature Abstraction</td><td>ساخت abstraction قبل از آنکه نیاز واقعی اثبات شود.</td></tr>
+  <tr><td>Accidental Complexity</td><td>پیچیدگی‌ای که خودمان اضافه می‌کنیم، نه پیچیدگی ذاتی مسئله.</td></tr>
+  <tr><td>Pattern Abuse</td><td>استفاده‌ی افراطی از الگوها تا حدی که خوانایی قربانی شود.</td></tr>
+  <tr><td>Gold Plating</td><td>افزودن قابلیت‌ها و ساختارهایی که کسی درخواست نکرده است.</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">قانون YAGNI</span>
+نیازت را پیش‌بینی نکن (You Aren't Gonna Need It). abstraction را وقتی بسازید که دومین implementation واقعی ظاهر شد،
+نه وقتی فقط در ذهن شما وجود دارد.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>Design Pattern و SOLID</h2>
+
+<p>
+SOLID پنج اصل طراحی شیءگراست و الگوها معمولاً بویژه برای <em>رسیدن</em> به SOLID وجود دارند.
+ابتدا هر اصل را کوتاه و با مثال جاوا می‌بینیم، سپس نقشه‌ی ارتباط الگوها با آن‌ها را می‌کشیم.
+</p>
+
+<h3>۸.۱ SRP — اصل مسئولیت واحد</h3>
+
+<pre class="kl-code" data-lang="java"><code>// بد: دو مسئولیت در یک کلاس
+class Invoice {
+    void calculateTotal() { /* ... */ }
+    void printPdf() { /* ... */ }
+}
+
+// خوب: هر کلاس یک دلیل برای تغییر
+class Invoice { double calculateTotal() { /* ... */ return 0; } }
+class InvoicePrinter { void print(Invoice invoice) { /* ... */ } }
+</code></pre>
+
+<h3>۸.۲ OCP — اصل باز/بسته</h3>
+
+<pre class="kl-code" data-lang="java"><code>// بد: برای افزودن نوع جدید باید این کلاس را تغییر دهیم
+class ShippingCalculator {
+    double cost(String type) {
+        return switch (type) {
+            case "standard" -> 20_000;
+            case "express"  -> 50_000;
+            default -> 0;
+        };
+    }
+}
+
+// خوب: بسته برای تغییر، باز برای توسعه
+interface ShippingStrategy { double cost(); }
+class StandardShipping implements ShippingStrategy { public double cost() { return 20_000; } }
+class ExpressShipping  implements ShippingStrategy { public double cost() { return 50_000; } }
+</code></pre>
+
+<h3>۸.۳ LSP — اصل جانشینی لیسکوف</h3>
+
+<pre class="kl-code" data-lang="java"><code>interface Rectangle { int area(); }
+class Square implements Rectangle {          // مربع را جدا نگه می‌داریم
+    private final int side;
+    Square(int side) { this.side = side; }
+    public int area() { return side * side; }
+}
+</code></pre>
+
+<p>
+اگر یک زیرنوع نتواند جای والد خود بنشیند بدون آنکه رفتار را بشکند، وراثت غلط است.
+</p>
+
+<h3>۸.۴ ISP — اصل تفکیک interface</h3>
+
+<pre class="kl-code" data-lang="java"><code>// بد: interface چاق
+interface Machine { void print(); void scan(); void fax(); }
+
+// خوب: interfaceهای کوچک و متمرکز
+interface Printer { void print(); }
+interface Scanner { void scan(); }
+class SimplePrinter implements Printer { public void print() { /* ... */ } }
+</code></pre>
+
+<h3>۸.۵ DIP — اصل وارونگی وابستگی</h3>
+
+<pre class="kl-code" data-lang="java"><code>// بد: سیاست به جزئیات وابسته است
+class ReportService { private final MySQLDatabase db = new MySQLDatabase(); }
+
+// خوب: هر دو به یک abstraction وابسته‌اند
+interface Database { void save(String data); }
+class ReportService {
+    private final Database database;
+    ReportService(Database database) { this.database = database; }
+}
+</code></pre>
+
+<h3>۸.۶ نقشه‌ی الگوها و SOLID</h3>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>اصلی که تقویت می‌کند</th></tr>
+  <tr><td>Strategy</td><td>OCP + DIP</td></tr>
+  <tr><td>Factory Method / Abstract Factory</td><td>SRP + OCP + DIP</td></tr>
+  <tr><td>Decorator</td><td>OCP + SRP</td></tr>
+  <tr><td>Adapter</td><td>DIP + ISP</td></tr>
+  <tr><td>Observer</td><td>وابستگی کم (Low Coupling)</td></tr>
+  <tr><td>Facade</td><td>ISP + SRP</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">این نقشه مطلق نیست</span>
+یک الگو به یک اصل SOLID محدود نمی‌شود؛ همان الگو می‌تواند هم‌زمان چند اصل را تقویت کند.
+هدف نشان‌دادن ارتباط است، نه قاعده‌ی سخت.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>Pattern در برابر Architecture</h2>
+
+<p>
+<strong>Architecture</strong> (معماری) درباره‌ی ساختار کلی سیستم است: لایه‌ها، مرزهای اصلی، انتخاب فناوری‌ها و قواعد وابستگی.
+<strong>Pattern</strong> پایین‌تر است و درباره‌ی تعامل و رابطه‌ی کلاس/شیء در یک بخش مشخص از سیستم است.
+</p>
+
+<pre class="kl-code" data-lang="mermaid"><code>Architecture
+    ↓
+Clean Architecture
+    ↓
+Application Structure
+    ↓
+Design Patterns
+    ↓
+Class/Object Relationships
+</code></pre>
+
+<p>
+در یک پروژه معمولاً چند الگو در کنار هم و <em>در خدمت معماری</em> ظاهر می‌شوند:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Clean Architecture
+        +
+Repository Pattern
+        +
+Factory Pattern
+        +
+Strategy Pattern
+        +
+Observer Pattern
+</code></pre>
+
+<div class="kl-box">
+<span class="kl-h">تفاوت در مقیاس</span>
+معماری می‌گوید «لایه‌ها به کدام سمت وابسته باشند»؛ الگوها می‌گویند «در یک لایه، کلاس‌ها چه نسبتی داشته باشند».
+یک پروژه می‌تواند معماری خوب با الگوهای بد داشته باشد — و برعکس.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>Pattern در برابر Algorithm و Data Structure</h2>
+
+<p>
+اشتباهی رایج، یکی‌دانستن الگوی طراحی با الگوریتم است. یکی «چطور محاسبه کنیم» را می‌گوید، دیگری «چطور سازمان دهیم».
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مورد</th><th>Design Pattern</th><th>Algorithm</th></tr>
+  <tr><td>هدف</td><td>حل مسئله‌ی طراحی</td><td>حل مسئله‌ی محاسباتی</td></tr>
+  <tr><td>تمرکز</td><td>Structure / Interaction</td><td>Steps / Computation</td></tr>
+  <tr><td>مثال</td><td>Strategy</td><td>Binary Search</td></tr>
+  <tr><td>سطح</td><td>Design</td><td>Computation</td></tr>
+  <tr><td>خروجی</td><td>یک ساختار از typeها</td><td>یک دنباله‌ی گام‌ها</td></tr>
+</table>
+</div>
+
+<p>
+الگو نمی‌گوید دقیقاً چه خط کدی بنویسید؛ ساختار و رابطه‌ی اجزا را پیشنهاد می‌دهد.
+Strategies می‌تواند درون هر کدام از کلاس‌ها یک الگوریتم متفاوت اجرا کند.
+</p>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>دسته‌بندی Patternها (GoF): سه خانواده</h2>
+
+<p>
+الگوهای کلاسیک (کتاب GoF، ۱۹۹۴) در سه خانواده تقسیم می‌شوند. این دسته‌بندی به شما کمک می‌کند در مرحله‌ی اول انتخاب،
+مسیر را کوتاه کنید: مسئله‌ی من مربوط به ساخت است، ساختار، یا رفتار؟
+</p>
+
+<h3>۱۱.۱ الگوهای ساخت (Creational)</h3>
+<p>تمرکز روی مکانیزم و انعطاف ساخت شی‌ها: <code>Singleton</code> · <code>Factory Method</code> · <code>Abstract Factory</code> · <code>Builder</code> · <code>Prototype</code></p>
+
+<h3>۱۱.۲ الگوهای ساختاری (Structural)</h3>
+<p>تمرکز روی ترکیب کلاس‌ها و شی‌ها و ساده‌سازی روابط: <code>Adapter</code> · <code>Bridge</code> · <code>Composite</code> · <code>Decorator</code> · <code>Facade</code> · <code>Flyweight</code> · <code>Proxy</code></p>
+
+<h3>۱۱.۳ الگوهای رفتاری (Behavioral)</h3>
+<p>تمرکز روی توزیع مسئولیت و ارتباط بین اشیاء: <code>Chain of Responsibility</code> · <code>Command</code> · <code>Interpreter</code> · <code>Iterator</code> · <code>Mediator</code> · <code>Memento</code> · <code>Observer</code> · <code>State</code> · <code>Strategy</code> · <code>Template Method</code> · <code>Visitor</code></p>
+
+<pre class="kl-code" data-lang="mermaid"><code>classDiagram
+    class Creational { +Object Creation }
+    class Structural { +Object Composition }
+    class Behavioral { +Communication }
+</code></pre>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>قالب آموزش هر Pattern</h2>
+
+<p>
+از اینجا به بعد، هر الگو را با یک ساختار ثابت ارائه می‌کنیم تا مقایسه آسان شود:
+</p>
+
+<ol class="kl-check">
+  <li><strong>تعریف کوتاه</strong> و دقیق الگو.</li>
+  <li><strong>مسئله</strong>: چه دردی داریم؟</li>
+  <li><strong>بدون الگو</strong>: کد جاوا که کار می‌کند ولی مشکل‌دار است.</li>
+  <li><strong>راه‌حل</strong>: ایده‌ی الگو و دیاگرام ساختاری (به صورت Mermaid).</li>
+  <li><strong>پیاده‌سازی جاوا</strong> ی کامل و قابل اجرا.</li>
+  <li><strong>تست</strong> با JUnit 5 به سبک Arrange/Act/Assert.</li>
+  <li><strong>تحلیل</strong>, مزایا, معایب و زمان استفاده/عدم استفاده.</li>
+  <li><strong>ارتباط با SOLID</strong> و اشتباهات رایج.</li>
+</ol>
+
+<div class="kl-box">
+<span class="kl-h">نسخه‌ی جاوا</span>
+همه‌ی مثال‌های این مقاله با <strong>Java 21</strong> و JUnit 5 سازگارند و از record، <code>final</code> و سازنده‌ی خوانا استفاده می‌کنند.
+متن دیاگرام‌های Mermaid داخل بلوک کد آمده است تا بدون هیچ کتابخانه‌ی خارجی قابل خواندن و کپی باشد.
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>Singleton (Creation)</h2>
+
+<p><strong>تعریف:</strong> تضمین می‌کند یک کلاس فقط یک نمونه داشته باشد و یک نقطه‌ی دسترسی جهانی به آن بدهد.</p>
+
+<p><strong>مسئله:</strong> یک منبع مشترک (پیکربندی، connection pool، cache) باید تنها یک نمونه داشته باشد.</p>
+
+<pre class="kl-code" data-lang="java"><code>// نسخه‌ی بد: static global به‌جای کنترل lifecycle
+public class AppConfig {
+    public static final AppConfig INSTANCE = new AppConfig();
+    public String apiUrl = "https://api.example.com";
+}
+// INSTANCE.apiUrl = "..." ; قابل تغییر از هر جای برنامه — و تست‌ناپذیر
+</code></pre>
+
+<p><strong>راه‌حل:</strong> نمونه را خصوصی و از دسترس خارج نگه دارید و از ساخت تکراری جلوگیری کنید. برای thread-safety از الگوی holder استفاده کنید.</p>
+
+<pre class="kl-code" data-lang="java"><code>public final class AppConfig {
+    private final String apiUrl;
+
+    private AppConfig(String apiUrl) { this.apiUrl = apiUrl; }
+
+    // Initialization-on-demand holder: lazy + thread-safe بدون synchronized
+    private static final class Holder {
+        private static final AppConfig INSTANCE = new AppConfig("https://api.example.com");
+    }
+
+    public static AppConfig instance() { return Holder.INSTANCE; }
+
+    public String apiUrl() { return apiUrl; }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class AppConfigTest {
+
+    @Test
+    void shouldReturnSameInstance() {
+        // Act
+        AppConfig first = AppConfig.instance();
+        AppConfig second = AppConfig.instance();
+
+        // Assert
+        assertSame(first, second);
+    }
+
+    @Test
+    void shouldExposeConfiguredUrl() {
+        assertEquals("https://api.example.com", AppConfig.instance().apiUrl());
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مزایا</th><th>معایب</th></tr>
+  <tr><td>کنترل دقیق روی یک نمونه‌ی مشترک</td><td>حالت جهانی (global state) و کاهش تست‌پذیری</td></tr>
+  <tr><td>ساخت تنبل (lazy) و thread-safe با holder</td><td>پنهان‌کردن وابستگی‌ها؛ کلاس به‌سختی mock می‌شود</td></tr>
+  <tr><td>مناسب منابع گران‌قیمت</td><td>می‌تواند Pseudo-Singleton یا کلاس‌های کمکی شود</td></tr>
+</table>
+</div>
+
+<p>
+<strong>چه زمانی:</strong> فقط برای منابع واقعاً یگانه‌ی سطح پروسه. <strong>چه زمانی نه:</strong> وقتی می‌توانید همان نمونه را با Dependency Injection پاس دهید؛ در این حالت DI تقریباً همیشه گزینه‌ی بهتر است.
+</p>
+
+<p><strong>ارتباط با SOLID:</strong> Singleton معمولاً در تضاد با DIP است چون خودش یک وابستگی جهانی می‌سازد.</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">اشتباه رایج</span>
+استفاده از Singleton به‌عنوان Service Locator یا برای فرار از طراحی DI.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) چرا Singleton با DI often در تضاد است؟ ۲) holder idiom چطور thread-safety را بدون synchronized می‌دهد؟ ۳) چه زمانی استفاده از enum برای Singleton منطقی است و محدودیت‌اش چیست؟
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>Factory Method (Creation)</h2>
+
+<p><strong>تعریف:</strong> ساخت شیء را به یک متد می‌سپارد و به کد مصرف‌کننده اجازه می‌دهد بدون دانستن کلاس دقیق، یک نوع انتزاعی بگیرد.</p>
+
+<p><strong>مسئله:</strong> در بسیاری نقاط کد <code>new</code> صریح نوشته می‌شود و منطق انتخاب نوع پخش می‌شود.</p>
+
+<pre class="kl-code" data-lang="java"><code>Notification n;
+if (type.equals("email")) n = new EmailNotification();
+else if (type.equals("sms")) n = new SmsNotification();
+else throw new IllegalArgumentException();
+</code></pre>
+
+<p><strong>راه‌حل:</strong> یک نقطه‌ی واحد برای ساخت بسازید.</p>
+
+<pre class="kl-code" data-lang="mermaid"><code>classDiagram
+    class Notification { &lt;&lt;interface&gt;&gt; +send(String) }
+    class EmailNotification
+    class SmsNotification
+    class NotificationFactory { +create(NotificationType) Notification }
+    Notification &lt;|.. EmailNotification
+    Notification &lt;|.. SmsNotification
+    NotificationFactory ..&gt; Notification : creates
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public enum NotificationType { EMAIL, SMS, PUSH }
+
+public interface Notification {
+    void send(String message);
+}
+
+public final class EmailNotification implements Notification {
+    @Override public void send(String message) { /* ... */ }
+}
+
+public final class SmsNotification implements Notification {
+    @Override public void send(String message) { /* ... */ }
+}
+
+public final class NotificationFactory {
+    public Notification create(NotificationType type) {
+        return switch (type) {
+            case EMAIL -> new EmailNotification();
+            case SMS   -> new SmsNotification();
+            case PUSH  -> message -> { /* lambda implementation */ };
+        };
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class NotificationFactoryTest {
+
+    private final NotificationFactory factory = new NotificationFactory();
+
+    @Test
+    void shouldCreateEmailNotification() {
+        // Act
+        Notification notification = factory.create(NotificationType.EMAIL);
+
+        // Assert
+        assertInstanceOf(EmailNotification.class, notification);
+    }
+
+    @Test
+    void shouldCreateSmsNotification() {
+        assertInstanceOf(SmsNotification.class, factory.create(NotificationType.SMS));
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مزایا</th><th>معایب</th></tr>
+  <tr><td>مخفی کردن منطق انتخاب و decoupling</td><td>یک لایه‌ی غیرمستقیم اضافه می‌شود</td></tr>
+  <tr><td>افزودن نوع جدید بدون تغییر مصرف‌کننده</td><td>در صورت سادگی زیاد، می‌تواند غیرضروری باشد</td></tr>
+</table>
+</div>
+
+<p><strong>ارتباط با SOLID:</strong> OCP + DIP. <strong>اشتباه رایج:</strong> ساخت factory برای یک نوع واحد یا نشت‌دادن وابستگی‌ها به درون factory.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) تفاوت Factory Method و Abstract Factory چیست؟ ۲) Factory Method چه زمانی فقط یک لایه‌ی اضافی است؟ ۳) چطور یک factory را تست می‌کنید؟
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>Abstract Factory (Creation)</h2>
+
+<p><strong>تعریف:</strong> خانواده‌ای از اشیای مرتبط را بدون مشخص‌کردن کلاس‌های دقیقشان می‌سازد.</p>
+
+<p><strong>مسئله:</strong> یک UI داریم که باید در دو تم/پلتفرم مختلف (Light و Dark) اجزای هم‌خانواده بسازد تا اجزای ناهمخوان با هم قاطی نشوند.</p>
+
+<pre class="kl-code" data-lang="java"><code>// بد: ساخت مستقیم و امکان قاطی‌شدن تم‌ها
+Button b = new LightButton();
+Checkbox c = new DarkCheckbox(); // ناهمخوان!
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public interface Button { void render(); }
+public interface Checkbox { void render(); }
+
+public interface UiFactory {
+    Button createButton();
+    Checkbox createCheckbox();
+}
+
+public final class LightUiFactory implements UiFactory {
+    public Button createButton() { return () -> System.out.println("light button"); }
+    public Checkbox createCheckbox() { return () -> System.out.println("light checkbox"); }
+}
+
+public final class DarkUiFactory implements UiFactory {
+    public Button createButton() { return () -> System.out.println("dark button"); }
+    public Checkbox createCheckbox() { return () -> System.out.println("dark checkbox"); }
+}
+
+public final class Application {
+    private final Button button;
+    private final Checkbox checkbox;
+
+    public Application(UiFactory factory) {
+        this.button = factory.createButton();
+        this.checkbox = factory.createCheckbox();
+    }
+
+    public void render() { button.render(); checkbox.render(); }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import org.junit.jupiter.api.Test;
+
+class UiFactoryTest {
+
+    @Test
+    void lightFactoryShouldNotRenderDarkComponents() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintStream original = System.out;
+        System.setOut(new PrintStream(out));
+        try {
+            new Application(new LightUiFactory()).render();
+        } finally {
+            System.setOut(original);
+        }
+        String log = out.toString();
+        assertTrue(log.contains("light button"));
+        assertTrue(log.contains("light checkbox"));
+        assertFalse(log.contains("dark"));
+    }
+}
+</code></pre>
+
+<p><strong>ارتباط با SOLID:</strong> SRP + OCP + DIP. <strong>اشتباه رایج:</strong> استفاده از Abstract Factory وقتی فقط یک خانواده وجود دارد.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) Abstract Factory چیست و چه زمانی ارزش دارد؟ ۲) تفاوتش با Factory Method چیست؟ ۳) Interface Segregation چه نقشی در طراحی factory دارد؟
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>Builder (Creation)</h2>
+
+<p><strong>تعریف:</strong> ساخت یک شیء پیچیده را قدم‌به‌قدم و خوانا می‌کند و از سازنده‌های پرپارامتر جلوگیری می‌کند.</p>
+
+<p><strong>مسئله:</strong> شیء با پارامترهای زیاد و اختیاری.</p>
+
+<pre class="kl-code" data-lang="java"><code>User user = new User("ali", "ali@mail.com", "0912...", "Tehran", null, null, 30, true, false, "fa");
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.Objects;
+
+public record User(
+        String name,
+        String email,
+        String phone,
+        String address,
+        Integer age,
+        boolean newsletter,
+        String locale) {
+
+    public static Builder builder(String name, String email) {
+        return new Builder(name, email);
+    }
+
+    public static final class Builder {
+        private final String name;
+        private final String email;
+        private String phone = "";
+        private String address = "";
+        private Integer age;
+        private boolean newsletter;
+        private String locale = "fa";
+
+        private Builder(String name, String email) {
+            this.name = Objects.requireNonNull(name);
+            this.email = Objects.requireNonNull(email);
+        }
+
+        public Builder phone(String phone) { this.phone = phone; return this; }
+        public Builder address(String address) { this.address = address; return this; }
+        public Builder age(Integer age) { this.age = age; return this; }
+        public Builder newsletter(boolean newsletter) { this.newsletter = newsletter; return this; }
+        public Builder locale(String locale) { this.locale = locale; return this; }
+
+        public User build() {
+            return new User(name, email, phone, address, age, newsletter, locale);
+        }
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class UserBuilderTest {
+
+    @Test
+    void shouldBuildUserWithOnlyRequiredFields() {
+        // Act
+        User user = User.builder("Ali", "ali@mail.com").build();
+
+        // Assert
+        assertEquals("Ali", user.name());
+        assertEquals("", user.phone());
+        assertEquals("fa", user.locale());
+    }
+
+    @Test
+    void shouldRejectNullRequiredFields() {
+        assertThrows(NullPointerException.class, () -> User.builder("Ali", null));
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مزایا</th><th>معایب</th></tr>
+  <tr><td>خوانایی بالا و پارامترهای اختیاری ایمن</td><td>یک کلاس اضافه برای هر شیء</td></tr>
+  <tr><td>وابسته‌ی immutable است (کنار record عالی است)</td><td>برای اعداد کم می‌تواند اضافه‌کاری باشد</td></tr>
+</table>
+</div>
+
+<p><strong>ارتباط با SOLID:</strong> SRP (جداسازی مسئولیت ساخت). <strong>اشتباه رایج:</strong> Builderهای غول‌پیکر با منطق تجاری درون build().</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) Builder چه تفاوتی با سازنده‌ی معمولی دارد؟ ۲) چرا Builder با immutable objectها خوب کار می‌کند؟ ۳) چه زمانی Builder را با Factory ترکیب می‌کنید؟
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>Prototype (Creation)</h2>
+
+<p><strong>تعریف:</strong> ساخت شیءهای جدید با کپی‌کردن از یک نمونه‌ی اولیه، به‌جای ساخت از صفر.</p>
+
+<p><strong>مسئله:</strong> ساخت یک شیء گران است (پرس‌وجوی دیتابیس/شبکه) و فقط چند فیلد آن تغییر می‌کند.</p>
+
+<pre class="kl-code" data-lang="java"><code>// بد: هر بار ساخت کامل و تکرار کد
+OrderConfig base = OrderConfig.loadFromDatabase();
+OrderConfig fast = new OrderConfig(base.currency(), base.taxRate(), "EXPRESS");
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public record OrderConfig(String currency, double taxRate, String shipping) {
+
+    public OrderConfig withShipping(String nextShipping) {
+        return new OrderConfig(currency, taxRate, nextShipping);
+    }
+
+    public OrderConfig copy() {
+        return new OrderConfig(currency, taxRate, shipping);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class OrderConfigPrototypeTest {
+
+    @Test
+    void copyShouldKeepValuesButBeIndependent() {
+        OrderConfig base = new OrderConfig("IRR", 0.09, "STANDARD");
+
+        OrderConfig fast = base.withShipping("EXPRESS");
+
+        assertEquals("IRR", fast.currency());
+        assertEquals("EXPRESS", fast.shipping());
+        assertNotSame(base, fast);
+    }
+}
+</code></pre>
+
+<p>
+در جاوا مدرن، <code>record</code> و متدهای شبیه <code>withX</code> جای عملگر <code>clone()</code> را گرفته‌اند؛
+<code>Cloneable</code> و copy ساز سطحی (shallow) دام‌های زیادی (نشت عمق کپی) دارند.
+</p>
+
+<p><strong>ارتباط با SOLID:</strong> کم؛ عمدتاً یک تکنیک ساخت. <strong>اشتباه رایج:</strong> shallow copy اشتباهی و انتشار ناخواسته‌ی تغییرات.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) تفاوت shallow و deep copy چیست؟ ۲) چرا Cloneable امروزه توصیه نمی‌شود؟ ۳) Prototype چه زمانی از Builder سریع‌تر است؟
+</div>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>Adapter (Structural)</h2>
+
+<p><strong>تعریف:</strong> interface یک کلاس را به interfaceی که مصرف‌کننده انتظار دارد تبدیل می‌کند.</p>
+
+<p><strong>مسئله:</strong> یک API خارجی داریم که امضای متدهایش با دنیایی که کد ما انتظار دارد نمی‌خواند.</p>
+
+<pre class="kl-code" data-lang="java"><code>// API خارجی با امضای متفاوت
+class StripeApi {
+    void chargeWithToken(String token, int amountInCents) { /* ... */ }
+}
+
+// کد مصرف‌کننده — مستقیم به Stripe گره خورده
+stripe.chargeWithToken(token, cents);
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public interface PaymentGateway {
+    void charge(Money amount, String token);
+}
+
+public record Money(long amount, String currency) {}
+
+public final class StripeAdapter implements PaymentGateway {
+    private final StripeApi stripe;
+
+    public StripeAdapter(StripeApi stripe) { this.stripe = stripe; }
+
+    @Override
+    public void charge(Money amount, String token) {
+        long cents = amount.amount() * 100;
+        stripe.chargeWithToken(token, (int) cents);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class StripeAdapterTest {
+
+    @Test
+    void shouldConvertAmountToCents() {
+        // Arrange
+        FakeStripe stripe = new FakeStripe();
+        PaymentGateway gateway = new StripeAdapter(stripe);
+
+        // Act
+        gateway.charge(new Money(10, "USD"), "tok_1");
+
+        // Assert
+        assertEquals(1000, stripe.lastCents);
+    }
+
+    private static final class FakeStripe extends StripeApi {
+        int lastCents;
+        @Override void chargeWithToken(String token, int amountInCents) { lastCents = amountInCents; }
+    }
+}
+</code></pre>
+
+<p><strong>چه زمانی:</strong> وقتی می‌خواهید وابستگی به یک API خارجی را پشت interface خودتان پنهان کنید. <strong>ارتباط با SOLID:</strong> DIP + ISP.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) Adapter و Facade چه تفاوتی دارند؟ ۲) Adapter و Decorator چه تفاوتی دارند؟ ۳) چرا Adapter برای تست‌پذیری مفید است؟
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Decorator (Structural)</h2>
+
+<p><strong>تعریف:</strong> رفتار جدید را در زمان اجرا و با پوشاندن یک شیء، به آن اضافه می‌کند، بدون تغییر کلاس اصلی.</p>
+
+<p><strong>مسئله:</strong> می‌خواهیم ترکیب‌های مختلفی از قابلیت‌ها داشته باشیم (لاگ + رمزگذاری + فشرده‌سازی). ارث‌بری انفجار کلاس می‌سازد.</p>
+
+<pre class="kl-code" data-lang="java"><code>// بد: برای هر ترکیب یک کلاس
+class EncryptedFileWriter {}
+class CompressedFileWriter {}
+class EncryptedCompressedFileWriter {}
+// ... انفجار ترکیبات
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public interface DataSource {
+    void write(String data);
+}
+
+public final class FileDataSource implements DataSource {
+    private final String path;
+    public FileDataSource(String path) { this.path = path; }
+    @Override public void write(String data) { /* write to file */ }
+}
+
+public abstract class DataSourceDecorator implements DataSource {
+    protected final DataSource wrapped;
+    protected DataSourceDecorator(DataSource wrapped) { this.wrapped = wrapped; }
+    @Override public void write(String data) { wrapped.write(data); }
+}
+
+public final class EncryptionDecorator extends DataSourceDecorator {
+    public EncryptionDecorator(DataSource wrapped) { super(wrapped); }
+    @Override public void write(String data) { wrapped.write(encrypt(data)); }
+    private String encrypt(String data) { return "enc(" + data + ")"; }
+}
+
+public final class CompressionDecorator extends DataSourceDecorator {
+    public CompressionDecorator(DataSource wrapped) { super(wrapped); }
+    @Override public void write(String data) { wrapped.write("zip(" + data + ")"); }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>DataSource source = new CompressionDecorator(
+        new EncryptionDecorator(new FileDataSource("out.txt")));
+source.write("hello");
+// ترتیب اجرا: zip(enc(hello))
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class DecoratorTest {
+
+    @Test
+    void decoratorsShouldWrapInOrder() {
+        RecordingDataSource recorder = new RecordingDataSource();
+        DataSource source = new CompressionDecorator(new EncryptionDecorator(recorder));
+
+        source.write("data");
+
+        assertEquals("zip(enc(data))", recorder.last);
+    }
+
+    private static final class RecordingDataSource implements DataSource {
+        String last;
+        @Override public void write(String data) { last = data; }
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مزایا</th><th>معایب</th></tr>
+  <tr><td>ترکیب رفتار در زمان اجرا</td><td>تعداد کلاس‌های کوچک زیاد می‌شود</td></tr>
+  <tr><td>جایگزین انعطاف‌پذیر وراثت</td><td>دیباگ زنجیره‌ی پوشش‌ها سخت‌تر است</td></tr>
+</table>
+</div>
+
+<p><strong>ارتباط با SOLID:</strong> OCP + SRP. <strong>اشتباه رایج:</strong> استفاده از Decorator وقتی تعداد ترکیب‌ها کم و ثابت است.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) Decorator چه تفاوتی با وراثت دارد؟ ۲) Decorator و Proxy چه تفاوتی دارند؟ ۳) نمونه‌ی واقعی Decorator در JDK چیست؟ (پاسخ: <code>InputStream</code>ها)
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>Facade (Structural)</h2>
+
+<p><strong>تعریف:</strong> یک interface ساده و یکپارچه جلوی یک زیرسیستم پیچیده می‌گذارد.</p>
+
+<p><strong>مسئله:</strong> برای انجام یک کار، مصرف‌کننده باید ترتیب درست چند کلاس را بداند: اعتبارسنجی، پرداخت، انبار، ایمیل.</p>
+
+<pre class="kl-code" data-lang="java"><code>// مصرف‌کننده باید همه‌ی مراحل را بداند
+validator.check(order);
+payment.charge(order);
+inventory.reserve(order);
+email.sendConfirmation(order);
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public final class CheckoutFacade {
+    private final OrderValidator validator;
+    private final PaymentGateway payments;
+    private final Inventory inventory;
+    private final NotificationService notifications;
+
+    public CheckoutFacade(OrderValidator validator, PaymentGateway payments,
+                          Inventory inventory, NotificationService notifications) {
+        this.validator = validator;
+        this.payments = payments;
+        this.inventory = inventory;
+        this.notifications = notifications;
+    }
+
+    public void checkout(Order order) {
+        validator.check(order);
+        payments.charge(order.total(), order.token());
+        inventory.reserve(order);
+        notifications.send("Order " + order.id() + " confirmed");
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class CheckoutFacadeTest {
+
+    @Test
+    void shouldRunAllStepsInOrder() {
+        StringBuilder log = new StringBuilder();
+        CheckoutFacade facade = new CheckoutFacade(
+                order -> log.append("validate;"),
+                (amount, token) -> log.append("pay;"),
+                order -> log.append("reserve;"),
+                msg -> log.append("notify"));
+
+        facade.checkout(new Order("1", 100, "tok"));
+
+        assertEquals("validate;pay;reserve;notify", log.toString());
+    }
+}
+</code></pre>
+
+<p><strong>ارتباط با SOLID:</strong> ISP + SRP. <strong>اشتباه رایج:</strong> تبدیل Facade به کلاس غول‌پیکر با منطق تجاری به‌جای هماهنگ‌کننده.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) Facade و Adapter چه تفاوتی دارند؟ ۲) Facade و Mediator چه تفاوتی دارند؟ ۳) Facade چگونه وابستگی را کاهش می‌دهد؟
+</div>
+</section>
+
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>Composite، Bridge، Flyweight و Proxy</h2>
+
+<p>این چهار الگوی ساختاری را به‌صورت جمع‌بندی ارائه می‌کنیم تا نقشه‌ی کاملی از خانواده‌ی Structural داشته باشید.</p>
+
+<h3>۲۱.۱ Composite — درخت برای جزء و کل</h3>
+<p>وقتی ساختار درختی داریم (پوشه/فایل، منو/زیرمنو)، جزء و کل رفتار یکسان دارند.</p>
+
+<pre class="kl-code" data-lang="java"><code>public interface Node {
+    long size();
+}
+
+public final class FileNode implements Node {
+    private final long bytes;
+    public FileNode(long bytes) { this.bytes = bytes; }
+    @Override public long size() { return bytes; }
+}
+
+public final class DirectoryNode implements Node {
+    private final java.util.List&lt;Node&gt; children = new java.util.ArrayList&lt;&gt;();
+    public void add(Node node) { children.add(node); }
+    @Override public long size() { return children.stream().mapToLong(Node::size).sum(); }
+}
+</code></pre>
+
+<h3>۲۱.۲ Bridge — جداکردن abstraction از implementation</h3>
+<p>وقتی دو محور تغییر مستقل دارند (نوع پیام × کانال ارسال) و وراثت باعث انفجار ترکیب می‌شود.</p>
+
+<pre class="kl-code" data-lang="java"><code>public interface MessageSender { void send(String text); }
+
+public abstract class Message {
+    protected final MessageSender sender;
+    protected Message(MessageSender sender) { this.sender = sender; }
+    public abstract void publish(String text);
+}
+
+public final class UrgentMessage extends Message {
+    public UrgentMessage(MessageSender sender) { super(sender); }
+    @Override public void publish(String text) { sender.send("[URGENT] " + text); }
+}
+</code></pre>
+
+<h3>۲۱.۳ Flyweight — اشتراک حالت برای مصرف کم حافظه</h3>
+<p>وقتی انبوهی از شیءها حالت مشترک تکراری دارند (حروف در یک متن، آیکن‌های نقشه) و اشتراک‌گذاری حالت درون‌ذات مفید است.</p>
+
+<pre class="kl-code" data-lang="java"><code>public record Glyph(char symbol, String font) {}
+
+public final class GlyphFactory {
+    private final java.util.Map&lt;String, Glyph&gt; cache = new java.util.HashMap&lt;&gt;();
+
+    public Glyph glyph(char symbol, String font) {
+        return cache.computeIfAbsent(font + symbol, key -> new Glyph(symbol, font));
+    }
+}
+</code></pre>
+
+<h3>۲۱.۴ Proxy — نماینده‌ای برای کنترل دسترسی</h3>
+<p>وقتی می‌خواهید کنترل دسترسی، ساخت تنبل، کش یا لاگ را بدون تغییر کلاس اصلی اضافه کنید.</p>
+
+<pre class="kl-code" data-lang="java"><code>public final class RealImage implements Image {
+    RealImage(String path) { /* load from disk */ }
+    @Override public void display() { /* ... */ }
+}
+
+public final class LazyImageProxy implements Image {
+    private final String path;
+    private RealImage real;
+    public LazyImageProxy(String path) { this.path = path; }
+    @Override public void display() {
+        if (real == null) real = new RealImage(path);
+        real.display();
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>مسئله</th><th>چه زمانی نه؟</th></tr>
+  <tr><td>Composite</td><td>ساختار درختی هم‌رفتار</td><td>وقتی ساختار صاف و بدون سلسله‌مراتب است</td></tr>
+  <tr><td>Bridge</td><td>دو محور تغییر مستقل</td><td>وقتی یک محور تغییر ثابت است</td></tr>
+  <tr><td>Flyweight</td><td>حافظه‌ی زیاد از حالت مشترک</td><td>وقتی تعداد شیءها کم یا حالت یکتاست</td></tr>
+  <tr><td>Proxy</td><td>کنترل دسترسی/بازپس‌گیری</td><td>وقتی هیچ کنترل اضافی لازم نیست</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Strategy (Behavioral)</h2>
+
+<p><strong>تعریف:</strong> خانواده‌ای از الگوریتم‌ها را تعریف می‌کند و آن‌ها را قابل تعویض می‌سازد تا الگوریتم مستقل از مصرف‌کننده تغییر کند.</p>
+
+<p><strong>مسئله:</strong> محاسبه‌ی هزینه‌ی ارسال که با نوع ارسال تغییر می‌کند.</p>
+
+<pre class="kl-code" data-lang="java"><code>// بد: switch بزرگ و محور تغییر پنهان در middle متد
+public double shippingCost(String type) {
+    return switch (type) {
+        case "standard" -> 20_000;
+        case "express"  -> 50_000;
+        case "free"     -> 0;
+        default -> throw new IllegalArgumentException();
+    };
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="mermaid"><code>classDiagram
+    class Checkout { -ShippingStrategy strategy +cost() double }
+    class ShippingStrategy { &lt;&lt;interface&gt;&gt; +cost() double }
+    class StandardShipping
+    class ExpressShipping
+    class FreeShipping
+    Checkout --&gt; ShippingStrategy
+    ShippingStrategy &lt;|.. StandardShipping
+    ShippingStrategy &lt;|.. ExpressShipping
+    ShippingStrategy &lt;|.. FreeShipping
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public interface ShippingStrategy {
+    long cost();
+}
+
+public final class StandardShipping implements ShippingStrategy {
+    public long cost() { return 20_000; }
+}
+
+public final class ExpressShipping implements ShippingStrategy {
+    public long cost() { return 50_000; }
+}
+
+public final class FreeShipping implements ShippingStrategy {
+    public long cost() { return 0; }
+}
+
+public final class Checkout {
+    private final ShippingStrategy strategy;
+    public Checkout(ShippingStrategy strategy) { this.strategy = strategy; }
+    public long total(long itemsTotal) { return itemsTotal + strategy.cost(); }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+class CheckoutStrategyTest {
+
+    @Test
+    void shouldAddExpressShippingCost() {
+        // Arrange
+        Checkout checkout = new Checkout(new ExpressShipping());
+
+        // Act
+        long total = checkout.total(100_000);
+
+        // Assert
+        assertEquals(150_000, total);
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "STANDARD,20000", "EXPRESS,50000", "FREE,0" })
+    void shouldCalculateByStrategy(String kind, long expectedCost) {
+        ShippingStrategy strategy = switch (kind) {
+            case "STANDARD" -> new StandardShipping();
+            case "EXPRESS" -> new ExpressShipping();
+            default -> new FreeShipping();
+        };
+        assertEquals(expectedCost, new Checkout(strategy).total(0));
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مزایا</th><th>معایب</th></tr>
+  <tr><td>افزودن رفتار جدید بدون تغییر Context</td><td>تعداد کلاس‌ها افزایش می‌یابد</td></tr>
+  <tr><td>هر استراتژی مستقل قابل تست است</td><td>برای منطق پایدار و ساده، اضافه‌کاری است</td></tr>
+</table>
+</div>
+
+<p><strong>ارتباط با SOLID:</strong> OCP + DIP. <strong>اشتباه رایج:</strong> Strategy برای کدی که فقط یک رفتار ثابت دارد.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) Strategy و State چه تفاوتی دارند؟ ۲) Strategy و Template Method چه تفاوتی دارند؟ ۳) چه زمانی یک switch ساده از Strategy بهتر است؟
+</div>
+</section>
+
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>Observer (Behavioral)</h2>
+
+<p><strong>تعریف:</strong> وابستگی یک‌به‌چند بین اشیاء، به‌طوری‌که تغییر وضعیت یک شیء به همه‌ی شنونده‌ها اطلاع داده می‌شود.</p>
+
+<p><strong>مسئله:</strong> بعد از ثبت سفارش باید ایمیل، پیامک، و تحلیل‌گری به‌روزرسانی شوند؛ اگر <code>OrderService</code> مستقیم به هر سه وابسته باشد، هر شنونده‌ی جدید یعنی تغییر در OrderService.</p>
+
+<pre class="kl-code" data-lang="java"><code>// بد: وابستگی مستقیم به همه‌ی سرویس‌ها
+class OrderService {
+    void placeOrder(Order order) {
+        email.send(order);
+        sms.send(order);
+        analytics.track(order);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="mermaid"><code>classDiagram
+    class OrderSubject { +subscribe(observer) +notifyAll() }
+    class OrderObserver { &lt;&lt;interface&gt;&gt; +onOrderPlaced(Order) }
+    class EmailService
+    class SmsService
+    class AnalyticsService
+    OrderSubject --&gt; OrderObserver : notifies
+    OrderObserver &lt;|.. EmailService
+    OrderObserver &lt;|.. SmsService
+    OrderObserver &lt;|.. AnalyticsService
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayList;
+import java.util.List;
+
+public interface OrderObserver {
+    void onOrderPlaced(String orderId);
+}
+
+public final class OrderSubject {
+    private final List&lt;OrderObserver&gt; observers = new ArrayList&lt;&gt;();
+
+    public void subscribe(OrderObserver observer) { observers.add(observer); }
+    public void unsubscribe(OrderObserver observer) { observers.remove(observer); }
+
+    public void placeOrder(String orderId) {
+        observers.forEach(observer -> observer.onOrderPlaced(orderId));
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
+class OrderSubjectTest {
+
+    @Test
+    void shouldNotifyAllSubscribers() {
+        // Arrange
+        OrderSubject subject = new OrderSubject();
+        List&lt;String&gt; emailLog = new ArrayList&lt;&gt;();
+        List&lt;String&gt; smsLog = new ArrayList&lt;&gt;();
+        subject.subscribe(orderId -> emailLog.add(orderId));
+        subject.subscribe(orderId -> smsLog.add(orderId));
+
+        // Act
+        subject.placeOrder("A-1");
+
+        // Assert
+        assertEquals(List.of("A-1"), emailLog);
+        assertEquals(List.of("A-1"), smsLog);
+    }
+
+    @Test
+    void shouldStopNotifyingAfterUnsubscribe() {
+        OrderSubject subject = new OrderSubject();
+        List&lt;String&gt; log = new ArrayList&lt;&gt;();
+        OrderObserver observer = log::add;
+        subject.subscribe(observer);
+        subject.unsubscribe(observer);
+
+        subject.placeOrder("A-2");
+
+        assertTrue(log.isEmpty());
+    }
+}
+</code></pre>
+
+<p><strong>ارتباط با SOLID:</strong> کم‌کردن وابستگی (Low Coupling)، نزدیک به OCP.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) Observer و Mediator چه تفاوتی دارند؟ ۲) چگونه از نشت حافظه در Observer (شنونده‌ی جاگذاشته) جلوگیری می‌کنید؟ ۳) Observer در Android/Java کجا استفاده می‌شود؟
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>State (Behavioral)</h2>
+
+<p><strong>تعریف:</strong> به یک شیء اجازه می‌دهد وقتی وضعیت داخلی‌اش تغییر می‌کند، رفتارش را عوض کند — گویا کلاسش عوض شده است.</p>
+
+<p><strong>مسئله:</strong> یک سفارش چرخه‌ی وضعیتی دارد (جدید، پرداخت‌شده، ارسال‌شده، لغو‌شده) و مجاز/غیرمجاز بودن اقدامات به وضعیت بستگی دارد.</p>
+
+<pre class="kl-code" data-lang="java"><code>// بد: انبوه if روی وضعیت در هر اقدام
+void ship(Order order) {
+    if (order.status.equals("PAID")) { /* ship */ order.status = "SHIPPED"; }
+    else if (order.status.equals("NEW")) throw new IllegalStateException();
+    // ...
+}
+</code></pre>
+
+<p>
+<strong>راه‌حل:</strong> هر وضعیت یک شیء است که می‌داند در آن وضعیت چه اقداماتی مجازند و وضعیت بعدی چیست.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public interface OrderState {
+    OrderState pay();
+    OrderState ship();
+    default String name() { return getClass().getSimpleName(); }
+}
+
+public final class NewOrder implements OrderState {
+    public OrderState pay() { return new PaidOrder(); }
+    public OrderState ship() { throw new IllegalStateException("pay first"); }
+}
+
+public final class PaidOrder implements OrderState {
+    public OrderState pay() { throw new IllegalStateException("already paid"); }
+    public OrderState ship() { return new ShippedOrder(); }
+}
+
+public final class ShippedOrder implements OrderState {
+    public OrderState pay() { throw new IllegalStateException("already shipped"); }
+    public OrderState ship() { throw new IllegalStateException("already shipped"); }
+}
+
+public final class Order {
+    private OrderState state = new NewOrder();
+    public void pay() { state = state.pay(); }
+    public void ship() { state = state.ship(); }
+    public String status() { return state.name(); }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class OrderStateTest {
+
+    @Test
+    void shouldTransitionFromNewToPaidToShipped() {
+        Order order = new Order();
+
+        order.pay();
+        order.ship();
+
+        assertEquals("ShippedOrder", order.status());
+    }
+
+    @Test
+    void shouldRejectShippingBeforePayment() {
+        Order order = new Order();
+        assertThrows(IllegalStateException.class, order::ship);
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Strategy</th><th>State</th></tr>
+  <tr><td>الگوریتم تبادلی را انتخاب می‌کند</td><td>رفتار را بر اساس وضعیت زندگی‌نامه‌ای می‌سازد</td></tr>
+  <tr><td>Context معمولاً از بیرون انتخاب می‌شود</td><td>حالت خودش حالت بعدی را تعیین می‌کند</td></tr>
+  <tr><td>شباهت: هر دو رفتار را از Context جدا می‌کنند</td><td>شباهت: هر دو مکانیزم delegate هستند</td></tr>
+</table>
+</div>
+
+<p><strong>ارتباط با SOLID:</strong> OCP + SRP. <strong>اشتباه رایج:</strong> استفاده از State برای حالت‌های بسیار ساده که یک enum کافی است.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) تفاوت دقیق State و Strategy چیست؟ ۲) چه زمانی یک state machine ساده از الگو کافی‌تر است؟ ۳) چگونه State را تست می‌کنید؟
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Command (Behavioral)</h2>
+
+<p><strong>تعریف:</strong> یک درخواست را به یک شیء تبدیل می‌کند، تا بتوان آن را پارامتریزه، صف‌بندی، لاگ یا واگرد (undo) کرد.</p>
+
+<p><strong>مسئله:</strong> یک ویرایشگر متنی می‌خواهیم که عملیات را اجرا و واگرد کند.</p>
+
+<pre class="kl-code" data-lang="java"><code>public interface Command {
+    void execute();
+    void undo();
+}
+
+public final class TextEditor {
+    private final StringBuilder text = new StringBuilder();
+    public void insert(String value) { text.append(value); }
+    public void deleteLast(int length) { text.delete(text.length() - length, text.length()); }
+    public String text() { return text.toString(); }
+}
+
+public final class InsertCommand implements Command {
+    private final TextEditor editor;
+    private final String value;
+
+    public InsertCommand(TextEditor editor, String value) {
+        this.editor = editor;
+        this.value = value;
+    }
+
+    @Override public void execute() { editor.insert(value); }
+    @Override public void undo() { editor.deleteLast(value.length()); }
+}
+
+public final class CommandHistory {
+    private final java.util.Deque&lt;Command&gt; history = new java.util.ArrayDeque&lt;&gt;();
+
+    public void run(Command command) {
+        command.execute();
+        history.push(command);
+    }
+
+    public void undoLast() {
+        if (!history.isEmpty()) history.pop().undo();
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class CommandTest {
+
+    @Test
+    void shouldInsertAndUndo() {
+        TextEditor editor = new TextEditor();
+        CommandHistory history = new CommandHistory();
+
+        history.run(new InsertCommand(editor, "Hello"));
+        assertEquals("Hello", editor.text());
+
+        history.undoLast();
+        assertEquals("", editor.text());
+    }
+}
+</code></pre>
+
+<p><strong>ارتباط با SOLID:</strong> SRP + OCP. <strong>اشتباه رایج:</strong> ساخت Command برای یک عمل تک‌بارمصرف و بدون نیاز به undo/queue.</p>
+
+<div class="kl-box">
+<span class="kl-h">سؤال مصاحبه</span>
+۱) Command و Strategy چه تفاوتی دارند؟ ۲) Command چگونه از undo پشتیبانی می‌کند؟ ۳) رابطه‌ی Command با صف و retry چیست؟
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>بقیه‌ی الگوهای رفتاری</h2>
+
+<h3>۲۶.۱ Template Method — اسکلت ثابت، گام‌های متغیر</h3>
+
+<pre class="kl-code" data-lang="java"><code>public abstract class DataImporter {
+
+    // template: ترتیب را مشخص می‌کند و قابل بازنویسی نیست
+    public final void importData(String source) {
+        open();
+        parse(source);
+        close();
+    }
+
+    protected abstract void open();
+    protected abstract void parse(String source);
+    protected abstract void close();
+}
+
+public final class CsvImporter extends DataImporter {
+    protected void open() { /* open file */ }
+    protected void parse(String source) { /* parse csv */ }
+    protected void close() { /* close */ }
+}
+</code></pre>
+
+<h3>۲۶.۲ Chain of Responsibility — زنجیره‌ی پردازشگرها</h3>
+
+<pre class="kl-code" data-lang="java"><code>public abstract class Validator {
+    private Validator next;
+
+    public Validator setNext(Validator next) { this.next = next; return next; }
+
+    public void validate(String value) {
+        if (!check(value)) throw new IllegalArgumentException("invalid");
+        if (next != null) next.validate(value);
+    }
+
+    protected abstract boolean check(String value);
+}
+
+public final class NotEmptyValidator extends Validator {
+    protected boolean check(String value) { return !value.isBlank(); }
+}
+
+public final class MaxLengthValidator extends Validator {
+    private final int max;
+    public MaxLengthValidator(int max) { this.max = max; }
+    protected boolean check(String value) { return value.length() &lt;= max; }
+}
+</code></pre>
+
+<h3>۲۶.۳ سایر الگوها در یک نگاه</h3>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>مسئله‌ای که حل می‌کند</th></tr>
+  <tr><td>Iterator</td><td>پیمایش یک مجموعه بدون افشای ساختار داخلی‌اش</td></tr>
+  <tr><td>Mediator</td><td>کاهش ارتباط مستقیم بین اشیاء زیاد</td></tr>
+  <tr><td>Memento</td><td>ذخیره و بازیابی وضعیت بدون افشای جزئیات</td></tr>
+  <tr><td>Visitor</td><td>افزودن عملیات جدید روی یک ساختار type بدون تغییر آن typeها</td></tr>
+  <tr><td>Interpreter</td><td>تفسیر یک گرامر زبان ساده (کاربرد نادر)</td></tr>
+</table>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">مهم‌تر از دانستن همه‌ی الگوها</span>
+لازم نیست هر ۲۳ الگوی GoF را حفظ کنید. مهم این است که وقتی دردِ «نام‌گذاری رفتار قابل تعویض»،
+«ساخت پیچیده»، «اطلاع‌رسانی چندگیرنده» یا «افزودن عملیات بدون تغییر type» را دیدید، بدانید کدام الگو به داد می‌رسد.
+</div>
+</section>
+
+<!-- ==================== 27 ==================== -->
+<section id="s27">
+<h2><span class="kl-num">بخش ۲۷</span>Unit Testing الگوها با JUnit 5</h2>
+
+<p>
+یک الگوی <em>خوب</em> باید تست را آسان‌تر کند، نه فقط تعداد کلاس‌ها را زیادتر. اگر پس از اعمال یک الگو تست دشوارتر شد،
+احتمالاً الگو را اشتباه یا زیاد از حد به کار گرفته‌اید.
+</p>
+
+<h3>۲۷.۱ ساختار Arrange / Act / Assert</h3>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class NotificationServiceTest {
+
+    @Test
+    void shouldDelegateToSelectedChannel() {
+        // Arrange
+        StringBuilder sent = new StringBuilder();
+        NotificationChannel channel = sent::append;
+        NotificationService service = new NotificationService(channel);
+
+        // Act
+        service.send("hello");
+
+        // Assert
+        assertEquals("hello", sent.toString());
+    }
+}
+</code></pre>
+
+<h3>۲۷.۲ قواعد مهم تست الگوها</h3>
+
+<ul>
+  <li>برای رفتار تعویض‌شدنی، یک fake ساده کافی است؛ mocking سنگین را فقط برای همکاری‌های پیچیده نگه دارید.</li>
+  <li>وقتی منطق واقعا داده‌محور است از <code>@ParameterizedTest</code> استفاده کنید.</li>
+  <li>هر الگو را از طریق رفتارش تست کنید، نه از طریق typeهای داخلی‌اش (به‌جز assertionهای نوع Factory).</li>
+  <li>تست باید خوانا باشد؛ اگر «تست» خودش به کمک نیاز دارد، طراحی خوب نیست.</li>
+</ul>
+
+<h3>۲۷.۳ چرا الگوها تست‌پذیرترند؟</h3>
+
+<p>
+چون وابستگی‌ها از بیرون تزریق می‌شوند و کد به interface وابسته است، در تست می‌توان به‌جای دیتابیس/شبکه از یک پیاده‌سازی سبک استفاده کرد.
+این همان بدهی مثبتی است که هزینه‌ی اولیه‌ی الگو را برمی‌گرداند.
+</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نکته</span>
+از mock کردن چیزهایی که در اختیار خودتان هستند (value object، record) پرهیز کنید؛ آن‌ها را مستقیم بسازید.
+</div>
+</section>
+
+<!-- ==================== 28 ==================== -->
+<section id="s28">
+<h2><span class="kl-num">بخش ۲۸</span>پروژه‌ی کوچک واقعی: Notification System</h2>
+
+<p>
+حالا یک سیستم اعلان را قدم‌به‌قدم بازسازی می‌کنیم تا ببینید الگوها <em>از دل مسئله</em> بیرون می‌آیند.
+هدف نهایی: امکان ارسال، تغییر provider، افزودن نوع جدید و تست، بدون تغییر گسترده در کد اصلی.
+</p>
+
+<h3>۲۸.۱ نسخه‌ی اول (بد)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public class NotificationService {
+    public void send(String type, String to, String message) {
+        if (type.equals("email")) {
+            System.out.println("EMAIL to " + to + ": " + message);
+        } else if (type.equals("sms")) {
+            System.out.println("SMS to " + to + ": " + message);
+        } else if (type.equals("push")) {
+            System.out.println("PUSH to " + to + ": " + message);
+        } else {
+            throw new IllegalArgumentException("unknown type");
+        }
+    }
+}
+</code></pre>
+
+<h3>۲۸.۲ گام اول: جداکردن رفتار (Strategy)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public interface NotificationChannel {
+    void send(String to, String message);
+}
+
+public final class EmailChannel implements NotificationChannel {
+    public void send(String to, String message) { /* email */ }
+}
+
+public final class SmsChannel implements NotificationChannel {
+    public void send(String to, String message) { /* sms */ }
+}
+
+public final class PushChannel implements NotificationChannel {
+    public void send(String to, String message) { /* push */ }
+}
+</code></pre>
+
+<h3>۲۸.۳ گام دوم: نقطه‌ی انتخاب (Factory)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public enum ChannelType { EMAIL, SMS, PUSH }
+
+public final class NotificationChannelFactory {
+    public NotificationChannel create(ChannelType type) {
+        return switch (type) {
+            case EMAIL -> new EmailChannel();
+            case SMS   -> new SmsChannel();
+            case PUSH  -> new PushChannel();
+        };
+    }
+}
+</code></pre>
+
+<h3>۲۸.۴ گام سوم: تزریق وابستگی (DI)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public final class NotificationService {
+    private final NotificationChannelFactory factory;
+
+    public NotificationService(NotificationChannelFactory factory) {
+        this.factory = factory;
+    }
+
+    public void send(ChannelType type, String to, String message) {
+        factory.create(type).send(to, message);
+    }
+}
+</code></pre>
+
+<h3>۲۸.۵ تست نسخه‌ی نهایی</h3>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class NotificationSystemTest {
+
+    @Test
+    void shouldRouteToEmailChannel() {
+        // Arrange
+        StringBuilder log = new StringBuilder();
+        NotificationChannel email = (to, message) -> log.append(to).append('|').append(message);
+        NotificationChannelFactory factory = type -> email;
+        NotificationService service = new NotificationService(factory);
+
+        // Act
+        service.send(ChannelType.EMAIL, "ali@mail.com", "hi");
+
+        // Assert
+        assertEquals("ali@mail.com|hi", log.toString());
+    }
+}
+</code></pre>
+
+<p>
+اکنون افزودن <code>TelegramChannel</code> فقط یک کلاس و یک case است، و provider را می‌توان بدون تغییر منطق ارسال عوض کرد.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>قدم</th><th>الگو</th><th>دردی که حل شد</th></tr>
+  <tr><td>۱</td><td>Strategy</td><td>هم‌آمیختگی انتخاب و ارسال</td></tr>
+  <tr><td>۲</td><td>Factory</td><td>پخش‌شدن منطق ساخت</td></tr>
+  <tr><td>۳</td><td>DI</td><td>وابستگی سخت به پیاده‌سازی</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 29 ==================== -->
+<section id="s29">
+<h2><span class="kl-num">بخش ۲۹</span>Patternها در پروژه‌ی واقعی و اندروید</h2>
+
+<p>در پروژه‌ی واقعی، معمولاً چند الگو با هم و در خدمت معماری ظاهر می‌شوند:</p>
+
+<pre class="kl-code" data-lang="text"><code>Controller
+    ↓
+Facade
+    ↓
+Service
+    ↓
+Strategy
+    ↓
+Repository
+    ↓
+Database
+</code></pre>
+
+<p>
+این زنجیره یک <strong>الگو‌ی پیشنهادی</strong> است، نه یک دستور. پروژه‌های کوچک با نصف این لایه‌ها هم کاملاً موفق‌اند.
+طراحی باید بر اساس نیاز واقعی پروژه باشد، نه بر اساس تکرار یک قالب وبلاگی.
+</p>
+
+<h3>۲۹.۱ اندروید و جاوا</h3>
+
+<pre class="kl-code" data-lang="text"><code>ViewModel
+    ↓
+Repository
+    ↓
+DataSource
+       ├── RemoteDataSource
+       └── LocalDataSource
+</code></pre>
+
+<p>الگوهای رایج در اندروید:</p>
+<ul>
+  <li><strong>Repository</strong>: پنهان‌کردن منبع داده (شبکه/دیتابیس) از لایه‌ی بالاتر.</li>
+  <li><strong>Observer</strong>: جریان‌های داده (LiveData/Flow/Rx) اصول آن را در خود دارند.</li>
+  <li><strong>Strategy</strong>: انتخاب منبع داده یا الگوریتم تزریق شده بر اساس شرایط.</li>
+  <li><strong>Factory / Builder / Adapter / Decorator / Facade / Singleton</strong>: در کتابخانه‌ها و لایه‌بندی.</li>
+</ul>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">تفاوت مهم</span>
+برخی نام‌هایی که در اندروید می‌بینید (مثل Repository یا ViewModel) لزوماً الگوی GoF نیستند؛ آن‌ها
+<strong>Architectural Pattern</strong> یا <strong>Framework Convention</strong> هستند. تفاوت قائل شوید:
+الگوی طراحی در سطح کلاس، معماری در سطح سیستم، و قرارداد فریم‌ورک در سطح پیاده‌سازی.
+</div>
+</section>
+
+<!-- ==================== 30 ==================== -->
+<section id="s30">
+<h2><span class="kl-num">بخش ۳۰</span>اشتباهات رایج در استفاده از Pattern</h2>
+
+<ol class="kl-check">
+  <li>استفاده از الگو فقط برای حرفه‌ای نشان‌دادن کد.</li>
+  <li>ساخت abstraction بدون نیاز واقعی (Premature Abstraction).</li>
+  <li>ایجاد interface برای هر کلاس، حتی وقتی فقط یک implementation وجود دارد.</li>
+  <li>استفاده‌ی بی‌دلیل از Singleton برای همه‌چیز.</li>
+  <li>Factoryهای بیش از حد پیچیده با زنجیره‌های تودرتو.</li>
+  <li>ساخت تعداد زیادی کلاس برای یک مسئله‌ی کوچک.</li>
+  <li>ترکیب چند الگو بدون نیاز واقعی.</li>
+  <li>کپی‌کردن الگو بدون درک مسئله‌ای که حل می‌کند.</li>
+  <li>نادیده‌گرفتن هزینه‌ی پیچیدگی و تعداد مراحل ذهنی برای خواننده.</li>
+  <li>استفاده از الگو فقط به‌خاطر این‌که در یک کتاب یا مقاله آمده است.</li>
+</ol>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سنجه‌ی نهایی</span>
+پس از اعمال یک الگو، از خود بپرسید: «آیا تغییر بعدی آسان‌تر شد؟ آیا تست ساده‌تر شد؟ آیا کد برای یک تازه‌وارد خواناتر شد؟»
+اگر جواب «نه» است، الگو را بردارید.
+</div>
+</section>
+
+<!-- ==================== 31 ==================== -->
+<section id="s31">
+<h2><span class="kl-num">بخش ۳۱</span>انتخاب Pattern و چک‌لیست</h2>
+
+<p>یک فرآیند تصمیم‌گیری ساده را دنبال کنید تا از انتخاب سلیقه‌ای دور بمانید:</p>
+
+<pre class="kl-code" data-lang="text"><code>آیا مشکل مربوط به Creation است؟
+        ↓ Yes
+Creational Pattern
+
+آیا مشکل مربوط به Structure است؟
+        ↓ Yes
+Structural Pattern
+
+آیا مشکل مربوط به Behavior است؟
+        ↓ Yes
+Behavioral Pattern
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نشانه</th><th>الگو</th></tr>
+  <tr><td>ساخت شیء پیچیده</td><td>Builder</td></tr>
+  <tr><td>ساخت وابسته به نوع</td><td>Factory Method / Abstract Factory</td></tr>
+  <tr><td>رفتار قابل تعویض</td><td>Strategy</td></tr>
+  <tr><td>اطلاع‌رسانی به چند گیرنده</td><td>Observer</td></tr>
+  <tr><td>تبدیل interface</td><td>Adapter</td></tr>
+  <tr><td>افزودن رفتار بدون تغییر کلاس</td><td>Decorator</td></tr>
+  <tr><td>ساده‌کردن یک API پیچیده</td><td>Facade</td></tr>
+  <tr><td>کنترل دسترسی / ساخت تنبل</td><td>Proxy</td></tr>
+</table>
+</div>
+
+<h3>۳۱.۱ چک‌لیست نهایی انتخاب</h3>
+
+<ol class="kl-check">
+  <li>آیا مشکل واقعی وجود دارد؟</li>
+  <li>آیا این مشکل تکرارشونده است؟</li>
+  <li>آیا abstraction واقعاً لازم است؟</li>
+  <li>آیا وابستگی زیاد است؟</li>
+  <li>آیا تغییر رفتار دشوار است؟</li>
+  <li>آیا ساخت (creation)پیچیده است؟</li>
+  <li>آیا تست‌کردن دشوار است؟</li>
+  <li>آیا الگو پیچیدگی بیشتری ایجاد می‌کند؟</li>
+  <li>آیا راه‌حل ساده‌تری وجود دارد؟</li>
+  <li>آیا الگو واقعاً ارزش پیچیدگی اضافه را دارد؟</li>
+</ol>
+</section>
+
+<!-- ==================== 32 ==================== -->
+<section id="s32">
+<h2><span class="kl-num">بخش ۳۲</span>۱۰ تمرین عملی</h2>
+
+<p>هر تمرین شامل صورت مسئله، محدودیت، ورودی/خروجی، راهنما و تست پیشنهادی است.</p>
+
+<h3>تمرین ۱ — Payment System با Strategy</h3>
+<p><strong>مسئله:</strong> چند روش پرداخت (کارت، نقد، کیف پول). <strong>محدودیت:</strong> باید بدون تغییر Context قابل افزودن باشد.
+<strong>ورودی:</strong> مبلغ و نوع پرداخت. <strong>خروجی:</strong> نتیجه‌ی پرداخت. <strong>راهنما:</strong> یک <code>PaymentStrategy</code> با متد <code>pay(Money)</code>.
+<strong>تست:</strong> هر استراتژی را جدا تست کنید و ترتیب فراخوانی در Context را با یک fake بررسی کنید.</p>
+
+<h3>تمرین ۲ — Notification Factory</h3>
+<p><strong>مسئله:</strong> کارخانه‌ی ساخت کانال بر اساس نوع. <strong>محدودیت:</strong> نوع ناشناخته باید خطای رفتاری مشخص بدهد.
+<strong>راهنما:</strong> از <code>switch</code> روی enum استفاده کنید. <strong>تست:</strong> نوع درست نمونه‌ی درست بسازد.</p>
+
+<h3>تمرین ۳ — User Builder</h3>
+<p><strong>مسئله:</strong> ساخت کاربر با فیلدهای اختیاری. <strong>محدودیت:</strong> نام و ایمیل اجباری و غیرnull.
+<strong>خروجی:</strong> یک <code>record</code> immutable. <strong>تست:</strong> ساخت با حداقل فیلدها و رد null.</p>
+
+<h3>تمرین ۴ — Logging با Observer</h3>
+<p><strong>مسئله:</strong> چند مقصد برای لاگ (فایل، کنسول، سرویس). <strong>محدودیت:</strong> حذف یک شنونده نباید به باقی اثر بگذارد.
+<strong>تست:</strong> اشتراک/لغو اشتراک را بررسی کنید.</p>
+
+<h3>تمرین ۵ — API Adapter</h3>
+<p><strong>مسئله:</strong> یک SDK خارجی با امضای متفاوت. <strong>خروجی:</strong> یک interface داخلی که مصرف‌کننده بشناسد.
+<strong>تست:</strong> تبدیل واحدها (مثلاً تومان به ریال) را دقیق بررسی کنید.</p>
+
+<h3>تمرین ۶ — Decorator برای هزینه‌ی ارسال</h3>
+<p><strong>مسئله:</strong> ترکیب هزینه‌ی پایه + بیمه + ارسال سریع. <strong>راهنما:</strong> هر افزودنی یک Decorator باشد.
+<strong>تست:</strong> ترتیب پوشش‌ها نتیجه‌ی درست بدهد.</p>
+
+<h3>تمرین ۷ — Facade برای Order Management</h3>
+<p><strong>مسئله:</strong> یک نقطه‌ی ورود ساده برای مراحل سفارش. <strong>محدودیت:</strong> Facade نباید منطق تجاری داشته باشد، فقط هماهنگ‌کند.
+<strong>تست:</strong> ترتیب مراحل با یک ترتیب‌سنج ثبت شود.</p>
+
+<h3>تمرین ۸ — Refactor switch بزرگ با Strategy</h3>
+<p><strong>مسئله:</strong> یک switch بزرگ در محاسبه‌ی تخفیف. <strong>خروجی:</strong> هر قاعده یک Strategy؛ نگاشت نوع به استراتژی در یک map.
+<strong>تست:</strong> با <code>@ParameterizedTest</code> همه‌ی حالت‌ها.</p>
+
+<h3>تمرین ۹ — Singleton درست و تست</h3>
+<p><strong>مسئله:</strong> یک پیکربندی یگانه. <strong>محدودیت:</strong> lazy + thread-safe بدون استفاده‌ی مستقیم از <code>synchronized</code>.
+<strong>راهنما:</strong> holder idiom. <strong>تست:</strong> <code>assertSame</code> دو نمونه.</p>
+
+<h3>تمرین ۱۰ — پروژه‌ی کوچک با ۳ الگو</h3>
+<p><strong>مسئله:</strong> ترکیب Strategy + Factory + Observer در یک سناریوی ساده (مثلاً پردازش سفارش).
+<strong>خروجی:</strong> سه الگو با مسئولیت روشن و تست‌های جدا. <strong>راهنما:</strong> اول مسئله را بنویسید و دلیل انتخاب هر الگو را مستند کنید.</p>
+</section>
+
+<!-- ==================== 33 ==================== -->
+<section id="s33">
+<h2><span class="kl-num">بخش ۳۳</span>پروژه‌ی نهایی: E-Commerce Order System</h2>
+
+<p>یک سیستم سفارش با قابلیت‌های: ساخت سفارش، پرداخت، ارسال، اعلان، تخفیف و لاگ. ابتدا تحلیل می‌کنیم <em>چرا</em> هر الگو:</p>
+
+<pre class="kl-code" data-lang="text"><code>Order Creation   → Builder        (پارامترهای زیاد و اختیاری)
+Payment          → Strategy       (چند روش پرداخت)
+Shipping         → Strategy       (چند روش ارسال)
+Notification     → Factory + Strategy (چند کانال)
+Event Notification → Observer     (چند شنونده)
+Logging          → Decorator      (افزودن لاگ بدون تغییر)
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.Objects;
+
+public record Money(long amount, String currency) {
+    public Money {
+        Objects.requireNonNull(currency);
+    }
+}
+
+public interface PaymentStrategy { void pay(Money amount); }
+
+public interface ShippingStrategy { Money cost(); }
+
+public interface NotificationChannel { void send(String to, String message); }
+
+public interface OrderObserver { void onPlaced(String orderId); }
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public final class Order {
+    private final String id;
+    private final Money total;
+
+    private Order(Builder builder) {
+        this.id = builder.id;
+        this.total = builder.total;
+    }
+
+    public static Builder builder(String id) { return new Builder(id); }
+
+    public String id() { return id; }
+    public Money total() { return total; }
+
+    public static final class Builder {
+        private final String id;
+        private Money total = new Money(0, "IRR");
+
+        private Builder(String id) { this.id = Objects.requireNonNull(id); }
+
+        public Builder total(Money total) { this.total = total; return this; }
+        public Order build() { return new Order(this); }
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public final class CheckoutService {
+    private final PaymentStrategy payment;
+    private final ShippingStrategy shipping;
+    private final NotificationChannel notifications;
+
+    public CheckoutService(PaymentStrategy payment, ShippingStrategy shipping,
+                           NotificationChannel notifications) {
+        this.payment = payment;
+        this.shipping = shipping;
+        this.notifications = notifications;
+    }
+
+    public Money checkout(Order order, String recipient) {
+        Money grandTotal = order.total().amount() == 0
+                ? shipping.cost()
+                : new Money(order.total().amount() + shipping.cost().amount(), order.total().currency());
+        payment.pay(grandTotal);
+        notifications.send(recipient, "Order " + order.id() + " confirmed");
+        return grandTotal;
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class CheckoutServiceTest {
+
+    @Test
+    void shouldPayGrandTotalAndNotify() {
+        // Arrange
+        StringBuilder paid = new StringBuilder();
+        StringBuilder notified = new StringBuilder();
+        CheckoutService service = new CheckoutService(
+                amount -> paid.append(amount.amount()),
+                () -> new Money(20_000, "IRR"),
+                (to, message) -> notified.append(to));
+        Order order = Order.builder("O-1")
+                .total(new Money(100_000, "IRR"))
+                .build();
+
+        // Act
+        Money total = service.checkout(order, "ali@mail.com");
+
+        // Assert
+        assertEquals(120_000, total.amount());
+        assertEquals("120000", paid.toString());
+        assertEquals("ali@mail.com", notified.toString());
+    }
+}
+</code></pre>
+
+<p>
+مهم: این پروژه لزوماً باید این‌قدر لایه‌بندی داشته باشد؟ خیر. مثال نشان می‌دهد الگوها <em>چگونه</em> بر اساس نیاز واقعی کنار هم می‌نشینند،
+نه این‌که هر پروژه‌ای به این ساختار نیاز دارد.
+</p>
+</section>
+
+<!-- ==================== 34 ==================== -->
+<section id="s34">
+<h2><span class="kl-num">بخش ۳۴</span>Performance، پیچیدگی و Clean Code</h2>
+
+<p>
+الگوها الزاماً Performance را بهتر نمی‌کنند. بسته به پیاده‌سازی ممکن است:
+</p>
+
+<ul>
+  <li>شیءهای بیشتری بسازند (مثلاً Builder یا Decorator).</li>
+  <li>یک لایه غیرمستقیم (indirection) اضافه کنند و تعداد فراخوانی متدها را بالا ببرند.</li>
+  <li>مصرف حافظه را کمی افزایش دهند.</li>
+</ul>
+
+<p>پس هر الگو را از چند زاویه بسنجید:</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>سنجه</th><th>پرسش</th></tr>
+  <tr><td>خوانایی (Readability)</td><td>آیا هدف کد برای تازه‌وارد روشن‌تر شد؟</td></tr>
+  <tr><td>نگهداری (Maintainability)</td><td>آیا تغییر بعدی محلی و ایمن است؟</td></tr>
+  <tr><td>تست (Testability)</td><td>آیا وابستگی‌ها قابل جایگزینی شدند؟</td></tr>
+  <tr><td>انعطاف (Flexibility)</td><td>آیا افزودن قابلیت بدون ویرایش ممکن شد؟</td></tr>
+  <tr><td>پیچیدگی (Complexity)</td><td>آیا تعداد مراحل ذهنی افزایش یافت؟</td></tr>
+  <tr><td>کارایی (Performance)</td><td>آیا هزینه‌ی قابل توجهی اضافه شد؟</td></tr>
+</table>
+</div>
+
+<h3>۳۴.۱ الگو در کنار Clean Code</h3>
+
+<p>الگو به تنهایی Clean Code نمی‌سازد. ممکن است یک الگو کاملاً صحیح پیاده شده باشد اما:</p>
+<ul>
+  <li>نام‌گذاری بد باشد.</li>
+  <li>کلاس‌ها بیش از حد بزرگ باشند.</li>
+  <li>abstraction بی‌دلیل باشد.</li>
+  <li>وابستگی‌ها اشتباه جهت‌دهی شده باشند.</li>
+</ul>
+
+<p>پس الگو باید در کنار این‌ها بنشیند: Clean Code · SOLID · Separation of Concerns · Dependency Injection · Testing · Refactoring.</p>
+
+<h3>۳۴.۲ الگو به‌عنوان مقصد Refactoring</h3>
+
+<pre class="kl-code" data-lang="text"><code>Large if/else
+      ↓
+Identify changing behavior
+      ↓
+Extract interface
+      ↓
+Create implementations
+      ↓
+Strategy
+
+Complex constructor
+      ↓
+Too many parameters
+      ↓
+Builder
+</code></pre>
+
+<div class="kl-box">
+<span class="kl-h">شعار این بخش</span>
+الگو را از روی مسئله استخراج کنید، نه اینکه مسئله را مجبور به الگو کنید.
+</div>
+</section>
+
+<!-- ==================== 35 ==================== -->
+<section id="s35">
+<h2><span class="kl-num">بخش ۳۵</span>Cheat Sheet الگوهای مهم</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Pattern</th><th>Category</th><th>Problem</th><th>Solution</th></tr>
+  <tr><td>Singleton</td><td>Creational</td><td>نیاز به یک نمونه‌ی مشترک</td><td>کنترل ساخت و یک نقطه‌ی دسترسی</td></tr>
+  <tr><td>Factory Method</td><td>Creational</td><td>ساخت وابسته به نوع</td><td>سپردن ساخت به یک متد/کلاس</td></tr>
+  <tr><td>Abstract Factory</td><td>Creational</td><td>خانواده‌ای از اشیای هم‌راستا</td><td>یک factory برای هر خانواده</td></tr>
+  <tr><td>Builder</td><td>Creational</td><td>ساخت پیچیده و پارامتر زیاد</td><td>ساخت قدم‌به‌قدم و خوانا</td></tr>
+  <tr><td>Prototype</td><td>Creational</td><td>ساخت گران با تغییر کم</td><td>کپی‌کردن از نمونه</td></tr>
+  <tr><td>Adapter</td><td>Structural</td><td>interface ناسازگار</td><td>تبدیل interface</td></tr>
+  <tr><td>Decorator</td><td>Structural</td><td>افزودن رفتار بدون تغییر</td><td>پوشش تودرتو در زمان اجرا</td></tr>
+  <tr><td>Facade</td><td>Structural</td><td>API پیچیده</td><td>یک interface ساده و یکپارچه</td></tr>
+  <tr><td>Proxy</td><td>Structural</td><td>کنترل دسترسی / ساخت تنبل</td><td>یک نماینده‌ی هم‌interface</td></tr>
+  <tr><td>Composite</td><td>Structural</td><td>ساختار درختی</td><td>هم‌رفتاری جزء و کل</td></tr>
+  <tr><td>Observer</td><td>Behavioral</td><td>اطلاع‌رسانی به چند گیرنده</td><td>اشتراک و انتشار رویداد</td></tr>
+  <tr><td>Strategy</td><td>Behavioral</td><td>رفتار قابل تعویض</td><td>یک interface برای هر الگوریتم</td></tr>
+  <tr><td>State</td><td>Behavioral</td><td>رفتار وابسته به وضعیت</td><td>هر وضعیت یک شیء</td></tr>
+  <tr><td>Command</td><td>Behavioral</td><td>درخواست به‌عنوان داده/undo</td><td>تبدیل درخواست به شیء</td></tr>
+  <tr><td>Template Method</td><td>Behavioral</td><td>اسکلت ثابت، گام‌های متغیر</td><td>متد final + متدهای abstract</td></tr>
+  <tr><td>Chain of Responsibility</td><td>Behavioral</td><td>پردازش زنجیره‌ای</td><td>زنجیره‌ای از پردازشگرها</td></tr>
+</table>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">خلاصه‌ی مقاله</span>
+الگوها واژگان مشترک‌اند برای مسئله‌های تکرارشونده‌ی طراحی. اول مسئله، بعد محدودیت، بعد alternatives، و تنها در صورت نیاز الگو.
+</div>
+</section>
+
+<!-- ==================== 36 ==================== -->
+<section id="s36">
+<h2><span class="kl-num">بخش ۳۶</span>بیست سؤال مصاحبه</h2>
+
+<h3>۳۶.۱ مقدماتی</h3>
+<ol>
+  <li><strong>Design Pattern چیست؟</strong> راه‌حلی توصیفی برای مسائل طراحی تکرارشونده؛ کد نیست، ساختار است.</li>
+  <li><strong>چرا از الگو استفاده می‌کنیم؟</strong> کاهش وابستگی، افزایش تست‌پذیری و قابلیت تغییر.</li>
+  <li><strong>سه دسته‌ی اصلی GoF چیست؟</strong> Creational، Structural، Behavioral.</li>
+  <li><strong>آیا الگو همیشه لازم است؟</strong> نه؛ فقط وقتی مسئله‌ی واقعی و تکرارشونده باشد.</li>
+  <li><strong>فرق الگو با فریمورک؟</strong> الگو توصیف راه‌حل است؛ فریمورک کد قابل فراخوانی.</li>
+</ol>
+
+<h3>۳۶.۲ متوسط</h3>
+<ol start="6">
+  <li><strong>Factory و Builder چه تفاوتی دارند؟</strong> Factory انتخاب نوع می‌کند؛ Builder ساخت پیچیده را قدم‌به‌قدم می‌کند.</li>
+  <li><strong>Strategy و State چه تفاوتی دارند؟</strong> در State خودِ وضعیت انتقال بعدی را تعیین می‌کند؛ در Strategy انتخاب معمولاً بیرونی است.</li>
+  <li><strong>Adapter و Facade چه تفاوتی دارند؟</strong> Adapter interface را تبدیل می‌کند؛ Facade آن را ساده می‌کند.</li>
+  <li><strong>Decorator و وراثت چه تفاوتی دارند؟</strong> Decorator ترکیب رفتار را در زمان اجرا ممکن می‌کند و از انفجار کلاس جلوگیری می‌کند.</li>
+  <li><strong>Observer چه زمانی مشکل‌ساز می‌شود؟</strong> اگر شنونده‌های جاگذاشته لغو نشوند، نشت حافظه و اطلاع‌رسانی تکراری رخ می‌دهد.</li>
+  <li><strong>تفاوت Factory Method و Abstract Factory؟</strong> اولی یک محصول، دومی یک خانواده از محصولات هم‌راستا.</li>
+  <li><strong>چرا Builder با immutable خوب است؟</strong> چون تا لحظه‌ی build هیچ شیء ناقصی ساخته نمی‌شود.</li>
+</ol>
+
+<h3>۳۶.۳ پیشرفته</h3>
+<ol start="13">
+  <li><strong>چه زمانی Pattern باعث Overengineering می‌شود؟</strong> وقتی مسئله ساده یا یکتاست و abstraction بی‌فایده اضافه می‌کند.</li>
+  <li><strong>Pattern را از روی Code Smell چگونه تشخیص می‌دهید؟</strong> با دنبال‌کردن محور تغییر: switch بزرگ، ساخت تکراری، وابستگی مستقیم.</li>
+  <li><strong>Patternها چگونه با SOLID ارتباط دارند؟</strong> بیشترشان ابزار رسیدن به OCP، DIP و SRP هستند.</li>
+  <li><strong>آیا Singleton همیشه مناسب است؟</strong> نه؛ با DI تقریباً همیشه جایگزین بهتری وجود دارد.</li>
+  <li><strong>چگونه یک Pattern را Unit Test می‌کنید؟</strong> از طریق رفتارش با fake/injection و بررسی ترتیب و نتیجه.</li>
+  <li><strong>چرا Decorator تریجیح دارد بر ارث‌بری زیاد؟</strong> چون ترکیب در زمان اجرا و بدون انفجار کلاس ممکن می‌شود.</li>
+  <li><strong>تفاوت Architecture و Pattern چیست؟</strong> معماری درباره‌ی مرزهای کلی سیستم؛ الگو درباره‌ی کلاس/شیء داخل یک لایه.</li>
+  <li><strong>کجا از Strategy پرهیز می‌کنید؟</strong> وقتی فقط یک رفتار ثابت دارید یا یک switch کوچک کافی است.</li>
+</ol>
+</section>
+
+<!-- ==================== 37 ==================== -->
+<section id="s37">
+<h2><span class="kl-num">بخش ۳۷</span>پرسش‌های متداول (FAQ)</h2>
+
+<ol class="kl-check">
+  <li><strong>آیا Design Pattern فقط برای Java است؟</strong> نه؛ مفهوم زبانوآزاد است و در همه‌ی زبان‌های شیءگرا معنا دارد.</li>
+  <li><strong>آیا باید همه‌ی ۲۳ الگوی GoF را یاد بگیریم؟</strong> نه؛ الگوهای رایج (Strategy، Factory، Builder، Observer، Adapter) را عمیق یاد بگیرید.</li>
+  <li><strong>آیا الگو باعث پیچیده‌شدن کد می‌شود؟</strong> می‌تواند؛ اگر بی‌دلیل بیاید، بله. اگر برای مسئله‌ی واقعی بیاید، کاملاً برعکس.</li>
+  <li><strong>آیا Singleton بد است؟</strong> ذاتاً نه، اما اغلب حالت جهانی می‌سازد و تست را سخت می‌کند.</li>
+  <li><strong>آیا Factory همیشه بهتر از new است؟</strong> نه؛ برای انتخاب نوع یا پنهان‌سازی وابستگی خوب است، نه برای هر new.</li>
+  <li><strong>آیا در پروژه‌ی کوچک الگو لازم است؟</strong> بیشتر وقت‌ها نه؛ چند abstraction درست کافی است.</li>
+  <li><strong>آیا Design Pattern خودش معماری است؟</strong> نه؛ در سطح پایین‌تر از معماری قرار دارد.</li>
+  <li><strong>از کجا بفهمم کدام Pattern مناسب است؟</strong> از مسیر تصمیم: ساخت/ساختار/رفتار و سپس نگاشت نشانه به الگو.</li>
+  <li><strong>آیا الگوها Performance را بهتر می‌کنند؟</strong> همیشه نه؛ در بعضی حالت‌ها یک لایه غیرمستقیم اضافه می‌کنند.</li>
+  <li><strong>آیا باید برای هر کلاس interface بسازم؟</strong> نه؛ interface را وقتی بسازید که نیاز واقعی باشد.</li>
+  <li><strong>تفاوت Pattern و Algorithm؟</strong> الگو ساختار/تعامل؛ الگوریتم گام‌های محاسبه.</li>
+  <li><strong>آیا برای اندروید لازم است؟</strong> مفید است، اما بخشی از کار همان الگوهای عمومی است، نه یک مجموعه جدا.</li>
+  <li><strong>الگو را از کجا شروع کنم؟</strong> از درد واقعی در کد خودتان: switch بزرگ، ساخت پیچیده، وابستگی سخت.</li>
+  <li><strong>آیا می‌توان چند الگو را ترکیب کرد؟</strong> بله، اما با دلیل روشن و مسئولیت متمایز.</li>
+  <li><strong>آیا الگو قسمتی از Clean Architecture است؟</strong> نه؛ ولی در خدمت آن استفاده می‌شود (مثل Repository در مرز دامنه).</li>
+</ol>
+</section>
+
+<!-- ==================== 38 ==================== -->
+<section id="s38">
+<h2><span class="kl-num">بخش ۳۸</span>مسیر یادگیری، پیش‌نیازها و جمع‌بندی</h2>
+
+<h3>۳۸.۱ Roadmap یادگیری</h3>
+
+<pre class="kl-code" data-lang="text"><code>Java OOP            → کلاس، شیء، وراثت، پلی‌مورفیسم
+   ↓
+Interfaces           → قراردادها و جداسازی
+   ↓
+Composition          → ترکیب بر وراثت
+   ↓
+SOLID                → پنج اصل طراحی
+   ↓
+Clean Code           → نام‌گذاری، خوانایی، SRP عملی
+   ↓
+Refactoring          → بهبود ساختار بدون تغییر رفتار
+   ↓
+Design Patterns      → راه‌حل‌های آزموده برای مسائل تکرارشونده
+   ↓
+Architecture         → لایه‌ها و مرزها
+   ↓
+System Design        → مقیاس و زیرساخت
+</code></pre>
+
+<h3>۳۸.۲ پیش‌نیازها</h3>
+
+<p><strong>ضروری:</strong> سینتکس Java، متغیر، متد، کلاس، شیء، سازنده، وراثت، کپسوله‌سازی، پلی‌مورفیسم، interface، کلاس abstract، Collections، Exception Handling، Generics در حد مقدماتی.</p>
+
+<p><strong>بسیار مفید:</strong> OOP، SOLID، Clean Code، Dependency Injection، Unit Testing، JUnit، Git، معماری نرم‌افزار مقدماتی.</p>
+
+<p><strong>غیرضروری:</strong> برای شروع لازم نیست Spring Boot حرفه‌ای، معماری توزیع‌شده، Microservices، Docker، Kubernetes یا System Design پیشرفته بدانید.</p>
+
+<h3>۳۸.۳ جمع‌بندی نهایی</h3>
+
+<p>
+الگوهای طراحی مجموعه‌ای از قوانین اجباری نیستند؛ آن‌ها <strong>زبان مشترکی</strong> برای صحبت درباره‌ی راه‌حل‌های طراحی‌اند.
+وقتی یک توسعه‌دهنده می‌گوید «بیا اینجا Strategy بگذاریم»، منظور فقط چند کلاس جاوا نیست؛ یک ساختار مشخص برای جداکردن
+رفتارهای قابل تعویض است — همان چیزی که همکارتان در یک جمله می‌فهمد.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Problem
+   ↓
+Understand Change
+   ↓
+Identify Design Smell
+   ↓
+Consider Simpler Solution
+   ↓
+Choose Pattern
+   ↓
+Implement
+   ↓
+Test
+   ↓
+Refactor
+</code></pre>
+
+<div class="kl-box">
+<span class="kl-h">یک جمله‌ی پایانی</span>
+هدف این آموزش این نیست که ۲۳ الگو را حفظ کنید؛ هدف این است که مسئله‌ی طراحی را تشخیص دهید،
+گزینه‌ها را بسنجید، trade-off را بفهمید و تنها در صورت نیاز الگوی مناسب را انتخاب کنید.
+</div>
+
+<h3>۳۸.۴ فهرست سرفصل‌های دوره</h3>
+
+<ol>
+  <li>مبانی طراحی و شناخت دردها</li>
+  <li>Design Pattern، SOLID و تفاوت‌ها</li>
+  <li>دسته‌بندی و الگوهای ساخت</li>
+  <li>الگوهای ساختاری</li>
+  <li>الگوهای رفتاری</li>
+  <li>Unit Testing الگوها با JUnit 5</li>
+  <li>پروژه‌ی عملی Notification و E-Commerce</li>
+  <li>اشتباهات رایج، چک‌لیست و تمرین</li>
+</ol>
+</section>
+
+
+        </div>
+
+        <!-- End of Article & Author Box -->
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی مسئله‌محور و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <!-- Sticky Sidebar (Desktop) -->
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۳۸ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: کدِ بد از ندانستن سینتکس نمی‌آید</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Design Pattern دقیقاً چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">مثال واقعی: سیستم Notification</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Patternها کدام مشکل را حل می‌کنند؟</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">چرا از Design Pattern استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">چه زمانی استفاده ضروری است؟</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">چه زمانی نباید Pattern استفاده کرد؟</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Design Pattern و SOLID</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Pattern در برابر Architecture</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Pattern در برابر Algorithm</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">دسته‌بندی Patternها (GoF)</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">قالب آموزش هر Pattern</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">Singleton</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">Factory Method</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">Abstract Factory</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">Builder</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">Prototype</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">Adapter</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Decorator</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">Facade</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">Composite، Bridge، Flyweight، Proxy</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Strategy</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">Observer</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">State</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Command</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">بقیه‌ی الگوهای رفتاری</span></a></li>
+              <li class="toc-item"><a href="#s27" class="toc-link" data-target="s27"><span class="toc-num">۲۷</span><span class="toc-text">Unit Testing الگوها</span></a></li>
+              <li class="toc-item"><a href="#s28" class="toc-link" data-target="s28"><span class="toc-num">۲۸</span><span class="toc-text">پروژه‌ی کوچک واقعی: Notification</span></a></li>
+              <li class="toc-item"><a href="#s29" class="toc-link" data-target="s29"><span class="toc-num">۲۹</span><span class="toc-text">Patternها در پروژه و اندروید</span></a></li>
+              <li class="toc-item"><a href="#s30" class="toc-link" data-target="s30"><span class="toc-num">۳۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s31" class="toc-link" data-target="s31"><span class="toc-num">۳۱</span><span class="toc-text">انتخاب Pattern و چک‌لیست</span></a></li>
+              <li class="toc-item"><a href="#s32" class="toc-link" data-target="s32"><span class="toc-num">۳۲</span><span class="toc-text">۱۰ تمرین عملی</span></a></li>
+              <li class="toc-item"><a href="#s33" class="toc-link" data-target="s33"><span class="toc-num">۳۳</span><span class="toc-text">پروژه‌ی نهایی: E-Commerce</span></a></li>
+              <li class="toc-item"><a href="#s34" class="toc-link" data-target="s34"><span class="toc-num">۳۴</span><span class="toc-text">Performance، پیچیدگی و Clean Code</span></a></li>
+              <li class="toc-item"><a href="#s35" class="toc-link" data-target="s35"><span class="toc-num">۳۵</span><span class="toc-text">Cheat Sheet</span></a></li>
+              <li class="toc-item"><a href="#s36" class="toc-link" data-target="s36"><span class="toc-num">۳۶</span><span class="toc-text">بیست سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s37" class="toc-link" data-target="s37"><span class="toc-num">۳۷</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s38" class="toc-link" data-target="s38"><span class="toc-num">۳۸</span><span class="toc-text">مسیر یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s35" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگان جاوا در دسترس قرار گرفته است؛ با تمرکز بر «مسئله قبل از الگو».</p>
+  </footer>
+
+  <!-- Floating Action Buttons -->
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <!-- Mobile TOC Drawer -->
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: کدِ بد از ندانستن سینتکس نمی‌آید</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Design Pattern دقیقاً چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">مثال واقعی: سیستم Notification</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Patternها کدام مشکل را حل می‌کنند؟</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">چرا از Design Pattern استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">چه زمانی استفاده ضروری است؟</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">چه زمانی نباید Pattern استفاده کرد؟</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Design Pattern و SOLID</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Pattern در برابر Architecture</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Pattern در برابر Algorithm</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">دسته‌بندی Patternها (GoF)</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">قالب آموزش هر Pattern</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">Singleton</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">Factory Method</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">Abstract Factory</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">Builder</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">Prototype</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">Adapter</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Decorator</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">Facade</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">Composite، Bridge، Flyweight، Proxy</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Strategy</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">Observer</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">State</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Command</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">بقیه‌ی الگوهای رفتاری</span></a></li>
+        <li class="toc-item"><a href="#s27" class="toc-link" data-target="s27"><span class="toc-num">۲۷</span><span class="toc-text">Unit Testing الگوها</span></a></li>
+        <li class="toc-item"><a href="#s28" class="toc-link" data-target="s28"><span class="toc-num">۲۸</span><span class="toc-text">پروژه‌ی کوچک واقعی: Notification</span></a></li>
+        <li class="toc-item"><a href="#s29" class="toc-link" data-target="s29"><span class="toc-num">۲۹</span><span class="toc-text">Patternها در پروژه و اندروید</span></a></li>
+        <li class="toc-item"><a href="#s30" class="toc-link" data-target="s30"><span class="toc-num">۳۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s31" class="toc-link" data-target="s31"><span class="toc-num">۳۱</span><span class="toc-text">انتخاب Pattern و چک‌لیست</span></a></li>
+        <li class="toc-item"><a href="#s32" class="toc-link" data-target="s32"><span class="toc-num">۳۲</span><span class="toc-text">۱۰ تمرین عملی</span></a></li>
+        <li class="toc-item"><a href="#s33" class="toc-link" data-target="s33"><span class="toc-num">۳۳</span><span class="toc-text">پروژه‌ی نهایی: E-Commerce</span></a></li>
+        <li class="toc-item"><a href="#s34" class="toc-link" data-target="s34"><span class="toc-num">۳۴</span><span class="toc-text">Performance، پیچیدگی و Clean Code</span></a></li>
+        <li class="toc-item"><a href="#s35" class="toc-link" data-target="s35"><span class="toc-num">۳۵</span><span class="toc-text">Cheat Sheet</span></a></li>
+        <li class="toc-item"><a href="#s36" class="toc-link" data-target="s36"><span class="toc-num">۳۶</span><span class="toc-text">بیست سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s37" class="toc-link" data-target="s37"><span class="toc-num">۳۷</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s38" class="toc-link" data-target="s38"><span class="toc-num">۳۸</span><span class="toc-text">مسیر یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

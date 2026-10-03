@@ -124,7 +124,7 @@
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">📚</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۷</span>
+        <span class="posts-stat-value">۹</span>
         <span class="posts-stat-label">مقاله منتشرشده</span>
       </div>
     </div>
@@ -138,7 +138,7 @@
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">⏱</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۱۹۷</span>
+        <span class="posts-stat-value">۳۲۷</span>
         <span class="posts-stat-label">دقیقه مطالعه</span>
       </div>
     </div>
@@ -174,30 +174,88 @@
     </div>
 
     <div class="tags-filter" id="articles-filters" role="group" aria-label="فیلتر بر اساس موضوع">
-      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۷</span></button>
+      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۹</span></button>
       <button type="button" class="tag-btn" data-filter="kotlin" data-label="کاتلین و هم‌زمانی" aria-pressed="false">کاتلین و هم‌زمانی <span class="chip-count" data-count="kotlin">۴</span></button>
       <button type="button" class="tag-btn" data-filter="android" data-label="اندروید و کامپوز" aria-pressed="false">اندروید و کامپوز <span class="chip-count" data-count="android">۴</span></button>
-      <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۳</span></button>
+      <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۴</span></button>
       <button type="button" class="tag-btn" data-filter="performance" data-label="پرفورمنس و حافظه" aria-pressed="false">پرفورمنس و حافظه <span class="chip-count" data-count="performance">۱</span></button>
-      <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۲</span></button>
+      <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۴</span></button>
     </div>
   </div>
 
   <!-- ================= Results bar ================= -->
   <div class="posts-results">
     <h2 class="section-title">مقالات منتشرشده</h2>
-    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۷ مقاله</p>
+    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۹ مقاله</p>
   </div>
 
   <!-- ================= Articles grid ================= -->
   <main class="posts-container">
     <div class="posts-grid" id="articles-grid">
 
-      <article class="post-card" data-category="kotlin" data-tags="kotlin android" data-order="7" data-minutes="45" data-featured="true">
+      <article class="post-card" data-category="fundamentals" data-tags="java fundamentals performance" data-order="9" data-minutes="70" data-featured="true">
+        <a class="post-card-link" href="java-collections-framework.html">
+          <div class="post-card-head">
+            <span class="post-cat">مبانی و کیفیت کد</span>
+            <span class="post-badge">جدیدترین</span>
+          </div>
+          <h3 class="post-title">Java Collections Framework: آموزش کامل Collectionهای جاوا با بررسی Performance</h3>
+          <p class="post-excerpt">
+            از List، Set، Map، Queue و Deque تا ArrayList، LinkedList، HashMap، TreeMap، ConcurrentHashMap و PriorityQueue؛ همراه با ساختار داخلی، Time Complexity، Thread Safety، مثال Java 21، Unit Test و پروژه عملی.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۷۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/java-collections-framework.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Java</li>
+              <li class="post-tag">#Collections</li>
+              <li class="post-tag">#HashMap</li>
+              <li class="post-tag">#Performance</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+        <span class="post-fill" style="--fill:100%" aria-hidden="true"></span>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture fundamentals" data-order="8" data-minutes="60">
+        <a class="post-card-link" href="design-patterns-in-java.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">Design Patterns در Java: آموزش کامل الگوهای طراحی با مثال و تست</h3>
+          <p class="post-excerpt">
+            از مفهوم Design Pattern و GoF تا Strategy، Factory، Builder، Observer، State و Command؛ همراه با مثال کامل Java 21، Unit Test با JUnit 5، ارتباط با SOLID، اشتباهات رایج و یک پروژه‌ی عملی E-Commerce.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۶۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/design-patterns-in-java.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Design_Patterns</li>
+              <li class="post-tag">#Java</li>
+              <li class="post-tag">#SOLID</li>
+              <li class="post-tag">#JUnit5</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+        <span class="post-fill" style="--fill:100%" aria-hidden="true"></span>
+      </article>
+
+      <article class="post-card" data-category="kotlin" data-tags="kotlin android" data-order="7" data-minutes="45">
         <a class="post-card-link" href="rxjava-rxandroid.html">
           <div class="post-card-head">
             <span class="post-cat">کاتلین و هم‌زمانی</span>
-            <span class="post-badge">جدیدترین</span>
           </div>
           <h3 class="post-title">RxJava و RxAndroid: از Observable تا Flowable و Subject</h3>
           <p class="post-excerpt">

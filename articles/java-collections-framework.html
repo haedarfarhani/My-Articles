@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java Collections Framework چیست؟ آموزش کامل Collectionهای جاوا با مثال و بررسی Performance | حیدر فرحانی</title>
+  <meta name="description" content="آموزش کامل Java Collections Framework؛ از List، Set، Map، Queue و Deque تا ArrayList، LinkedList، HashMap، TreeMap، ConcurrentHashMap و PriorityQueue همراه با Time Complexity، مثال Java، Unit Test و Best Practices.">
+  <meta name="keywords" content="Java Collections Framework, Java Collections, Collection در Java, آموزش Collection جاوا, ArrayList, LinkedList, HashMap, HashSet, TreeMap, TreeSet, LinkedHashMap, ConcurrentHashMap, ArrayDeque, PriorityQueue, Java Collection Framework چیست">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Java Collections Framework چیست؟ آموزش کامل Collectionهای جاوا با مثال و بررسی Performance">
+  <meta property="og:description" content="از List، Set، Map، Queue و Deque تا ArrayList، LinkedList، HashMap، TreeMap، ConcurrentHashMap و PriorityQueue همراه با Time Complexity، مثال Java، Unit Test و Best Practices.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/java-collections-framework.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/java-collections-framework.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Java Collections Framework">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="مبانی و کیفیت کد">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Java Collections Framework چیست؟ آموزش کامل Collectionهای جاوا">
+  <meta name="twitter:description" content="راهنمای جامع JCF همراه با Time Complexity، مثال Java و Unit Test.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Java Collections Framework چیست؟ آموزش کامل Collectionهای جاوا با مثال و بررسی Performance",
+    "description": "از List، Set، Map، Queue و Deque تا ArrayList، LinkedList، HashMap، TreeMap، ConcurrentHashMap و PriorityQueue همراه با Time Complexity، مثال Java، Unit Test و Best Practices.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/java-collections-framework.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/java-collections-framework.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Java Collections Framework, List, Set, Map, Queue, Deque, ArrayList, LinkedList, HashMap, TreeMap, ConcurrentHashMap, PriorityQueue",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Java Collections Framework", "item": "https://haedarfarhani.github.io/My-Articles/articles/java-collections-framework.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="reading-progress"></div>
+
+  <!-- Navigation Bar -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">مبانی برنامه‌نویسی</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">ساختار داده و Java</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Java Collections Framework</span>؛ از ساختار داخلی تا انتخاب درست
+          </h1>
+
+          <p class="hero-lead">
+            خودداندن API کافی نیست؛ باید بدانید <strong>چرا</strong> در یک سناریو <code>ArrayList</code> و در سناریویی دیگر
+            <code>HashMap</code> یا <code>ArrayDeque</code> انتخاب درست است. این راهنما ساختار داخلی،
+            Time Complexity، مصرف حافظه، Thread Safety و Best Practiceهای JCF را با مثال <code>Java 21</code> و
+            <code>JUnit 5</code> بررسی می‌کند.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری و ساختار داده</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۷۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مقدماتی تا پیشرفته (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Java</span>
+            <span class="post-tag">#Collections</span>
+            <span class="post-tag">#DataStructures</span>
+            <span class="post-tag">#Performance</span>
+            <span class="post-tag">#Concurrency</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: چرا Array کافی نیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Collection چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Java Collections Framework چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>Collection و Collections</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>Collection و Map</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>سلسله‌مراتب JCF</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>List</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ArrayList</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>LinkedList</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>ArrayList یا LinkedList؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>Set</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>HashSet</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>equals و hashCode</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>LinkedHashSet</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>TreeSet</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>HashSet vs LinkedHashSet vs TreeSet</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>Queue</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>Deque</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>PriorityQueue</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>Map</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>HashMap (ساختار داخلی)</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>HashMap Complexity</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>LinkedHashMap و LRU Cache</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>TreeMap</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>HashMap vs LinkedHashMap vs TreeMap</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Hashtable</span></a></li>
+              <li class="inline-toc-item"><a href="#s27" class="inline-toc-link"><span class="inline-toc-num">۲۷</span><span>ConcurrentHashMap</span></a></li>
+              <li class="inline-toc-item"><a href="#s28" class="inline-toc-link"><span class="inline-toc-num">۲۸</span><span>Synchronized Collections</span></a></li>
+              <li class="inline-toc-item"><a href="#s29" class="inline-toc-link"><span class="inline-toc-num">۲۹</span><span>Thread Safety</span></a></li>
+              <li class="inline-toc-item"><a href="#s30" class="inline-toc-link"><span class="inline-toc-num">۳۰</span><span>Immutable Collections</span></a></li>
+              <li class="inline-toc-item"><a href="#s31" class="inline-toc-link"><span class="inline-toc-num">۳۱</span><span>Iterator</span></a></li>
+              <li class="inline-toc-item"><a href="#s32" class="inline-toc-link"><span class="inline-toc-num">۳۲</span><span>Enhanced for-loop</span></a></li>
+              <li class="inline-toc-item"><a href="#s33" class="inline-toc-link"><span class="inline-toc-num">۳۳</span><span>ConcurrentModificationException</span></a></li>
+              <li class="inline-toc-item"><a href="#s34" class="inline-toc-link"><span class="inline-toc-num">۳۴</span><span>Sorting</span></a></li>
+              <li class="inline-toc-item"><a href="#s35" class="inline-toc-link"><span class="inline-toc-num">۳۵</span><span>Comparable vs Comparator</span></a></li>
+              <li class="inline-toc-item"><a href="#s36" class="inline-toc-link"><span class="inline-toc-num">۳۶</span><span>Collection Utility Methods</span></a></li>
+              <li class="inline-toc-item"><a href="#s37" class="inline-toc-link"><span class="inline-toc-num">۳۷</span><span>Stream API و Collections</span></a></li>
+              <li class="inline-toc-item"><a href="#s38" class="inline-toc-link"><span class="inline-toc-num">۳۸</span><span>Arrays و Collections</span></a></li>
+              <li class="inline-toc-item"><a href="#s39" class="inline-toc-link"><span class="inline-toc-num">۳۹</span><span>Primitive Collections</span></a></li>
+              <li class="inline-toc-item"><a href="#s40" class="inline-toc-link"><span class="inline-toc-num">۴۰</span><span>Memory و Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s41" class="inline-toc-link"><span class="inline-toc-num">۴۱</span><span>Time Complexity Cheat Sheet</span></a></li>
+              <li class="inline-toc-item"><a href="#s42" class="inline-toc-link"><span class="inline-toc-num">۴۲</span><span>انتخاب Collection مناسب</span></a></li>
+              <li class="inline-toc-item"><a href="#s43" class="inline-toc-link"><span class="inline-toc-num">۴۳</span><span>سناریوهای واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s44" class="inline-toc-link"><span class="inline-toc-num">۴۴</span><span>Best Practices</span></a></li>
+              <li class="inline-toc-item"><a href="#s45" class="inline-toc-link"><span class="inline-toc-num">۴۵</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s46" class="inline-toc-link"><span class="inline-toc-num">۴۶</span><span>Testing با JUnit 5</span></a></li>
+              <li class="inline-toc-item"><a href="#s47" class="inline-toc-link"><span class="inline-toc-num">۴۷</span><span>پروژه عملی: Task Management</span></a></li>
+              <li class="inline-toc-item"><a href="#s48" class="inline-toc-link"><span class="inline-toc-num">۴۸</span><span>Performance Experiment و JMH</span></a></li>
+              <li class="inline-toc-item"><a href="#s49" class="inline-toc-link"><span class="inline-toc-num">۴۹</span><span>۳۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s50" class="inline-toc-link"><span class="inline-toc-num">۵۰</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s51" class="inline-toc-link"><span class="inline-toc-num">۵۱</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s52" class="inline-toc-link"><span class="inline-toc-num">۵۲</span><span>جمع‌بندی و Roadmap</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: چرا Array کافی نیست؟</h2>
+
+<p>
+یک سیستم فروشگاهی را تصور کنید که باید <code>Users</code>، <code>Products</code>، <code>Orders</code> و <code>Categories</code> را مدیریت کند.
+اگر فقط از Array استفاده کنیم، با چند محدودیت بنیادی روبرو می‌شویم: اندازه ثابت است، حذف یک عنصر میانی نیاز به جابه‌جایی دارد،
+و جستجوی سریع بر اساس یک کلید کاری دشوار است.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>User[] users = new User[100];
+// اگر بیش از ۱۰۰ کاربر شود چه می‌شود؟
+// حذف کاربر دوم و جابه‌جا کردن بقیه؟
+</code></pre>
+
+<p>
+جاوا برای حل این مشکل یک چارچوب استاندارد از ساختار داده فراهم کرده است: 
+<strong>Java Collections Framework (JCF)</strong>. این چارچوب مجموعه‌ای از interfaceها، پیاده‌سازی‌ها، الگوریتم‌ها و متدهای کمکی
+برای مدیریت گروهی از objectها است. این مقاله روی <strong>انتخاب درست</strong> تمرکز دارد، نه حفظ کردن API.
+</p>
+
+<div class="kl-box">
+<span class="kl-h">درباره نسخه‌ی جاوا</span>
+مثال‌ها و بحث پیاده‌سازی داخلی این مقاله بر پایه‌ی <strong>Java 21+</strong> است، مگر اینکه خلاف آن ذکر شود.
+هرجا جزئیات داخلی به نسخه وابسته باشد، صریحاً اعلام می‌کنیم.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Collection چیست؟</h2>
+
+<p>
+<strong>Collection</strong> در جاوا به یک ساختار داده اشاره می‌کند که می‌تواند مجموعه‌ای از objectها را ذخیره، اضافه، حذف، جستجو، پیمایش و مرتب کند.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayList;
+import java.util.List;
+
+List&lt;String&gt; names = new ArrayList&lt;&gt;();
+
+names.add("Ali");
+names.add("Sara");
+names.add("Reza");
+
+System.out.println(names);
+// [Ali, Sara, Reza]
+</code></pre>
+
+<p>تحلیل خط به خط:</p>
+<ul>
+  <li><code>List&lt;String&gt; names</code>: یک متغیر از نوع interface؛ فقط عملیات List قابل فراخوانی است.</li>
+  <li><code>new ArrayList&lt;&gt;()</code>: پیاده‌سازی واقعی که در زمان اجرا استفاده می‌شود.</li>
+  <li><code>names.add(...)</code>: اضافه‌کردن عنصر به انتهای لیست، ترتیب حفظ می‌شود.</li>
+  <li><code>System.out.println(names)</code>: <code>toString</code> لیست را چاپ می‌کند.</li>
+</ul>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Java Collections Framework چیست؟</h2>
+
+<p>JCF از سه بخش اصلی تشکیل شده است: interfaceها، پیاده‌سازی‌ها و الگوریتم‌ها.</p>
+
+<pre class="kl-code" data-lang="text"><code>List
+ ↓
+ArrayList
+LinkedList
+Vector
+
+Set
+ ↓
+HashSet
+LinkedHashSet
+TreeSet
+
+Map
+ ↓
+HashMap
+LinkedHashMap
+TreeMap
+ConcurrentHashMap
+</code></pre>
+
+<p>
+<strong>Interface</strong> مشخص می‌کند «چه عملیاتی وجود دارد» و <strong>Implementation</strong> مشخص می‌کند
+«این عملیات چگونه انجام می‌شود». همین جداسازی باعث می‌شود بتوانید بدون تغییر کد مصرف‌کننده، پیاده‌سازی را عوض کنید.
+</p>
+
+<div class="kl-box">
+<span class="kl-h">نکته‌ی انگلیسی</span>
+قسمت Algorithms همان متدهای کمکی در کلاس <code>java.util.Collections</code> است (sort، shuffle، binarySearch و...).
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>Collection و Collections</h2>
+
+<p>
+این دو اغلب اشتباه گرفته می‌شوند:</p>
+<ul>
+  <li><code>Collection</code> یک <strong>interface</strong> است: <code>Collection&lt;String&gt; names;</code></li>
+  <li><code>Collections</code> یک <strong>utility class</strong> است: <code>Collections.sort(names);</code> · <code>Collections.reverse(names);</code> · <code>Collections.max(names);</code></li>
+</ul>
+
+<pre class="kl-code" data-lang="java"><code>List&lt;String&gt; names = new ArrayList&lt;&gt;(List.of("Reza", "Ali", "Sara"));
+Collections.sort(names);              // [Ali, Reza, Sara]
+Collections.reverse(names);           // [Sara, Reza, Ali]
+String max = Collections.max(names);  // Sara
+</code></pre>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>Collection و Map</h2>
+
+<p>
+<strong>Map زیرمجموعه Collection نیست.</strong> Map داده را به شکل <code>Key → Value</code> نگه می‌دارد و سلسله‌مراتب خودش را دارد.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Iterable
+   ↓
+Collection
+   ├── List
+   ├── Set
+   └── Queue
+       └── Deque
+
+Map
+   ├── HashMap
+   ├── LinkedHashMap
+   ├── TreeMap
+   └── ConcurrentHashMap
+</code></pre>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>سلسله‌مراتب JCF</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>classDiagram
+    class Iterable
+    class Collection
+    class List
+    class Set
+    class Queue
+    class Deque
+    class Map
+
+    Iterable &lt;|-- Collection
+    Collection &lt;|-- List
+    Collection &lt;|-- Set
+    Collection &lt;|-- Queue
+    Queue &lt;|-- Deque
+</code></pre>
+
+<p>
+<code>Map</code> در این سلسله‌مراتب نیست و جداگانه تعریف می‌شود؛ زیرا مفهوم key-value با مجموعه‌ی تک‌مقداری متفاوت است.
+</p>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>List</h2>
+
+<p>List مجموعه‌ای است که <strong>مرتب (ordered)</strong>، <strong>شاخص‌دار (index-based)</strong> و <strong>قابل تکرار</strong> است.</p>
+
+<pre class="kl-code" data-lang="java"><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
+
+names.add("Ali");
+names.add("Sara");
+names.add("Ali");
+
+System.out.println(names);
+// [Ali, Sara, Ali]  ← تکراری مجاز است
+System.out.println(names.get(0)); // Ali
+</code></pre>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ArrayList</h2>
+
+<p>
+ArrayList یک <strong>Dynamic Array</strong> است: یک آرایه‌ی داخلی که با پر شدن، بزرگ‌تر می‌شود.
+مفهوم Capacity (ظرفیت) با Size (تعداد عناصر فعلی) متفاوت است؛ ظرفیت معمولاً بزرگ‌تر از اندازه است.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayList;
+import java.util.List;
+
+List&lt;Integer&gt; numbers = new ArrayList&lt;&gt;();
+
+numbers.add(10);
+numbers.add(20);
+numbers.add(30);
+
+System.out.println(numbers.get(1)); // 20
+System.out.println(numbers.size()); // 3
+</code></pre>
+
+<p>هنگام resize، ArrayList آرایه‌ی بزرگتری می‌سازد و عناصر را کپی می‌کند؛ این کپی گران است اما به‌ندرت رخ می‌دهد.</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Operation</th><th>Complexity</th><th>توضیح</th></tr>
+  <tr><td>get</td><td>O(1)</td><td>دسترسی شاخصی مستقیم</td></tr>
+  <tr><td>set</td><td>O(1)</td><td>جایگزینی عنصر</td></tr>
+  <tr><td>add at end</td><td>Amortized O(1)</td><td>گاهی resize می‌شود و آن یک بار O(n) است</td></tr>
+  <tr><td>add at index</td><td>O(n)</td><td>جابه‌جایی عناصر بعدی</td></tr>
+  <tr><td>remove by index</td><td>O(n)</td><td>جابه‌جایی بعد از حذف</td></tr>
+  <tr><td>contains</td><td>O(n)</td><td>جستجوی خطی</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Amortized در برابر Guaranteed</span>
+<strong>Amortized O(1)</strong> یعنی «به‌طور میانگین» روی یک دنباله‌ی عملیات O(1) است،
+اما یک عملیات خاص (لحظه‌ی resize) می‌تواند O(n) باشد. <strong>Guaranteed O(1)</strong> یعنی هر عملیات تک به تک حتماً O(1) است.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>LinkedList</h2>
+
+<p>LinkedList در جاوا یک لیست دوطرفه‌ی پیوندی است که از nodeها ساخته می‌شود.</p>
+
+<pre class="kl-code" data-lang="text"><code>null
+ ↓
+Node
+ ↓
+Node
+ ↓
+Node
+ ↓
+null
+
+Node
+├── item
+├── next
+└── previous
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.LinkedList;
+
+LinkedList&lt;String&gt; queue = new LinkedList&lt;&gt;();
+
+queue.add("A");
+queue.add("B");
+queue.add("C");
+
+queue.addFirst("Z");   // O(1)
+queue.removeLast();    // O(1)
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Operation</th><th>Complexity</th></tr>
+  <tr><td>get(index)</td><td>O(n)</td></tr>
+  <tr><td>addFirst / addLast</td><td>O(1)</td></tr>
+  <tr><td>removeFirst / removeLast</td><td>O(1)</td></tr>
+  <tr><td>search / contains</td><td>O(n)</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">عبارت درست درباره LinkedList</span>
+عبارت «LinkedList برای درج و حذف سریع است» بدون قید و شرط درست نیست.
+درج/حذف می‌تواند <strong>O(1)</strong> باشد وقتی node یا موقعیت مربوطه <em>از قبل معلوم</em> باشد؛
+اما پیدا کردن آن موقعیت ممکن است <strong>O(n)</strong> هزینه داشته باشد. پس در عمل، اغلب هزینه‌ی پنهان O(n) ظاهر می‌شود.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>ArrayList یا LinkedList؟</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>ArrayList</th><th>LinkedList</th></tr>
+  <tr><td>Random Access</td><td>بسیار سریع</td><td>کند</td></tr>
+  <tr><td>get(index)</td><td>O(1)</td><td>O(n)</td></tr>
+  <tr><td>Memory locality</td><td>بهتر (پیوسته)</td><td>ضعیف‌تر (پراکنده)</td></tr>
+  <tr><td>Memory overhead</td><td>کمتر</td><td>بیشتر (next و previous در هر node)</td></tr>
+  <tr><td>Add at end</td><td>سریع (amortized O(1))</td><td>سریع (O(1))</td></tr>
+  <tr><td>Insert middle</td><td>O(n)</td><td>O(n) برای پیدا کردن موقعیت</td></tr>
+</table>
+</div>
+
+<p>
+در اکثر سناریوهای معمول، <strong>ArrayList انتخاب پیش‌فرض بهتری است</strong>؛ دلیل اصلی، دسترسی شاخصی سریع و
+بهبود locality حافظه است. اما این یک قانون مطلق نیست: اگر الگوی دسترسی شما واقعاً اضافه/حذف مکرر از دو سر صف باشد،
+<code>ArrayDeque</code> (نه LinkedList) گزینه‌ی بهتری است.
+</p>
+
+<div class="kl-box">
+<span class="kl-h">مرتبط در همین سایت</span>
+برای درک عمیق‌تر موضوع، به مقالات مرتبط مانند OOP در Java، Data Structures و Algorithm Complexity مراجعه کنید.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>Set</h2>
+
+<p>Set فقط عناصر <strong>یکتا (Unique)</strong> را نگه می‌دارد.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.HashSet;
+import java.util.Set;
+
+Set&lt;String&gt; usernames = new HashSet&lt;&gt;();
+
+usernames.add("ali");
+usernames.add("sara");
+usernames.add("ali");   // نادیده گرفته می‌شود
+
+System.out.println(usernames); // [sara, ali]  ← دو عنصر، ترتیب قابل پیش‌بینی نیست
+</code></pre>
+
+<p>
+مقدار تکراری ذخیره نمی‌شود چون Set قبل از درج، بر اساس <code>equals</code> (و <code>hashCode</code> در HashSet) بررسی می‌کند
+که آیا عنصر معادلی وجود دارد یا نه.
+</p>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>HashSet</h2>
+
+<p>
+HashSet روی یک Hash Table ساخته شده است و یگانگی را با <code>hashCode</code> و سپس <code>equals</code> تعیین می‌کند.
+ترتیب iteration در آن <strong>تضمین‌شده نیست</strong>.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.HashSet;
+import java.util.Set;
+
+Set&lt;Integer&gt; numbers = new HashSet&lt;&gt;();
+
+numbers.add(10);
+numbers.add(20);
+numbers.add(10);
+
+System.out.println(numbers.size());        // 2
+System.out.println(numbers.contains(20));  // true
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مزایا</th><th>معایب</th></tr>
+  <tr><td>میانگین O(1) برای add/remove/contains</td><td>بدون ترتیب iteration</td></tr>
+  <tr><td>مناسب تشخیص یگانگی سریع</td><td>کیفیت وابسته به hashCode است</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>equals و hashCode</h2>
+
+<p>قرارداد (Contract) بین <code>equals</code> و <code>hashCode</code> حفظ آن‌ها را الزامی می‌کند:</p>
+
+<pre class="kl-code" data-lang="text"><code>اگر a.equals(b) == true
+آنگاه a.hashCode() == b.hashCode()
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.Objects;
+
+public final class User {
+    private final Long id;
+    private final String name;
+
+    public User(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id) && Objects.equals(name, user.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">اگر قرارداد نقض شود</span>
+اگر دو شیء برابر داشته باشید اما hashCode متفاوت بدهند، <code>HashSet</code> و <code>HashMap</code>
+آن‌ها را در bucketهای متفاوت می‌بینند؛ نتیجه: عنصر تکراری در Set یا دو کلید ظاهراً یکسان در Map.
+</div>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashSet;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
+
+class UserEqualityTest {
+
+    @Test
+    void equalUsersMustCollapseInSet() {
+        Set&lt;User&gt; users = new HashSet&lt;&gt;();
+        users.add(new User(1L, "Ali"));
+        users.add(new User(1L, "Ali"));
+
+        assertEquals(1, users.size());
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>LinkedHashSet</h2>
+
+<p>LinkedHashSet همان رفتار Set یکتا را دارد، اما <strong>ترتیب درج (Insertion Order)</strong> را حفظ می‌کند.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.LinkedHashSet;
+import java.util.Set;
+
+Set&lt;String&gt; names = new LinkedHashSet&lt;&gt;();
+
+names.add("A");
+names.add("B");
+names.add("C");
+names.add("A"); // تکراری
+
+System.out.println(names); // [A, B, C]  ← ترتیب درج حفظ می‌شود
+</code></pre>
+
+<p>
+هزینه‌ی نگه‌داشتن ترتیب، حافظه‌ی کمی بیشتر برای زنجیره‌ی link بین entryهاست؛ اما میانگین زمان عملیات هنوز O(1) است.
+</p>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>TreeSet</h2>
+
+<p>TreeSet داده‌ها را <strong>مرتب (Sorted)</strong> نگه می‌دارد؛ پیاده‌سازی استاندارد آن بر پایه‌ی یک درخت متعادل (در OpenJDK معمولاً Red-Black Tree) است.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.Set;
+import java.util.TreeSet;
+
+Set&lt;Integer&gt; numbers = new TreeSet&lt;&gt;();
+
+numbers.add(30);
+numbers.add(10);
+numbers.add(20);
+
+System.out.println(numbers); // [10, 20, 30]  ← مرتب صعودی
+System.out.println(numbers.iterator().next()); // کوچک‌ترین: 10
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Operation</th><th>Complexity</th></tr>
+  <tr><td>add</td><td>O(log n)</td></tr>
+  <tr><td>remove</td><td>O(log n)</td></tr>
+  <tr><td>contains</td><td>O(log n)</td></tr>
+</table>
+</div>
+
+<p>TreeSet برای داده‌های <code>Comparable</code> مرتب آسان است؛ برای نوع سفارشی می‌توانید یک <code>Comparator</code> پاس دهید.</p>
+
+<pre class="kl-code" data-lang="java"><code>Set&lt;Task&gt; byPriority = new TreeSet&lt;&gt;(Comparator.comparingInt(Task::priority));
+</code></pre>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>HashSet vs LinkedHashSet vs TreeSet</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Feature</th><th>HashSet</th><th>LinkedHashSet</th><th>TreeSet</th></tr>
+  <tr><td>Unique</td><td>✓</td><td>✓</td><td>✓</td></tr>
+  <tr><td>Order</td><td>ندارد</td><td>Insertion Order</td><td>Sorted</td></tr>
+  <tr><td>Average lookup</td><td>O(1)</td><td>O(1)</td><td>O(log n)</td></tr>
+  <tr><td>Null</td><td>یک null مجاز (به عنوان عنصر)</td><td>یک null مجاز (در ترتیب درج)</td><td>در عمل null پشتیبانی نمی‌شود (NPE هنگام مقایسه)</td></tr>
+  <tr><td>Use Case</td><td>یگانگی سریع</td><td>یگانگی + ترتیب</td><td>داده مرتب</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">درباره null</span>
+این رفتارها بر اساس Java 21 است. TreeSet برای درج/جستجو از مقایسه استفاده می‌کند و null قابل مقایسه نیست؛
+بنابراین به‌طور عملی null نمی‌گیرد. به‌جای ساده‌سازی بیش از حد، همیشه بر اساس نسخه و پیاده‌سازی قضاوت کنید.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>Queue</h2>
+
+<p>Queue برای مدیریت جریان پردازش داده استفاده می‌شود: FIFO (اولین ورود، اولین خروج).</p>
+
+<pre class="kl-code" data-lang="text"><code>Customer A
+Customer B
+Customer C
+
+↓ Processing
+
+A → B → C
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayDeque;
+import java.util.Queue;
+
+Queue&lt;String&gt; queue = new ArrayDeque&lt;&gt;();
+
+queue.offer("A");
+queue.offer("B");
+queue.offer("C");
+
+System.out.println(queue.poll()); // A
+System.out.println(queue.peek()); // B  (حذف نمی‌شود)
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>عملیات گران‌رو (خطا می‌دهد)</th><th>عملیات ملايم</th><th>تفاوت</th></tr>
+  <tr><td><code>add(e)</code></td><td><code>offer(e)</code></td><td>add در ظرفیت کامل استثنا می‌دهد؛ offer false برمی‌گرداند</td></tr>
+  <tr><td><code>remove()</code></td><td><code>poll()</code></td><td>remove روی خالی استثنا می‌دهد؛ poll null می‌دهد</td></tr>
+  <tr><td><code>element()</code></td><td><code>peek()</code></td><td>element روی خالی استثنا می‌دهد؛ peek null می‌دهد</td></tr>
+</table>
+</div>
+
+<p>در کد موجود، معمولاً <code>offer/poll/peek</code> خوانا و ایمن‌تر هستند.</p>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>Deque</h2>
+
+<p>Deque یعنی Double Ended Queue: می‌توان از هر دو سر اضافه یا حذف کرد.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayDeque;
+import java.util.Deque;
+
+Deque&lt;Integer&gt; deque = new ArrayDeque&lt;&gt;();
+
+deque.addFirst(10);
+deque.addLast(20);
+
+System.out.println(deque.removeFirst()); // 10
+</code></pre>
+
+<p>می‌توان از Deque به عنوان Queue (FIFO) و Stack (LIFO) استفاده کرد:</p>
+
+<pre class="kl-code" data-lang="java"><code>Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;();
+
+stack.push(10);
+stack.push(20);
+
+System.out.println(stack.pop()); // 20
+System.out.println(stack.peek());// 10
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">چرا ArrayDeque بهتر از Stack قدیمی است؟</span>
+کلاس <code>Stack</code> قدیمی است، از vector ارث‌بری می‌کند (به‌همراه overhead همگام‌سازی) و API آن با Deque ناهمخوان است.
+در جاوا مدرن، <code>ArrayDeque</code> پیاده‌سازی پیشنهادی استاندارد برای Stack است.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>PriorityQueue</h2>
+
+<p>PriorityQueue برخلاف Queue معمولی بر اساس Priority عمل می‌کند، نه بر اساس ترتیب ورود. پیاده‌سازی استاندارد آن یک <strong>Heap</strong> است.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.PriorityQueue;
+import java.util.Queue;
+
+Queue&lt;Integer&gt; queue = new PriorityQueue&lt;&gt;();
+
+queue.offer(30);
+queue.offer(10);
+queue.offer(20);
+
+System.out.println(queue.poll()); // 10  (کوچک‌ترین، چون natural ordering صعودی است)
+System.out.println(queue.peek()); // 20
+</code></pre>
+
+<p>در natural ordering، کوچک‌ترین مقدار priority بالاتری دارد. برای معکوس کردن، Comparator بدهید.</p>
+
+<pre class="kl-code" data-lang="java"><code>PriorityQueue&lt;Task&gt; tasks =
+        new PriorityQueue&lt;&gt;(Comparator.comparingInt(Task::priority));
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Operation</th><th>Complexity</th></tr>
+  <tr><td>offer (insert)</td><td>O(log n)</td></tr>
+  <tr><td>poll (remove min/max)</td><td>O(log n)</td></tr>
+  <tr><td>peek</td><td>O(1)</td></tr>
+</table>
+</div>
+
+<p><strong>نکته:</strong> iterating روی PriorityQueue ترتیب مرتب نمی‌دهد؛ فقط <code>poll</code> یکی‌یکی ترتیب درست را می‌دهد.</p>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>Map</h2>
+
+<p>Map ساختار <code>Key → Value</code> است و کلیدها یکتا هستند.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.HashMap;
+import java.util.Map;
+
+Map&lt;Long, String&gt; users = new HashMap&lt;&gt;();
+
+users.put(1L, "Ali");
+users.put(2L, "Sara");
+
+System.out.println(users.get(1L));         // Ali
+System.out.println(users.containsKey(2L)); // true
+
+users.computeIfAbsent(3L, id -> "Guest");
+</code></pre>
+</section>
+
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>HashMap</h2>
+
+<p>
+HashMap یک Hash Table است. مراحل کار (بر اساس پیاده‌سازی OpenJDK در Java 21):
+</p>
+
+<pre class="kl-code" data-lang="text"><code>HashMap
+   ↓
+hash(key)        ← spread: h = hashCode ^ (h >>> 16)
+   ↓
+index = (n - 1) & hash
+   ↓
+Bucket
+   ↓
+Node (key, value, hash, next)
+</code></pre>
+
+<ul>
+  <li><strong>Hash Function</strong>: ابتدا <code>hashCode()</code> کلید گرفته می‌شود، بیت‌های بالا به پایین spread می‌شوند تا توزیع بهتر شود.</li>
+  <li><strong>Bucket</strong>: آرایه‌ی داخلی؛ ایندکس از <code>(n - 1) & hash</code> به دست می‌آید (n توان ۲ است).</li>
+  <li><strong>Collision</strong>: چند کلید در یک bucket به صورت linked list ذخیره می‌شوند.</li>
+  <li><strong>equals</strong>: هنگام مقایسه در یک bucket، اول hash و سپس <code>equals</code> بررسی می‌شود.</li>
+  <li><strong>Treeification</strong>: اگر یک bucket بیش از حد بزرگ شود (آستانه‌ی ۸ در OpenJDK) و ظرفیت جدول به ۶۴ رسیده باشد، آن bucket به یک درخت (red-black) تبدیل می‌شود تا جستجو O(log n) بماند.</li>
+  <li><strong>Load Factor</strong>: به‌طور پیش‌فرض ۰.۷۵؛ وقتی نسبت پرشدگی از آن بگذرد، جدول دو برابر می‌شود.</li>
+  <li><strong>Resize</strong>: بزرگ‌کردن آرایه و توزیع مجدد entryها (rehash) — عملیاتی گران اما به‌ندرت رخ‌دهنده.</li>
+</ul>
+
+
+
+<pre class="kl-code" data-lang="text"><code>«table[i]» یک زنجیره است. درج کلیدی با hash یکسان در همان chain قرار می‌گیرد؛
+در lookup، ابتدا bucket پیدا می‌شود، سپس با equals و hashCode مطابقت بررسی می‌شود.
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Average در برابر Worst case</span>
+<strong>Average → O(1)</strong> وقتی تابع hash خوب توزیع کند. اما <strong>Worst case</strong> بسته به پیاده‌سازی و کیفیت hash می‌تواند O(n) شود (همه‌ی کلیدها در یک bucket). پس O(1) یک تضمین مطلق نیست.
+</div>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>HashMap Complexity</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Operation</th><th>Average</th><th>Worst-case</th></tr>
+  <tr><td>get</td><td>O(1)</td><td>O(n) اگر همه در یک bucket بیفتند (مگر treeified)</td></tr>
+  <tr><td>put</td><td>O(1)</td><td>O(n) در بدترین حالت + هزینه resize</td></tr>
+  <tr><td>remove</td><td>O(1)</td><td>O(n) در بدترین حالت</td></tr>
+  <tr><td>containsKey</td><td>O(1)</td><td>همانند get</td></tr>
+</table>
+</div>
+
+<p>
+Complexity وابسته به <strong>کیفیت Hash Function</strong>، <strong>وضعیت جدول</strong> و <strong>rate پر شدن</strong> است.
+در OpenJDK، هر bucket بزرگ به درخت تبدیل می‌شود و بدترین حالت را به O(log n) تنزل می‌دهد.
+</p>
+</section>
+
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>LinkedHashMap و LRU Cache</h2>
+
+<p>LinkedHashMap علاوه بر Map semantics، ترتیب iteration را مدیریت می‌کند.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.LinkedHashMap;
+import java.util.Map;
+
+Map&lt;Integer, String&gt; map = new LinkedHashMap&lt;&gt;();
+
+map.put(1, "A");
+map.put(2, "B");
+map.put(3, "C");
+
+System.out.println(map); // {1=A, 2=B, 3=C}  ← ترتیب درج
+</code></pre>
+
+<p>
+LinkedHashMap یک حالت دوم دارد: <strong>Access Order</strong>. اگر سازنده‌ی سوم را با <code>true</code> بسازید،
+هر دسترسی (get/put) عنصر را به انتها منتقل می‌کند؛ همین پایه‌ی یک <strong>LRU Cache</strong> ساده است:
+</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.LinkedHashMap;
+import java.util.Map;
+
+public final class LruCache&lt;K, V&gt; extends LinkedHashMap&lt;K, V&gt; {
+
+    private static final float LOAD_FACTOR = 0.75f;
+    private final int capacity;
+
+    public LruCache(int capacity) {
+        super(capacity, LOAD_FACTOR, true); // accessOrder = true
+        this.capacity = capacity;
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry&lt;K, V&gt; eldest) {
+        return size() &gt; capacity;
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class LruCacheTest {
+
+    @Test
+    void shouldEvictLeastRecentlyUsed() {
+        LruCache&lt;Integer, String&gt; cache = new LruCache&lt;&gt;(2);
+        cache.put(1, "A");
+        cache.put(2, "B");
+        cache.get(1);      // 1 تازه‌ترین می‌شود
+        cache.put(3, "C"); // 2 باید حذف شود
+
+        assertFalse(cache.containsKey(2));
+        assertTrue(cache.containsKey(1));
+        assertTrue(cache.containsKey(3));
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">همگام‌سازی</span>
+خودِ LRU مبتنی بر LinkedHashMap در محیط چندرشته‌ای ایمن نیست؛ برای concurrency باید محافظت یا پیاده‌سازی دیگری در نظر بگیرید.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>TreeMap</h2>
+
+<p>TreeMap کلیدها را مرتّب نگه می‌دارد (بر پایه‌ی درخت متعادل؛ در OpenJDK Red-Black Tree).</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.Map;
+import java.util.TreeMap;
+
+Map&lt;Integer, String&gt; users = new TreeMap&lt;&gt;();
+
+users.put(30, "Ali");
+users.put(10, "Sara");
+users.put(20, "Reza");
+
+for (Map.Entry&lt;Integer, String&gt; e : users.entrySet()) {
+    System.out.println(e.getKey() + "=" + e.getValue());
+}
+// 10=Sara
+// 20=Reza
+// 30=Ali   ← مرتب بر اساس کلید
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Operation</th><th>Complexity</th></tr>
+  <tr><td>get</td><td>O(log n)</td></tr>
+  <tr><td>put</td><td>O(log n)</td></tr>
+  <tr><td>remove</td><td>O(log n)</td></tr>
+</table>
+</div>
+
+<p><strong>چه زمانی TreeMap:</strong> وقتی به بازه‌های مرتب، کوچک‌ترین/بزرگ‌ترین کلید (firstKey/lastKey) یا پیمایش مرتب نیاز دارید.</p>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>HashMap vs LinkedHashMap vs TreeMap</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Feature</th><th>HashMap</th><th>LinkedHashMap</th><th>TreeMap</th></tr>
+  <tr><td>Ordering</td><td>تضمینی ندارد</td><td>Insertion / Access</td><td>Sorted</td></tr>
+  <tr><td>Average lookup</td><td>O(1)</td><td>O(1)</td><td>O(log n)</td></tr>
+  <tr><td>Main use</td><td>جستجوی سریع</td><td>Map مرتب‌شده توسط ترتیب</td><td>کلیدهای مرتب</td></tr>
+</table>
+</div>
+
+<p>مثال واقعی برای هرکدام:</p>
+<ul>
+  <li><strong>HashMap</strong>: نگهداری کاربران بر اساس id برای دسترسی سریع.</li>
+  <li><strong>LinkedHashMap</strong>: تولید گزارش به ترتیب ثبت درخواست یا LRU Cache.</li>
+  <li><strong>TreeMap</strong>: نمایش بازه‌ی قیمت‌ها یا رتبه‌بندی مرتب بر اساس کلید.</li>
+</ul>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Hashtable</h2>
+
+<p>
+<code>Hashtable</code> یک کلاس قدیمی (legacy) است که هنوز در JDK وجود دارد ولی در کد مدرن انتخاب اول نیست.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>Hashtable</th><th>HashMap</th><th>ConcurrentHashMap</th></tr>
+  <tr><td>همگام‌سازی</td><td>کامل (روی کل شیء)</td><td>ندارد</td><td>دانه‌بندی‌شده (بهبود concurrency)</td></tr>
+  <tr><td>null key/value</td><td>null مجاز نیست</td><td>یک key و چند value null مجاز است</td><td>null مجاز نیست</td></tr>
+  <tr><td>وضعیت</td><td>Legacy</td><td>پیشنهادی برای تک‌رشته</td><td>پیشنهادی برای چندرشته</td></tr>
+</table>
+</div>
+
+<p>در کدهای مدرن معمولاً <code>Hashtable</code> انتخاب اول نیست؛ جای آن از HashMap (تک‌رشته) یا ConcurrentHashMap (چندرشته) استفاده کنید.</p>
+</section>
+
+<!-- ==================== 27 ==================== -->
+<section id="s27">
+<h2><span class="kl-num">بخش ۲۷</span>ConcurrentHashMap</h2>
+
+<p>HashMap برای دسترسی همزمان عمومی مناسب نیست؛ با چند ریسمان می‌تواند دیتای ناسازگار یا حلقه‌ی بی‌پایان بدهد (در نسخه‌های قدیمی) یا ساختار داخلی map را خراب کند.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.concurrent.ConcurrentHashMap;
+
+ConcurrentHashMap&lt;String, Integer&gt; counters = new ConcurrentHashMap&lt;&gt;();
+
+counters.merge("login", 1, Integer::sum);
+counters.merge("login", 1, Integer::sum);
+
+System.out.println(counters.get("login")); // 2
+</code></pre>
+
+<p>
+ConcurrentHashMap به جای قفل روی کل map، از تکنیک‌هایی مثل قفل‌های دانه‌بندی‌شده و عملیات اتمیک (CAS) استفاده می‌کند و اجازه‌ی خواندن همزمان بدون بلاک‌شدن را می‌دهد.
+</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Thread-Safe به معنای Atomic در همه‌ی ترکیب‌ها نیست</span>
+مثلاً «بررسی وجود کلید، اگر نبود درج کن» با دو فراخوانی جدا، به‌طور خودکار atomic نیست.
+برای عملیات‌های ترکیبی از <code>putIfAbsent</code>، <code>compute</code>، <code>merge</code> استفاده کنید.
+</div>
+</section>
+
+<!-- ==================== 28 ==================== -->
+<section id="s28">
+<h2><span class="kl-num">بخش ۲۸</span>Synchronized Collections</h2>
+
+<p>
+<code>Collections.synchronizedList(...)</code> و <code>Collections.synchronizedMap(...)</code> پوشش‌هایی هستند که یک قفل را روی هر متد می‌گذارند.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+List&lt;String&gt; list = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+synchronized (list) {          // برای iteration باید خودتان قفل کنید
+    for (String item : list) {
+        System.out.println(item);
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>synchronizedList</th><th>ConcurrentHashMap</th></tr>
+  <tr><td>مدل قفل</td><td>یک قفل بزرگ برای کل شیء</td><td>قفل‌های دانه‌بندی‌شده / CAS</td></tr>
+  <tr><td>Throughput</td><td>پایین‌تر در بار زیاد</td><td>بهتر</td></tr>
+  <tr><td>Iteration</td><td>نیازمند قفل دستی</td><td>iterator ضعیفاً سازگار (weakly consistent)</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 29 ==================== -->
+<section id="s29">
+<h2><span class="kl-num">بخش ۲۹</span>Thread Safety</h2>
+
+<p>چهار مفهوم کلیدی:</p>
+<ul>
+  <li><strong>Thread-safe</strong>: استفاده‌ی همزمان از چند ریسمان باعث وضعیت ناسازگار نمی‌شود.</li>
+  <li><strong>Race Condition</strong>: نتیجه بستگی به زمان‌بندی اجرای ریسمان‌ها دارد و غیرقابل‌پیش‌بینی می‌شود.</li>
+  <li><strong>Atomic Operation</strong>: عملیاتی که به‌صورت واحد انجام می‌شود و نیمه‌کاره دیده نمی‌شود.</li>
+  <li><strong>Concurrent Collection</strong>: مجموعه‌ای که برای دسترسی همزمان طراحی شده است.</li>
+</ul>
+
+<pre class="kl-code" data-lang="java"><code>// بد: شمارنده غیرatomic در چند ریسمان
+int counter = 0;
+counter++; // read-modify-write، می‌تواند گم شود
+
+// خوب: عملیات atomic
+java.util.concurrent.atomic.AtomicInteger safe = new java.util.concurrent.atomic.AtomicInteger();
+safe.incrementAndGet();
+</code></pre>
+</section>
+
+<!-- ==================== 30 ==================== -->
+<section id="s30">
+<h2><span class="kl-num">بخش ۳۰</span>Immutable Collections</h2>
+
+<p>جاوا ۹ به بعد متدهای کارخانه‌ای برای مجموعه‌های تغییرناپذیر دارد:</p>
+
+<pre class="kl-code" data-lang="java"><code>List&lt;String&gt; names = List.of("A", "B");
+Set&lt;Integer&gt; ids = Set.of(1, 2, 3);
+Map&lt;String, Integer&gt; ages = Map.of("Ali", 30, "Sara", 25);
+
+names.add("C"); // UnsupportedOperationException
+</code></pre>
+
+<p>تفاوت مهم با <code>Collections.unmodifiableList(...)</code>:</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>List.of(...)</th><th>Collections.unmodifiableList(...)</th></tr>
+  <tr><td>تغییرپذیری ساختار</td><td>هرگز (immutable واقعی)</td><td>فقط نمای read-only روی لیست اصلی</td></tr>
+  <tr><td>null</td><td>null مجاز نیست</td><td>null مجاز است (بستگی به لیست اصلی دارد)</td></tr>
+  <tr><td>تغییر از لیست اصلی</td><td>ممکن نیست</td><td>ممکن است و در نمای unmodifiable دیده می‌شود</td></tr>
+</table>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">نکته</span>
+<code>unmodifiableList</code> یک <em>نمای تغییرناپذیر</em> است، نه یک کپی immutable. اگر منبع اصلی تغییر کند، نما هم تغییر را نشان می‌دهد.
+</div>
+</section>
+
+<!-- ==================== 31 ==================== -->
+<section id="s31">
+<h2><span class="kl-num">بخش ۳۱</span>Iterator</h2>
+
+<p>Iterator مکانیزم استاندارد پیمایش یک Collection است.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.Iterator;
+import java.util.List;
+
+List&lt;String&gt; names = new java.util.ArrayList&lt;&gt;(List.of("Ali", "Sara"));
+
+Iterator&lt;String&gt; iterator = names.iterator();
+while (iterator.hasNext()) {
+    System.out.println(iterator.next());
+}
+</code></pre>
+
+<p>
+متد <code>iterator.remove()</code> تنها راه ایمن حذف در حین پیمایش است و عنصر را از منبع حذف می‌کند
+(خود Iterator نمی‌تواند بدون منبع حذف کند):
+</p>
+
+<pre class="kl-code" data-lang="java"><code>Iterator&lt;String&gt; it = names.iterator();
+while (it.hasNext()) {
+    if (it.next().equals("Ali")) {
+        it.remove();
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 32 ==================== -->
+<section id="s32">
+<h2><span class="kl-num">بخش ۳۲</span>Enhanced for-loop</h2>
+
+<pre class="kl-code" data-lang="java"><code>for (String name : names) {
+    System.out.println(name);
+}
+</code></pre>
+
+<p>
+در پشت صحنه، این حلقه از یک Iterator استفاده می‌کند؛ به همین دلیل هنگام پیمایش نباید Collection را تغییر دهید.
+هر ساختار که <code>Iterable</code> باشد در حلقه‌ی for-each قابل استفاده است.
+</p>
+</section>
+
+<!-- ==================== 33 ==================== -->
+<section id="s33">
+<h2><span class="kl-num">بخش ۳۳</span>ConcurrentModificationException</h2>
+
+<pre class="kl-code" data-lang="java"><code>// بد
+for (String name : names) {
+    if (name.equals("Ali")) {
+        names.remove(name); // ممکن است ConcurrentModificationException بدهد
+    }
+}
+</code></pre>
+
+<p>
+این استثنا از مکانیزم fail-fast می‌آید: Collection یک شمارنده‌ی تغییر (modCount) دارد؛ Iterator اگر ببیند این شمارنده تغییر کرده،
+استثنا می‌دهد. راهکارهای درست:
+</p>
+
+<pre class="kl-code" data-lang="java"><code>// راهکار ۱: Iterator
+Iterator&lt;String&gt; iterator = names.iterator();
+while (iterator.hasNext()) {
+    if (iterator.next().equals("Ali")) {
+        iterator.remove();
+    }
+}
+
+// راهکار ۲ (خوانا و مدرن): removeIf
+names.removeIf(name -> name.equals("Ali"));
+</code></pre>
+
+<div class="kl-box">
+<span class="kl-h">نکته: fail-fast در برابر fail-safe</span>
+iteratorهای ConcurrentHashMap ضعیفاً سازگارند و معمولاً استثنا نمی‌دهند؛ این که کدام رفتار را می‌خواهید،
+یک تصمیم طراحی است.
+</div>
+</section>
+
+<!-- ==================== 34 ==================== -->
+<section id="s34">
+<h2><span class="kl-num">بخش ۳۴</span>Sorting</h2>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+List&lt;Integer&gt; numbers = new ArrayList&lt;&gt;(List.of(3, 1, 2));
+
+Collections.sort(numbers);   // سبک قدیمی؛ پایدار و درجا
+numbers.sort(Integer::compareTo); // سبک مدرن (List.sort)
+</code></pre>
+
+<p>
+<code>Collections.sort</code> و <code>List.sort</code> هر دو از الگوریتم <strong>stable</strong> (ترتیب عناصر برابر را حفظ می‌کند) استفاده می‌کنند.
+ترتیب طبیعی: اگر عنصر <code>Comparable</code> باشد، می‌توانید مستقیم مرتب کنید؛ در غیر این صورت <code>Comparator</code> بدهید.
+</p>
+</section>
+
+<!-- ==================== 35 ==================== -->
+<section id="s35">
+<h2><span class="kl-num">بخش ۳۵</span>Comparable vs Comparator</h2>
+
+<pre class="kl-code" data-lang="java"><code>public final class User implements Comparable&lt;User&gt; {
+    private final String name;
+    private final int age;
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String name() { return name; }
+    public int age() { return age; }
+
+    @Override
+    public int compareTo(User other) {
+        return this.name.compareTo(other.name); // ترتیب طبیعی: نام
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>List&lt;User&gt; users = new java.util.ArrayList&lt;&gt;();
+users.sort(Comparator.comparingInt(User::age));             // بر اساس سن
+users.sort(Comparator.comparing(User::name).reversed());    // بر اساس نام، نزولی
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>Comparable</th><th>Comparator</th></tr>
+  <tr><td>جای تعریف</td><td>داخل خود کلاس</td><td>خارج و مستقل</td></tr>
+  <tr><td>تعداد ترتیب</td><td>فقط یک ترتیب طبیعی</td><td>بی‌شمار ترتیب</td></tr>
+  <tr><td>کاربرد</td><td>ترتیب پیش‌فرض کلاس</td><td>ترتیب‌های جایگزین/زنجیره‌ای</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 36 ==================== -->
+<section id="s36">
+<h2><span class="kl-num">بخش ۳۶</span>Collection Utility Methods</h2>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+List&lt;Integer&gt; numbers = new ArrayList&lt;&gt;(List.of(3, 1, 2));
+
+Collections.sort(numbers);                        // [1, 2, 3]
+Collections.reverse(numbers);                     // [3, 2, 1]
+Collections.shuffle(numbers);                     // ترتیب تصادفی
+System.out.println(Collections.max(numbers));     // بزرگ‌ترین
+System.out.println(Collections.min(numbers));     // کوچک‌ترین
+Collections.sort(numbers);
+System.out.println(Collections.frequency(numbers, 2));        // تعداد تکرار
+System.out.println(Collections.binarySearch(numbers, 3));     // نیازمند لیست مرتب
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">توجه</span>
+<code>binarySearch</code> فقط روی لیست مرتب معنا دارد؛ در غیر این صورت نتیجه بی‌معناست.
+</div>
+</section>
+
+<!-- ==================== 37 ==================== -->
+<section id="s37">
+<h2><span class="kl-num">بخش ۳۷</span>Stream API و Collections</h2>
+
+<p>Collections و Stream دو مفهوم متفاوت اما مرتبطند: Collection داده را «ذخیره» می‌کند، Stream آن را «پردازش» می‌کند.</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.List;
+
+List&lt;Integer&gt; numbers = List.of(1, 2, 3, 4, 5);
+
+List&lt;Integer&gt; result = numbers.stream()
+                               .filter(n -&gt; n % 2 == 0)
+                               .toList();
+
+System.out.println(result); // [2, 4]
+</code></pre>
+
+<p>برای مطالعه‌ی بیشتر، مقاله‌ی «Java Stream API» در همین سایت مفید است.</p>
+</section>
+
+<!-- ==================== 38 ==================== -->
+<section id="s38">
+<h2><span class="kl-num">بخش ۳۸</span>Arrays و Collections</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>int[]</th><th>List&lt;Integer&gt;</th></tr>
+  <tr><td>نوع</td><td>Primitive</td><td>Object (Wrapper)</td></tr>
+  <tr><td>اندازه</td><td>ثابت</td><td>دینامیک</td></tr>
+  <tr><td>حافظه</td><td>کمتر و پیوسته</td><td>بیشتر (شیء + reference)</td></tr>
+  <tr><td>Boxing/Unboxing</td><td>ندارد</td><td>دارد (هزینه‌ی اضافی)</td></tr>
+</table>
+</div>
+
+<p>
+اگر حجم داده ثابت است و Performance حیاتی است، آرایه‌ی primitive می‌تواند سریع‌تر و کم‌مصرف‌تر باشد.
+اما در کدی که به افزودن/حذف پویا و API غنی نیاز دارد، Collection انتخاب طبیعی است.
+</p>
+</section>
+
+<!-- ==================== 39 ==================== -->
+<section id="s39">
+<h2><span class="kl-num">بخش ۳۹</span>Primitive Collections</h2>
+
+<p>
+Collectionهای استاندارد جاوا با primitiveها مستقیماً کار نمی‌کنند؛ باید wrapper استفاده کنید:
+<code>List&lt;Integer&gt;</code> به جای <code>List&lt;int&gt;</code>.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>List&lt;Integer&gt; numbers = new java.util.ArrayList&lt;&gt;();
+numbers.add(10);      // Autoboxing: int → Integer
+int first = numbers.get(0); // Unboxing: Integer → int
+</code></pre>
+
+<p>
+اگر حجم داده‌ی عددی بزرگ است، کتابخانه‌های primitive collection (مثل Eclipse Collections یا fastutil) می‌توانند
+با حذف boxing، مصرف حافظه و زمان را بهبود دهند — اما این یک انتخاب آگاهانه است، نه پیش‌فرض.
+</p>
+</section>
+
+<!-- ==================== 40 ==================== -->
+<section id="s40">
+<h2><span class="kl-num">بخش ۴۰</span>Memory و Performance</h2>
+
+<p>انتخاب Collection فقط Time Complexity نیست. این عوامل هم مهمند:</p>
+<ul>
+  <li><strong>Memory Usage</strong>: هر reference شیء و هر node حافظه می‌برد.</li>
+  <li><strong>Cache Locality</strong>: داده‌ی پیوسته (مثل ArrayList) از دید CPU سریع‌تر خوانده می‌شود.</li>
+  <li><strong>Object Allocation</strong>: LinkedList برای هر عنصر node جدا می‌سازد.</li>
+  <li><strong>Boxing</strong>: تبدیل int→Integer هزینه‌ی حافظه/CPU دارد.</li>
+  <li><strong>Resizing</strong>: بزرگ‌شدن ArrayList/HashMap گران است اما به‌ندرت.</li>
+  <li><strong>Hashing</strong>: کیفیت hashCode مستقیماً توزیع و سرعت را تعیین می‌کند.</li>
+  <li><strong>Tree Traversal</strong>: TreeSet/TreeMap همیشه O(log n) دارند.</li>
+  <li><strong>Pointer/Reference Overhead</strong>: ساختارهای پیوندی overhead reference دارند.</li>
+</ul>
+
+<p>
+به همین دلیل، ArrayList در عمل — با وجود Complexity مشابه در بعضی عملیات — ممکن است به‌دلیل locality بهتر سریع‌تر باشد.
+برچسب Time Complexity، تصویر کامل را نمی‌دهد.
+</p>
+</section>
+
+<!-- ==================== 41 ==================== -->
+<section id="s41">
+<h2><span class="kl-num">بخش ۴۱</span>Time Complexity Cheat Sheet</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Collection</th><th>Get</th><th>Add</th><th>Remove</th><th>Contains</th><th>Ordering</th></tr>
+  <tr><td>ArrayList</td><td>O(1)</td><td>O(1)*</td><td>O(n)</td><td>O(n)</td><td>Insertion</td></tr>
+  <tr><td>LinkedList</td><td>O(n)</td><td>O(1)**</td><td>O(1)**</td><td>O(n)</td><td>Insertion</td></tr>
+  <tr><td>HashSet</td><td>-</td><td>O(1)*</td><td>O(1)*</td><td>O(1)*</td><td>None</td></tr>
+  <tr><td>LinkedHashSet</td><td>-</td><td>O(1)*</td><td>O(1)*</td><td>O(1)*</td><td>Insertion</td></tr>
+  <tr><td>TreeSet</td><td>-</td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>Sorted</td></tr>
+  <tr><td>HashMap</td><td>O(1)*</td><td>O(1)*</td><td>O(1)*</td><td>O(1)*</td><td>None</td></tr>
+  <tr><td>LinkedHashMap</td><td>O(1)*</td><td>O(1)*</td><td>O(1)*</td><td>O(1)*</td><td>Ordered</td></tr>
+  <tr><td>TreeMap</td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>Sorted</td></tr>
+</table>
+</div>
+
+<p>
+<code>*</code> میانگین / Amortized: ممکن است در یک عملیات خاص (resize/rehash) بدتر شود.<br>
+<code>**</code> فقط زمانی O(1) که node/موقعیت مناسب از قبل معلوم باشد؛ پیدا کردن آن ممکن است O(n) باشد.
+</p>
+</section>
+
+<!-- ==================== 42 ==================== -->
+<section id="s42">
+<h2><span class="kl-num">بخش ۴۲</span>انتخاب Collection مناسب</h2>
+
+<pre class="kl-code" data-lang="text"><code>آیا Key → Value دارید؟
+        ↓ Yes
+       Map
+        |
+        ├── Fast lookup          → HashMap
+        ├── Preserve order        → LinkedHashMap
+        ├── Sorted keys           → TreeMap
+        └── Concurrent            → ConcurrentHashMap
+
+آیا Unique values دارید؟
+        ↓ Yes
+       Set
+        |
+        ├── Fast lookup           → HashSet
+        ├── Preserve insertion    → LinkedHashSet
+        └── Sorted                → TreeSet
+
+آیا ترتیب عناصر مهم است؟
+        ↓ Yes
+       List → ArrayList
+
+آیا Queue/Stack behavior دارید؟
+        ↓ Yes
+       ArrayDeque
+
+آیا Priority مهم است؟
+        ↓ Yes
+       PriorityQueue
+</code></pre>
+</section>
+
+<!-- ==================== 43 ==================== -->
+<section id="s43">
+<h2><span class="kl-num">بخش ۴۳</span>سناریوهای واقعی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>سناریو</th><th>انتخاب</th><th>چرا؟</th></tr>
+  <tr><td>۱</td><td>لیست کاربران API</td><td>ArrayList</td><td>دسترسی شاخصی و تکرار سریع</td></tr>
+  <tr><td>۲</td><td>نام کاربری یکتا</td><td>HashSet</td><td>یگانگی سریع</td></tr>
+  <tr><td>۳</td><td>Cache ساده</td><td>HashMap</td><td>lookup میانگین O(1)</td></tr>
+  <tr><td>۴</td><td>کاربران مرتب</td><td>TreeMap / TreeSet</td><td>ترتیب و بازه</td></tr>
+  <tr><td>۵</td><td>LRU Cache</td><td>LinkedHashMap</td><td>پشتیبانی از accessOrder و eviction</td></tr>
+  <tr><td>۶</td><td>صف کارها</td><td>ArrayDeque</td><td>FIFO و overhead کم</td></tr>
+  <tr><td>۷</td><td>صف اولویت‌دار</td><td>PriorityQueue</td><td>Heap O(log n)</td></tr>
+  <tr><td>۸</td><td>شمارنده‌ی همزمان</td><td>ConcurrentHashMap</td><td>merge اتمیک</td></tr>
+  <tr><td>۹</td><td>تاریخچه/Undo</td><td>Deque</td><td>push/pop سریع</td></tr>
+  <tr><td>۱۰</td><td>تگ‌های یک آیتم</td><td>LinkedHashSet</td><td>یگانگی با حفظ ترتیب</td></tr>
+  <tr><td>۱۱</td><td>متن‌های مرتب بر اساس زمان</td><td>TreeMap</td><td>iteration مرتب</td></tr>
+  <tr><td>۱۲</td><td>صف پیام‌ها</td><td>ArrayDeque</td><td>FIFO کارآمد</td></tr>
+  <tr><td>۱۳</td><td>گزارش اخیرترین‌ها</td><td>LinkedHashMap (accessOrder)</td><td>تولید LRU</td></tr>
+  <tr><td>۱۴</td><td>کیف پول بر اساس شناسه</td><td>HashMap</td><td>دسترسی مستقیم به id</td></tr>
+  <tr><td>۱۵</td><td>داده‌ی حجیم عددی</td><td>آرایه یا primitive collection</td><td>کاهش boxing و overhead</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 44 ==================== -->
+<section id="s44">
+<h2><span class="kl-num">بخش ۴۴</span>Best Practices</h2>
+
+<h3>۱. Program to an Interface</h3>
+<pre class="kl-code" data-lang="java"><code>// خوب
+List&lt;String&gt; users = new ArrayList&lt;&gt;();
+
+// وقتی نوع خاص implementation لازم نیست، از این بپرهیزید
+ArrayList&lt;String&gt; users = new ArrayList&lt;&gt;();
+</code></pre>
+
+<h3>۲. انتخاب پیش‌فرض</h3>
+<p>در بسیاری از سناریوهای معمول، <code>ArrayList</code>، <code>HashMap</code>، <code>HashSet</code> و <code>ArrayDeque</code> انتخاب‌های پیش‌فرض مناسبی هستند؛ اما این قانون مطلق نیست.</p>
+
+<h3>۳. ظرفیت اولیه</h3>
+<pre class="kl-code" data-lang="java"><code>List&lt;String&gt; users = new ArrayList&lt;&gt;(1000);
+Map&lt;String, Integer&gt; counts = new HashMap&lt;&gt;(1000);
+</code></pre>
+<p>اگر تعداد عناصر تقریبی را می‌دانید، ظرفیت اولیه از resizeهای مکرر جلوگیری می‌کند.</p>
+
+<h3>۴. Immutable Collections</h3>
+<p>برای مجموعه‌های ثابت از <code>List.of()</code>، <code>Set.of()</code>، <code>Map.of()</code> استفاده کنید.</p>
+
+<h3>۵. equals/hashCode</h3>
+<p>برای objectهایی که در HashSet/HashMap می‌روند، این دو را درست پیاده‌سازی کنید.</p>
+
+<h3>۶. انتخاب بر اساس Requirement</h3>
+<p>Collection را بر اساس نیاز واقعی انتخاب کنید، نه بر اساس عادت.</p>
+</section>
+
+<!-- ==================== 45 ==================== -->
+<section id="s45">
+<h2><span class="kl-num">بخش ۴۵</span>اشتباهات رایج</h2>
+
+<ol class="kl-check">
+  <li>همیشه استفاده از ArrayList بدون توجه به نیاز.</li>
+  <li>استفاده‌ی بی‌دلیل از LinkedList به‌خاطر باور غلط «درج/حذف همیشه O(1)».</li>
+  <li>تصور اینکه HashMap همیشه O(1) تضمینی است.</li>
+  <li>تصور اینکه HashSet ترتیب را حفظ می‌کند.</li>
+  <li>استفاده از TreeMap بدون نیاز به sorting.</li>
+  <li>استفاده از Vector در پروژه‌ی جدید.</li>
+  <li>استفاده از Hashtable در پروژه‌ی جدید.</li>
+  <li>استفاده از Stack به جای ArrayDeque.</li>
+  <li>Override نکردن equals/hashCode.</li>
+  <li>تغییر Collection هنگام iteration.</li>
+  <li>استفاده از synchronized collection بدون درک Thread Safety.</li>
+  <li>استفاده از ساختار پیچیده برای مسئله‌ی ساده.</li>
+  <li>نادیده‌گرفتن Memory overhead.</li>
+  <li>نادیده‌گرفتن null behavior.</li>
+  <li>اشتباه گرفتن Collection با Collections.</li>
+</ol>
+</section>
+
+<!-- ==================== 46 ==================== -->
+<section id="s46">
+<h2><span class="kl-num">بخش ۴۶</span>Testing با JUnit 5</h2>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import org.junit.jupiter.api.Test;
+
+class CollectionsBehaviorTest {
+
+    @Test
+    void shouldNotAllowDuplicateValues() {
+        Set&lt;String&gt; names = new HashSet&lt;&gt;();
+        names.add("Ali");
+        names.add("Ali");
+        assertEquals(1, names.size());
+    }
+
+    @Test
+    void arrayListShouldKeepInsertionOrder() {
+        List&lt;String&gt; names = new ArrayList&lt;&gt;(List.of("B", "A", "C"));
+        assertEquals(List.of("B", "A", "C"), names);
+    }
+
+    @Test
+    void hashMapShouldReturnStoredValue() {
+        Map&lt;Long, String&gt; users = new HashMap&lt;&gt;();
+        users.put(1L, "Ali");
+        assertEquals("Ali", users.get(1L));
+    }
+
+    @Test
+    void treeSetShouldIterateSorted() {
+        NavigableSet&lt;Integer&gt; numbers = new TreeSet&lt;&gt;(Set.of(30, 10, 20));
+        assertEquals(List.of(10, 20, 30), new ArrayList&lt;&gt;(numbers));
+    }
+
+    @Test
+    void priorityQueueShouldPollSmallestFirst() {
+        Queue&lt;Integer&gt; queue = new PriorityQueue&lt;&gt;(List.of(30, 10, 20));
+        assertEquals(10, queue.poll());
+    }
+
+    @Test
+    void concurrentMergeShouldAccumulate() {
+        ConcurrentHashMap&lt;String, Integer&gt; counters = new ConcurrentHashMap&lt;&gt;();
+        counters.merge("login", 1, Integer::sum);
+        counters.merge("login", 1, Integer::sum);
+        assertEquals(2, counters.get("login"));
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 47 ==================== -->
+<section id="s47">
+<h2><span class="kl-num">بخش ۴۷</span>پروژه عملی: Task Management System</h2>
+
+<p>نیازمندی‌ها: مدیریت Users، Tasks، Priority، Tags و Status. برای هر انتخاب Collection دلیلی داریم:</p>
+
+<pre class="kl-code" data-lang="text"><code>List         → tasks          (ترتیب و دسترسی شاخصی)
+Set          → tags           (یگانگی)
+Map          → users by id    (lookup سریع)
+PriorityQueue→ priority tasks (شرکت با اولویت)
+Deque        → task history   (push/pop اخیر)
+ConcurrentHashMap → counters   (شمارنده‌های همزمان)
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public record Task(String id, String title, int priority, Set&lt;String&gt; tags) {}
+
+public final class TaskManager {
+    private final List&lt;Task&gt; tasks = new ArrayList&lt;&gt;();
+    private final Set&lt;String&gt; tags = new LinkedHashSet&lt;&gt;();
+    private final Map&lt;String, String&gt; usersById = new HashMap&lt;&gt;();
+    private final PriorityQueue&lt;Task&gt; priorityQueue =
+            new PriorityQueue&lt;&gt;(Comparator.comparingInt(Task::priority));
+    private final Deque&lt;String&gt; history = new ArrayDeque&lt;&gt;();
+    private final ConcurrentHashMap&lt;String, AtomicInteger&gt; counters = new ConcurrentHashMap&lt;&gt;();
+
+    public void registerUser(String id, String name) {
+        usersById.put(id, name);
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+        tags.addAll(task.tags());
+        priorityQueue.offer(task);
+        history.push(task.id());
+        counters.computeIfAbsent("created", key -> new AtomicInteger()).incrementAndGet();
+    }
+
+    public Task nextPriorityTask() {
+        return priorityQueue.poll();
+    }
+
+    public Optional&lt;String&gt; lastTouchedTask() {
+        return Optional.ofNullable(history.peek());
+    }
+
+    public List&lt;Task&gt; tasks() { return List.copyOf(tasks); }
+    public Set&lt;String&gt; tags() { return Set.copyOf(tags); }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
+
+class TaskManagerTest {
+
+    @Test
+    void shouldReturnHighestPriorityTaskFirst() {
+        TaskManager manager = new TaskManager();
+        manager.addTask(new Task("t1", "low", 30, Set.of("backend")));
+        manager.addTask(new Task("t2", "high", 10, Set.of("critical")));
+
+        assertEquals("t2", manager.nextPriorityTask().id());
+    }
+
+    @Test
+    void shouldCollectUniqueTags() {
+        TaskManager manager = new TaskManager();
+        manager.addTask(new Task("t1", "a", 1, Set.of("ui", "api")));
+        manager.addTask(new Task("t2", "b", 2, Set.of("api")));
+
+        assertEquals(Set.of("ui", "api"), manager.tags());
+    }
+}
+</code></pre>
+
+<p>هر انتخاب دلیل دارد: <strong>ArrayList</strong> برای ترتیب، <strong>LinkedHashSet</strong> برای یگانگی با ترتیب، <strong>HashMap</strong> برای lookup، <strong>PriorityQueue</strong> برای اولویت، <strong>Deque</strong> برای تاریخچه و <strong>ConcurrentHashMap</strong> برای شمارنده‌های همزمان.</p>
+</section>
+
+<!-- ==================== 48 ==================== -->
+<section id="s48">
+<h2><span class="kl-num">بخش ۴۸</span>Performance Experiment و JMH</h2>
+
+<p>یک آزمایش ساده برای مقایسه‌ی ArrayList و LinkedList:</p>
+
+<pre class="kl-code" data-lang="java"><code>import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public final class SimpleBenchmark {
+
+    private static final int SIZE = 100_000;
+
+    public static void main(String[] args) {
+        List&lt;Integer&gt; arrayList = new ArrayList&lt;&gt;();
+        List&lt;Integer&gt; linkedList = new LinkedList&lt;&gt;();
+
+        long a = System.nanoTime();
+        for (int i = 0; i &lt; SIZE; i++) arrayList.get(i % arrayList.size());
+        long b = System.nanoTime();
+
+        System.out.printf("ArrayList random access: %d ns%n", b - a);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">توجه به Benchmark معتبر</span>
+<code>System.nanoTime()</code> برای آموزش خوب است، اما JIT، warm-up، GC و dead-code elimination می‌توانند نتیجه را گمراه کنند.
+برای Benchmark معتبر JVM از <strong>JMH</strong> استفاده کنید.
+</div>
+
+<pre class="kl-code" data-lang="java"><code>import org.openjdk.jmh.annotations.*;
+import java.util.concurrent.TimeUnit;
+
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Warmup(iterations = 3)
+@Measurement(iterations = 5)
+public class ContainsBenchmark {
+
+    @Benchmark
+    public boolean hashSetContains(SetState state) {
+        return state.hashSet.contains(50_000);
+    }
+
+    @Benchmark
+    public boolean treeSetContains(SetState state) {
+        return state.treeSet.contains(50_000);
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 49 ==================== -->
+<section id="s49">
+<h2><span class="kl-num">بخش ۴۹</span>۳۰ سؤال مصاحبه</h2>
+
+<h3>مقدماتی</h3>
+<ol>
+  <li><strong>Collection چیست؟</strong> ساختاری برای نگهداری و مدیریت گروهی از objectها.</li>
+  <li><strong>List چیست؟</strong> مجموعه‌ی مرتب و شاخص‌دار با عناصر قابل تکرار.</li>
+  <li><strong>Set چیست؟</strong> مجموعه‌ی بدون عنصر تکراری.</li>
+  <li><strong>Map چیست؟</strong> ساختار key→value با کلیدهای یکتا.</li>
+  <li><strong>ArrayList چیست؟</strong> پیاده‌سازی List روی آرایه‌ی پویا.</li>
+  <li><strong>تفاوت Collection و Collections؟</strong> اولی interface، دومی utility class.</li>
+  <li><strong>آیا Map زیرمجموعه Collection است؟</strong> نه.</li>
+  <li><strong>Stack و Queue چه تفاوتی دارند؟</strong> LIFO در برابر FIFO.</li>
+  <li><strong>Deque چیست؟</strong> صف دوطرفه با امکان درج/حذف از هر دو سر.</li>
+  <li><strong>چرا از List.of استفاده کنیم؟</strong> immutable و ایمن در برابر تغییر ناخواسته.</li>
+</ol>
+
+<h3>متوسط</h3>
+<ol start="11">
+  <li><strong>ArrayList در برابر LinkedList؟</strong> دسترسی شاخصی در ArrayList بهتر؛ ولی در عمل ArrayList اغلب برنده است.</li>
+  <li><strong>HashMap چگونه کار می‌کند؟</strong> با hashCode، bucket و مقایسه‌ی equals در زنجیره.</li>
+  <li><strong>HashSet یگانگی را چگونه تشخیص می‌دهد؟</strong> با hashCode و سپس equals.</li>
+  <li><strong>TreeMap در برابر HashMap؟</strong> TreeMap مرتب است اما O(log n)، HashMap میانگین O(1).</li>
+  <li><strong>Comparable و Comparator؟</strong> یکی ترتیب طبیعی داخل کلاس، دیگری قواعد خارجی.</li>
+  <li><strong>LinkedHashMap چه مزیتی دارد؟</strong> حفظ ترتیب درج یا accessOrder.</li>
+  <li><strong>PriorityQueue چگونه مرتب می‌کند؟</strong> با heap؛ فقط poll ترتیب درست می‌دهد.</li>
+  <li><strong>چرا ArrayDeque به Stack ترجیح دارد؟</strong> API مدرن و بدون overhead همگام‌سازی.</li>
+  <li><strong>مفهوم Capacity و Size؟</strong> ظرفیت داخلی در برابر تعداد عناصر فعلی.</li>
+  <li><strong>Amortized یعنی چه؟</strong> میانگین روی دنباله‌ی عملیات، نه تضمین تک‌عملیات.</li>
+</ol>
+
+<h3>پیشرفته</h3>
+<ol start="21">
+  <li><strong>Collision چیست؟</strong> دو کلید با یک bucket/index برای hash؛ با زنجیره یا درخت حل می‌شود.</li>
+  <li><strong>Load Factor چیست؟</strong> نسبت پرشدگی که آستانه‌ی resize را تعیین می‌کند (پیش‌فرض ۰.۷۵).</li>
+  <li><strong>Treeification؟</strong> تبدیل bucket بزرگ به درخت برای حفظ کارایی در بدترین حالت.</li>
+  <li><strong>ConcurrentHashMap چگونه Thread Safety می‌دهد؟</strong> با تکنیک‌های دانه‌بندی‌شده و عملیات اتمیک، نه یک قفل جهانی.</li>
+  <li><strong>چرا HashMap Thread Safe نیست؟</strong> چون عملیات‌های آن اتمیک نیستند و حالت مشترک بدون همگام‌سازی تغییر می‌کند.</li>
+  <li><strong>چرا ArrayList معمولاً از LinkedList بهتر است؟</strong> locality بهتر، overhead کمتر و پیاده‌سازی ساده‌تر.</li>
+  <li><strong>LinkedHashMap چگونه LRU می‌سازد؟</strong> با accessOrder و removeEldestEntry.</li>
+  <li><strong>fail-fast چیست؟</strong> تشخیص تغییر غیرقانونی در حین iteration با ConcurrentModificationException.</li>
+  <li><strong>ConcurrentModificationException کجا رخ می‌دهد؟</strong> هنگام تغییر ساختار Collection در حین پیمایش.</li>
+  <li><strong>تفاوت synchronizedList و ConcurrentHashMap؟</strong> اولی قفل بزرگ و iteration دستی؛ دومی دانه‌بندی‌شده و iterator ضعیفاً سازگار.</li>
+</ol>
+</section>
+
+<!-- ==================== 50 ==================== -->
+<section id="s50">
+<h2><span class="kl-num">بخش ۵۰</span>پرسش‌های متداول (FAQ)</h2>
+
+<ol class="kl-check">
+  <li><strong>آیا ArrayList همیشه بهترین List است؟</strong> برای اکثر سناریوها بله، اما نه برای صف/استک (ArrayDeque بهتر است).</li>
+  <li><strong>چرا LinkedList کمتر از تصور استفاده می‌شود؟</strong> چون هزینه‌ی پنهان جستجو اغلب O(n) است و locality ضعیف دارد.</li>
+  <li><strong>آیا HashMap ترتیب را حفظ می‌کند؟</strong> نه؛ برای ترتیب از LinkedHashMap یا TreeMap استفاده کنید.</li>
+  <li><strong>آیا HashSet ترتیب را حفظ می‌کند؟</strong> نه؛ LinkedHashSet یا TreeSet را در نظر بگیرید.</li>
+  <li><strong>HashMap سریع‌تر است یا TreeMap؟</strong> HashMap میانگین O(1)، TreeMap همیشه O(log n) اما مرتب.</li>
+  <li><strong>چه زمانی TreeSet استفاده کنیم؟</strong> وقتی به داده‌ی مرتب و عملیات بازه‌ای نیاز داریم.</li>
+  <li><strong>آیا Vector هنوز استفاده می‌شود؟</strong> تنها در کدهای قدیمی؛ در پروژه‌ی جدید استفاده نکنید.</li>
+  <li><strong>آیا Stack منسوخ است؟</strong> خود کلاس legacy است؛ ArrayDeque جایگزین پیشنهادی است.</li>
+  <li><strong>آیا ConcurrentHashMap همیشه بهتر از HashMap است؟</strong> نه؛ اگر دسترسی همزمان ندارید، overhead بی‌دلیل است.</li>
+  <li><strong>Collection بهتر است یا Array؟</strong> آرایه برای اندازه ثابت و performance حساس؛ Collection برای انعطاف و API غنی.</li>
+  <li><strong>چه زمانی LinkedHashMap استفاده کنیم؟</strong> برای ترتیب درج/دسترسی و LRU.</li>
+  <li><strong>آیا List.of قابل تغییر است؟</strong> نه؛ تغییر آن UnsupportedOperationException می‌دهد.</li>
+  <li><strong>تفاوت unmodifiableList و List.of؟</strong> اولی نما روی منبع متغیر، دومی immutable واقعی.</li>
+  <li><strong>چرا باید equals/hashCode را با هم پیاده کنم؟</strong> چون HashSet/HashMap بر اساس هر دو کار می‌کنند.</li>
+  <li><strong>چطور از ConcurrentModificationException بپرهزم؟</strong> با Iterator.remove، removeIf یا ساخت یک copy.</li>
+</ol>
+</section>
+
+<!-- ==================== 51 ==================== -->
+<section id="s51">
+<h2><span class="kl-num">بخش ۵۱</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز</th><th>انتخاب پیشنهادی</th><th>توضیح یک‌خطی</th></tr>
+  <tr><td>General-purpose List</td><td>ArrayList</td><td>دسترسی شاخصی سریع و overhead کم</td></tr>
+  <tr><td>Unique elements</td><td>HashSet</td><td>یگانگی با میانگین O(1)</td></tr>
+  <tr><td>Unique + insertion order</td><td>LinkedHashSet</td><td>یگانگی با حفظ ترتیب درج</td></tr>
+  <tr><td>Sorted unique elements</td><td>TreeSet</td><td>پیمایش مرتب و عملیات بازه‌ای</td></tr>
+  <tr><td>Key-value lookup</td><td>HashMap</td><td>دسترسی میانگین O(1) به مقدار</td></tr>
+  <tr><td>Key-value + insertion/access order</td><td>LinkedHashMap</td><td>مناسب گزارش و LRU</td></tr>
+  <tr><td>Sorted keys</td><td>TreeMap</td><td>iteration و بازه بر اساس ترتیب کلید</td></tr>
+  <tr><td>Queue/Stack</td><td>ArrayDeque</td><td>FIFO و LIFO کارآمد</td></tr>
+  <tr><td>Priority processing</td><td>PriorityQueue</td><td>استخراج کمترین/بیشترین با heap</td></tr>
+  <tr><td>Concurrent key-value</td><td>ConcurrentHashMap</td><td>دسترسی همزمان بدون قفل جهانی</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 52 ==================== -->
+<section id="s52">
+<h2><span class="kl-num">بخش ۵۲</span>جمع‌بندی و Roadmap</h2>
+
+<p>انتخاب Collection یک <strong>تصمیم طراحی</strong> است. به‌جای «من همیشه از ArrayList استفاده می‌کنم»، بپرسید:</p>
+
+<pre class="kl-code" data-lang="text"><code>Do I need ordering?
+Do I need uniqueness?
+Do I need key-value lookup?
+Do I need sorting?
+Do I need concurrent access?
+Do I need stack behavior?
+Do I need queue behavior?
+What is the expected data size?
+What operations are performed most often?
+</code></pre>
+
+<p>سپس بر اساس پاسخ‌ها، Collection مناسب را انتخاب کنید.</p>
+
+<h3>Roadmap یادگیری</h3>
+
+<pre class="kl-code" data-lang="text"><code>Java Syntax
+   ↓
+OOP
+   ↓
+Generics
+   ↓
+Collections
+   ↓
+Stream API
+   ↓
+Exception Handling
+   ↓
+JUnit 5
+   ↓
+Concurrency
+   ↓
+Clean Code
+   ↓
+Data Structures
+   ↓
+Algorithm Complexity
+</code></pre>
+
+<h3>Internal Linking</h3>
+<p>
+برای ادامه، این مقالات مرتبط مفیدند: OOP در Java · Generics در Java · Java Stream API · Exception Handling ·
+Concurrency در Java · JUnit 5 · Clean Code · Data Structures · Algorithm Complexity.
+</p>
+
+<div class="kl-box">
+<span class="kl-h">پیام نهایی</span>
+Knowing Collections is not about memorizing classes. It is about understanding data structures,
+their trade-offs, and choosing the right one for the problem.
+</div>
+
+<h3>خلاصه جامع</h3>
+<p>
+JCF شامل interfaceها، پیاده‌سازی‌ها و الگوریتم‌هاست. List برای ترتیب، Set برای یگانگی، Map برای key-value و
+Queue/Deque برای پردازش ترتیبی کاربرد دارند. ArrayList، HashMap، HashSet و ArrayDeque انتخاب‌های پیش‌فرض
+مناسبی برای اکثر سناریوهاست؛ اما انتخاب نهایی باید بر اساس Ordering، Uniqueness، Performance، Memory،
+Thread-Safety و عملیات غالب انجام شود.
+</p>
+</section>
+
+
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                ساختار داده و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۵۲ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: چرا Array کافی نیست؟</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Collection چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Java Collections Framework چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Collection و Collections</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Collection و Map</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">سلسله‌مراتب JCF</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">List</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ArrayList</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">LinkedList</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">ArrayList یا LinkedList؟</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Set</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">HashSet</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">equals و hashCode</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">LinkedHashSet</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">TreeSet</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">HashSet vs LinkedHashSet vs TreeSet</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">Queue</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">Deque</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">PriorityQueue</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">Map</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">HashMap</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">HashMap Complexity</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">LinkedHashMap و LRU</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">TreeMap</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">HashMap vs LinkedHashMap vs TreeMap</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Hashtable</span></a></li>
+              <li class="toc-item"><a href="#s27" class="toc-link" data-target="s27"><span class="toc-num">۲۷</span><span class="toc-text">ConcurrentHashMap</span></a></li>
+              <li class="toc-item"><a href="#s28" class="toc-link" data-target="s28"><span class="toc-num">۲۸</span><span class="toc-text">Synchronized Collections</span></a></li>
+              <li class="toc-item"><a href="#s29" class="toc-link" data-target="s29"><span class="toc-num">۲۹</span><span class="toc-text">Thread Safety</span></a></li>
+              <li class="toc-item"><a href="#s30" class="toc-link" data-target="s30"><span class="toc-num">۳۰</span><span class="toc-text">Immutable Collections</span></a></li>
+              <li class="toc-item"><a href="#s31" class="toc-link" data-target="s31"><span class="toc-num">۳۱</span><span class="toc-text">Iterator</span></a></li>
+              <li class="toc-item"><a href="#s32" class="toc-link" data-target="s32"><span class="toc-num">۳۲</span><span class="toc-text">Enhanced for-loop</span></a></li>
+              <li class="toc-item"><a href="#s33" class="toc-link" data-target="s33"><span class="toc-num">۳۳</span><span class="toc-text">ConcurrentModificationException</span></a></li>
+              <li class="toc-item"><a href="#s34" class="toc-link" data-target="s34"><span class="toc-num">۳۴</span><span class="toc-text">Sorting</span></a></li>
+              <li class="toc-item"><a href="#s35" class="toc-link" data-target="s35"><span class="toc-num">۳۵</span><span class="toc-text">Comparable vs Comparator</span></a></li>
+              <li class="toc-item"><a href="#s36" class="toc-link" data-target="s36"><span class="toc-num">۳۶</span><span class="toc-text">Collection Utility Methods</span></a></li>
+              <li class="toc-item"><a href="#s37" class="toc-link" data-target="s37"><span class="toc-num">۳۷</span><span class="toc-text">Stream API و Collections</span></a></li>
+              <li class="toc-item"><a href="#s38" class="toc-link" data-target="s38"><span class="toc-num">۳۸</span><span class="toc-text">Arrays و Collections</span></a></li>
+              <li class="toc-item"><a href="#s39" class="toc-link" data-target="s39"><span class="toc-num">۳۹</span><span class="toc-text">Primitive Collections</span></a></li>
+              <li class="toc-item"><a href="#s40" class="toc-link" data-target="s40"><span class="toc-num">۴۰</span><span class="toc-text">Memory و Performance</span></a></li>
+              <li class="toc-item"><a href="#s41" class="toc-link" data-target="s41"><span class="toc-num">۴۱</span><span class="toc-text">Time Complexity Cheat Sheet</span></a></li>
+              <li class="toc-item"><a href="#s42" class="toc-link" data-target="s42"><span class="toc-num">۴۲</span><span class="toc-text">انتخاب Collection مناسب</span></a></li>
+              <li class="toc-item"><a href="#s43" class="toc-link" data-target="s43"><span class="toc-num">۴۳</span><span class="toc-text">سناریوهای واقعی</span></a></li>
+              <li class="toc-item"><a href="#s44" class="toc-link" data-target="s44"><span class="toc-num">۴۴</span><span class="toc-text">Best Practices</span></a></li>
+              <li class="toc-item"><a href="#s45" class="toc-link" data-target="s45"><span class="toc-num">۴۵</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s46" class="toc-link" data-target="s46"><span class="toc-num">۴۶</span><span class="toc-text">Testing با JUnit 5</span></a></li>
+              <li class="toc-item"><a href="#s47" class="toc-link" data-target="s47"><span class="toc-num">۴۷</span><span class="toc-text">پروژه عملی: Task Management</span></a></li>
+              <li class="toc-item"><a href="#s48" class="toc-link" data-target="s48"><span class="toc-num">۴۸</span><span class="toc-text">Performance Experiment و JMH</span></a></li>
+              <li class="toc-item"><a href="#s49" class="toc-link" data-target="s49"><span class="toc-num">۴۹</span><span class="toc-text">۳۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s50" class="toc-link" data-target="s50"><span class="toc-num">۵۰</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s51" class="toc-link" data-target="s51"><span class="toc-num">۵۱</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s52" class="toc-link" data-target="s52"><span class="toc-num">۵۲</span><span class="toc-text">جمع‌بندی و Roadmap</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s51" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگان جاوا در دسترس قرار گرفته است؛ با تمرکز بر انتخاب Collection بر اساس نیاز واقعی.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: چرا Array کافی نیست؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Collection چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Java Collections Framework چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Collection و Collections</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Collection و Map</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">سلسله‌مراتب JCF</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">List</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ArrayList</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">LinkedList</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">ArrayList یا LinkedList؟</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Set</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">HashSet</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">equals و hashCode</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">LinkedHashSet</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">TreeSet</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">HashSet vs LinkedHashSet vs TreeSet</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">Queue</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">Deque</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">PriorityQueue</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">Map</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">HashMap</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">HashMap Complexity</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">LinkedHashMap و LRU</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">TreeMap</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">HashMap vs LinkedHashMap vs TreeMap</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Hashtable</span></a></li>
+        <li class="toc-item"><a href="#s27" class="toc-link" data-target="s27"><span class="toc-num">۲۷</span><span class="toc-text">ConcurrentHashMap</span></a></li>
+        <li class="toc-item"><a href="#s28" class="toc-link" data-target="s28"><span class="toc-num">۲۸</span><span class="toc-text">Synchronized Collections</span></a></li>
+        <li class="toc-item"><a href="#s29" class="toc-link" data-target="s29"><span class="toc-num">۲۹</span><span class="toc-text">Thread Safety</span></a></li>
+        <li class="toc-item"><a href="#s30" class="toc-link" data-target="s30"><span class="toc-num">۳۰</span><span class="toc-text">Immutable Collections</span></a></li>
+        <li class="toc-item"><a href="#s31" class="toc-link" data-target="s31"><span class="toc-num">۳۱</span><span class="toc-text">Iterator</span></a></li>
+        <li class="toc-item"><a href="#s32" class="toc-link" data-target="s32"><span class="toc-num">۳۲</span><span class="toc-text">Enhanced for-loop</span></a></li>
+        <li class="toc-item"><a href="#s33" class="toc-link" data-target="s33"><span class="toc-num">۳۳</span><span class="toc-text">ConcurrentModificationException</span></a></li>
+        <li class="toc-item"><a href="#s34" class="toc-link" data-target="s34"><span class="toc-num">۳۴</span><span class="toc-text">Sorting</span></a></li>
+        <li class="toc-item"><a href="#s35" class="toc-link" data-target="s35"><span class="toc-num">۳۵</span><span class="toc-text">Comparable vs Comparator</span></a></li>
+        <li class="toc-item"><a href="#s36" class="toc-link" data-target="s36"><span class="toc-num">۳۶</span><span class="toc-text">Collection Utility Methods</span></a></li>
+        <li class="toc-item"><a href="#s37" class="toc-link" data-target="s37"><span class="toc-num">۳۷</span><span class="toc-text">Stream API و Collections</span></a></li>
+        <li class="toc-item"><a href="#s38" class="toc-link" data-target="s38"><span class="toc-num">۳۸</span><span class="toc-text">Arrays و Collections</span></a></li>
+        <li class="toc-item"><a href="#s39" class="toc-link" data-target="s39"><span class="toc-num">۳۹</span><span class="toc-text">Primitive Collections</span></a></li>
+        <li class="toc-item"><a href="#s40" class="toc-link" data-target="s40"><span class="toc-num">۴۰</span><span class="toc-text">Memory و Performance</span></a></li>
+        <li class="toc-item"><a href="#s41" class="toc-link" data-target="s41"><span class="toc-num">۴۱</span><span class="toc-text">Time Complexity Cheat Sheet</span></a></li>
+        <li class="toc-item"><a href="#s42" class="toc-link" data-target="s42"><span class="toc-num">۴۲</span><span class="toc-text">انتخاب Collection مناسب</span></a></li>
+        <li class="toc-item"><a href="#s43" class="toc-link" data-target="s43"><span class="toc-num">۴۳</span><span class="toc-text">سناریوهای واقعی</span></a></li>
+        <li class="toc-item"><a href="#s44" class="toc-link" data-target="s44"><span class="toc-num">۴۴</span><span class="toc-text">Best Practices</span></a></li>
+        <li class="toc-item"><a href="#s45" class="toc-link" data-target="s45"><span class="toc-num">۴۵</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s46" class="toc-link" data-target="s46"><span class="toc-num">۴۶</span><span class="toc-text">Testing با JUnit 5</span></a></li>
+        <li class="toc-item"><a href="#s47" class="toc-link" data-target="s47"><span class="toc-num">۴۷</span><span class="toc-text">پروژه عملی: Task Management</span></a></li>
+        <li class="toc-item"><a href="#s48" class="toc-link" data-target="s48"><span class="toc-num">۴۸</span><span class="toc-text">Performance Experiment و JMH</span></a></li>
+        <li class="toc-item"><a href="#s49" class="toc-link" data-target="s49"><span class="toc-num">۴۹</span><span class="toc-text">۳۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s50" class="toc-link" data-target="s50"><span class="toc-num">۵۰</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s51" class="toc-link" data-target="s51"><span class="toc-num">۵۱</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s52" class="toc-link" data-target="s52"><span class="toc-num">۵۲</span><span class="toc-text">جمع‌بندی و Roadmap</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

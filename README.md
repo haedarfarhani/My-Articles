@@ -17,6 +17,8 @@
 | ۵ | قواعد نام‌گذاری در برنامه‌نویسی: راهنمای کدهای خوانا | [`articles/naming-conventions.html`](articles/naming-conventions.html) | ~۲۵ دقیقه |
 | ۶ | اسکوپ فانکشن‌ها در کاتلین: راهنمای کامل let، run، with، apply و also | [`articles/scope-functions.html`](articles/scope-functions.html) | ~۳۰ دقیقه |
 | ۷ | RxJava و RxAndroid: از Observable تا Flowable و Subject | [`articles/rxjava-rxandroid.html`](articles/rxjava-rxandroid.html) | ~۴۵ دقیقه |
+| ۸ | Design Patterns در Java: آموزش کامل الگوهای طراحی با مثال و تست | [`articles/design-patterns-in-java.html`](articles/design-patterns-in-java.html) | ~۶۰ دقیقه |
+| ۹ | Java Collections Framework: آموزش کامل Collectionهای جاوا | [`articles/java-collections-framework.html`](articles/java-collections-framework.html) | ~۷۰ دقیقه |
 
 ## فهرست پروژه‌ها
 
@@ -39,8 +41,10 @@ my-articales/
 ├── .nojekyll                     # جلوگیری از پردازش Jekyll در GitHub Pages
 ├── README.md
 │
-├── articles/                     # فهرست مقالات + ۷ مقاله
+├── articles/                     # فهرست مقالات + ۹ مقاله
 │   ├── index.html                # جستجو + فیلتر تگ + حالت خالی
+│   ├── java-collections-framework.html
+│   ├── design-patterns-in-java.html
 │   ├── concurrency-in-kotlin.html
 │   ├── clean-architecture-mvi-compose.html
 │   ├── android-performance-memory.html
@@ -200,6 +204,17 @@ python -m http.server 8080     # یا: npx serve .
 
 ### مهر ۱۴۰۵
 
+- **مقالهٔ Java Collections Framework** — راهنمای جامع ۵۲ بخشی از تفاوت Collection/Collections/Map و سلسله‌مراتب JCF
+  تا ArrayList، LinkedList، List/Set/Queue/Deque، equals/hashCode، HashMap (bucket، collision، treeification،
+  load factor)، LinkedHashMap و LRU، TreeMap، ConcurrentHashMap، synchronized collections، Immutable Collections،
+  Iterator، ConcurrentModificationException، Comparable/Comparator، Memory/Performance، جدول Time Complexity،
+  Decision Tree انتخاب، ۱۵ سناریوی واقعی، Best Practices، اشتباهات رایج، Unit Test با JUnit 5، پروژهٔ
+  Task Management، Benchmark با JMH، ۳۰ سؤال مصاحبه، FAQ، Cheat Sheet و Roadmap.
+- **مقالهٔ Design Patterns در Java** — راهنمای جامع ۳۸ بخشی از مفهوم الگو و تفاوتش با Algorithm/Architecture
+  تا SOLID، سه خانوادهٔ GoF، پیاده‌سازی Java 21 برای Singleton، Factory Method، Abstract Factory، Builder،
+  Prototype، Adapter، Decorator، Facade، Composite/Bridge/Flyweight/Proxy، Strategy، Observer، State،
+  Command و بقیهٔ الگوهای رفتاری؛ همراه با Unit Test‌های JUnit 5، پروژهٔ عملی Notification و E-Commerce،
+  Cheat Sheet، چک‌لیست انتخاب، ۱۰ تمرین، ۲۰ سؤال مصاحبه و FAQ.
 - **ریسپانسیو کامل سایت** — بازنویسی لایهٔ نهایی `responsive.css` با Mobile-First؛
   تایپوگرافی `clamp()` در `base.css`/`layout.css`، ویژگی‌های منطقی (RTL) در layout،
   منوی همبرگری کشویی تا عرض ۱۰۲۴px (بسته‌شدن خودکار در دسکتاپ)، هدف‌های لمسی ۴۴px،
