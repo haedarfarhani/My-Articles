@@ -1,0 +1,633 @@
+/* ==========================================================================
+   diagram-anim.css — انیمیشن و چارت‌های SVG برای شکل‌های داخل مقاله
+   --------------------------------------------------------------------------
+   این فایل بعد از article-content.css لود می‌شود و لایه‌ی انیمیشن را روی
+   همان کلاس‌های رنگ‌آمیزی‌شده‌ی موجود (s-box, s-acc, s-arr, ...) سوار می‌کند.
+
+   قرارداد کلاس‌ها (کلاس انیمیشنی)      کاربرد
+   --------------------------------------------------------------------------
+   s-node       نود/جعبه که با ضربه‌ی نرم ظاهر می‌شود        <g class="s-node">
+   s-draw       مسیر که خط‌به‌خط رسم می‌شود (pathLength=1)    <path class="s-draw" pathLength="1">
+   s-flow       خط/مسیر با انیمیشن «مارچینگ آنتز»            <path class="s-flow">
+   s-flow-ok    همان، رنگ سبز
+   s-flow-bad   همان، رنگ قرمز
+   s-head       سرِ پیکان (fill تم‌آگاه)
+   s-pulse      نودی که برای جلب توجه تپش می‌کند
+   s-bar        میله‌ی نمودار که از پایین رشد می‌کند
+   s-hbar       میله‌ی افقی که از راست (RTL) رشد می‌کند
+   s-area       سطح زیر خط نمودار که محو ظاهر می‌شود
+   s-linechart  خط نمودار که رسم می‌شود (pathLength=1)
+   s-ring       حلقه‌ی دونات که می‌چرخد/پر می‌شود
+   s-grid       خط شبکه‌ی نمودار
+   s-axlabel    برچسب محور
+   s-runner     ذره‌ی متحرک روی مسیر (با <animateMotion>)
+   s-count      عددی که از صفر شمارش می‌شود (data-count)
+
+   کنترل ترتیب/تأخیر:  style="--kl-i:3"
+   فعال‌سازی:          کلاس kl-motion روی <html> (توسط js/diagrams.js)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   ۱) ایمنی دوجهته برای متن‌های SVG
+   فایل مقاله SVG را LTR می‌کند؛ برای برچسب‌های فارسی پایه‌ی جهت باید از
+   اولین نویسه‌ی قوی گرفته شود (plaintext) تا «Model — داده» درست بنشیند.
+   -------------------------------------------------------------------------- */
+.kl-article figure.kl-fig svg text {
+  direction: rtl !important;
+  unicode-bidi: plaintext !important;
+}
+
+/* --------------------------------------------------------------------------
+   ۲) سرِ پیکان — تم‌آگاه
+   -------------------------------------------------------------------------- */
+.kl-article figure.kl-fig svg .s-head {
+  fill: #84CC16;
+  stroke: none;
+}
+.kl-article figure.kl-fig svg .s-head-ok {
+  fill: #20c997;
+}
+.kl-article figure.kl-fig svg .s-head-bad {
+  fill: #ff6b6b;
+}
+.kl-article figure.kl-fig svg .s-head-warn {
+  fill: #fcc419;
+}
+.kl-article figure.kl-fig svg .s-head-dim {
+  fill: #64748b;
+}
+
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-head {
+  fill: #0F766E;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-head-ok {
+  fill: #10b981;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-head-bad {
+  fill: #f43f5e;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-head-warn {
+  fill: #f59e0b;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-head-dim {
+  fill: #94a3b8;
+}
+
+/* --------------------------------------------------------------------------
+   ۳) خطوط و مسیرها
+   -------------------------------------------------------------------------- */
+.kl-article figure.kl-fig svg .s-line,
+.kl-article figure.kl-fig svg .s-dash,
+.kl-article figure.kl-fig svg .s-arr,
+.kl-article figure.kl-fig svg .s-arr-ok,
+.kl-article figure.kl-fig svg .s-arr-bad {
+  transition: stroke 0.3s ease;
+}
+
+/* سربرگ ستون/لایه در شکل‌های معماری */
+.kl-article figure.kl-fig svg .s-group {
+  fill: rgba(148, 163, 184, 0.09);
+  stroke: #475569;
+  stroke-width: 1.6;
+  stroke-dasharray: 7 5;
+}
+.kl-article figure.kl-fig svg .s-group-acc {
+  fill: rgba(20, 184, 166, 0.09);
+  stroke: #14B8A6;
+}
+.kl-article figure.kl-fig svg .s-group-t {
+  fill: #cbd5e1;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-group {
+  fill: rgba(15, 23, 42, 0.04);
+  stroke: #94a3b8;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-group-acc {
+  fill: rgba(15, 118, 110, 0.07);
+  stroke: #0F766E;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-group-t {
+  fill: #334155;
+}
+
+/* رنگ‌های تکمیلی برای نمودارها (سری‌های چهارم به بعد) */
+.kl-article figure.kl-fig svg .s-c4 {
+  fill: rgba(129, 140, 248, 0.2);
+  stroke: #818cf8;
+  stroke-width: 1.8;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-c4 {
+  fill: rgba(79, 70, 229, 0.14);
+  stroke: #4F46E5;
+}
+.kl-article figure.kl-fig svg .s-c5 {
+  fill: rgba(34, 211, 238, 0.2);
+  stroke: #22D3EE;
+  stroke-width: 1.8;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-c5 {
+  fill: rgba(8, 145, 178, 0.14);
+  stroke: #0891B2;
+}
+.kl-article figure.kl-fig svg .s-c6 {
+  fill: rgba(148, 163, 184, 0.2);
+  stroke: #94A3B8;
+  stroke-width: 1.8;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-c6 {
+  fill: rgba(100, 116, 139, 0.14);
+  stroke: #64748B;
+}
+.kl-article figure.kl-fig svg .s-c4-t {
+  fill: #A5B4FC;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-c4-t {
+  fill: #4338CA;
+}
+
+/* خط پایه‌ی محور و مقدار */
+.kl-article figure.kl-fig svg .s-axis {
+  stroke: #475569;
+  stroke-width: 1.6;
+  fill: none;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-axis {
+  stroke: #94A3B8;
+}
+
+/* برچسب مقدار روی میله (راست‌چین) */
+.kl-article figure.kl-fig svg .s-val {
+  fill: #e2e8f0;
+  font-size: 11.5px;
+  font-weight: 800;
+  font-family: var(--font-mono), Consolas, monospace;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-val {
+  fill: #1E293B;
+}
+
+/* --------------------------------------------------------------------------
+   ۴) کلاس‌های انیمیشنی — تعریف حالت اولیه
+   حالت اولیه «بصری» است تا اگر JS اجرا نشد، محتوا پنهان نشود.
+   فقط وقتی html.kl-motion وجود دارد، انیمیشن‌ها مسلط می‌شوند.
+   -------------------------------------------------------------------------- */
+
+/* --- ۴.۱ خط مارچینگ (جریان داده) --- */
+.kl-article figure.kl-fig svg .s-flow {
+  stroke-dasharray: 11 8;
+  animation: kl-march 0.95s linear infinite;
+}
+.kl-article figure.kl-fig svg .s-flow-ok {
+  stroke-dasharray: 11 8;
+  animation: kl-march 0.95s linear infinite;
+}
+.kl-article figure.kl-fig svg .s-flow-bad {
+  stroke-dasharray: 11 8;
+  animation: kl-march 0.95s linear infinite;
+}
+.kl-article figure.kl-fig svg .s-flow-soft {
+  stroke-dasharray: 7 7;
+  animation: kl-march 1.6s linear infinite;
+  opacity: 0.85;
+}
+
+@keyframes kl-march {
+  to {
+    stroke-dashoffset: -19;
+  }
+}
+
+/* --- ۴.۲ رسم تدریجی مسیر (نیازمند pathLength="1") ---
+   !important لازم است تا کلاس‌های خط‌چین موجود (s-dash) آن را بازنویسی نکنند. */
+html.kl-motion .kl-article figure.kl-fig svg .s-draw,
+html.kl-motion .kl-article figure.kl-fig svg .s-linechart {
+  stroke-dasharray: 1 !important;
+  stroke-dashoffset: 1 !important;
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-draw,
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-linechart {
+  animation: kl-draw 1.25s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--kl-i, 0) * 120ms);
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-draw {
+  stroke-dasharray: 1 !important;
+}
+
+@keyframes kl-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* --- ۴.۳ ورود نودها --- */
+html.kl-motion .kl-article figure.kl-fig svg .s-node {
+  opacity: 0;
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-node {
+  animation: kl-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--kl-i, 0) * 95ms);
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-node.s-lo {
+  animation-name: kl-fade;
+}
+
+@keyframes kl-pop {
+  from {
+    opacity: 0;
+    transform: translateY(9px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes kl-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- ۴.۴ تپش نود کلیدی --- */
+.kl-article figure.kl-fig svg .s-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kl-pulse 2.4s ease-in-out infinite;
+}
+.kl-article figure.kl-fig svg .s-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kl-halo 2.4s ease-out infinite;
+}
+
+@keyframes kl-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.055);
+  }
+}
+
+@keyframes kl-halo {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.22);
+  }
+}
+
+/* --- ۴.۵ میله‌های نمودار --- */
+.kl-article figure.kl-fig svg .s-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+html.kl-motion .kl-article figure.kl-fig svg .s-bar {
+  transform: scaleY(0);
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-bar {
+  animation: kl-grow-y 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--kl-i, 0) * 85ms);
+}
+
+@keyframes kl-grow-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+html.kl-motion .kl-article figure.kl-fig svg .s-hbar {
+  transform-box: fill-box;
+  /* در چیدمان راست‌به‌چپ، میله از لبه‌ی راست رشد می‌کند */
+  transform-origin: 100% 50%;
+}
+html.kl-motion .kl-article figure.kl-fig svg .s-hbar {
+  transform: scaleX(0);
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-hbar {
+  animation: kl-grow-x 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--kl-i, 0) * 85ms);
+}
+
+@keyframes kl-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* --- ۴.۶ سطح زیر خط نمودار --- */
+html.kl-motion .kl-article figure.kl-fig svg .s-area {
+  opacity: 0;
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-area {
+  animation: kl-fade 0.9s ease forwards;
+  animation-delay: 0.55s;
+}
+
+/* --- ۴.۷ حلقه‌ی دونات --- */
+.kl-article figure.kl-fig svg .s-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  stroke-linecap: round;
+}
+html.kl-motion .kl-article figure.kl-fig svg .s-ring-track {
+  opacity: 0.55;
+}
+
+/* --- ۴.۸ برچسب مقدار روی میله --- */
+html.kl-motion .kl-article figure.kl-fig svg .s-val {
+  opacity: 0;
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-val {
+  animation: kl-fade 0.5s ease forwards;
+  animation-delay: calc(560ms + var(--kl-i, 0) * 85ms);
+}
+
+/* --------------------------------------------------------------------------
+   ۵) شبکه و محور نمودار
+   -------------------------------------------------------------------------- */
+.kl-article figure.kl-fig svg .s-grid {
+  stroke: #334155;
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  fill: none;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-grid {
+  stroke: #cbd5e1;
+}
+
+.kl-article figure.kl-fig svg .s-axlabel {
+  fill: #94a3b8;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-axlabel {
+  fill: #64748b;
+}
+
+.kl-article figure.kl-fig svg .s-cat {
+  fill: #cbd5e1;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-cat {
+  fill: #334155;
+}
+
+/* --------------------------------------------------------------------------
+   ۶) ذره‌ی متحرک روی مسیر (SMIL)
+   نویسنده‌ی شکل مسیر را در <mpath href="#id"> ارجاع می‌دهد.
+   -------------------------------------------------------------------------- */
+.kl-article figure.kl-fig svg .s-runner {
+  fill: #14B8A6;
+  stroke: none;
+}
+.kl-article figure.kl-fig svg .s-runner-bad {
+  fill: #ff6b6b;
+}
+.kl-article figure.kl-fig svg .s-runner-dim {
+  fill: #64748b;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-runner {
+  fill: #0F766E;
+}
+html[data-theme="light"] .kl-article figure.kl-fig svg .s-runner-bad {
+  fill: #e11d48;
+}
+
+/* --------------------------------------------------------------------------
+   ۷) عدد شمارشی + کارت آمار
+   -------------------------------------------------------------------------- */
+.kl-fig .s-count {
+  font-family: var(--font-mono), Consolas, monospace;
+  font-weight: 800;
+  fill: #14B8A6;
+}
+
+.kl-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.9rem;
+  margin: 2rem 0;
+}
+
+.kl-stat {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 0.9rem;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.kl-stat:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  transform: translateY(-3px);
+}
+
+.kl-stat-num {
+  font-family: var(--font-mono), Consolas, monospace;
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--color-primary-light);
+  line-height: 1.3;
+  display: block;
+}
+
+.kl-stat-num.ok {
+  color: var(--color-success);
+}
+.kl-stat-num.bad {
+  color: var(--color-danger);
+}
+.kl-stat-num.warn {
+  color: var(--color-warning);
+}
+
+.kl-stat-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  display: block;
+  margin-top: 0.3rem;
+}
+
+/* --------------------------------------------------------------------------
+   ۸) راهنمای رنگ زیر نمودارها
+   -------------------------------------------------------------------------- */
+.kl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.2rem;
+  margin-top: 1rem;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.kl-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.kl-legend i {
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  display: inline-block;
+  border: 1px solid var(--border-normal);
+}
+
+.kl-legend i.c-acc {
+  background: rgba(20, 184, 166, 0.35);
+  border-color: #14B8A6;
+}
+.kl-legend i.c-ok {
+  background: rgba(32, 201, 151, 0.35);
+  border-color: #20c997;
+}
+.kl-legend i.c-bad {
+  background: rgba(255, 107, 107, 0.35);
+  border-color: #ff6b6b;
+}
+.kl-legend i.c-warn {
+  background: rgba(252, 196, 25, 0.35);
+  border-color: #fcc419;
+}
+.kl-legend i.c-dim {
+  background: rgba(100, 116, 139, 0.35);
+  border-color: #64748b;
+}
+.kl-legend i.c-c4 {
+  background: rgba(129, 140, 248, 0.35);
+  border-color: #818cf8;
+}
+.kl-legend i.c-c5 {
+  background: rgba(34, 211, 238, 0.35);
+  border-color: #22D3EE;
+}
+
+html[data-theme="light"] .kl-legend i.c-acc {
+  background: rgba(15, 118, 110, 0.18);
+  border-color: #0F766E;
+}
+html[data-theme="light"] .kl-legend i.c-ok {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: #10b981;
+}
+html[data-theme="light"] .kl-legend i.c-bad {
+  background: rgba(244, 63, 94, 0.18);
+  border-color: #f43f5e;
+}
+html[data-theme="light"] .kl-legend i.c-warn {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+}
+html[data-theme="light"] .kl-legend i.c-dim {
+  background: rgba(100, 116, 139, 0.2);
+  border-color: #94a3b8;
+}
+html[data-theme="light"] .kl-legend i.c-c4 {
+  background: rgba(79, 70, 229, 0.18);
+  border-color: #4F46E5;
+}
+html[data-theme="light"] .kl-legend i.c-c5 {
+  background: rgba(8, 145, 178, 0.18);
+  border-color: #0891B2;
+}
+
+/* --------------------------------------------------------------------------
+   ۹) ریتم گام‌به‌گام برای متن‌های داخل شکل
+   -------------------------------------------------------------------------- */
+html.kl-motion .kl-article figure.kl-fig svg .s-lbl {
+  opacity: 0;
+}
+html.kl-motion .kl-article figure.kl-fig.kl-in svg .s-lbl {
+  animation: kl-fade 0.5s ease forwards;
+  animation-delay: calc(420ms + var(--kl-i, 0) * 95ms);
+}
+
+/* --------------------------------------------------------------------------
+   ۱۰) احترام به تنظیم کاهش حرکت کاربر
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .kl-article figure.kl-fig svg .s-flow,
+  .kl-article figure.kl-fig svg .s-flow-ok,
+  .kl-article figure.kl-fig svg .s-flow-bad,
+  .kl-article figure.kl-fig svg .s-flow-soft,
+  .kl-article figure.kl-fig svg .s-pulse,
+  .kl-article figure.kl-fig svg .s-halo {
+    animation: none !important;
+  }
+  html.kl-motion .kl-article figure.kl-fig svg .s-node,
+  html.kl-motion .kl-article figure.kl-fig svg .s-lbl,
+  html.kl-motion .kl-article figure.kl-fig svg .s-val,
+  html.kl-motion .kl-article figure.kl-fig svg .s-area {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+  html.kl-motion .kl-article figure.kl-fig svg .s-draw,
+  html.kl-motion .kl-article figure.kl-fig svg .s-linechart {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+  html.kl-motion .kl-article figure.kl-fig svg .s-bar {
+    transform: none !important;
+    animation: none !important;
+  }
+  html.kl-motion .kl-article figure.kl-fig svg .s-hbar {
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   ۱۱) واکنش‌گرایی شکل‌ها
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .kl-article figure.kl-fig {
+    padding: 1.2rem 0.8rem 1rem;
+    margin: 2rem 0;
+  }
+  .kl-article figure.kl-fig svg {
+    min-width: 480px;
+  }
+  .kl-stats {
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+    gap: 0.6rem;
+  }
+  .kl-stat-num {
+    font-size: 1.35rem;
+  }
+}
+
+/* راهنمای افقی زیر شکل، در موباید کوچک‌تر */
+@media (max-width: 640px) {
+  .kl-legend {
+    font-size: 0.78rem;
+    gap: 0.35rem 0.8rem;
+  }
+}

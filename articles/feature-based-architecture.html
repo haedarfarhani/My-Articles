@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -343,30 +345,99 @@ Repository. این یعنی یک قابلیت کسب‌وکار (سفارش) ب�
 
 <h3>ساختار مفهومی</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph F1["فیچر: order — مالک: تیم خرید"]
-        A1["api/<br/>Controller، Request، Response"]
-        A2["domain/<br/>مدل و قوانین"]
-        A3["data/<br/>Repository و Entity"]
-        A1 --> A2 --> A3
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 456" role="img" aria-label="درخت عمودی پوشه‌بندی: هر فیچر سه لایه دارد و به پوشه‌ی مشترک وصل می‌شود">
+  <!-- پوسته‌های فیچرها -->
+  <rect class="s-group s-group-acc" x="470" y="30" width="286" height="272" rx="16"/>
+  <rect class="s-group s-group-acc" x="14" y="30" width="286" height="272" rx="16"/>
+  <text class="s-group-t" x="613" y="58" text-anchor="middle">فیچر order — مالک: تیم خرید</text>
+  <text class="s-group-t" x="157" y="58" text-anchor="middle">فیچر payment — مالک: تیم مالی</text>
 
-    subgraph F2["فیچر: payment — مالک: تیم مالی"]
-        B1["api/"] --> B2["domain/"] --> B3["data/"]
-    end
+  <!-- لایه‌های فیچر order -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="484" y="68" width="258" height="46" rx="9"/>
+    <text class="s-t" x="613" y="88" text-anchor="middle">presentation</text>
+    <text class="s-t2" x="613" y="105" text-anchor="middle">پوشه‌ی api/</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="484" y="138" width="258" height="46" rx="9"/>
+    <text class="s-t" x="613" y="158" text-anchor="middle">domain</text>
+    <text class="s-t2" x="613" y="175" text-anchor="middle">مدل و قوانین کسب‌وکار</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="484" y="208" width="258" height="46" rx="9"/>
+    <text class="s-t" x="613" y="228" text-anchor="middle">data</text>
+    <text class="s-t2" x="613" y="245" text-anchor="middle">Repository و Entity</text>
+  </g>
 
-    subgraph S["shared — بدون مالک، مالک تیم معماری"]
-        S1["Money"]
-        S2["PageResponse"]
-        S3["SecurityConfig"]
-    end
+  <!-- لایه‌های فیچر payment -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="28" y="68" width="258" height="46" rx="9"/>
+    <text class="s-t" x="157" y="88" text-anchor="middle">presentation</text>
+    <text class="s-t2" x="157" y="105" text-anchor="middle">پوشه‌ی api/</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="28" y="138" width="258" height="46" rx="9"/>
+    <text class="s-t" x="157" y="158" text-anchor="middle">domain</text>
+    <text class="s-t2" x="157" y="175" text-anchor="middle">مدل و قوانین کسب‌وکار</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="28" y="208" width="258" height="46" rx="9"/>
+    <text class="s-t" x="157" y="228" text-anchor="middle">data</text>
+    <text class="s-t2" x="157" y="245" text-anchor="middle">Repository و Entity</text>
+  </g>
 
-    F1 --> S
-    F2 --> S
-    F1 -.->|"فقط از طریق<br/>قرارداد عمومی"| F2
+  <!-- جریان عمودی لایه‌ها -->
+  <path class="s-arr s-flow" d="M 613 118 L 613 126"/>
+  <path class="s-head" d="M 613 138 L 606 126 L 620 126 Z"/>
+  <path class="s-arr s-flow" d="M 613 188 L 613 196"/>
+  <path class="s-head" d="M 613 208 L 606 196 L 620 196 Z"/>
+  <path class="s-arr s-flow" d="M 157 118 L 157 126"/>
+  <path class="s-head" d="M 157 138 L 150 126 L 164 126 Z"/>
+  <path class="s-arr s-flow" d="M 157 188 L 157 196"/>
+  <path class="s-head" d="M 157 208 L 150 196 L 164 196 Z"/>
 
-    style F1 fill:#0f766e,color:#fff,stroke:#0f766e
-    style S fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <!-- کوپل نرم بین دو فیچر -->
+  <path class="s-dash s-arr s-flow-soft" d="M 462 272 L 314 272"/>
+  <path class="s-head-dim" d="M 302 272 L 314 265 L 314 279 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="260" text-anchor="middle" style="--kl-i:4">فقط از راه قرارداد عمومی</text>
+
+  <!-- وابستگی هر دو فیچر به shared -->
+  <path class="s-arr s-flow" d="M 613 306 L 613 318"/>
+  <path class="s-head" d="M 613 330 L 606 318 L 620 318 Z"/>
+  <path class="s-arr s-flow" d="M 157 306 L 157 318"/>
+  <path class="s-head" d="M 157 330 L 150 318 L 164 318 Z"/>
+
+  <!-- نوار shared -->
+  <rect class="s-group" x="14" y="336" width="742" height="104" rx="16"/>
+  <text class="s-group-t" x="385" y="364" text-anchor="middle">shared — بدون مالک؛ مالک: تیم معماری</text>
+
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-chip" x="30" y="390" width="228" height="42" rx="10"/>
+    <text class="s-tc" x="144" y="416" text-anchor="middle">Money</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-chip s-pulse" x="271" y="390" width="228" height="42" rx="10"/>
+    <text class="s-tc" x="385" y="416" text-anchor="middle">PageResponse</text>
+  </g>
+  <g class="s-node" style="--kl-i:8">
+    <rect class="s-chip" x="512" y="390" width="228" height="42" rx="10"/>
+    <text class="s-tc" x="626" y="416" text-anchor="middle">SecurityConfig</text>
+  </g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 613 118 L 613 126"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.2s" begin="1.6s" repeatCount="indefinite" path="M 157 188 L 157 196"/>
+  </circle>
+  <circle class="s-runner-dim" r="4">
+    <animateMotion dur="4s" repeatCount="indefinite" path="M 462 272 L 314 272"/>
+  </circle>
+</svg>
+<figcaption><b>درخت عمودی:</b> هر فیچر یک پوشه‌ی مستقل با سه لایه‌ی presentation (آبی)، domain (سبز) و data (کهربایی) است و هر تیم فقط همان پوشه را می‌بیند. دو فیچر تنها از راه قرارداد عمومیِ پوشه‌ی <code>api/</code> به هم وصل می‌شوند و هر دو به <code>shared</code> وابسته‌اند؛ چون <code>shared</code> مالک مشخصی ندارد، مالکیت آن را تیم معماری بر عهده می‌گیرد.</figcaption>
+</figure>
 
 <h3>سه سطح ماژولار بودن</h3>
 
@@ -594,28 +665,80 @@ Vertical Slice (۳ اسلایس جدا):
 اگر پروژه کوچک است (زیر ۱۰ هزار خط) → <strong>لایه‌ای</strong> کافی است.
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    subgraph LB["لایه‌ای (افقی)"]
-        L1["controller/"] 
-        L2["service/"]
-        L3["repository/"]
-        L1 --> L2 --> L3
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 330" role="img" aria-label="مقایسه‌ی پوشه‌بندی لایه‌ای، فیچرمحور و برش عمودی">
+  <!-- پنل‌ها -->
+  <rect class="s-group" x="520" y="40" width="240" height="268" rx="16"/>
+  <rect class="s-group s-group-acc" x="262" y="40" width="240" height="268" rx="16"/>
+  <rect class="s-group" x="4" y="40" width="240" height="268" rx="16"/>
+  <text class="s-group-t" x="640" y="68" text-anchor="middle">لایه‌ای — افقی</text>
+  <text class="s-group-t" x="382" y="68" text-anchor="middle">Feature Based — عمودی</text>
+  <text class="s-group-t" x="124" y="68" text-anchor="middle">Vertical Slice — برش عمودی</text>
 
-    subgraph FB["Feature Based"]
-        F1["order/"] 
-        F2["payment/"]
-        F1 --> S1[("shared")]
-        F2 --> S1
-    end
+  <!-- پنل لایه‌ای -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="560" y="88" width="180" height="44" rx="9"/>
+    <text class="s-t" x="650" y="116" text-anchor="middle">controller/</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="560" y="140" width="180" height="44" rx="9"/>
+    <text class="s-t" x="650" y="168" text-anchor="middle">service/</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="560" y="192" width="180" height="44" rx="9"/>
+    <text class="s-t" x="650" y="220" text-anchor="middle">repository/</text>
+  </g>
+  <path class="s-arr-bad s-flow-bad" d="M 540 110 L 540 194"/>
+  <path class="s-head-bad" d="M 540 206 L 533 194 L 547 194 Z"/>
+  <text class="s-t2 s-lbl" x="640" y="262" text-anchor="middle" style="--kl-i:3">فایل‌های یک فیچر در سه پوشه پخش‌اند</text>
+  <text class="s-t2 s-lbl" x="640" y="286" text-anchor="middle" style="--kl-i:4">و پیوند مستقیم لایه‌ها ممکن می‌شود</text>
 
-    subgraph VS["Vertical Slice"]
-        V1["placeOrder/"]
-        V2["cancelOrder/"]
-        V3["refundOrder/"]
-    end
+  <!-- پنل Feature Based -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="270" y="88" width="106" height="44" rx="9"/>
+    <text class="s-tc" x="323" y="116" text-anchor="middle">order/</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="388" y="88" width="106" height="44" rx="9"/>
+    <text class="s-tc" x="441" y="116" text-anchor="middle">payment/</text>
+  </g>
+  <path class="s-arr s-flow" d="M 323 134 L 340 186"/>
+  <path class="s-head" d="M 340 198 L 333 186 L 347 186 Z"/>
+  <path class="s-arr s-flow" d="M 441 134 L 424 186"/>
+  <path class="s-head" d="M 424 198 L 417 186 L 431 186 Z"/>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-chip s-pulse" x="312" y="198" width="140" height="42" rx="10"/>
+    <text class="s-tc" x="382" y="224" text-anchor="middle">shared</text>
+  </g>
+  <text class="s-t2 s-lbl" x="382" y="262" text-anchor="middle" style="--kl-i:3">هر فیچر یک پوشه‌ی کامل با همه‌ی لایه‌هاست</text>
+  <text class="s-t2 s-lbl" x="382" y="286" text-anchor="middle" style="--kl-i:4">همه‌ی فیچرها فقط به shared وصل می‌شوند</text>
 
-    style FB fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+  <!-- پنل Vertical Slice -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-c5" x="24" y="88" width="200" height="40" rx="9"/>
+    <text class="s-tc" x="124" y="114" text-anchor="middle">placeOrder/</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c5" x="24" y="134" width="200" height="40" rx="9"/>
+    <text class="s-tc" x="124" y="160" text-anchor="middle">cancelOrder/</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c5" x="24" y="180" width="200" height="40" rx="9"/>
+    <text class="s-tc" x="124" y="206" text-anchor="middle">refundOrder/</text>
+  </g>
+  <text class="s-t2 s-lbl" x="124" y="262" text-anchor="middle" style="--kl-i:3">هر برش، جریان کامل یک درخواست کاربر است</text>
+  <text class="s-t2 s-lbl" x="124" y="286" text-anchor="middle" style="--kl-i:4">مناسب محصولی که هنوز کشف می‌شود</text>
+
+  <!-- ذره‌ی متحرک -->
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 441 134 L 424 186"/>
+  </circle>
+  <circle class="s-runner-bad" r="4.5">
+    <animateMotion dur="3.4s" begin="1.2s" repeatCount="indefinite" path="M 540 110 L 540 194"/>
+  </circle>
+</svg>
+<figcaption><b>سه ساختار رقیب:</b> در ساختار لایه‌ای فایل‌های یک قابلیت در سه پوشه پخش می‌شوند و پیکان قرمز نشان می‌دهد که نتیجه‌ی این پراکندگی، امکان پیوند مستقیم لایه‌هاست. در <code>Feature Based</code> هر فیچر یک پوشه‌ی کامل است و همه فقط به <code>shared</code> وصل می‌شوند؛ در <code>Vertical Slice</code> واحد سازماندهی نه یک فیچر کلی، بلکه یک درخواست مشخص کاربر است.</figcaption>
+</figure>
 
 <h3>رابطه‌ی Feature Based با Modular Monolith</h3>
 
@@ -665,35 +788,96 @@ Feature Based معمولاً Modular Monolith هم هست.
 
 <h3>قواعد وابستگی بین ماژول‌ها</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph Order["ماژول order"]
-        OA["api (public)"]
-        OD["domain (package-private)"]
-        OA --> OD
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 452" role="img" aria-label="قواعد وابستگی بین ماژول‌ها: ماژول‌ها فقط api یکدیگر را می‌بینند و وابستگی به domain دیگری ممنوع است">
+  <!-- پوسته‌ی سه ماژول -->
+  <rect class="s-group s-group-acc" x="555" y="36" width="200" height="200" rx="14"/>
+  <rect class="s-group s-group-acc" x="275" y="36" width="200" height="200" rx="14"/>
+  <rect class="s-group s-group-acc" x="15" y="36" width="200" height="140" rx="14"/>
+  <text class="s-group-t" x="655" y="62" text-anchor="middle">ماژول payment</text>
+  <text class="s-group-t" x="375" y="62" text-anchor="middle">ماژول order</text>
+  <text class="s-group-t" x="115" y="62" text-anchor="middle">ماژول customer</text>
 
-    subgraph Pay["ماژول payment"]
-        PA["api (public)"]
-        PD["domain"]
-        PA --> PD
-    end
+  <!-- ماژول payment -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="569" y="76" width="172" height="46" rx="9"/>
+    <text class="s-t" x="655" y="96" text-anchor="middle">api (public)</text>
+    <text class="s-t2" x="655" y="113" text-anchor="middle">PaymentController</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="569" y="152" width="172" height="46" rx="9"/>
+    <text class="s-t" x="655" y="172" text-anchor="middle">domain</text>
+    <text class="s-t2" x="655" y="189" text-anchor="middle">Payment و قواعد پرداخت</text>
+  </g>
 
-    subgraph Cust["ماژول customer"]
-        CA["api (public)"]
-    end
+  <!-- ماژول order -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc s-pulse" x="289" y="76" width="172" height="46" rx="9"/>
+    <text class="s-t" x="375" y="96" text-anchor="middle">api (public)</text>
+    <text class="s-t2" x="375" y="113" text-anchor="middle">OrderController، Orders</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="289" y="152" width="172" height="46" rx="9"/>
+    <text class="s-t" x="375" y="172" text-anchor="middle">domain</text>
+    <text class="s-t2" x="375" y="189" text-anchor="middle">Order، Port و قواعد</text>
+  </g>
+  <path class="s-arr s-flow" d="M 375 126 L 375 138"/>
+  <path class="s-head" d="M 375 152 L 368 140 L 382 140 Z"/>
 
-    Shared["shared<br/>Money، PageResponse"]
+  <!-- ماژول customer -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="29" y="76" width="172" height="46" rx="9"/>
+    <text class="s-t" x="115" y="96" text-anchor="middle">api (public)</text>
+    <text class="s-t2" x="115" y="113" text-anchor="middle">CustomerController</text>
+  </g>
+  <text class="s-t2 s-lbl" x="115" y="152" text-anchor="middle" style="--kl-i:2">لایه‌ی domain مستقل ندارد</text>
 
-    Pay -->|"می‌بیند"| OA
-    Order -->|"می‌بیند"| CA
-    Order --> Shared
-    Pay --> Shared
+  <path class="s-arr s-flow" d="M 655 126 L 655 138"/>
+  <path class="s-head" d="M 655 152 L 648 140 L 662 140 Z"/>
 
-    OD -.->|"❌ غیرمجاز"| PD
+  <!-- کوپل مجاز: payment فقط api مربوط به order را می‌بیند -->
+  <path class="s-arr-ok s-flow-ok" d="M 549 99 L 493 99"/>
+  <path class="s-head-ok" d="M 481 99 L 493 92 L 493 106 Z"/>
+  <text class="s-t2 s-lbl" x="515" y="86" text-anchor="middle" style="--kl-i:3">می‌بیند</text>
 
-    style OD fill:#0f766e,color:#fff,stroke:#0f766e
-    style OA fill:#0f766e,color:#fff,stroke:#0f766e
-    style Shared fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <!-- کوپل مجاز: order فقط api مربوط به customer را می‌بیند -->
+  <path class="s-arr-ok s-flow-ok" d="M 269 99 L 233 99"/>
+  <path class="s-head-ok" d="M 221 99 L 233 92 L 233 106 Z"/>
+  <text class="s-t2 s-lbl" x="245" y="86" text-anchor="middle" style="--kl-i:4">می‌بیند</text>
+
+  <!-- وابستگی غیرمجاز: domain به domain -->
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 481 176 L 539 176"/>
+  <path class="s-head-bad" d="M 551 176 L 539 169 L 539 183 Z"/>
+  <text class="s-t2 s-lbl" x="515" y="164" text-anchor="middle" style="--kl-i:5">غیرمجاز</text>
+
+  <!-- وابستگی هر دو ماژول به shared -->
+  <path class="s-arr s-flow" d="M 375 240 L 375 288"/>
+  <path class="s-head" d="M 375 330 L 368 318 L 382 318 Z"/>
+  <path class="s-arr s-flow" d="M 655 240 L 655 288"/>
+  <path class="s-head" d="M 655 330 L 648 318 L 662 318 Z"/>
+
+  <!-- نوار shared -->
+  <rect class="s-group" x="15" y="330" width="740" height="104" rx="16"/>
+  <text class="s-group-t" x="385" y="358" text-anchor="middle">shared — قراردادهای بی‌طرف و ابزارهای واقعاً مشترک</text>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-chip" x="185" y="374" width="170" height="42" rx="10"/>
+    <text class="s-tc" x="270" y="400" text-anchor="middle">Money</text>
+  </g>
+  <g class="s-node" style="--kl-i:8">
+    <rect class="s-chip" x="365" y="374" width="230" height="42" rx="10"/>
+    <text class="s-tc" x="480" y="400" text-anchor="middle">PageResponse</text>
+  </g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 375 240 L 375 288"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M 655 240 L 655 288"/>
+  </circle>
+</svg>
+<figcaption><b>قاعده‌ی دیدن:</b> هر ماژول از بیرون فقط پوشه‌ی <code>api/</code> را می‌بیند؛ پیکان‌های سبز همین دو دسترسی مجاز را نشان می‌دهند و پیکان قرمز خط‌چین، دسترسی از <code>domain</code> به <code>domain</code> را که کامپایلر باید جلویش را بگیرد. هر دو ماژول به‌جای دسترسی مستقیم به مدل هم، به <code>shared</code> تکیه می‌کنند.</figcaption>
+</figure>
 
 <h3>پیکربندی دسترسی بین ماژول‌ها در Java</h3>
 
@@ -759,30 +943,92 @@ API باریک در B تعریف کنید.
 
 <h3>جریان یک درخواست کامل در ماژول order</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant U as کاربر
-    participant OC as order.api.OrderController
-    participant OS as order.domain.OrderService
-    participant OR as order.domain.OrderRepository
-    participant JR as order.data.JpaOrderRepository
-    participant DB as دیتابیس
+<figure class="kl-fig">
+<svg viewBox="0 0 770 452" role="img" aria-label="دیاگرام توالی یک درخواست کامل در ماژول order">
+  <rect class="s-group s-group-acc" x="188" y="4" width="432" height="440" rx="14"/>
+  <text class="s-group-t" x="404" y="22" text-anchor="middle">پوشه‌ی order — مرز تغییر</text>
 
-    U->>OC: POST /api/orders
-    OC->>OC: اعتبارسنجی PlaceOrderRequest
-    OC->>OS: placeOrder(command)
-    OS->>OR: findById(id)
-    OR->>JR: (پیاده‌سازی JPA)
-    JR->>DB: SELECT
-    DB-->>JR: ردیف
-    JR-->>OS: Order (مدل)
-    OS->>OS: اجرای قوانین دامنه
-    OS->>OR: save(order)
-    OR->>JR: save
-    JR->>DB: INSERT
-    OS-->>OC: OrderId
-    OC-->>U: 201 Created
+  <path class="s-dash" d="M 686 80 L 686 420"/>
+  <path class="s-dash" d="M 545 80 L 545 420"/>
+  <path class="s-dash" d="M 404 80 L 404 420"/>
+  <path class="s-dash" d="M 263 80 L 263 420"/>
+  <path class="s-dash" d="M 122 80 L 122 420"/>
 
-    Note over OS,DB: هیچ ماژول دیگری درگیر نیست</code></pre>
+  <path class="s-arr s-flow" d="M 686 104 L 559 104"/>
+  <path class="s-head" d="M 545 104 L 557 97 L 557 111 Z"/>
+  <text class="s-tc s-lbl" x="615" y="94" text-anchor="middle" style="--kl-i:0">POST /api/orders</text>
+
+  <path class="s-arr s-flow" d="M 545 148 C 577 148, 577 120, 547 120"/>
+  <path class="s-head" d="M 545 116 L 538 128 L 552 128 Z"/>
+  <text class="s-t2 s-lbl" x="642" y="140" text-anchor="middle" style="--kl-i:1">اعتبارسنجی درخواست</text>
+
+  <path class="s-arr s-flow" d="M 545 176 L 418 176"/>
+  <path class="s-head" d="M 404 176 L 416 169 L 416 183 Z"/>
+  <text class="s-tc s-lbl" x="474" y="166" text-anchor="middle" style="--kl-i:2">placeOrder(command)</text>
+
+  <path class="s-arr s-flow" d="M 404 232 L 277 232"/>
+  <path class="s-head" d="M 263 232 L 275 225 L 275 239 Z"/>
+  <text class="s-tc s-lbl" x="334" y="222" text-anchor="middle" style="--kl-i:3">save(order)</text>
+
+  <path class="s-arr s-flow" d="M 263 288 L 136 288"/>
+  <path class="s-head" d="M 122 288 L 134 281 L 134 295 Z"/>
+  <text class="s-tc s-lbl" x="193" y="278" text-anchor="middle" style="--kl-i:4">INSERT</text>
+
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 122 332 L 251 332"/>
+  <path class="s-head-ok" d="M 263 332 L 251 325 L 251 339 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="322" text-anchor="middle" style="--kl-i:5">ردیف ذخیره‌شده</text>
+
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 404 376 L 531 376"/>
+  <path class="s-head-ok" d="M 545 376 L 533 369 L 533 383 Z"/>
+  <text class="s-tc s-lbl" x="474" y="366" text-anchor="middle" style="--kl-i:6">OrderId</text>
+
+  <path class="s-arr s-flow" d="M 545 416 L 672 416"/>
+  <path class="s-head" d="M 686 416 L 674 409 L 674 423 Z"/>
+  <text class="s-tc s-lbl" x="615" y="406" text-anchor="middle" style="--kl-i:7">۲۰۱ Created</text>
+
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="750" cy="104" r="12"/><text class="s-tc" x="750" y="108" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="750" cy="176" r="12"/><text class="s-tc" x="750" y="180" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="750" cy="232" r="12"/><text class="s-tc" x="750" y="236" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="750" cy="288" r="12"/><text class="s-tc" x="750" y="292" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="750" cy="332" r="12"/><text class="s-tc" x="750" y="336" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="750" cy="376" r="12"/><text class="s-tc" x="750" y="380" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:7"><circle class="s-chip" cx="750" cy="416" r="12"/><text class="s-tc" x="750" y="420" text-anchor="middle">۷</text></g>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="627" y="32" width="118" height="44" rx="10"/>
+    <text class="s-t" x="686" y="60" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="486" y="32" width="118" height="44" rx="10"/>
+    <text class="s-tc" x="545" y="51" text-anchor="middle">order.api</text>
+    <text class="s-t2" x="545" y="69" text-anchor="middle">OrderController</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="345" y="32" width="118" height="44" rx="10"/>
+    <text class="s-tc" x="404" y="51" text-anchor="middle">order.domain</text>
+    <text class="s-t2" x="404" y="69" text-anchor="middle">OrderService</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="204" y="32" width="118" height="44" rx="10"/>
+    <text class="s-tc" x="263" y="51" text-anchor="middle">order.data</text>
+    <text class="s-t2" x="263" y="69" text-anchor="middle">JpaRepository</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="63" y="32" width="118" height="44" rx="10"/>
+    <text class="s-tc" x="122" y="60" text-anchor="middle">دیتابیس</text>
+  </g>
+
+  <text class="s-t2 s-lbl" x="404" y="438" text-anchor="middle" style="--kl-i:8">هیچ ماژول دیگری درگیر نیست</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.4s" repeatCount="indefinite" path="M 686 104 L 559 104"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.4s" begin="1.7s" repeatCount="indefinite" path="M 545 176 L 418 176"/>
+  </circle>
+</svg>
+<figcaption><b>یک درخواست، یک پوشه:</b> در گام‌های ۱ تا ۳ درخواست از کاربر به لایه‌ی <code>domain</code> می‌رسد، در گام ۴ و ۵ سفارش ذخیره و ردیف آن برگردانده می‌شود و در گام ۶ و ۷ شناسه‌ی سفارش به کاربر می‌رسد. کل مسیر داخل مرز پوشه‌ی <code>order</code> می‌ماند و هیچ ماژول دیگری درگیر نمی‌شود.</figcaption>
+</figure>
 
 <div class="kl-box kl-ok">
 <span class="kl-h">نکته‌ی کلیدی</span>
@@ -793,23 +1039,81 @@ API باریک در B تعریف کنید.
 
 <h3>جریان بین دو ماژول</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant OC as order.api
-    participant PA as payment.api
-    participant PE as payment.event
-    participant NOT as shared NotificationPort
+<figure class="kl-fig">
+<svg viewBox="0 0 770 396" role="img" aria-label="دیاگرام توالی جریان داده میان دو ماژول order و payment">
+  <rect class="s-group s-group-acc" x="610" y="4" width="126" height="352" rx="14"/>
+  <rect class="s-group s-group-acc" x="326" y="4" width="280" height="352" rx="14"/>
+  <text class="s-group-t" x="673" y="22" text-anchor="middle">ماژول order</text>
+  <text class="s-group-t" x="466" y="22" text-anchor="middle">ماژول payment</text>
 
-    OC->>PA: capture(customerId, amount)
-    PA->>PA: منطق پرداخت
-    PA-->>OC: PaymentResult
+  <path class="s-dash" d="M 673 80 L 673 350"/>
+  <path class="s-dash" d="M 537 80 L 537 350"/>
+  <path class="s-dash" d="M 400 80 L 400 350"/>
+  <path class="s-dash" d="M 145 80 L 145 350"/>
 
-    Note over PA,NOT: پرداخت موفق → رویداد
+  <path class="s-arr s-flow" d="M 673 116 L 551 116"/>
+  <path class="s-head" d="M 537 116 L 549 109 L 549 123 Z"/>
+  <text class="s-tc s-lbl" x="605" y="106" text-anchor="middle" style="--kl-i:0">capture(...)</text>
 
-    PA->>PE: PaymentCapturedEvent
-    PE->>NOT: sendEmail(...)
-    PE-->>PA: done
+  <path class="s-arr s-flow" d="M 537 160 C 569 160, 569 132, 539 132"/>
+  <path class="s-head" d="M 537 128 L 530 140 L 544 140 Z"/>
+  <text class="s-t2 s-lbl" x="624" y="152" text-anchor="middle" style="--kl-i:1">منطق پرداخت</text>
 
-    Note over OC,PA: کوپل مستقیم فقط بین api دو ماژول</code></pre>
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 537 204 L 661 204"/>
+  <path class="s-head-ok" d="M 673 204 L 661 197 L 661 211 Z"/>
+  <text class="s-tc s-lbl" x="605" y="194" text-anchor="middle" style="--kl-i:2">PaymentResult</text>
+
+  <path class="s-arr s-flow" d="M 537 248 L 414 248"/>
+  <path class="s-head" d="M 400 248 L 412 241 L 412 255 Z"/>
+  <text class="s-tc s-lbl" x="468" y="238" text-anchor="middle" style="--kl-i:3">PaymentCapturedEvent</text>
+
+  <path class="s-arr s-flow" d="M 400 296 L 159 296"/>
+  <path class="s-head" d="M 145 296 L 157 289 L 157 303 Z"/>
+  <text class="s-tc s-lbl" x="272" y="286" text-anchor="middle" style="--kl-i:4">sendEmail(...)</text>
+
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 400 336 L 525 336"/>
+  <path class="s-head-ok" d="M 537 336 L 525 329 L 525 343 Z"/>
+  <text class="s-tc s-lbl" x="468" y="326" text-anchor="middle" style="--kl-i:5">done</text>
+
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="750" cy="116" r="12"/><text class="s-tc" x="750" y="120" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="750" cy="204" r="12"/><text class="s-tc" x="750" y="208" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="750" cy="248" r="12"/><text class="s-tc" x="750" y="252" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="750" cy="296" r="12"/><text class="s-tc" x="750" y="300" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="750" cy="336" r="12"/><text class="s-tc" x="750" y="340" text-anchor="middle">۵</text></g>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="618" y="32" width="110" height="44" rx="10"/>
+    <text class="s-tc" x="673" y="51" text-anchor="middle">order.api</text>
+    <text class="s-t2" x="673" y="69" text-anchor="middle">OrderController</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="478" y="32" width="118" height="44" rx="10"/>
+    <text class="s-tc" x="537" y="51" text-anchor="middle">payment.api</text>
+    <text class="s-t2" x="537" y="69" text-anchor="middle">PaymentController</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c4" x="340" y="32" width="120" height="44" rx="10"/>
+    <text class="s-tc" x="400" y="51" text-anchor="middle">payment.event</text>
+    <text class="s-t2" x="400" y="69" text-anchor="middle">رویدادهای پرداخت</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="70" y="32" width="150" height="44" rx="10"/>
+    <text class="s-tc" x="145" y="51" text-anchor="middle">shared</text>
+    <text class="s-t2" x="145" y="69" text-anchor="middle">NotificationPort</text>
+  </g>
+
+  <text class="s-t2 s-lbl" x="466" y="380" text-anchor="middle" style="--kl-i:6">کوپل مستقیم فقط بین api دو ماژول</text>
+  <text class="s-t2 s-lbl" x="145" y="380" text-anchor="middle" style="--kl-i:7">رویداد، واکنش جانبی را جدا می‌کند</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 673 116 L 551 116"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.2s" begin="1.6s" repeatCount="indefinite" path="M 400 296 L 159 296"/>
+  </circle>
+</svg>
+<figcaption><b>جریان میان دو ماژول:</b> <code>order</code> در گام ۱ فقط از راه <code>api/</code> ماژول <code>payment</code> را صدا می‌زند و در گام ۲ نتیجه را می‌گیرد؛ پرداخت موفق در گام ۳ به یک رویداد تبدیل می‌شود و در گام ۴ و ۵ بدون فراخوانی مستقیم، از راه <code>NotificationPort</code> در <code>shared</code> اعلان را می‌فرستد.</figcaption>
+</figure>
 
 <h3>قواعد جریان داده</h3>
 
@@ -1504,25 +1808,104 @@ class InventoryOrderListener {
 <section id="s12">
 <h2><span class="kl-num">بخش ۱۲</span>مقایسه با معماری‌های دیگر</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph L["معماری لایه‌ای افقی"]
-        LA1["controller/ 48 فایل"]
-        LA2["service/ 68 فایل"]
-        LA3["repository/ 31 فایل"]
-        LA1 --> LA2 --> LA3
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 352" role="img" aria-label="مقایسه‌ی پراکندگی فایل‌ها در ساختار لایه‌ای و ساختار فیچرمحور">
+  <rect class="s-group" x="430" y="36" width="325" height="300" rx="16"/>
+  <rect class="s-group s-group-acc" x="15" y="36" width="325" height="300" rx="16"/>
+  <text class="s-group-t" x="592" y="62" text-anchor="middle">لایه‌ای — سه پوشه‌ی افقی</text>
+  <text class="s-group-t" x="177" y="62" text-anchor="middle">Feature Based — پوشه‌های عمودی</text>
 
-    subgraph F["Feature Based عمودی"]
-        FB1["order/<br/>api · domain · data · event"]
-        FB2["payment/<br/>api · domain · data · event"]
-        FB3["customer/<br/>api · domain · data"]
-        FB1 --> FS["shared/"]
-        FB2 --> FS
-        FB3 --> FS
-    end
+  <rect class="s-box" x="442" y="90" width="301" height="54" rx="9"/>
+  <rect class="s-box" x="442" y="152" width="301" height="54" rx="9"/>
+  <rect class="s-box" x="442" y="214" width="301" height="54" rx="9"/>
+  <text class="s-t" x="592" y="111" text-anchor="middle">controller/</text>
+  <text class="s-t" x="592" y="173" text-anchor="middle">service/</text>
+  <text class="s-t" x="592" y="235" text-anchor="middle">repository/</text>
+  <rect class="s-acc s-hbar" x="582" y="120" width="148" height="12" rx="6" style="--kl-i:0"/>
+  <rect class="s-ok s-hbar" x="520" y="182" width="210" height="12" rx="6" style="--kl-i:1"/>
+  <rect class="s-warn s-hbar" x="634" y="244" width="96" height="12" rx="6" style="--kl-i:2"/>
+  <text class="s-val" x="474" y="131" text-anchor="middle">۴۸</text>
+  <text class="s-val" x="474" y="193" text-anchor="middle">۶۸</text>
+  <text class="s-val" x="474" y="255" text-anchor="middle">۳۱</text>
+  <text class="s-cat" x="592" y="302" text-anchor="middle">مجموع: ۱۴۷ فایل</text>
+  <text class="s-t2 s-lbl" x="592" y="324" text-anchor="middle" style="--kl-i:3">فایل‌های یک فیچر در سه پوشه پخش‌اند</text>
 
-    style F fill:#0f766e,color:#fff,stroke:#0f766e
-    style L fill:#7f1d1d,color:#fff,stroke:#7f1d1d</code></pre>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-chip" x="29" y="76" width="92" height="30" rx="9"/>
+    <text class="s-tc" x="75" y="97" text-anchor="middle">order/</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-chip" x="131" y="76" width="92" height="30" rx="9"/>
+    <text class="s-tc" x="177" y="97" text-anchor="middle">payment/</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-chip" x="233" y="76" width="92" height="30" rx="9"/>
+    <text class="s-tc" x="279" y="97" text-anchor="middle">customer/</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="29" y="118" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="75" y="138" text-anchor="middle">api</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="131" y="118" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="177" y="138" text-anchor="middle">api</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="233" y="118" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="279" y="138" text-anchor="middle">api</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="29" y="156" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="75" y="176" text-anchor="middle">domain</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="131" y="156" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="177" y="176" text-anchor="middle">domain</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="233" y="156" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="279" y="176" text-anchor="middle">domain</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="29" y="194" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="75" y="214" text-anchor="middle">data</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="131" y="194" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="177" y="214" text-anchor="middle">data</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="233" y="194" width="92" height="30" rx="9"/>
+    <text class="s-t2" x="279" y="214" text-anchor="middle">data</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 75 228 L 75 240"/>
+  <path class="s-head" d="M 75 250 L 68 238 L 82 238 Z"/>
+  <path class="s-arr s-flow" d="M 177 228 L 177 240"/>
+  <path class="s-head" d="M 177 250 L 170 238 L 184 238 Z"/>
+  <path class="s-arr s-flow" d="M 279 228 L 279 240"/>
+  <path class="s-head" d="M 279 250 L 272 238 L 286 238 Z"/>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-chip s-pulse" x="29" y="254" width="296" height="32" rx="9"/>
+    <text class="s-tc" x="177" y="275" text-anchor="middle">shared/</text>
+  </g>
+  <text class="s-t2 s-lbl" x="177" y="302" text-anchor="middle" style="--kl-i:6">هر فیچر یک پوشه‌ی کامل با مالک مشخص</text>
+  <text class="s-t2 s-lbl" x="177" y="324" text-anchor="middle" style="--kl-i:7">تغییر یک فیچر فقط همان ستون را لمس می‌کند</text>
+
+  <path class="s-arr s-flow-soft" d="M 425 180 L 347 180"/>
+  <path class="s-head-dim" d="M 335 180 L 347 173 L 347 187 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="166" text-anchor="middle" style="--kl-i:4">مهاجرت</text>
+
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 177 228 L 177 240"/>
+  </circle>
+</svg>
+<figcaption><b>پراکندگی در برابر تمرکز:</b> در ساختار لایه‌ای ۱۴۷ فایل در سه پوشه‌ی افقی پخش‌اند و میله‌ها نسبت فایل‌های هر لایه را نشان می‌دهند؛ در ساختار فیچرمحور همان فایل‌ها در سه ستون عمودی کنار هم قرار می‌گیرند و تنها به <code>shared/</code> وصل می‌شوند. پیکان میانی مسیر کم‌ریسک مهاجرت را نشان می‌دهد.</figcaption>
+</figure>
 
 <table>
 <thead>

@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -161,17 +163,17 @@
             <ul class="inline-toc-grid">
               <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: چرا پروژه‌ها بدون معماری فرو می‌پاشند؟</span></a></li>
               <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
-              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Clean Architecture چیست؟</span></a></li>
-              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Clean Architecture چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده: سیستم فروشگاه بدون معماری</span></a></li>
               <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: Dependency Rule</span></a></li>
               <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: لایه‌ها</span></a></li>
               <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
               <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
-              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: سیستم سفارش</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: سیستم سفارش فروشگاه</span></a></li>
               <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
               <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>ارتباط با زبان‌ها و Frameworkها</span></a></li>
-              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
-              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایای Clean Architecture</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب Clean Architecture</span></a></li>
               <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
               <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
               <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
@@ -181,7 +183,7 @@
               <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
               <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
               <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
-              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۴ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۴ سؤال مصاحبه شغلی</span></a></li>
               <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
               <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
               <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
@@ -294,7 +296,7 @@ Martin ایده‌هایش را از <strong>Hexagonal Architecture</strong> (Al
 <span class="kl-h">تعریف رسمی</span>
 <strong>Clean Architecture</strong> یک روش سازمان‌دهی کد است که در آن سیستم به لایه‌های متحدالمرکز تقسیم می‌شود،
 <strong>قوانین کسب‌وکار (Business Rules)</strong> در مرکز قرار می‌گیرند و تمام جزئیات فنی (UI، Database، Framework)
-در لایه‌های بیرونی می‌نشینند؛ به‌طوری که <strong>وابستگی‌ها همیشه به سمت داخل</strong> جریان دارند (Dependency Rule).
+در لایه‌های بیرونی می‌نشینند؛ به‌طوری‌که <strong>وابستگی‌ها همیشه به سمت داخل</strong> جریان دارند (Dependency Rule).
 </div>
 
 <p>برای روشن شدن مرز تعریف، ببینیم چه چیزی <strong>هست</strong> و چه چیزی <strong>نیست</strong>:</p>
@@ -351,7 +353,7 @@ Martin ایده‌هایش را از <strong>Hexagonal Architecture</strong> (Al
 <p>تحلیل این کد، چهار مشکل جدی را آشکار می‌کند:</p>
 
 <ul>
-  <li><strong>مسئولیت‌های زیاد</strong>: یک متد همزمان تاجر (قیمت)، DBA (ذخیره)، شبکه (ایمیل) و وب است.</li>
+  <li><strong>مسئولیت‌های زیاد</strong>: یک متد هم‌زمان تاجر (قیمت)، DBA (ذخیره)، شبکه (ایمیل) و وب است.</li>
   <li><strong>Coupling بالا</strong>: به <code>JdbcTemplate</code> و <code>SmtpClient</code> مستقیماً وابسته است؛ تست بدون سرور ایمیل غیرممکن است.</li>
   <li><strong>تست سخت</strong>: برای اطمینان از صحت قیمت، باید کل Controller + DB + SMTP بالا بیاید.</li>
   <li><strong>تغییر سخت</strong>: جایگزینی SMTP با SendGrid یعنی تغییر همین فایل و بازبینی همه‌ی تست‌های مرتبط.</li>
@@ -385,20 +387,66 @@ OrderController ──→ JdbcTemplate ──→ MySQL
 <span class="kl-h">Dependency Rule (قانون وابستگی)</span>
 <strong>کدِ لایه‌ی بیرونی فقط می‌تواند به لایه‌ی داخلی وابسته باشد؛ هرگز برعکس.</strong>
 
-یعنی Entityها هیچ وابستگی به Use Case، Database یا UI ندارند؛ Use Caseها فقط Entity را می‌شناسند؛
+یعنی موجودیت‌های دامنه (Entity) هیچ وابستگی‌ای به Use Case، Database یا UI ندارند؛ هر Use Case هم فقط Entity را می‌شناسد؛
 و فریم‌ورک/Database در بیرونی‌ترین لایه می‌نشیند و به همه‌ی لایه‌های داخلی وابسته است.
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    UI[Presentation / UI] --&gt; UC[Application / Use Cases]
-    UC --&gt; EN[Entities / Domain]
-    INF[Infrastructure / DB] --&gt; EN
-    INF --&gt; UC
+<figure class="kl-fig">
+<svg viewBox="0 0 770 360" role="img" aria-label="حلقه‌های هم‌مرکز چهار لایه‌ی Clean Architecture با جهت وابستگی از بیرون به داخل">
+  <!-- حلقه‌های هم‌مرکز: هر حلقه کوچک‌تر از حلقه‌ی بیرونی خود است و هسته همان دامنه است -->
+  <g class="s-node" style="--kl-i:0">
+    <circle class="s-bad" cx="240" cy="178" r="154"/>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <circle class="s-acc" cx="240" cy="178" r="124"/>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <circle class="s-warn" cx="240" cy="178" r="88"/>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <circle class="s-ok" cx="240" cy="178" r="62"/>
+  </g>
 
-    classDef inner fill:#0F766E,color:#fff
-    classDef outer fill:#14B8A6,color:#fff
-    class EN,UC inner
-    class UI,INF outer</code></pre>
+  <!-- نام هر حلقه درون نوار همان حلقه -->
+  <text class="s-t2 s-lbl" x="240" y="45" text-anchor="middle" style="--kl-i:1">Frameworks &amp; Drivers</text>
+  <text class="s-t2 s-lbl" x="240" y="75" text-anchor="middle" style="--kl-i:2">Interface Adapters</text>
+  <text class="s-t2 s-lbl" x="240" y="105" text-anchor="middle" style="--kl-i:3">Use Cases</text>
+  <text class="s-t" x="240" y="170" text-anchor="middle">Entities</text>
+  <text class="s-t2" x="240" y="192" text-anchor="middle">Domain Model</text>
+
+  <!-- پیکان‌های شعاعی: جهت مجاز وابستگی از بیرون به هسته -->
+  <path class="s-arr s-flow" d="M 70 178 L 164 178"/>
+  <path class="s-head" d="M 172 178 L 160 171 L 160 185 Z"/>
+  <path class="s-arr s-flow" d="M 410 178 L 316 178"/>
+  <path class="s-head" d="M 308 178 L 320 171 L 320 185 Z"/>
+  <path class="s-arr s-flow" d="M 240 336 L 240 258"/>
+  <path class="s-head" d="M 240 246 L 233 258 L 247 258 Z"/>
+  <text class="s-t2 s-lbl" x="356" y="164" text-anchor="middle" style="--kl-i:4">همیشه به سمت هسته</text>
+
+  <!-- ذره‌های متحرک روی مسیرهای شعاعی -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.6s" repeatCount="indefinite" path="M 410 178 L 316 178"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.6s" begin="1.8s" repeatCount="indefinite" path="M 70 178 L 164 178"/>
+  </circle>
+
+  <!-- دو یادداشت سمت راست شکل -->
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-group s-group-acc" x="420" y="28" width="332" height="88" rx="12"/>
+    <text class="s-group-t" x="586" y="56" text-anchor="middle">قاعده‌ی وابستگی</text>
+    <text class="s-t2" x="586" y="80" text-anchor="middle">لایه‌ی بیرونی فقط به لایه‌ی درونی وابسته است؛</text>
+    <text class="s-t2" x="586" y="100" text-anchor="middle">هیچ فلشی از هسته به بیرون نمی‌رود.</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-group" x="420" y="248" width="332" height="88" rx="12"/>
+    <text class="s-group-t" x="586" y="276" text-anchor="middle">هسته‌ی خالص</text>
+    <text class="s-t2" x="586" y="300" text-anchor="middle">Entity و Use Case فقط قواعد</text>
+    <text class="s-t2" x="586" y="320" text-anchor="middle">کسب‌وکار را می‌شناسند.</text>
+  </g>
+</svg>
+<figcaption><b>خوانش حلقه‌ها:</b> از مرکز به بیرون، هر حلقه فقط یک کار تازه اضافه می‌کند: نخست قواعد، سپس سناریو، بعد ترجمه و در آخر ابزار. پیکان‌های شعاعی جهت مجاز وابستگی را نشان می‌دهند؛ اگر حلقه‌ای ناچار شود از بیرون چیزی صدا بزند، مرز شکسته است و تست‌پذیری از بین می‌رود.</figcaption>
+</figure>
 
 <p>برای اجرای این قانون، سه ابزار عملی وجود دارد:</p>
 
@@ -448,28 +496,77 @@ public final class JpaOrderRepository implements OrderRepository {
 
 <p>Clean Architecture معمولاً به چهار لایه‌ی متحدالمرکز تقسیم می‌شود (از داخل به بیرون):</p>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph "Entites / Domain"
-        A1[Entities]
-    end
-    subgraph "Use Cases / Application"
-        B1[Use Cases / Interactors]
-    end
-    subgraph "Interface Adapters"
-        C1[Controllers / Presenters]
-        C2[Gateways / Repository Impls]
-        C3[View Models]
-    end
-    subgraph "Frameworks &amp; Drivers"
-        D1[Web / DB / UI]
-        D2[External Devices]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 400" role="img" aria-label="چهار لایه‌ی Clean Architecture از بیرون به هسته با محتوای هر لایه و موارد ممنوع هر لایه">
+  <text class="s-axlabel" x="615" y="16" text-anchor="middle">در هر حلقه ممنوع است</text>
 
-    B1 --&gt; A1
-    C1 --&gt; B1
-    C2 --&gt; B1
-    D1 --&gt; C1
-    D2 --&gt; C2</code></pre>
+  <!-- حلقه‌ی ۱: بیرونی‌ترین -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-bad" x="40" y="26" width="430" height="76" rx="14"/>
+    <text class="s-t" x="385" y="56" text-anchor="middle">Frameworks &amp; Drivers</text>
+    <rect class="s-box" x="70" y="49" width="124" height="30" rx="8"/>
+    <text class="s-t2" x="132" y="69" text-anchor="middle">Web / ORM / DB</text>
+    <rect class="s-box" x="206" y="49" width="124" height="30" rx="8"/>
+    <text class="s-t2" x="268" y="69" text-anchor="middle">DI Wiring</text>
+    <rect class="s-group" x="490" y="38" width="250" height="52" rx="10"/>
+    <text class="s-t2" x="615" y="70" text-anchor="middle">منطق کسب‌وکار</text>
+  </g>
+  <path class="s-arr s-flow" d="M 255 102 L 255 115"/>
+  <path class="s-head" d="M 255 124 L 248 112 L 262 112 Z"/>
+
+  <!-- حلقه‌ی ۲: آداپتورها -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="40" y="124" width="430" height="76" rx="14"/>
+    <text class="s-t" x="385" y="154" text-anchor="middle">Interface Adapters</text>
+    <rect class="s-box" x="70" y="147" width="124" height="30" rx="8"/>
+    <text class="s-t2" x="132" y="167" text-anchor="middle">Controllers / Presenter</text>
+    <rect class="s-box" x="206" y="147" width="124" height="30" rx="8"/>
+    <text class="s-t2" x="268" y="167" text-anchor="middle">Repository Impl</text>
+    <rect class="s-group" x="490" y="136" width="250" height="52" rx="10"/>
+    <text class="s-t2" x="615" y="168" text-anchor="middle">قواعد کسب‌وکار</text>
+  </g>
+  <path class="s-arr s-flow" d="M 255 200 L 255 213"/>
+  <path class="s-head" d="M 255 222 L 248 210 L 262 210 Z"/>
+
+  <!-- حلقه‌ی ۳: سناریوها -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="40" y="222" width="430" height="76" rx="14"/>
+    <text class="s-t" x="385" y="252" text-anchor="middle">Use Cases</text>
+    <rect class="s-box" x="70" y="245" width="124" height="30" rx="8"/>
+    <text class="s-t2" x="132" y="265" text-anchor="middle">CreateOrderUseCase</text>
+    <rect class="s-box" x="206" y="245" width="124" height="30" rx="8"/>
+    <text class="s-t2" x="268" y="265" text-anchor="middle">ApplyDiscount</text>
+    <rect class="s-group" x="490" y="234" width="250" height="52" rx="10"/>
+    <text class="s-t2" x="615" y="266" text-anchor="middle">جزئیات SQL و HTTP</text>
+  </g>
+  <path class="s-arr s-flow" d="M 255 298 L 255 311"/>
+  <path class="s-head" d="M 255 320 L 248 308 L 262 308 Z"/>
+
+  <!-- حلقه‌ی ۴: هسته‌ی دامنه -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="40" y="320" width="430" height="76" rx="14"/>
+    <text class="s-t" x="385" y="350" text-anchor="middle">Entities — هسته</text>
+    <rect class="s-box" x="70" y="343" width="124" height="30" rx="8"/>
+    <text class="s-t2" x="132" y="363" text-anchor="middle">Order</text>
+    <rect class="s-box" x="206" y="343" width="124" height="30" rx="8"/>
+    <text class="s-t2" x="268" y="363" text-anchor="middle">Money / Rules</text>
+    <rect class="s-group" x="490" y="332" width="250" height="52" rx="10"/>
+    <text class="s-t2" x="615" y="364" text-anchor="middle">هر وابستگی بیرونی</text>
+  </g>
+
+  <!-- ذره‌ی متحرک روی پیکان‌های جهت وابستگی -->
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.8s" repeatCount="indefinite" path="M 255 102 L 255 115"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.8s" begin="0.9s" repeatCount="indefinite" path="M 255 200 L 255 213"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.8s" begin="1.8s" repeatCount="indefinite" path="M 255 298 L 255 311"/>
+  </circle>
+</svg>
+<figcaption><b>چهار لایه از بیرون به داخل:</b> هر حلقه یک کار انجام می‌دهد و ستون راست دقیقاً همان چیزی را نشان می‌دهد که نباید در آن حلقه بنشیند. اگر قانونی کسب‌وکار در حلقه‌ی دوم بنشیند، دو حلقه‌ی اول عملاً یکی می‌شوند و مرزی که قرار بود نگه دارند از بین می‌رود.</figcaption>
+</figure>
 
 <h3>لایه‌ی ۱ — Entities</h3>
 <ul>
@@ -488,7 +585,7 @@ public final class JpaOrderRepository implements OrderRepository {
 <h3>لایه‌ی ۳ — Interface Adapters</h3>
 <ul>
   <li><strong>مسئولیت</strong>: ترجمه‌ی داده بین فرمت لایه‌های داخلی و فرمت بیرونی.</li>
-  <li><strong>داخل آن</strong>: Controllerها، Presenterها، ViewModelها، و پیاده‌سازی Repository.</li>
+  <li><strong>داخل آن</strong>: کنترلرها، Presenter، ViewModel و پیاده‌سازی Repository.</li>
   <li><strong>نباید داخل آن باشد</strong>: قواعد کسب‌وکار (باید به Use Case بسپارند).</li>
 </ul>
 
@@ -502,7 +599,7 @@ public final class JpaOrderRepository implements OrderRepository {
 <div class="kl-box">
 <span class="kl-h">مرز لایه‌ها در عمل</span>
 مرز لایه‌ها می‌تواند یک <strong>ماژول Gradle/Maven</strong>، یک <strong>پکیج</strong> یا صرفاً یک <strong>قرارداد تیمی</strong> باشد.
-هرچه مرز فیزیکی‌تر باشد، نقض آن زودتر در کامپایل لو می‌رود — به همین دلیل معماری چند-ماژوله پیشنهاد می‌شود.
+هرچه مرز فیزیکی‌تر باشد، نقض آن زودتر در کامپایل لو می‌رود — به همین دلیل معماری چندماژوله پیشنهاد می‌شود.
 </div>
 </section>
 
@@ -512,16 +609,83 @@ public final class JpaOrderRepository implements OrderRepository {
 
 <p>مسیر یک درخواست «ثبت سفارش» در Clean Architecture این شکلی است:</p>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    A[User Action] --&gt; B[Controller / Presenter]
-    B --&gt; C[CreateOrderUseCase]
-    C --&gt; D[Order Entity + Pricing Rule]
-    D --&gt; E[OrderRepository interface]
-    E --&gt; F[JpaOrderRepository]
-    F --&gt; G[(Database)]
-    G --&gt; C
-    C --&gt; H[Presenter / ViewModel]
-    H --&gt; I[Response / UI Update]</code></pre>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 370" role="img" aria-label="جریان داده‌ی ثبت سفارش در Clean Architecture از کنترلر تا پایگاه‌داده و بازگشت نتیجه">
+  <!-- مسیر رفت: بالا به پایین -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="250" y="6" width="410" height="44" rx="11"/>
+    <text class="s-t" x="455" y="25" text-anchor="middle">کاربر / API</text>
+    <text class="s-t2" x="455" y="42" text-anchor="middle">درخواست ثبت سفارش</text>
+  </g>
+  <circle class="s-chip" cx="700" cy="28" r="13"/>
+  <text class="s-tc" x="700" y="32" text-anchor="middle">۱</text>
+  <path class="s-arr s-flow" d="M 455 50 L 455 59"/>
+  <path class="s-head" d="M 455 68 L 448 56 L 462 56 Z"/>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="250" y="68" width="410" height="44" rx="11"/>
+    <text class="s-t" x="455" y="87" text-anchor="middle">Controller / Presenter</text>
+    <text class="s-t2" x="455" y="104" text-anchor="middle">اعتبارسنجی و ترجمه به Command</text>
+  </g>
+  <circle class="s-chip" cx="700" cy="90" r="13"/>
+  <text class="s-tc" x="700" y="94" text-anchor="middle">۲</text>
+  <path class="s-arr s-flow" d="M 455 112 L 455 121"/>
+  <path class="s-head" d="M 455 130 L 448 118 L 462 118 Z"/>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="250" y="130" width="410" height="44" rx="11"/>
+    <text class="s-t" x="455" y="149" text-anchor="middle">Use Case — CreateOrder</text>
+    <text class="s-t2" x="455" y="166" text-anchor="middle">هماهنگی سناریو</text>
+  </g>
+  <circle class="s-chip" cx="700" cy="152" r="13"/>
+  <text class="s-tc" x="700" y="156" text-anchor="middle">۳</text>
+  <path class="s-arr s-flow" d="M 455 174 L 455 183"/>
+  <path class="s-head" d="M 455 192 L 448 180 L 462 180 Z"/>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="250" y="192" width="410" height="44" rx="11"/>
+    <text class="s-t" x="455" y="211" text-anchor="middle">Entity — Order</text>
+    <text class="s-t2" x="455" y="228" text-anchor="middle">اعمال قانون تخفیف و قیمت</text>
+  </g>
+  <circle class="s-chip" cx="700" cy="214" r="13"/>
+  <text class="s-tc" x="700" y="218" text-anchor="middle">۴</text>
+  <path class="s-arr s-flow" d="M 455 236 L 455 245"/>
+  <path class="s-head" d="M 455 254 L 448 242 L 462 242 Z"/>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-acc" x="250" y="254" width="410" height="44" rx="11"/>
+    <text class="s-t" x="455" y="273" text-anchor="middle">OrderRepository (interface)</text>
+    <text class="s-t2" x="455" y="290" text-anchor="middle">پورت خروجی؛ پیاده‌سازی در بیرون</text>
+  </g>
+  <circle class="s-chip" cx="700" cy="276" r="13"/>
+  <text class="s-tc" x="700" y="280" text-anchor="middle">۵</text>
+  <path class="s-arr s-flow" d="M 455 298 L 455 307"/>
+  <path class="s-head" d="M 455 316 L 448 304 L 462 304 Z"/>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-bad" x="250" y="316" width="410" height="44" rx="11"/>
+    <text class="s-t" x="455" y="335" text-anchor="middle">JpaOrderRepository → Database</text>
+    <text class="s-t2" x="455" y="352" text-anchor="middle">اجرای SQL و ذخیره</text>
+  </g>
+  <circle class="s-chip" cx="700" cy="338" r="13"/>
+  <text class="s-tc" x="700" y="342" text-anchor="middle">۶</text>
+
+  <!-- مسیر بازگشت نتیجه به همان Use Case -->
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 250 276 L 150 276 L 150 152 L 242 152"/>
+  <path class="s-head-ok" d="M 250 152 L 238 145 L 238 159 Z"/>
+  <text class="s-t2 s-lbl" x="72" y="206" text-anchor="middle" style="--kl-i:6">نتیجه‌ی</text>
+  <text class="s-t2 s-lbl" x="72" y="224" text-anchor="middle" style="--kl-i:6">پایگاه‌داده</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.4s" repeatCount="indefinite" path="M 455 50 L 455 59"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.4s" begin="1.7s" repeatCount="indefinite"
+                   path="M 250 276 L 150 276 L 150 152 L 242 152"/>
+  </circle>
+</svg>
+<figcaption><b>مسیر یک درخواست:</b> ورودی از سمت راست بیرون آغاز می‌شود و تا پایگاه‌داده پایین می‌رود، اما نتیجه از مسیر خط‌چین به همان <code>Use Case</code> برمی‌گردد. همین نقطه است که <code>Use Case</code> می‌فهمد داده از کجا آمده، بدون آنکه چیزی از SQL یا ORM بداند.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -537,7 +701,7 @@ public final class JpaOrderRepository implements OrderRepository {
 <div class="kl-box kl-ok">
 <span class="kl-h">نکته‌ی کلیدی در جریان داده</span>
 جریان <strong>فراخوانی (Call)</strong> از بیرون به داخل است، اما جهت <strong>وابستگی کامپایلی</strong> هم به داخل است؛
-چون لایه‌ی بیرونی interfaceهای داخلی را پیاده‌سازی می‌کند. همین تقارن، رمز تست‌پذیری بالاست.
+چون لایه‌ی بیرونی interface‌های داخلی را پیاده‌سازی می‌کند. همین تقارن، رمز تست‌پذیری بالاست.
 </div>
 </section>
 
@@ -790,7 +954,7 @@ Entity قانون را می‌داند، Use Case سناریو را اجرا م�
 <table>
   <tr><th>زبان</th><th>Framework / ابزار</th><th>نمونه‌ی واقعی</th></tr>
   <tr><td><strong>Java</strong></td><td>Spring Boot، Android (Java)</td><td>یک سرویس سفارش با <code>@Service</code> برای Use Case و <code>@Repository</code> برای پیاده‌سازی Gateway</td></tr>
-  <tr><td><strong>Kotlin</strong></td><td>Android (MVVM + Hilt)، Ktor، Koin</td><td>ماژول‌های <code>domain</code>/<code>data</code>/<code>presentation</code> در یک پروژه‌ی چند-ماژوله</td></tr>
+  <tr><td><strong>Kotlin</strong></td><td>Android (MVVM + Hilt)، Ktor، Koin</td><td>ماژول‌های <code>domain</code>/<code>data</code>/<code>presentation</code> در یک پروژه‌ی چندماژوله</td></tr>
   <tr><td><strong>C#</strong></td><td>ASP.NET Core</td><td><code>ICourseRepository</code> در Core + <code>EfCourseRepository</code> در Infrastructure با DI</td></tr>
   <tr><td><strong>TypeScript</strong></td><td>NestJS، Angular</td><td>Use Case کلاس + <code>@Injectable()</code> و interface درایور در پوشه‌ی <code>infra</code></td></tr>
   <tr><td><strong>Python</strong></td><td>Django، FastAPI</td><td>Service کلاس‌ها در <code>app/domain</code> با Pydantic models و Adapterهای ORM</td></tr>
@@ -824,17 +988,17 @@ public class OrderConfig {
 <div class="kl-scroll">
 <table>
   <tr><th>#</th><th>مزیت</th><th>توضیح با مثال</th></tr>
-  <tr><td>۱</td><td><strong>Maintainability</strong></td><td>تغییر قانون تخفیف فقط فایل <code>Order.total()</code> را دست می‌زند؛ هیچ Controller یا SQL تغییر نمی‌کند</td></tr>
-  <tr><td>۲</td><td><strong>Testability</strong></td><td>تست قوانین بدون DB و بدون شبکه؛ هزار تست دامنه در چند صدم ثانیه اجرا می‌شوند</td></tr>
-  <tr><td>۳</td><td><strong>Separation of Concerns</strong></td><td>هر فایل یک مسئولیت دارد؛ مرور <code>domain</code> بدون فهم Spring ممکن است</td></tr>
-  <tr><td>۴</td><td><strong>کاهش Coupling</strong></td><td>جابه‌جایی MySQL به PostgreSQL فقط یک کلاس Adapter را تغییر می‌دهد</td></tr>
-  <tr><td>۵</td><td><strong>قابلیت تعویض Framework</strong></td><td>مهاجرت از JAX-RS به Spring MVC یا از Angular به React بدون لمس Use Caseها</td></tr>
-  <tr><td>۶</td><td><strong>توسعه‌ی تیمی بهتر</strong></td><td>دو توسعه‌دهنده روی UI و DB همزمان کار می‌کنند چون مرز مشخص است و تداخل کم می‌شود</td></tr>
-  <tr><td>۷</td><td><strong>Scalability سازمانی</strong></td><td>تیم جدید می‌تواند فقط روی <code>presentation</code> استخدام شود و domain ثابت بماند</td></tr>
+  <tr><td>۱</td><td><strong>نگهداشت‌پذیری</strong></td><td>تغییر قانون تخفیف فقط فایل <code>Order.total()</code> را دست می‌زند؛ هیچ Controller یا SQL تغییر نمی‌کند</td></tr>
+  <tr><td>۲</td><td><strong>تست‌پذیری</strong></td><td>تست قوانین بدون DB و بدون شبکه؛ هزار تست دامنه در چند صدم ثانیه اجرا می‌شوند</td></tr>
+  <tr><td>۳</td><td><strong>جداسازی مسئولیت‌ها</strong></td><td>هر فایل یک مسئولیت دارد؛ مرور <code>domain</code> بدون فهم Spring ممکن است</td></tr>
+  <tr><td>۴</td><td><strong>کاهش جفت‌شدگی</strong></td><td>جابه‌جایی MySQL به PostgreSQL فقط یک کلاس Adapter را تغییر می‌دهد</td></tr>
+  <tr><td>۵</td><td><strong>قابلیت تعویض Framework</strong></td><td>مهاجرت از JAX-RS به Spring MVC یا از Angular به React بدون لمس هیچ Use Case</td></tr>
+  <tr><td>۶</td><td><strong>توسعه‌ی تیمی بهتر</strong></td><td>دو توسعه‌دهنده روی UI و DB هم‌زمان کار می‌کنند چون مرز مشخص است و تداخل کم می‌شود</td></td></tr>
+  <tr><td>۷</td><td><strong>مقیاس‌پذیری سازمانی</strong></td><td>تیم جدید می‌تواند فقط روی <code>presentation</code> استخدام شود و domain ثابت بماند</td></tr>
   <tr><td>۸</td><td><strong>امکان چند UI هم‌زمان</strong></td><td>یک Use Case هم از REST و هم از CLI فراخوانی می‌شود؛ منطق دوبار نوشته نمی‌شود</td></tr>
-  <tr><td>۹</td><td><strong>مستندسازی خودکار</strong></td><td>نام Use Caseها (مثل <code>RefundPayment</code>) خودِ دامنه را توصیف می‌کنند</td></tr>
+  <tr><td>۹</td><td><strong>مستندسازی خودکار</strong></td><td>نام Use Caseها (مثل <code>RefundPayment</code>) خودِ دامنه را توصیف می‌کند</td></tr>
   <tr><td>۱۰</td><td><strong>پایداری در برابر تغییر</strong></td><td>جزئیات فرار (UI/DB) عوض می‌شوند؛ قواعد کسب‌وکار سال‌ها ثابت می‌مانند</td></tr>
-  <tr><td>۱۱</td><td><strong>Demo و Prototyping سریع</strong></td><td>با Fake درایورها می‌توان نسخه‌ی نمایشی بدون زیرساخت اجرا کرد</td></tr>
+  <tr><td>۱۱</td><td><strong>نمونه‌ی نمایشی سریع</strong></td><td>با Fake درایورها می‌توان نسخه‌ی نمایشی بدون زیرساخت اجرا کرد</td></tr>
 </table>
 </div>
 </section>
@@ -852,10 +1016,10 @@ public class OrderConfig {
   <tr><td>۲</td><td><strong>تعداد فایل زیاد</strong></td><td>Entity + Command + Result + UseCase + Port + Adapter برای یک سناریوی ساده</td></tr>
   <tr><td>۳</td><td><strong>زمان توسعه‌ی اولیه بیشتر</strong></td><td>ساخت اسکلت اولیه ۲۰٪ تا ۴۰٪ زمان بیشتری می‌گیرد</td></tr>
   <tr><td>۴</td><td><strong>نیاز به تجربه</strong></td><td>مرزبندی اشتباه (مثلاً منطق کسب‌وکار در Controller) بدتر از بی‌معماری است</td></tr>
-  <tr><td>۵</td><td><strong>خطر Overengineering</strong></td><td>برای یک CRUD ساد، ساختن چهار لایه هدر دادن انرژی است</td></tr>
-  <tr><td>۶</td><td><strong>Boilerplate بالا</strong></td><td>Mapping بین DTO و مدل دامنه در هر لایه تکرار می‌شود</td></tr>
+  <tr><td>۵</td><td><strong>خطر مهندسی زائد</strong></td><td>برای یک CRUD ساده، ساختن چهار لایه هدر دادن انرژی است</td></tr>
+  <tr><td>۶</td><td><strong>کد تکراری زیاد</strong></td><td>Mapping بین DTO و مدل دامنه در هر لایه تکرار می‌شود</td></tr>
   <tr><td>۷</td><td><strong>موافقت تیم سخت</strong></td><td>تیم‌های بدون تجربه ممکن است نام پوشه‌ها را کپی کنند اما مرز را رعایت نکنند</td></tr>
-  <tr><td>۸</td><td><strong>Debug طولانی‌تر</strong></td><td>برای یک باگ باید از Controller تا Use Case ردیابی کنید (لاگ‌گذاری خوب لازم دارد)</td></tr>
+  <tr><td>۸</td><td><strong>عیب‌یابی طولانی‌تر</strong></td><td>برای یک باگ باید از Controller تا Use Case ردیابی کنید (لاگ‌گذاری خوب لازم دارد)</td></tr>
   <tr><td>۹</td><td><strong>بازده کم برای پروژه‌های کوتاه</strong></td><td>اگر عمر پروژه ۲ هفته باشد، هزینه‌ی معماری برنمی‌گردد</td></tr>
 </table>
 </div>
@@ -880,7 +1044,7 @@ public class OrderConfig {
   <li><strong>تست اهمیت حیاتی دارد</strong> — پروژه‌ی مالی/سلامت/پرداخت که خطا هزینه‌ی مالی دارد</li>
   <li><strong>چند Client هم‌زمان</strong> — Web + Mobile + CLI یا API عمومی با یک هسته‌ی مشترک</li>
   <li><strong>تعویض زیرساخت محتمل است</strong> — مثلاً مهاجرت از PostgreSQL به MongoDB یا از REST به GraphQL</li>
-  <li><strong>دانش باید ماندگار شود</strong> — نام Use Caseها و Entityها اسناد زنده‌ی دامنه هستند</li>
+  <li><strong>دانش باید ماندگار شود</strong> — نام Use Caseها و موجودیت‌ها اسناد زنده‌ی دامنه هستند</li>
 </ul>
 
 <div class="kl-box kl-ok">
@@ -903,7 +1067,7 @@ public class OrderConfig {
   <tr><td><strong>CRUD ساده</strong></td><td>اگر منطق کسب‌وکاری وجود ندارد، Entity و Use Case فقط لایه‌ی بی‌مصرف می‌آفرینند</td></tr>
   <tr><td><strong>Admin Panel کوچک</strong></td><td>پنل داخلی با عمر کوتاه و یک توسعه‌دهنده — MVC ساده کافی است</td></tr>
   <tr><td><strong>اسکریپت یا ابزار یک‌بارمصرف</strong></td><td>لایه‌بندی برای کدی که فردا پاک می‌شود، سربار است</td></tr>
-  <tr><td><strong>MVP اولیه‌ی استارتاپ</strong></td><td>اول باید ثابت کنید محصول مشتری دارد؛ بعد بازسازی معماری کنید (بعضی وقت‌ها)</td></tr>
+  <tr><td><strong>MVP اولیه‌ی استارتاپ</strong></td><td>اول باید ثابت کنید که محصول مشتری دارد؛ بعد معماری را بازسازی کنید (گاهی)</td></tr>
   <tr><td><strong>تیم کوچک بدون تجربه‌ی معماری</strong></td><td>پیاده‌سازی نادرستِ معماری پیچیده، بدتر از MVC درست است</td></tr>
 </table>
 </div>
@@ -921,19 +1085,90 @@ public class OrderConfig {
 
 <p>معماری‌هایی که اغلب با Clean Architecture اشتباه گرفته می‌شوند:</p>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    subgraph Clean[Clean Architecture]
-        C1[Entities] --- C2[Use Cases] --- C3[Adapters] --- C4[Frameworks]
-    end
-    subgraph Onion[Onion Architecture]
-        O1[Domain Model] --- O2[Domain Services] --- O3[Application Services] --- O4[Infrastructure]
-    end
-    subgraph Hex[Hexagonal Architecture]
-        H1[Core / Ports] --- H2[Adapters]
-    end
-    subgraph Layered[Layered Architecture]
-        L1[Presentation] --- L2[Business] --- L3[Data Access]
-    end</code></pre>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="مقایسه‌ی زنجیره‌ی لایه‌های Clean، Onion، Hexagonal و Layered با جهت وابستگی">
+  <text class="s-axlabel" x="385" y="14" text-anchor="middle">پیکان‌ها جهت وابستگی را نشان می‌دهند: همیشه به سمت هسته</text>
+
+  <!-- ردیف ۱: Clean Architecture -->
+  <g class="s-node" style="--kl-i:0">
+    <text class="s-t" x="736" y="56" text-anchor="middle">Clean</text>
+    <rect class="s-ok" x="20" y="26" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="86" y="55" text-anchor="middle">Entities</text>
+    <rect class="s-warn" x="200" y="26" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="266" y="55" text-anchor="middle">Use Cases</text>
+    <rect class="s-acc" x="380" y="26" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="446" y="55" text-anchor="middle">Adapters</text>
+    <rect class="s-bad" x="560" y="26" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="626" y="55" text-anchor="middle">Frameworks</text>
+  </g>
+  <path class="s-arr s-flow" d="M 194 50 L 158 50"/>
+  <path class="s-head" d="M 152 50 L 164 43 L 164 57 Z"/>
+  <path class="s-arr s-flow" d="M 374 50 L 338 50"/>
+  <path class="s-head" d="M 332 50 L 344 43 L 344 57 Z"/>
+  <path class="s-arr s-flow" d="M 554 50 L 518 50"/>
+  <path class="s-head" d="M 512 50 L 524 43 L 524 57 Z"/>
+
+  <!-- ردیف ۲: Onion Architecture -->
+  <g class="s-node" style="--kl-i:1">
+    <text class="s-t" x="736" y="126" text-anchor="middle">Onion</text>
+    <rect class="s-ok" x="20" y="96" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="86" y="125" text-anchor="middle">Domain Model</text>
+    <rect class="s-warn" x="200" y="96" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="266" y="125" text-anchor="middle">Domain Services</text>
+    <rect class="s-acc" x="380" y="96" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="446" y="125" text-anchor="middle">App Services</text>
+    <rect class="s-bad" x="560" y="96" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="626" y="125" text-anchor="middle">Infrastructure</text>
+  </g>
+  <path class="s-arr s-flow" d="M 194 120 L 158 120"/>
+  <path class="s-head" d="M 152 120 L 164 113 L 164 127 Z"/>
+  <path class="s-arr s-flow" d="M 374 120 L 338 120"/>
+  <path class="s-head" d="M 332 120 L 344 113 L 344 127 Z"/>
+  <path class="s-arr s-flow" d="M 554 120 L 518 120"/>
+  <path class="s-head" d="M 512 120 L 524 113 L 524 127 Z"/>
+
+  <!-- ردیف ۳: Hexagonal Architecture -->
+  <g class="s-node" style="--kl-i:2">
+    <text class="s-t" x="736" y="196" text-anchor="middle">Hexagonal</text>
+    <rect class="s-ok" x="20" y="166" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="86" y="195" text-anchor="middle">Core / Ports</text>
+    <rect class="s-warn" x="200" y="166" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="266" y="195" text-anchor="middle">Adapters</text>
+    <rect class="s-bad" x="380" y="166" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="446" y="195" text-anchor="middle">Drivers</text>
+    <text class="s-t2" x="600" y="196" text-anchor="middle">درایورهای متعدد</text>
+  </g>
+  <path class="s-arr s-flow" d="M 194 190 L 158 190"/>
+  <path class="s-head" d="M 152 190 L 164 183 L 164 197 Z"/>
+  <path class="s-arr s-flow" d="M 374 190 L 338 190"/>
+  <path class="s-head" d="M 332 190 L 344 183 L 344 197 Z"/>
+
+  <!-- ردیف ۴: Layered Architecture — بدون قاعده‌ی جهت -->
+  <g class="s-node" style="--kl-i:3">
+    <text class="s-t" x="736" y="266" text-anchor="middle">Layered</text>
+    <rect class="s-box" x="20" y="236" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="86" y="265" text-anchor="middle">Presentation</text>
+    <rect class="s-box" x="200" y="236" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="266" y="265" text-anchor="middle">Business</text>
+    <rect class="s-box" x="380" y="236" width="132" height="48" rx="11"/>
+    <text class="s-t2" x="446" y="265" text-anchor="middle">Data Access</text>
+    <text class="s-tbad" x="600" y="266" text-anchor="middle">جهت وابستگی آزاد</text>
+  </g>
+  <path class="s-dash s-arr-bad" d="M 194 260 L 158 260"/>
+  <path class="s-head-bad" d="M 152 260 L 164 253 L 164 267 Z"/>
+  <path class="s-dash s-arr-bad" d="M 374 260 L 338 260"/>
+  <path class="s-head-bad" d="M 332 260 L 344 253 L 344 267 Z"/>
+
+  <!-- ذره‌ی متحرک روی زنجیره‌ی لایه‌ها -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 554 50 L 518 50"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.2s" begin="1.6s" repeatCount="indefinite" path="M 554 120 L 518 120"/>
+  </circle>
+</svg>
+<figcaption><b>تفاوت در تعداد و جای حلقه‌ها:</b> هر سه معماری نخست به یک هسته‌ی خالص و حلقه‌های رو به بیرون می‌رسند؛ <code>Hexagonal</code> با دو حلقه هم کار می‌کند و <code>Layered</code> تنها موردی است که فلش‌هایش خط‌چین و بدون تضمین است، چون هیچ قاعده‌ای جهت وابستگی را الزام نمی‌کند.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -947,10 +1182,78 @@ public class OrderConfig {
 </table>
 </div>
 
+<figure class="kl-fig">
+<svg viewBox="0 0 770 268" role="img" aria-label="امتیاز مقایسه‌ی Clean، Onion، Hexagonal و Layered در چهار معیار">
+  <!-- خطوط شبکه و محور امتیاز -->
+  <path class="s-grid" d="M 528 4 L 528 244"/>
+  <path class="s-grid" d="M 446 4 L 446 244"/>
+  <path class="s-grid" d="M 364 4 L 364 244"/>
+  <path class="s-grid" d="M 282 4 L 282 244"/>
+  <path class="s-grid" d="M 200 4 L 200 244"/>
+  <path class="s-axis" d="M 610 4 L 610 244"/>
+  <text class="s-axlabel" x="528" y="257" text-anchor="middle">۱</text>
+  <text class="s-axlabel" x="446" y="257" text-anchor="middle">۲</text>
+  <text class="s-axlabel" x="364" y="257" text-anchor="middle">۳</text>
+  <text class="s-axlabel" x="282" y="257" text-anchor="middle">۴</text>
+  <text class="s-axlabel" x="200" y="257" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۱: تست‌پذیری -->
+  <text class="s-cat" x="698" y="36" text-anchor="middle">تست‌پذیری</text>
+  <rect class="s-acc s-hbar" x="200" y="16" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="24" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="200" y="27" width="410" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="184" y="35" text-anchor="middle">۵</text>
+  <rect class="s-warn s-hbar" x="200" y="38" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="46" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="364" y="49" width="246" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="348" y="57" text-anchor="middle">۳</text>
+
+  <!-- ردیف ۲: انعطاف معماری -->
+  <text class="s-cat" x="698" y="96" text-anchor="middle">انعطاف معماری</text>
+  <rect class="s-acc s-hbar" x="364" y="76" width="246" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="348" y="84" text-anchor="middle">۳</text>
+  <rect class="s-ok s-hbar" x="364" y="87" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="95" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="200" y="98" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="106" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="528" y="109" width="82" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="512" y="117" text-anchor="middle">۱</text>
+
+  <!-- ردیف ۳: مناسب پروژه‌ی کوچک -->
+  <text class="s-cat" x="698" y="156" text-anchor="middle">مناسب پروژه‌ی کوچک</text>
+  <rect class="s-acc s-hbar" x="528" y="136" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="144" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="446" y="147" width="164" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="430" y="155" text-anchor="middle">۲</text>
+  <rect class="s-warn s-hbar" x="446" y="158" width="164" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="430" y="166" text-anchor="middle">۲</text>
+  <rect class="s-c4 s-hbar" x="200" y="169" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="177" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۴: هزینه‌ی رعایت قاعده -->
+  <text class="s-cat" x="698" y="216" text-anchor="middle">هزینه‌ی رعایت قاعده</text>
+  <rect class="s-acc s-hbar" x="200" y="196" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="204" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="282" y="207" width="328" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="266" y="215" text-anchor="middle">۴</text>
+  <rect class="s-warn s-hbar" x="364" y="218" width="246" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="348" y="226" text-anchor="middle">۳</text>
+  <rect class="s-c4 s-hbar" x="528" y="229" width="82" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="512" y="237" text-anchor="middle">۱</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>Clean</span>
+  <span><i class="c-ok"></i>Onion</span>
+  <span><i class="c-warn"></i>Hexagonal</span>
+  <span><i class="c-c4"></i>Layered</span>
+</div>
+<figcaption><b>امتیاز نسبی (از ۵):</b> امتیازها تبدیل مستقیم واژه‌های جدول مقایسه‌ی همین بخش به مقیاس ۱ تا ۵ هستند (بسیار بالا = ۵، متوسط = ۳، خیر = ۱) و ردیف پایانی از جدول معایب بخش ۱۳ و بخش‌های ۱۴ و ۱۵ همین مقاله استخراج شده است. <code>Clean</code> و <code>Onion</code> گران‌ترین قاعده را دارند و در عوض تست‌پذیری بالاتری می‌دهند؛ <code>Layered</code> ارزان است اما جهت وابستگی را تضمین نمی‌کند.</figcaption>
+</figure>
+
 <p><strong>تفاوت کلیدی</strong>:</p>
 <ul>
   <li><strong>Clean vs Onion</strong>: هر دو متحدالمرکزند؛ Clean بر Use Case و Onion بر تسلط بر Domain تأکید بیشتری دارد.</li>
-  <li><strong>Clean vs Hexagonal</strong>: Hexagonal هر ورودی/خروجی را یک Port می‌نامد (تاکید بر interface)، Clean بر جهت وابستگی.</li>
+  <li><strong>Clean vs Hexagonal</strong>: Hexagonal هر ورودی/خروجی را یک Port می‌نامد (تأکید بر interface)، Clean بر جهت وابستگی.</li>
   <li><strong>Clean vs Layered</strong>: در Layered ممکن است لایه‌ی Data به Business وابسته شود؛ در Clean وابستگی همیشه به داخل است.</li>
 </ul>
 
@@ -1019,7 +1322,7 @@ public class OrderService {
   <tr><td><strong>Facade</strong></td><td>ساده‌سازی رابط یک زیرسیستم پیچیده</td><td><code>PaymentService</code> روی چند درگاه مختلف</td></tr>
   <tr><td><strong>Strategy</strong></td><td>الگوریتم‌های قابل تعویض داخل Use Case</td><td>استراتژی‌های تخفیف: Percentage، Fixed، Seasonal</td></tr>
   <tr><td><strong>Observer / Pub-Sub</strong></td><td>جدا کردن رویدادها بعد از اجرای Use Case</td><td><code>OrderConfirmed</code> → ایمیل، انبار، تحلیل</td></tr>
-  <tr><td><strong>Factory</strong></td><td>ساخت پیچیده‌ی Entityها یا انتخاب Adapter</td><td><code>OrderFactory.fromCart(Cart)</code></td></tr>
+  <tr><td><strong>Factory</strong></td><td>ساخت پیچیده‌ی موجودیت‌ها یا انتخاب Adapter</td><td><code>OrderFactory.fromCart(Cart)</code></td></tr>
   <tr><td><strong>MVC / MVVM</strong></td><td>لایه‌ی Presentation را ساختار می‌دهند</td><td>ViewModel در اندروید، Controller در Spring</td></tr>
 </table>
 </div>
@@ -1115,10 +1418,10 @@ void shouldConfirmOrderWhenPaymentSucceeds() {
 <div class="kl-scroll">
 <table>
   <tr><th>#</th><th>اشتباه</th><th>نتیجه</th><th>راه درست</th></tr>
-  <tr><td>۱</td><td>استفاده بدون نیاز (پروژه‌ی کوچک)</td><td>Overengineering و هدررفت زمان</td><td>اول ساده شروع کنید، مرزها را بر اساس نیاز بکشید</td></tr>
+  <tr><td>۱</td><td>استفاده بدون نیاز (پروژه‌ی کوچک)</td><td>مهندسی زائد و هدررفت زمان</td><td>اول ساده شروع کنید، مرزها را بر اساس نیاز بکشید</td></tr>
   <tr><td>۲</td><td>کپی کردن ساختار پوشه‌ها بدون فهم مرز</td><td>شباهت ظاهری، آشوب درونی</td><td>ابتدا قانون وابستگی را توضیح دهید، بعد پوشه بسازید</td></tr>
-  <tr><td>۳</td><td>ساخت کلاس/پوشه‌ی زیاد برای هر متد</td><td>Boilerplate و خوانایی پایین</td><td>تا زمانی که دو مصرف‌کننده ندارد، واسط اضافه نکنید</td></tr>
-  <tr><td>۴</td><td>Mixing Responsibilities</td><td>منطق کسب‌وکار در Controller/Entity که باید</td><td>قانون در Entity، سناریو در Use Case، ترجمه در Adapter</td></tr>
+  <tr><td>۳</td><td>ساخت کلاس/پوشه‌ی زیاد برای هر متد</td><td>کد تکراری و خوانایی پایین</td><td>تا زمانی که دو مصرف‌کننده ندارد، واسط اضافه نکنید</td></tr>
+  <tr><td>۴</td><td>مخلوط‌کردن مسئولیت‌ها</td><td>منطق کسب‌وکار در Controller یا Entity</td><td>قانون در Entity، سناریو در Use Case، ترجمه در Adapter</td></tr>
   <tr><td>۵</td><td>وابستگی اشتباه (interface در بیرون)</td><td>Entity به JPA وابسته می‌شود</td><td>interface همیشه در لایه‌ی داخلی</td></tr>
   <tr><td>۶</td><td>عدم رعایت Dependency Direction</td><td>دایره‌ی وابستگی و کامپایل شکسته</td><td>بازبینی مداوم importها؛ ابزار معماری مثل ArchUnit</td></tr>
   <tr><td>۷</td><td>Use Case‌های غول‌پیکر</td><td>کلاس ۵۰۰ خطی با ده‌ها مسئولیت</td><td>یک Use Case = یک سناریوی واحد با یک هدف</td></tr>
@@ -1184,9 +1487,9 @@ void shouldConfirmOrderWhenPaymentSucceeds() {
 <div class="kl-scroll">
 <table>
   <tr><th>بعد</th><th>تأثیر Clean Architecture</th></tr>
-  <tr><td>Maintainability</td><td>✅ بهبود چشمگیر</td></tr>
-  <tr><td>Testability</td><td>✅ بهبود چشمگیر</td></tr>
-  <tr><td>Scalability سازمانی (تیم/کد)</td><td>✅ بهبود چشمگیر</td></tr>
+  <tr><td>نگهداشت‌پذیری</td><td>✅ بهبود چشمگیر</td></tr>
+  <tr><td>تست‌پذیری</td><td>✅ بهبود چشمگیر</td></tr>
+  <tr><td>مقیاس‌پذیری سازمانی (تیم/کد)</td><td>✅ بهبود چشمگیر</td></tr>
   <tr><td>Throughput / Latency</td><td>⬜ بی‌تأثیر (یا اندکی منفی به خاطر لایه‌ی ترجمه)</td></tr>
   <tr><td>مصرف حافظه‌ی اجرا</td><td>⬜ تقریباً بی‌تأثیر</td></tr>
 </table>
@@ -1230,7 +1533,7 @@ DTO یک حامل داده‌ی بدون رفتار برای انتقال بین
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۴ — Use Case دقیقاً چه کار می‌کند؟</span>
-یک سناریوی کاربردی خاص را هماهنگ می‌کند: ورودی را می‌گیرد، Entityها را فراخوانی می‌کند،
+یک سناریوی کاربردی خاص را هماهنگ می‌کند: ورودی را می‌گیرد، موجودیت‌های دامنه را فراخوانی می‌کند،
 وابستگی‌ها (Repository/Gateway) را به کار می‌اندازد و خروجی سازگار با لایه‌ی بیرونی برمی‌گرداند.
 </div>
 
@@ -1412,7 +1715,7 @@ Java: Spring یا Dagger · Kotlin/Android: Hilt یا Koin · C#: built-in DI ·
 
 <div class="kl-box">
 <span class="kl-h">۱۰. اگر فقط یک نفر توسعه‌دهنده باشم چطور؟</span>
- حتی تک‌نفره، مرز domain/infrastructure به شما کمک می‌کند تست‌ها را سریع نگه دارید و ۶ ماه بعد کد را پیدا کنید؛
+ حتی تک‌نفره، مرز domain/infrastructure کمک می‌کند تست‌ها را سریع نگه دارید و شش ماه بعد کد را سریع‌تر پیدا کنید؛
 با این حال حجم لایه‌ها را متناسب نگه دارید.
 </div>
 
@@ -1458,13 +1761,13 @@ Layer چیدمان فایل‌هاست؛ Boundary قراردادی است که �
   <tr><td><strong>مناسب نیست برای</strong></td><td>Prototype، CRUD ساده، اسکریپت، ابزار یک‌بارمصرف</td></tr>
   <tr><td><strong>لایه‌ها</strong></td><td>Entities ← Use Cases ← Interface Adapters ← Frameworks &amp; Drivers</td></tr>
   <tr><td><strong>مزیت اصلی</strong></td><td>تست‌پذیری و نگهداری بالا؛ تعویض آسان UI و Database</td></tr>
-  <tr><td><strong>مشکل اصلی</strong></td><td>تعداد فایل و Boilerplate زیاد؛ ریسک Overengineering</td></tr>
+  <tr><td><strong>مشکل اصلی</strong></td><td>تعداد فایل و کد تکراری زیاد؛ ریسک مهندسی زائد</td></tr>
   <tr><td><strong>الگوهای کلیدی</strong></td><td>Repository · DI · Adapter · Strategy · Facade</td></tr>
   <tr><td><strong>ارتباط با SOLID</strong></td><td>SRP (محل تصمیم)، OCP (افزودن بدون تغییر)، DIP (جهت وابستگی)</td></tr>
   <tr><td><strong>Frameworkهای معروف</strong></td><td>Spring Boot · Android · ASP.NET Core · NestJS · Angular · FastAPI</td></tr>
   <tr><td><strong>ابزار تضمین مرز</strong></td><td>ArchUnit (JVM) · لینتر وابستگی · جدا بودن ماژول‌ها</td></tr>
   <tr><td><strong>نسبت تست پیشنهادی</strong></td><td>۷۰٪ دامنه · ۲۰٪ Use Case · ۱۰٪ ادغام</td></tr>
-  <tr><td><strong>چک‌لیست نهایی</strong></td><td>١) Entity بدون import فریم‌ورک ۲) interface در داخل ۳) پیاده‌سازی در بیرون ۴) سیم‌کشی در ورودی ۵) تست معماری در CI</td></tr>
+  <tr><td><strong>چک‌لیست نهایی</strong></td><td>۱) Entity بدون import فریم‌ورک ۲) interface در داخل ۳) پیاده‌سازی در بیرون ۴) سیم‌کشی در ورودی ۵) تست معماری در CI</td></tr>
 </table>
 </div>
 
@@ -1554,17 +1857,17 @@ Repository Pattern · DDD · Feature Based · Event Driven · CQRS · Microservi
             <ul class="toc-list" id="sidebar-toc">
               <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: چرا پروژه‌ها بدون معماری فرو می‌پاشند؟</span></a></li>
               <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
-              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Clean Architecture چیست؟</span></a></li>
-              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Clean Architecture چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده: سیستم فروشگاه بدون معماری</span></a></li>
               <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: Dependency Rule</span></a></li>
               <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: لایه‌ها</span></a></li>
               <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
               <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
-              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سیستم سفارش</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سیستم سفارش فروشگاه</span></a></li>
               <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
               <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ارتباط با زبان‌ها و Frameworkها</span></a></li>
-              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
-              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایای Clean Architecture</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب Clean Architecture</span></a></li>
               <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
               <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
               <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
@@ -1574,7 +1877,7 @@ Repository Pattern · DDD · Feature Based · Event Driven · CQRS · Microservi
               <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
               <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
               <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
-              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۴ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۴ سؤال مصاحبه شغلی</span></a></li>
               <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
               <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
               <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
@@ -1620,17 +1923,17 @@ Repository Pattern · DDD · Feature Based · Event Driven · CQRS · Microservi
       <ul class="toc-list" id="drawer-toc">
         <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: چرا پروژه‌ها بدون معماری فرو می‌پاشند؟</span></a></li>
         <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
-        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Clean Architecture چیست؟</span></a></li>
-        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Clean Architecture چیست؟ (تعریف دقیق)</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده: سیستم فروشگاه بدون معماری</span></a></li>
         <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: Dependency Rule</span></a></li>
         <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: لایه‌ها</span></a></li>
         <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
         <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
-        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سیستم سفارش</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سیستم سفارش فروشگاه</span></a></li>
         <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
         <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ارتباط با زبان‌ها و Frameworkها</span></a></li>
-        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
-        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایای Clean Architecture</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب Clean Architecture</span></a></li>
         <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
         <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
         <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
@@ -1640,7 +1943,7 @@ Repository Pattern · DDD · Feature Based · Event Driven · CQRS · Microservi
         <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
         <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
         <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
-        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۴ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۴ سؤال مصاحبه شغلی</span></a></li>
         <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
         <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
         <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>

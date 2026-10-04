@@ -53,6 +53,25 @@
     json: 'JSON',
     txt: 'Text',
     text: 'Text',
+    /* --- مجموعه‌ی API --- */
+    csharp: 'C#',
+    'c#': 'C#',
+    cs: 'C#',
+    http: 'HTTP',
+    https: 'HTTP',
+    rest: 'HTTP',
+    sql: 'SQL',
+    yaml: 'YAML',
+    yml: 'YAML',
+    protobuf: 'Protobuf',
+    proto: 'Protobuf',
+    graphql: 'GraphQL',
+    gql: 'GraphQL',
+    js: 'JavaScript',
+    javascript: 'JavaScript',
+    ini: 'INI',
+    conf: 'Config',
+    diff: 'Diff',
   };
 
   function codeLangLabel(pre) {

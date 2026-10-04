@@ -496,6 +496,21 @@ html[data-theme="dark"] figure.kl-fig svg .s-arr-ok {
   color: var(--color-secondary);
 }
 
+/* جعبه‌ی سربرگ بخش (مثل «سطح Junior» یا «پرسش‌های پرتکرار») */
+.kl-box.kl-hd {
+  border-right-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border-color: rgba(132, 204, 22, 0.32);
+  border-style: dashed;
+  padding: 0.85rem 1.4rem;
+  box-shadow: none;
+}
+.kl-box.kl-hd .kl-h {
+  color: var(--color-accent);
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
 .kl-ok {
   color: var(--color-success);
   font-weight: 800;

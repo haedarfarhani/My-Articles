@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -160,7 +162,7 @@
             <ul class="inline-toc-grid">
               <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: مشکل تست‌ناپذیری Activity</span></a></li>
               <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
-              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVP چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVP چیست؟ (تعریف دقیق)</span></a></li>
               <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
               <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: جریان یک‌طرفه</span></a></li>
               <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: اجزای MVP</span></a></li>
@@ -239,7 +241,7 @@ MVP مدت‌ها پیش از آنکه پایتخت محبوب باشد، در �
   <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
   <tr><td>دهه‌ی ۱۹۸۰–۱۹۹۰</td><td>MVC کلاسیک در Smalltalk؛ مشکل دسترسی مستقیم View به Model</td></tr>
   <tr><td>دهه‌ی ۱۹۹۰</td><td>تولد Visual Basic و Delphi؛ نیاز به جداسازی منطق از فرم</td></tr>
-  <tr><td>۲۰۰۰s — پلتفرم‌های مایکروسافت</td><td>MVP به‌عنوان الگوی رسمی معرفی شد؛ جریان یک‌طرفه برای تست</td></tr>
+  <tr><td>دهه‌ی ۲۰۰۰ — پلتفرم‌های مایکروسافت</td><td>MVP به‌عنوان الگوی رسمی معرفی شد؛ جریان یک‌طرفه برای تست</td></tr>
   <tr><td>۲۰۰۸–۲۰۱۳ — موج اندروید</td><td>Activity به‌مرور چاق شد و تیم‌ها به دنبال راه‌حل تست‌پذیری رفتند</td></tr>
   <tr><td>۲۰۱۳ — Square</td><td>مقاله‌ی کلاسیک Presenter آمد و MVP در جامعه‌ی اندروید فراگیر شد</td></tr>
   <tr><td>۲۰۱۷ به بعد</td><td>MVVM و سپس MVI محبوب شدند، ولی MVP همچنان در پروژه‌های موجود زنده است</td></tr>
@@ -284,9 +286,9 @@ MVP برای حل سه مشکل هم‌زمان ساخته شد: <strong>۱) ت�
 
 <div class="kl-box kl-bad">
 <span class="kl-h">سوءتفاهم رایج</span>
-MVP با MVC <strong>یک تفاوت کلیدی</strong> دارد: در MVC، Model و View می‌توانند مستقیم حرف بزنند.
+MVP با MVC <strong>یک تفاوت کلیدی</strong> دارد: در MVC، Model و View می‌توانند مستقیم با هم صحبت کنند.
 در MVP، این ارتباط <strong>قطع</strong> می‌شود و همه‌چیز از مسیر Presenter عبور می‌کند.
-اگر View شما مستقیم Repository صدا می‌زند، شما MVC دارید، نه MVP.
+اگر View شما مستقیم Repository را صدا بزند، در عمل MVC دارید، نه MVP.
 </div>
 </section>
 
@@ -372,21 +374,71 @@ MVP با MVC <strong>یک تفاوت کلیدی</strong> دارد: در MVC، Mo
 همین یک قاعده، هم تست‌پذیری می‌آورد و هم قابلیت پیش‌بینی.
 </p>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    U["کاربر"] -->|"کلیک دکمه ورود"| V["View — منفعل"]
-    V -->|"view.onLoginClicked(email, pass)"| P["Presenter"]
-    P -->|"login(email, pass)"| M["Model / Repository"]
-    M -->|"Token یا خطا"| P
-    P -->|"view.showProgress(true)"| V
-    P -->|"view.navigateToHome(token)"| V
-    P -->|"view.showError('...')"| V
+<figure class="kl-fig">
+<svg viewBox="0 0 770 260" role="img" aria-label="جریان یک‌طرفه‌ی داده در معماری MVP از کاربر تا Model و مسیر بازگشت">
+  <!-- مسیر درخواست: کاربر ← View ← Presenter ← Model -->
+  <path class="s-arr s-flow" d="M 612 64 L 564 64"/>
+  <path class="s-head" d="M 558 64 L 570 57 L 570 71 Z"/>
 
-    V -. "❌ هیچ ارتباط مستقیمی ندارد" .- M
+  <path class="s-arr s-flow" d="M 416 64 L 368 64"/>
+  <path class="s-head" d="M 362 64 L 374 57 L 374 71 Z"/>
 
-    style U fill:#78350f,stroke:#fbbf24,color:#fff
-    style V fill:#0f766e,stroke:#14b8a6,color:#fff
-    style P fill:#115e59,stroke:#2dd4bf,color:#fff
-    style M fill:#134e4a,stroke:#5eead4,color:#fff</code></pre>
+  <path class="s-arr s-flow" d="M 220 64 L 172 64"/>
+  <path class="s-head" d="M 166 64 L 178 57 L 178 71 Z"/>
+
+  <text class="s-t2 s-lbl" x="588" y="50" text-anchor="middle" style="--kl-i:0">کلیک «ورود»</text>
+  <text class="s-t2 s-lbl" x="392" y="50" text-anchor="middle" style="--kl-i:1">رویداد کاربر</text>
+  <text class="s-tc s-lbl" x="196" y="50" text-anchor="middle" style="--kl-i:2">onLoginClicked()</text>
+
+  <!-- مسیر پاسخ: Model ← Presenter ← View -->
+  <path class="s-arr-ok s-flow-ok" d="M 172 102 L 220 102"/>
+  <path class="s-head-ok" d="M 226 102 L 214 95 L 214 109 Z"/>
+  <text class="s-t2 s-lbl" x="196" y="124" text-anchor="middle" style="--kl-i:3">توکن یا خطا</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 368 102 L 416 102"/>
+  <path class="s-head-ok" d="M 422 102 L 410 95 L 410 109 Z"/>
+  <text class="s-t2 s-lbl" x="392" y="124" text-anchor="middle" style="--kl-i:4">دستور نمایش</text>
+
+  <!-- ارتباط ممنوع میان View و Model -->
+  <path class="s-dash s-flow-bad" d="M 490 134 C 490 214, 98 214, 98 134"/>
+  <path class="s-head-bad" d="M 98 128 L 91 140 L 105 140 Z"/>
+  <text class="s-t2 s-lbl" x="294" y="238" text-anchor="middle" style="--kl-i:5">View هرگز مستقیم Model را صدا نمی‌زند</text>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.4s" repeatCount="indefinite" path="M 606 64 L 174 64"/>
+  </circle>
+  <circle class="s-runner-dim s-runner" r="4.5">
+    <animateMotion dur="3.4s" begin="1.7s" repeatCount="indefinite" path="M 176 102 L 214 102"/>
+  </circle>
+
+  <!-- نودها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="624" y="44" width="124" height="76" rx="12"/>
+    <text class="s-t" x="686" y="78" text-anchor="middle">کاربر</text>
+    <text class="s-t2" x="686" y="102" text-anchor="middle">انسان</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="428" y="44" width="124" height="76" rx="12"/>
+    <text class="s-t" x="490" y="78" text-anchor="middle">View</text>
+    <text class="s-t2" x="490" y="102" text-anchor="middle">کاملاً منفعل</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="232" y="44" width="124" height="76" rx="12"/>
+    <text class="s-t" x="294" y="78" text-anchor="middle">Presenter</text>
+    <text class="s-t2" x="294" y="102" text-anchor="middle">کلاس خالص</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="36" y="44" width="124" height="76" rx="12"/>
+    <text class="s-t" x="98" y="78" text-anchor="middle">Model</text>
+    <text class="s-t2" x="98" y="102" text-anchor="middle">داده و قواعد</text>
+  </g>
+</svg>
+<figcaption><b>قانون طلایی MVP:</b> هر پیکان رو به چپ یک فراخوانی و هر پیکان رو به راست یک دستور نمایش است. <code>View</code> فقط رویداد می‌فرستد و فقط دستور می‌گیرد؛ <code>Presenter</code> تنها جایی است که <code>Model</code> را صدا می‌زند و تصمیم می‌گیرد. مسیر خط‌چین پایین شکل هرگز باز نمی‌شود، چون دسترسی مستقیم <code>View</code> به <code>Model</code> دقیقاً همان چیزی است که مرز الگو را می‌شکند.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>قانون طلایی MVP (Unidirectional Data Flow):
 
@@ -418,33 +470,90 @@ View هرگز:
 </table>
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    subgraph VIEWLAYER["لایه‌ی View (اندروید)"]
-        V1["LoginFragment"]
-        V2["LoginContract.View — Interface"]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 296" role="img" aria-label="سه لایه‌ی MVP و قراردادهای میان آن‌ها">
+  <!-- پوسته‌ی لایه‌ها: جریان از راست (View) به چپ (Model) -->
+  <rect class="s-group s-group-acc" x="579" y="28" width="186" height="248" rx="16"/>
+  <rect class="s-group" x="292" y="28" width="186" height="248" rx="16"/>
+  <rect class="s-group" x="5" y="28" width="186" height="248" rx="16"/>
 
-    subgraph PRESLAYER["لایه‌ی Presenter (Java خالص)"]
-        P1["LoginPresenter"]
-        P2["LoginContract.Presenter — Interface"]
-    end
+  <text class="s-group-t" x="672" y="52" text-anchor="middle">View — اندروید</text>
+  <text class="s-group-t" x="385" y="52" text-anchor="middle">Presenter — Java خالص</text>
+  <text class="s-group-t" x="98" y="52" text-anchor="middle">Model — داده</text>
 
-    subgraph MODLAYER["لایه‌ی Model"]
-        M1["User (Entity)"]
-        M2["AuthRepository (Interface)"]
-        M3["AuthRepositoryImpl"]
-    end
+  <!-- لایه‌ی Model -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="17" y="68" width="162" height="36" rx="9"/>
+    <text class="s-t" x="98" y="90" text-anchor="middle">User (Entity)</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="17" y="112" width="162" height="36" rx="9"/>
+    <text class="s-t" x="98" y="134" text-anchor="middle">AuthRepository</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="17" y="170" width="162" height="36" rx="9"/>
+    <text class="s-t" x="98" y="192" text-anchor="middle">AuthRepositoryImpl</text>
+  </g>
+  <path class="s-dash s-flow-soft" d="M 60 168 L 60 156"/>
+  <path class="s-head-dim" d="M 60 152 L 53 164 L 67 164 Z"/>
+  <text class="s-t2 s-lbl" x="132" y="165" text-anchor="middle" style="--kl-i:4">implements</text>
+  <text class="s-t2" x="98" y="232" text-anchor="middle">داده و قواعد کسب‌وکار</text>
 
-    V1 -. "implements" .-> V2
-    V1 -->|"فراخوانی متدهای Interface"| P2
-    P1 -. "implements" .-> P2
-    P1 --> M2
-    M3 -. "implements" .-> M2
-    P1 --> M1
+  <!-- لایه‌ی Presenter -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="304" y="68" width="162" height="36" rx="9"/>
+    <text class="s-t" x="385" y="90" text-anchor="middle">LoginPresenter</text>
+  </g>
+  <path class="s-dash s-flow-soft" d="M 431 108 L 431 126"/>
+  <path class="s-head-dim" d="M 431 130 L 424 118 L 438 118 Z"/>
+  <text class="s-t2 s-lbl" x="373" y="125" text-anchor="middle" style="--kl-i:3">implements</text>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="304" y="132" width="162" height="36" rx="9"/>
+    <text class="s-t" x="385" y="154" text-anchor="middle">LoginContract.Presenter</text>
+  </g>
+  <text class="s-t2" x="385" y="232" text-anchor="middle">بدون وابستگی به اندروید</text>
 
-    style VIEWLAYER fill:#0f766e,stroke:#14b8a6,color:#fff
-    style PRESLAYER fill:#115e59,stroke:#2dd4bf,color:#fff
-    style MODLAYER fill:#134e4a,stroke:#5eead4,color:#fff</code></pre>
+  <!-- لایه‌ی View -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="591" y="68" width="162" height="36" rx="9"/>
+    <text class="s-t" x="672" y="90" text-anchor="middle">LoginFragment</text>
+  </g>
+  <path class="s-dash s-flow-soft" d="M 718 108 L 718 126"/>
+  <path class="s-head-dim" d="M 718 130 L 711 118 L 725 118 Z"/>
+  <text class="s-t2 s-lbl" x="660" y="125" text-anchor="middle" style="--kl-i:3">implements</text>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="591" y="132" width="162" height="36" rx="9"/>
+    <text class="s-t" x="672" y="154" text-anchor="middle">LoginContract.View</text>
+  </g>
+  <text class="s-t2" x="672" y="232" text-anchor="middle">بدون منطق کسب‌وکار</text>
+
+  <!-- پیکان‌های میان لایه‌ها -->
+  <path class="s-arr s-flow" d="M 577 110 L 487 110"/>
+  <path class="s-head" d="M 481 110 L 493 103 L 493 117 Z"/>
+  <text class="s-t2 s-lbl" x="530" y="94" text-anchor="middle" style="--kl-i:5">فراخوانی متد</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 487 126 L 577 126"/>
+  <path class="s-head-ok" d="M 583 126 L 571 119 L 571 133 Z"/>
+  <text class="s-t2 s-lbl" x="530" y="148" text-anchor="middle" style="--kl-i:6">دستور نمایش</text>
+
+  <path class="s-arr s-flow" d="M 290 110 L 200 110"/>
+  <path class="s-head" d="M 194 110 L 206 103 L 206 117 Z"/>
+  <text class="s-t2 s-lbl" x="244" y="94" text-anchor="middle" style="--kl-i:7">خواندن و نوشتن</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 200 126 L 290 126"/>
+  <path class="s-head-ok" d="M 296 126 L 284 119 L 284 133 Z"/>
+  <text class="s-t2 s-lbl" x="244" y="148" text-anchor="middle" style="--kl-i:8">نتیجه یا خطا</text>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.4s" repeatCount="indefinite" path="M 572 110 L 200 110"/>
+  </circle>
+  <circle class="s-runner-dim s-runner" r="4.5">
+    <animateMotion dur="3.4s" begin="1.7s" repeatCount="indefinite" path="M 200 126 L 292 126"/>
+  </circle>
+</svg>
+<figcaption><b>قرارداد، مرز لایه‌هاست:</b> هر لایه فقط <code>Interface</code> لایه‌ی بعدی را می‌شناسد. <code>LoginFragment</code> پیاده‌سازیِ <code>LoginContract.View</code> است و <code>LoginPresenterImpl</code> پیاده‌سازیِ <code>LoginContract.Presenter</code>؛ به همین دلیل هیچ‌کدام به کلاس دیگری وابسته نیستند. <code>AuthRepository</code> هم به همین شکل پیاده‌سازی‌های مختلفِ شبکه و کش را پشت یک قرارداد پنهان می‌کند.</figcaption>
+</figure>
 
 <div class="kl-box kl-warn">
 <span class="kl-h">الگوی Contract: کلید استفاده‌ی اصولی</span>
@@ -458,32 +567,81 @@ View هم به پیاده‌سازی Presenter وابسته نیست.
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    autonumber
-    actor U as کاربر
-    participant V as View
-    participant P as Presenter
-    participant R as Repository
+<figure class="kl-fig">
+<svg viewBox="0 0 770 412" role="img" aria-label="دیاگرام توالی ورود کاربر در MVP از View تا Presenter و Repository">
+  <!-- خطوط زندگی بازیگران -->
+  <path class="s-dash" d="M 686 54 L 686 400"/>
+  <path class="s-dash" d="M 556 54 L 556 400"/>
+  <path class="s-dash" d="M 424 54 L 424 400"/>
+  <path class="s-dash" d="M 288 54 L 288 400"/>
 
-    U->>V: تایپ ایمیل و رمز
-    U->>V: کلیک «ورود»
-    V->>P: onLoginClicked("ali@test.com", "12345678")
-    P->>P: اعتبارسنجی ایمیل
-    alt ایمیل نامعتبر
-        P-->>V: showError("ایمیل نامعتبر", FIELD_EMAIL)
-    else معتبر
-        P-->>V: showProgress(true)
-        P->>R: login(email, password)
-        alt موفق
-            R-->>P: Token
-            P-->>V: showProgress(false)
-            P-->>V: navigateToHome(token)
-        else ناموفق
-            R-->>P: AuthException("رمز اشتباه")
-            P-->>V: showProgress(false)
-            P-->>V: showError("رمز اشتباه", FIELD_PASSWORD)
-        end
-    end</code></pre>
+  <!-- ۱) کاربر → View -->
+  <path class="s-arr s-flow" d="M 686 80 L 562 80"/>
+  <path class="s-head" d="M 556 80 L 568 73 L 568 87 Z"/>
+  <text class="s-t2 s-lbl" x="621" y="70" text-anchor="middle" style="--kl-i:0">تایپ و کلیک «ورود»</text>
+
+  <!-- ۲) View → Presenter -->
+  <path class="s-arr s-flow" d="M 556 116 L 430 116"/>
+  <path class="s-head" d="M 424 116 L 436 109 L 436 123 Z"/>
+  <text class="s-tc s-lbl" x="490" y="106" text-anchor="middle" style="--kl-i:1">onLoginClicked(email, pass)</text>
+
+  <!-- ۳) Presenter: اعتبارسنجی -->
+  <path class="s-arr s-flow" d="M 424 152 C 456 152, 456 124, 426 124"/>
+  <path class="s-head" d="M 424 124 L 417 136 L 431 136 Z"/>
+  <text class="s-t2 s-lbl" x="508" y="145" text-anchor="middle" style="--kl-i:2">اعتبارسنجی ایمیل</text>
+
+  <!-- ۴) Presenter → Repository -->
+  <path class="s-arr s-flow" d="M 424 188 L 294 188"/>
+  <path class="s-head" d="M 288 188 L 300 181 L 300 195 Z"/>
+  <text class="s-tc s-lbl" x="356" y="178" text-anchor="middle" style="--kl-i:3">login(email, password)</text>
+
+  <!-- ۵) Repository → Presenter : توکن یا استثنا -->
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 288 224 L 418 224"/>
+  <path class="s-head-ok" d="M 424 224 L 412 217 L 412 231 Z"/>
+  <text class="s-t2 s-lbl" x="356" y="214" text-anchor="middle" style="--kl-i:4">توکن یا AuthException</text>
+
+  <!-- ۶) Presenter → View : دستور نمایش -->
+  <path class="s-arr-ok s-flow-ok" d="M 424 260 L 562 260"/>
+  <path class="s-head-ok" d="M 556 260 L 544 253 L 544 267 Z"/>
+  <text class="s-t2 s-lbl" x="490" y="250" text-anchor="middle" style="--kl-i:5">showProgress و سپس نتیجه</text>
+
+  <!-- ۷) View → کاربر -->
+  <path class="s-arr-ok s-flow-ok" d="M 556 296 L 680 296"/>
+  <path class="s-head-ok" d="M 686 296 L 674 289 L 674 303 Z"/>
+  <text class="s-t2 s-lbl" x="621" y="286" text-anchor="middle" style="--kl-i:6">پیام خطا یا صفحه‌ی خانه</text>
+
+  <!-- شاخه‌ی تصمیم Presenter -->
+  <text class="s-t2 s-lbl" x="150" y="240" text-anchor="middle" style="--kl-i:5">هر دو شاخه در Presenter</text>
+
+  <!-- شماره‌ی گام‌ها -->
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="750" cy="80" r="12"/><text class="s-tc" x="750" y="84" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="750" cy="116" r="12"/><text class="s-tc" x="750" y="120" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="750" cy="152" r="12"/><text class="s-tc" x="750" y="156" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="750" cy="188" r="12"/><text class="s-tc" x="750" y="192" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="750" cy="224" r="12"/><text class="s-tc" x="750" y="228" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="750" cy="260" r="12"/><text class="s-tc" x="750" y="264" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="750" cy="296" r="12"/><text class="s-tc" x="750" y="300" text-anchor="middle">۷</text></g>
+
+  <!-- سرهای بازیگر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="627" y="14" width="118" height="40" rx="10"/>
+    <text class="s-t" x="686" y="40" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="497" y="14" width="118" height="40" rx="10"/>
+    <text class="s-t" x="556" y="40" text-anchor="middle">View</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="365" y="14" width="118" height="40" rx="10"/>
+    <text class="s-t" x="424" y="40" text-anchor="middle">Presenter</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="229" y="14" width="118" height="40" rx="10"/>
+    <text class="s-t" x="288" y="40" text-anchor="middle">Repository</text>
+  </g>
+</svg>
+<figcaption><b>ترتیب یک ورود:</b> <code>View</code> رویداد خام را بدون هیچ تصمیمی به <code>Presenter</code> می‌دهد و <code>Presenter</code> تنها پس از دیدن پاسخ <code>Repository</code> تصمیم می‌گیرد چه دستوری صدا بزند. خط چهارم، تنها نقطه‌ای است که در آن به داده‌ی واقعی دسترسی داریم؛ به همین دلیل تست همین جریان با یک <code>Fake</code> ساده و بدون شبیه‌ساز ممکن است.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>جریان خواندن داده در MVP:
 
@@ -501,7 +659,7 @@ View هم به پیاده‌سازی Presenter وابسته نیست.
 <span class="kl-h">الگوی View State</span>
 در MVP، Presenter معمولاً به‌جای ده‌ها متد <code>showX()</code>، یک <strong>state</strong> واحد
 به View می‌دهد. مثلاً <code>LoginState(isLoading, error, token)</code>. این کار باعث می‌شود
-حالت‌های ممکن صفحه م exhaustively تعریف شوند و باگ حالت‌های ناقص کم شود.
+همه‌ی حالت‌های ممکن صفحه صریح تعریف شوند و باگِ حالت‌های ناقص کم شود.
 </div>
 </section>
 
@@ -873,8 +1031,8 @@ public final class LoginFragment extends Fragment implements LoginContract.View 
 <div class="kl-box kl-bad">
 <span class="kl-h">هزینه‌ی پنهان MVP</span>
 برای یک صفحه‌ی ساده‌ی «نمایش لیست»، شما به یک Contract با دو Interface، یک پیاده‌سازی
-Presenter و یک Activity نیاز دارید. این <strong>هزینه‌ی معماری</strong> است — و اگر ارزشش
-(تست‌پذیری) را نگیرید، فقط بوی معماری خواهد بود.
+Presenter و یک Activity نیاز دارید. این <strong>هزینه‌ی معماری</strong> است — و اگر ارزش آن
+(تست‌پذیری) را نداشته باشید، فقط هزینه‌ی بی‌حاصل خواهد بود.
 </div>
 </section>
 
@@ -934,25 +1092,166 @@ MVP ارزش هزینه‌اش را دارد. اگر نه، سراغ MVVM برو
 <section id="s16">
 <h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    subgraph MVCg["MVC"]
-        MC1["View"] &lt;--&gt; MC2["Model"]
-        MC3["Controller"] --&gt; MC2
-        MC3 --&gt; MC1
-    end
-    subgraph MVPg["MVP"]
-        MP1["View (منفعل)"] --&gt; MP2["Presenter"] --&gt; MP3["Model"]
-    end
-    subgraph MVVMg["MVVM"]
-        MV1["View"] &lt;--&gt; MV2["ViewModel"] --&gt; MV3["Model"]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 380" role="img" aria-label="مقایسه‌ی ساختار داخلی سه الگوی MVC، MVP و MVVM">
+  <!-- MVC -->
+  <rect class="s-group" x="5" y="30" width="760" height="100" rx="14"/>
+  <text class="s-group-t" x="700" y="54" text-anchor="middle">MVC</text>
+  <text class="s-t2 s-lbl" x="620" y="102" text-anchor="middle" style="--kl-i:0">View به Model وصل است</text>
 
-    MVCg -. "View به Model وصل است" .- MVPg
-    MVPg -. "Presenter دارای State است" .- MVVMg
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="365" y="74" width="115" height="42" rx="10"/>
+    <text class="s-t" x="422" y="99" text-anchor="middle">Controller</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="190" y="74" width="115" height="42" rx="10"/>
+    <text class="s-t" x="247" y="99" text-anchor="middle">Model</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="15" y="74" width="115" height="42" rx="10"/>
+    <text class="s-t" x="72" y="99" text-anchor="middle">View</text>
+  </g>
 
-    style MVCg fill:#78350f,stroke:#fbbf24,color:#fff
-    style MVPg fill:#0f766e,stroke:#14b8a6,color:#fff
-    style MVVMg fill:#134e4a,stroke:#5eead4,color:#fff</code></pre>
+  <path class="s-arr s-flow" d="M 363 95 L 307 95"/>
+  <path class="s-head" d="M 301 95 L 313 88 L 313 102 Z"/>
+  <path class="s-arr s-flow" d="M 130 86 L 184 86"/>
+  <path class="s-head" d="M 190 86 L 178 79 L 178 93 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 190 106 L 136 106"/>
+  <path class="s-head-ok" d="M 130 106 L 142 99 L 142 113 Z"/>
+
+  <!-- MVP -->
+  <rect class="s-group" x="5" y="146" width="760" height="100" rx="14"/>
+  <text class="s-group-t" x="700" y="170" text-anchor="middle">MVP</text>
+  <text class="s-t2 s-lbl" x="620" y="218" text-anchor="middle" style="--kl-i:1">View، Model را نمی‌بیند</text>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="365" y="190" width="115" height="42" rx="10"/>
+    <text class="s-t" x="422" y="215" text-anchor="middle">View</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="190" y="190" width="115" height="42" rx="10"/>
+    <text class="s-t" x="247" y="215" text-anchor="middle">Presenter</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="15" y="190" width="115" height="42" rx="10"/>
+    <text class="s-t" x="72" y="215" text-anchor="middle">Model</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 363 211 L 307 211"/>
+  <path class="s-head" d="M 301 211 L 313 204 L 313 218 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 309 226 L 363 226"/>
+  <path class="s-head-ok" d="M 369 226 L 357 219 L 357 233 Z"/>
+  <path class="s-arr s-flow" d="M 188 211 L 134 211"/>
+  <path class="s-head" d="M 128 211 L 140 204 L 140 218 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 134 226 L 188 226"/>
+  <path class="s-head-ok" d="M 194 226 L 182 219 L 182 233 Z"/>
+
+  <!-- MVVM -->
+  <rect class="s-group" x="5" y="262" width="760" height="100" rx="14"/>
+  <text class="s-group-t" x="700" y="286" text-anchor="middle">MVVM</text>
+  <text class="s-t2 s-lbl" x="620" y="334" text-anchor="middle" style="--kl-i:2">ViewModel وضعیت نمایشی دارد</text>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="365" y="306" width="115" height="42" rx="10"/>
+    <text class="s-t" x="422" y="331" text-anchor="middle">View</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="190" y="306" width="115" height="42" rx="10"/>
+    <text class="s-t" x="247" y="331" text-anchor="middle">ViewModel</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="15" y="306" width="115" height="42" rx="10"/>
+    <text class="s-t" x="72" y="331" text-anchor="middle">Model</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 363 318 L 307 318"/>
+  <path class="s-head" d="M 301 318 L 313 311 L 313 325 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 309 336 L 363 336"/>
+  <path class="s-head-ok" d="M 369 336 L 357 329 L 357 343 Z"/>
+  <path class="s-arr s-flow" d="M 188 327 L 134 327"/>
+  <path class="s-head" d="M 128 327 L 140 320 L 140 334 Z"/>
+</svg>
+<figcaption><b>تفاوت در یک نگاه:</b> در ردیف <code>MVC</code> پیکان دوسویه میان <code>View</code> و <code>Model</code> وجود دارد؛ همین یک پیکان باعث می‌شود نمایش به داده‌ی دامنه وابسته شود. در <code>MVP</code> این پیکان حذف می‌شود و <code>Presenter</code> تنها گذرگاه می‌شود؛ در <code>MVVM</code> گذرگاه به <code>ViewModel</code> می‌رسد و علاوه بر داده، خودِ وضعیت نمایشی را هم نگه می‌دارد.</figcaption>
+</figure>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="امتیاز مقایسه‌ی MVC، MVP، MVVM و MVI در پنج معیار">
+  <!-- خطوط شبکه و محور -->
+  <path class="s-grid" d="M 528 4 L 528 300"/>
+  <path class="s-grid" d="M 446 4 L 446 300"/>
+  <path class="s-grid" d="M 364 4 L 364 300"/>
+  <path class="s-grid" d="M 282 4 L 282 300"/>
+  <path class="s-grid" d="M 200 4 L 200 300"/>
+  <text class="s-axlabel" x="528" y="313" text-anchor="middle">۱</text>
+  <text class="s-axlabel" x="446" y="313" text-anchor="middle">۲</text>
+  <text class="s-axlabel" x="364" y="313" text-anchor="middle">۳</text>
+  <text class="s-axlabel" x="282" y="313" text-anchor="middle">۴</text>
+  <text class="s-axlabel" x="200" y="313" text-anchor="middle">۵</text>
+  <path class="s-axis" d="M 610 4 L 610 300"/>
+
+  <!-- ردیف ۱: تست واحد -->
+  <text class="s-cat" x="698" y="36" text-anchor="middle">تست واحد</text>
+  <rect class="s-acc s-hbar" x="446" y="16" width="164" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="430" y="24" text-anchor="middle">۲</text>
+  <rect class="s-ok s-hbar" x="200" y="27" width="410" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="184" y="35" text-anchor="middle">۵</text>
+  <rect class="s-warn s-hbar" x="200" y="38" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="46" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="49" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="57" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۲: حفظ وضعیت -->
+  <text class="s-cat" x="698" y="96" text-anchor="middle">حفظ خودکار وضعیت</text>
+  <rect class="s-acc s-hbar" x="528" y="76" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="84" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="364" y="87" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="95" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="200" y="98" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="106" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="109" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="117" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۳: مناسب Jetpack Compose -->
+  <text class="s-cat" x="698" y="156" text-anchor="middle">مناسب Compose</text>
+  <rect class="s-acc s-hbar" x="528" y="136" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="144" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="446" y="147" width="164" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="430" y="155" text-anchor="middle">۲</text>
+  <rect class="s-warn s-hbar" x="200" y="158" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="166" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="169" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="177" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۴: یک‌طرفه بودن جریان -->
+  <text class="s-cat" x="698" y="216" text-anchor="middle">جریان یک‌طرفه</text>
+  <rect class="s-acc s-hbar" x="528" y="196" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="204" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="200" y="207" width="410" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="184" y="215" text-anchor="middle">۵</text>
+  <rect class="s-warn s-hbar" x="446" y="218" width="164" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="430" y="226" text-anchor="middle">۲</text>
+  <rect class="s-c4 s-hbar" x="200" y="229" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="237" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۵: کم‌بودن حجم کد -->
+  <text class="s-cat" x="698" y="276" text-anchor="middle">کم‌بودن حجم کد</text>
+  <rect class="s-acc s-hbar" x="200" y="256" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="264" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="446" y="267" width="164" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="430" y="275" text-anchor="middle">۲</text>
+  <rect class="s-warn s-hbar" x="282" y="278" width="328" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="266" y="286" text-anchor="middle">۴</text>
+  <rect class="s-c4 s-hbar" x="446" y="289" width="164" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="430" y="297" text-anchor="middle">۲</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>MVC</span>
+  <span><i class="c-ok"></i>MVP</span>
+  <span><i class="c-warn"></i>MVVM</span>
+  <span><i class="c-c4"></i>MVI</span>
+</div>
+<figcaption><b>امتیاز نسبی (از ۵):</b> این امتیازها تبدیل مستقیمِ علامت‌های جدول بعدی‌اند: «متوسط» دو امتیاز، «آسان» پنج امتیاز، «خودکار» پنج امتیاز و «زیاد» دو امتیاز گرفته است. نتیجه روشن است: <code>MVP</code> در تست واحد و جریان یک‌طرفه هم‌تراز <code>MVI</code> می‌شود، اما هزینه‌ی آن حجم کد زیاد است و در <code>Compose</code> جایی برای رشد ندارد.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -965,7 +1264,7 @@ MVP ارزش هزینه‌اش را دارد. اگر نه، سراغ MVVM برو
   <tr><td>حجم کد</td><td>کم</td><td>زیاد</td><td>متوسط</td><td>زیاد</td></tr>
   <tr><td>مناسب اندروید</td><td>❌</td><td>✅</td><td>✅ بهترین</td><td>✅ مدرن</td></tr>
   <tr><td>سازگار با Compose</td><td>❌</td><td>⚠️</td><td>✅</td><td>✅ عالی</td></tr>
-  <tr><td>سال معرفی</td><td>۱۹۷۹</td><td>دهه‌ی ۱۹۹۰</td><td>۲۰۰۵ (WPF)</td><td>۲۰۱۰s</td></tr>
+  <tr><td>سال معرفی</td><td>۱۹۷۹</td><td>دهه‌ی ۱۹۹۰</td><td>۲۰۰۵ (WPF)</td><td>دهه‌ی ۲۰۱۰</td></tr>
 </table>
 </div>
 
@@ -1204,7 +1503,7 @@ class LoginPresenterTest {
 <p>
 در اپ‌های چت، جریان پیام‌ها پیوسته و ناهمگام است. الگوی رایج این است که Presenter
 به‌جای Callback، یک <code>Observable</code> از وضعیت صفحه برگرداند و View با
-<code>subscribe</code> آن را مصرف کند. این ترکیب به می‌گوید داده به‌صورت یک جریان
+<code>subscribe</code> آن را مصرف کند. یعنی داده به‌صورت یک جریان
 پیوسته از Presenter به View می‌رود — همان ایده‌ی یک‌طرفه، اما با ابزار واکنشی.
 </p>
 
@@ -1321,13 +1620,13 @@ Presenter یک کلاس Java خالص است و از Android بی‌خبر اس�
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۸ — MVP برای چه نوع اپ‌هایی ساخته شد؟</span>
-اصلاً برای اندروید ساخته نشد؛ ریشه‌ی آن در GUI دسکتاپ است. اما در اندروید به‌دلیل
+برای اندروید طراحی نشده بود؛ ریشه‌ی آن در GUI دسکتاپ است. اما در اندروید به‌دلیل
 مشکل تست‌ناپذیری Activity و نیاز به جداسازی منطق، فراگیر شد.
 </div>
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۹ — Presenter را کجا بسازیم؟</span>
-بهتر است با DI (مانند Dagger یا Hilt) در یک کلاس جدا یا با ViewModel‌مانند ساخته شود تا
+بهتر است با DI (مانند Dagger یا Hilt) در یک کلاس جدا ساخته شود تا
 در چرخش صفحه از دست نرود. از ساخت دستی در Activity پرهیز کنید.
 </div>
 
@@ -1343,7 +1642,7 @@ Presenter یک کلاس Java خالص است و از Android بی‌خبر اس�
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۱۱ — Passive View و Supervising Presenter چه تفاوتی دارند؟</span>
-در Passive View، تمام حتی جزئی‌ترین تصمیم نمایشی هم در Presenter است و View کاملاً بی‌احساس است.
+در Passive View، تمام حتی جزئی‌ترین تصمیم نمایشی هم در Presenter است و View کاملاً منفعل است.
 در Supervising، Presenter کارهای تکراری نمایش را به View واگذار می‌کند.
 </div>
 
@@ -1391,8 +1690,8 @@ LiveData/Flow ارائه می‌دهد.
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۱۸ — مهم‌ترین محدودیت نظری MVP چیست؟</span>
-جریان یک‌طرفه در MVP، جریان «فقط رو به جلو» است و وضعیت را به‌صورت دسته‌ای
-(toast-type) می‌گیرد. برای اپ‌هایی با رویدادهای هم‌زمان و جریان‌های پیوسته،
+جریان یک‌طرفه در MVP، جریان «فقط رو به جلو» است و رویدادهای یک‌بارمصرف را به‌صورت دسته‌ای
+(در حد یک پیام کوتاه) به View تحویل می‌دهد. برای اپ‌هایی با رویدادهای هم‌زمان و جریان‌های پیوسته،
 مدل push بهتری (MVI یا MVVM) وجود دارد.
 </div>
 
@@ -1469,7 +1768,7 @@ ViewModel به‌طور خودکار با چرخه‌ی حیات هماهنگ م
 <div class="kl-box">
 <span class="kl-h">۹) آیا MVP برای پروژه‌های تیمی بزرگ مناسب است؟</span>
 تا حدی. مشکل اصلی، حجم زیاد کد است. اگر تیم بزرگ باشد، Feature-Based بهتر عمل می‌کند
-تا Presenter های یک پوشه‌ی بزرگ.
+تا پیاده‌سازی‌های Presenter یک پوشه‌ی بزرگ به هم نریزند.
 </div>
 
 <div class="kl-box">

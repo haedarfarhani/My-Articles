@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -380,33 +382,96 @@ List&lt;OrderSummaryView&gt; result = queries.findOrdersByCustomer(customerId);<
 
 <h3>ساختار مفهومی</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph Write["Command Side — منبع حقیقت"]
-        W1["Command Handler"]
-        W2["Domain Model<br/>قواعد کسب‌وکار"]
-        W3["Write Repository"]
-        WR[("دیتابیس اصلی<br/>نرمال‌شده")]
-        W1 --> W2 --> W3 --> WR
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 340" role="img" aria-label="ساختار مفهومی CQRS: کاربر در مرکز، شاخه‌ی نوشتن با منبع حقیقت و شاخه‌ی خواندن با داده‌ی مشتق، متصل با پیکان همگام‌سازی رویداد دامنه">
+  <!-- ستون نوشتن (راست) -->
+  <rect class="s-group" x="521" y="62" width="230" height="222" rx="16"/>
+  <text class="s-group-t" x="636" y="84" text-anchor="middle">Command Side — منبع حقیقت</text>
 
-    subgraph Sync["همگام‌سازی"]
-        S1["Domain Event<br/>/ @TransactionalEventListener"]
-    end
+  <!-- ستون خواندن (چپ) -->
+  <rect class="s-group-acc" x="19" y="62" width="230" height="222" rx="16"/>
+  <text class="s-group-t" x="134" y="84" text-anchor="middle">Query Side — داده‌ی مشتق</text>
 
-    subgraph Read["Query Side — داده‌ی مشتق"]
-        R1["Query Handler"]
-        R2["Read Model<br/>تخت و بهینه"]
-        RR[("دیتابیس خواندن<br/>یا Mongo / Redis")]
-        R1 --> R2 --> RR
-    end
+  <!-- کاربر در مرکز -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="300" y="10" width="170" height="42" rx="12"/>
+    <text class="s-t" x="385" y="37" text-anchor="middle">کاربر</text>
+  </g>
 
-    C["کاربر"] -->|"Command: POST /orders"| W1
-    C -->|"Query: GET /orders"| R1
-    W2 --> S1
-    S1 -->|"به‌روزرسانی"| R2
+  <!-- شاخه‌ی نوشتن -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="551" y="98" width="170" height="42" rx="10"/>
+    <text class="s-t" x="636" y="125" text-anchor="middle">Command Handler</text>
+  </g>
+  <path class="s-arr s-flow" d="M 636 140 L 636 162"/>
+  <path class="s-head" d="M 636 162 L 629 150 L 643 150 Z"/>
 
-    style WR fill:#0f766e,color:#fff,stroke:#0f766e
-    style RR fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="551" y="162" width="170" height="42" rx="10"/>
+    <text class="s-t" x="636" y="181" text-anchor="middle">Domain Model</text>
+    <text class="s-t2" x="636" y="197" text-anchor="middle">قواعد کسب‌وکار</text>
+  </g>
+  <path class="s-arr s-flow" d="M 636 204 L 636 226"/>
+  <path class="s-head" d="M 636 226 L 629 214 L 643 214 Z"/>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="551" y="226" width="170" height="48" rx="10"/>
+    <text class="s-t" x="636" y="248" text-anchor="middle">Event Store</text>
+    <text class="s-t2" x="636" y="266" text-anchor="middle">دیتابیس اصلیِ نرمال‌شده</text>
+  </g>
+
+  <!-- شاخه‌ی خواندن -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="49" y="98" width="170" height="42" rx="10"/>
+    <text class="s-t" x="134" y="125" text-anchor="middle">Query Handler</text>
+  </g>
+  <path class="s-arr s-flow" d="M 134 140 L 134 162"/>
+  <path class="s-head" d="M 134 162 L 127 150 L 141 150 Z"/>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="49" y="162" width="170" height="42" rx="10"/>
+    <text class="s-t" x="134" y="181" text-anchor="middle">Read Model</text>
+    <text class="s-t2" x="134" y="197" text-anchor="middle">تخت و بهینه‌شده</text>
+  </g>
+  <path class="s-arr s-flow" d="M 134 204 L 134 226"/>
+  <path class="s-head" d="M 134 226 L 127 214 L 141 214 Z"/>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="49" y="226" width="170" height="48" rx="10"/>
+    <text class="s-t" x="134" y="248" text-anchor="middle">Read Store</text>
+    <text class="s-t2" x="134" y="266" text-anchor="middle">Mongo یا Redis</text>
+  </g>
+
+  <!-- انشعاب فرمان از کاربر به شاخه‌ی نوشتن -->
+  <path class="s-arr s-flow" d="M 402 52 L 636 98"/>
+  <path class="s-head" d="M 636 98 L 624 86 L 636 88 Z"/>
+  <text class="s-t2 s-lbl" x="540" y="66" text-anchor="middle" style="--kl-i:1">Command: POST /orders</text>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 402 52 L 636 98"/>
+  </circle>
+
+  <!-- انشعاب پرسش از کاربر به شاخه‌ی خواندن -->
+  <path class="s-arr s-flow" d="M 368 52 L 134 98"/>
+  <path class="s-head" d="M 134 98 L 122 86 L 134 88 Z"/>
+  <text class="s-t2 s-lbl" x="230" y="66" text-anchor="middle" style="--kl-i:1">Query: GET /orders</text>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 368 52 L 134 98"/>
+  </circle>
+
+  <!-- پیکان همگام‌سازی رویداد دامنه -->
+  <path class="s-dash s-arr s-flow-soft" d="M 551 183 L 219 183"/>
+  <path class="s-head-dim" d="M 219 183 L 231 176 L 231 190 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="173" text-anchor="middle" style="--kl-i:4">رویداد دامنه → به‌روزرسانی مدل خواندن</text>
+  <text class="s-t2 s-lbl" x="385" y="204" text-anchor="middle" style="--kl-i:4">@TransactionalEventListener</text>
+  <circle class="s-runner s-runner-dim" r="4.5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 551 183 L 219 183"/>
+  </circle>
+
+  <text class="s-t2 s-lbl" x="385" y="308" text-anchor="middle" style="--kl-i:5">کوئری از مدل خواندن سرویس می‌گیرد، نه از دیتابیس اصلی</text>
+  <text class="s-t2 s-lbl" x="385" y="326" text-anchor="middle" style="--kl-i:6">فاصله‌ی همگام‌سازی یعنی کوئری ممکن است چند لحظه عقب باشد</text>
+</svg>
+<figcaption><b>دو مسیر، دو مسئولیت:</b> فرمان‌ها فقط از شاخه‌ی نوشتن عبور می‌کنند و تنها جایی که تصمیم گرفته می‌شود همین‌جاست؛ کوئری‌ها فقط از شاخه‌ی خواندن می‌آیند و هرگز نوشتن نمی‌کنند. هیچ‌چیز مستقیم از کاربر به مدل خواندن نمی‌رود و هیچ‌چیز از مدل خواندن به دیتابیس اصلی برنمی‌گردد؛ تنها پیوند این دو، رویداد دامنه است.</figcaption>
+</figure>
 </section>
 
 <!-- ==================== 4 ==================== -->
@@ -588,13 +653,67 @@ public interface OrderQueries {
 
 <h3>سطح ۱ — CQS (جداسازی امضا)</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    C1["Controller: POST"] --> A["OrderCommands"]
-    C2["Controller: GET"] --> B["OrderQueries"]
-    A --> M[("یک مدل<br/>یک دیتابیس")]
-    B --> M
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="سطح ۱ CQRS یا CQS: کنترلرهای POST و GET به دو رابط جدا می‌روند و هر دو به یک مدل و یک دیتابیس مشترک ختم می‌شوند">
+  <text class="s-t2 s-lbl" x="355" y="50" text-anchor="middle" style="--kl-i:0">Command: POST /orders</text>
+  <text class="s-t2 s-lbl" x="355" y="182" text-anchor="middle" style="--kl-i:1">Query: GET /orders</text>
 
-    style M fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+  <!-- کنترلرها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="30" y="62" width="170" height="44" rx="10"/>
+    <text class="s-t" x="115" y="90" text-anchor="middle">Controller: POST</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="30" y="194" width="170" height="44" rx="10"/>
+    <text class="s-t" x="115" y="222" text-anchor="middle">Controller: GET</text>
+  </g>
+
+  <!-- رابط‌ها -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="270" y="62" width="170" height="44" rx="10"/>
+    <text class="s-t" x="355" y="90" text-anchor="middle">OrderCommands</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="270" y="194" width="170" height="44" rx="10"/>
+    <text class="s-t" x="355" y="222" text-anchor="middle">OrderQueries</text>
+  </g>
+
+  <!-- مدل و دیتابیس مشترک -->
+  <rect class="s-group-acc" x="520" y="40" width="220" height="210" rx="16"/>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="538" y="88" width="184" height="116" rx="12"/>
+    <text class="s-t" x="630" y="118" text-anchor="middle">یک مدل، یک دیتابیس</text>
+    <text class="s-t2" x="630" y="146" text-anchor="middle">OrderRepository</text>
+    <text class="s-t2" x="630" y="176" text-anchor="middle">همان موجودیت، همان جدول</text>
+  </g>
+
+  <!-- پیکان‌ها -->
+  <path class="s-arr s-flow" d="M 200 84 L 268 84"/>
+  <path class="s-head" d="M 270 84 L 258 77 L 258 91 Z"/>
+  <path class="s-arr s-flow" d="M 440 84 L 518 84"/>
+  <path class="s-head" d="M 520 84 L 508 77 L 508 91 Z"/>
+  <path class="s-arr s-flow" d="M 200 216 L 268 216"/>
+  <path class="s-head" d="M 270 216 L 258 209 L 258 223 Z"/>
+  <path class="s-arr s-flow" d="M 440 216 L 518 216"/>
+  <path class="s-head" d="M 520 216 L 508 209 L 508 223 Z"/>
+
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 200 84 L 268 84"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 440 84 L 518 84"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 200 216 L 268 216"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 440 216 L 518 216"/>
+  </circle>
+
+  <text class="s-t2 s-lbl" x="385" y="280" text-anchor="middle" style="--kl-i:5">جداسازی فقط در امضا انجام می‌شود؛ زیرساخت و مدل یکی می‌مانند</text>
+</svg>
+<figcaption><b>سطح ۱ یعنی فقط جداسازی امضا:</b> کنترلرها دقیقاً می‌دانند چه عملیاتی وجود دارد، هیچ متدی نمی‌تواند هم‌زمان بخواند و بنویسد، و تست Command و Query جدا نوشته می‌شود. اما هر دو شاخه هنوز به یک مدل و یک جدول می‌روند، پس کوئری سنگینِ بخش ۴ اینجا هیچ تغییری نمی‌کند.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="java"><code>@Service
 @Transactional
@@ -638,15 +757,73 @@ Command جدا نوشته می‌شود. این سطح معمولاً ارزش �
 
 <h3>سطح ۲ — مدل و رابط کاربری جدا</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    C1["Controller: POST"] --> A["OrderCommands"]
-    C2["Controller: GET"] --> B["OrderQueries"]
-    A --> W[("Write Model<br/>موجودیت با قواعد")]
-    B --> R[("Read Model<br/>DTO نمایش")]
-    W -.->|"رویداد"| R
+<figure class="kl-fig">
+<svg viewBox="0 0 770 310" role="img" aria-label="سطح ۲ CQRS: مدل نوشتن و مدل خواندن جدا شده‌اند و مدل خواندن از راه رویداد دامنه از مدل نوشتن مشتق می‌شود">
+  <text class="s-t2 s-lbl" x="355" y="50" text-anchor="middle" style="--kl-i:0">Command: POST /orders</text>
+  <text class="s-t2 s-lbl" x="355" y="188" text-anchor="middle" style="--kl-i:1">Query: GET /orders</text>
 
-    style W fill:#0f766e,color:#fff,stroke:#0f766e
-    style R fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="30" y="62" width="170" height="44" rx="10"/>
+    <text class="s-t" x="115" y="90" text-anchor="middle">Controller: POST</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="30" y="200" width="170" height="44" rx="10"/>
+    <text class="s-t" x="115" y="228" text-anchor="middle">Controller: GET</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="270" y="62" width="170" height="44" rx="10"/>
+    <text class="s-t" x="355" y="90" text-anchor="middle">OrderCommands</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="270" y="200" width="170" height="44" rx="10"/>
+    <text class="s-t" x="355" y="228" text-anchor="middle">OrderQueries</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="520" y="56" width="220" height="56" rx="12"/>
+    <text class="s-t" x="630" y="80" text-anchor="middle">Write Model</text>
+    <text class="s-t2" x="630" y="100" text-anchor="middle">موجودیت با قواعد</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-acc" x="520" y="194" width="220" height="56" rx="12"/>
+    <text class="s-t" x="630" y="218" text-anchor="middle">Read Model</text>
+    <text class="s-t2" x="630" y="238" text-anchor="middle">DTO نمایش</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 200 84 L 268 84"/>
+  <path class="s-head" d="M 270 84 L 258 77 L 258 91 Z"/>
+  <path class="s-arr s-flow" d="M 440 84 L 518 84"/>
+  <path class="s-head" d="M 520 84 L 508 77 L 508 91 Z"/>
+  <path class="s-arr s-flow" d="M 200 222 L 268 222"/>
+  <path class="s-head" d="M 270 222 L 258 215 L 258 229 Z"/>
+  <path class="s-arr s-flow" d="M 440 222 L 518 222"/>
+  <path class="s-head" d="M 520 222 L 508 215 L 508 229 Z"/>
+
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 200 84 L 268 84"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 440 84 L 518 84"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 200 222 L 268 222"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 440 222 L 518 222"/>
+  </circle>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 630 112 L 630 192"/>
+  <path class="s-head-dim" d="M 630 194 L 623 182 L 637 182 Z"/>
+  <text class="s-t2 s-lbl" x="678" y="158" text-anchor="middle" style="--kl-i:5">رویداد دامنه</text>
+  <circle class="s-runner s-runner-dim" r="4.5">
+    <animateMotion dur="2.8s" repeatCount="indefinite" path="M 630 112 L 630 192"/>
+  </circle>
+
+  <text class="s-t2 s-lbl" x="385" y="290" text-anchor="middle" style="--kl-i:6">مدل خواندن مشتق است؛ منبع حقیقت فقط مدل نوشتن می‌ماند</text>
+</svg>
+<figcaption><b>جدا شدن مدل، بدون دیتابیس دوم:</b> در این سطح کوئری دیگر با موجودیت و قواعد کسب‌وکار طرف نیست و فقط یک DTO نمایش می‌گیرد، اما هنوز روی همان زیرساخت اجرا می‌شود. مدل خواندن هرگز منبع حقیقت نیست؛ اگر خراب شود از رویدادها دوباره ساخته می‌شود.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="java"><code>@RestController
 @RequestMapping("/api/orders")
@@ -682,14 +859,85 @@ class OrderController {
 
 <h3>سطح ۳ — Read Model اختصاصی (کامل‌ترین شکل رایج)</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    W["Write Side<br/>PostgreSQL نرمال‌شده"] -->|"Domain Event"| P["Projection Handler"]
-    P --> R["Read Side<br/>MongoDB / Redis / PostgreSQL تخت"]
-    Q["Query Side"] --> R
-    C["کاربر"] --> Q
+<figure class="kl-fig">
+<svg viewBox="0 0 770 430" role="img" aria-label="سطح ۳ CQRS: رویداد دامنه از شاخه‌ی نوشتن به پروژکشن می‌رسد، پروژکشن مدل خواندن را می‌سازد و شاخه‌ی کوئری از همان مدل خواندن می‌خواند">
+  <!-- کاربر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="300" y="14" width="170" height="42" rx="12"/>
+    <text class="s-t" x="385" y="41" text-anchor="middle">کاربر</text>
+  </g>
 
-    style W fill:#0f766e,color:#fff,stroke:#0f766e
-    style R fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <!-- شاخه‌ی نوشتن -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="470" y="96" width="280" height="60" rx="12"/>
+    <text class="s-t" x="610" y="122" text-anchor="middle">Write Side</text>
+    <text class="s-t2" x="610" y="144" text-anchor="middle">PostgreSQL نرمال‌شده</text>
+  </g>
+
+  <!-- پروژکشن -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="490" y="206" width="240" height="50" rx="10"/>
+    <text class="s-t" x="610" y="237" text-anchor="middle">Projection Handler</text>
+  </g>
+
+  <!-- شاخه‌ی خواندن -->
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-acc" x="470" y="306" width="280" height="70" rx="12"/>
+    <text class="s-t" x="610" y="334" text-anchor="middle">Read Side</text>
+    <text class="s-t2" x="610" y="358" text-anchor="middle">MongoDB / Redis / PostgreSQL تخت</text>
+  </g>
+
+  <!-- شاخه‌ی کوئری -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="30" y="206" width="210" height="50" rx="10"/>
+    <text class="s-t" x="135" y="237" text-anchor="middle">Query Side</text>
+  </g>
+
+  <!-- فرمان کاربر به شاخه‌ی نوشتن -->
+  <path class="s-arr s-flow" d="M 412 56 L 540 94"/>
+  <path class="s-head" d="M 540 94 L 528 83 L 541 85 Z"/>
+  <text class="s-t2 s-lbl" x="618" y="78" text-anchor="middle" style="--kl-i:1">Command: POST /orders</text>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 412 56 L 540 94"/>
+  </circle>
+
+  <!-- کوئری کاربر به شاخه‌ی کوئری -->
+  <path class="s-arr s-flow" d="M 350 56 L 148 204"/>
+  <path class="s-head" d="M 148 204 L 145 191 L 156 199 Z"/>
+  <text class="s-t2 s-lbl" x="150" y="126" text-anchor="middle" style="--kl-i:1">Query: GET /orders</text>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 350 56 L 148 204"/>
+  </circle>
+
+  <!-- رویداد دامنه -->
+  <path class="s-dash s-arr s-flow-soft" d="M 610 156 L 610 204"/>
+  <path class="s-head-dim" d="M 610 206 L 603 194 L 617 194 Z"/>
+  <text class="s-t2 s-lbl" x="676" y="186" text-anchor="middle" style="--kl-i:2">Domain Event</text>
+  <circle class="s-runner s-runner-dim" r="4.5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 610 156 L 610 204"/>
+  </circle>
+
+  <!-- نوشتن در مدل خواندن -->
+  <path class="s-arr s-flow" d="M 610 256 L 610 304"/>
+  <path class="s-head" d="M 610 306 L 603 294 L 617 294 Z"/>
+  <text class="s-t2 s-lbl" x="686" y="288" text-anchor="middle" style="--kl-i:3">به‌روزرسانی مدل</text>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 610 256 L 610 304"/>
+  </circle>
+
+  <!-- خواندن از مدل خواندن -->
+  <path class="s-arr s-flow" d="M 240 231 L 468 336"/>
+  <path class="s-head" d="M 468 336 L 455 335 L 460 325 Z"/>
+  <text class="s-t2 s-lbl" x="352" y="268" text-anchor="middle" style="--kl-i:4">خواندن مستقیم</text>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 240 231 L 468 336"/>
+  </circle>
+
+  <text class="s-t2 s-lbl" x="385" y="404" text-anchor="middle" style="--kl-i:5">مدل خواندن فقط کپی بهینه است: خراب شد، پروژکشن را از نو اجرا کن</text>
+  <text class="s-t2 s-lbl" x="385" y="422" text-anchor="middle" style="--kl-i:6">هزینه‌ی این سطح، پایش lag است</text>
+</svg>
+<figcaption><b>چرا این سطح محبوب‌ترین است:</b> نیازی به Event Store و بازسازی رویداد نیست. منبع حقیقت همان دیتابیس نوشتن است و Read Model فقط کپی بهینه‌ای است که دقیقاً همان چیزی را نگه می‌دارد که صفحه لازم دارد؛ اگر خراب شود کافی است پروژکشن را دوباره اجرا کنید. بهای این معماری، سازگاری نهایی و لزوم پایش <code>lag</code> است.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="java"><code>// Read Model: دقیقاً همان چیزی که صفحه لازم دارد، نه بیشتر
 @Document(collection = "order_summary")
@@ -750,47 +998,150 @@ Read Model فقط یک <strong>کپی بهینه</strong> است که می‌ت�
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>ساختار معماری</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph Client["لایه‌ی ورودی"]
-        CT1["OrderCommandController<br/>POST, PUT, PATCH, DELETE"]
-        CT2["OrderQueryController<br/>GET"]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 512" role="img" aria-label="ساختار کامل معماری CQRS: لایه‌ی ورودی، سوی فرمان، سوی کوئری، پل همگام‌سازی و زیرساخت">
+  <!-- لایه‌ی ورودی -->
+  <rect class="s-group" x="30" y="16" width="710" height="84" rx="16"/>
+  <text class="s-group-t" x="385" y="38" text-anchor="middle">لایه‌ی ورودی</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="400" y="48" width="330" height="44" rx="10"/>
+    <text class="s-t" x="565" y="66" text-anchor="middle">OrderCommandController</text>
+    <text class="s-t2" x="565" y="84" text-anchor="middle">POST, PUT, PATCH, DELETE</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="40" y="48" width="330" height="44" rx="10"/>
+    <text class="s-t" x="205" y="66" text-anchor="middle">OrderQueryController</text>
+    <text class="s-t2" x="205" y="84" text-anchor="middle">GET</text>
+  </g>
 
-    subgraph Cmd["سوی فرمان"]
-        CH["CommandHandler"]
-        AG["Order (Aggregate Root)<br/>قواعد کسب‌وکار"]
-        EV["Domain Events"]
-        WR["OrderRepository (نوشتن)"]
-        CH --> AG --> EV
-        AG --> WR
-    end
+  <!-- سوی فرمان -->
+  <rect class="s-group" x="390" y="116" width="350" height="214" rx="16"/>
+  <text class="s-group-t" x="565" y="138" text-anchor="middle">سوی فرمان</text>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="560" y="150" width="170" height="36" rx="10"/>
+    <text class="s-t" x="645" y="173" text-anchor="middle">CommandHandler</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="560" y="204" width="170" height="58" rx="10"/>
+    <text class="s-t" x="645" y="226" text-anchor="middle">Order (Aggregate Root)</text>
+    <text class="s-t2" x="645" y="248" text-anchor="middle">قواعد کسب‌وکار</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="402" y="204" width="140" height="58" rx="10"/>
+    <text class="s-t2" x="472" y="228" text-anchor="middle">Domain Events</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="560" y="272" width="170" height="38" rx="10"/>
+    <text class="s-t2" x="645" y="296" text-anchor="middle">OrderRepository</text>
+  </g>
 
-    subgraph Qry["سوی کوئری"]
-        QH["QueryHandler"]
-        RM["OrderView / DTO<br/>بدون رفتار"]
-        QR["OrderViewRepository"]
-        QH --> RM --> QR
-    end
+  <!-- سوی کوئری -->
+  <rect class="s-group-acc" x="30" y="116" width="340" height="194" rx="16"/>
+  <text class="s-group-t" x="200" y="138" text-anchor="middle">سوی کوئری</text>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="40" y="150" width="170" height="36" rx="10"/>
+    <text class="s-t" x="125" y="173" text-anchor="middle">QueryHandler</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="40" y="204" width="170" height="58" rx="10"/>
+    <text class="s-t" x="125" y="226" text-anchor="middle">OrderView / DTO</text>
+    <text class="s-t2" x="125" y="248" text-anchor="middle">بدون رفتار</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="228" y="204" width="130" height="58" rx="10"/>
+    <text class="s-t2" x="293" y="230" text-anchor="middle">OrderView</text>
+    <text class="s-t2" x="293" y="248" text-anchor="middle">Repository</text>
+  </g>
 
-    subgraph Infra["زیرساخت"]
-        WDB[("دیتابیس نوشتن")]
-        RDB[("دیتابیس خواندن")]
-    end
+  <!-- پل همگام‌سازی -->
+  <rect class="s-group" x="320" y="316" width="420" height="84" rx="16"/>
+  <text class="s-group-t" x="620" y="338" text-anchor="middle">پل همگام‌سازی</text>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-box" x="460" y="350" width="180" height="36" rx="10"/>
+    <text class="s-t2" x="550" y="373" text-anchor="middle">EventBus / Spring Events</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-acc" x="330" y="350" width="110" height="36" rx="10"/>
+    <text class="s-t2" x="385" y="373" text-anchor="middle">Projection</text>
+  </g>
 
-    subgraph Bridge["پل همگام‌سازی"]
-        PH["ProjectionHandler"]
-        BUS["EventBus / Spring Events"]
-    end
+  <!-- زیرساخت -->
+  <rect class="s-group" x="30" y="416" width="710" height="84" rx="16"/>
+  <text class="s-group-t" x="500" y="438" text-anchor="middle">زیرساخت</text>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-ok" x="390" y="446" width="340" height="44" rx="10"/>
+    <text class="s-t" x="560" y="474" text-anchor="middle">دیتابیس نوشتن</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-acc" x="40" y="446" width="340" height="44" rx="10"/>
+    <text class="s-t" x="210" y="474" text-anchor="middle">دیتابیس خواندن</text>
+  </g>
 
-    CT1 --> CH
-    CT2 --> QH
-    WR --> WDB
-    QR --> RDB
-    EV --> BUS --> PH --> RDB
+  <!-- پیکان‌ها -->
+  <path class="s-arr s-flow" d="M 565 92 L 640 148"/>
+  <path class="s-head" d="M 640 150 L 630 138 L 643 139 Z"/>
+  <path class="s-arr s-flow" d="M 205 92 L 130 148"/>
+  <path class="s-head" d="M 130 150 L 120 138 L 133 139 Z"/>
+  <path class="s-arr s-flow" d="M 645 186 L 645 202"/>
+  <path class="s-head" d="M 645 204 L 638 192 L 652 192 Z"/>
+  <path class="s-arr s-flow" d="M 560 220 L 544 220"/>
+  <path class="s-head" d="M 542 220 L 554 213 L 554 227 Z"/>
+  <path class="s-arr s-flow" d="M 645 262 L 645 270"/>
+  <path class="s-head" d="M 645 272 L 638 260 L 652 260 Z"/>
+  <path class="s-arr s-flow" d="M 125 186 L 125 202"/>
+  <path class="s-head" d="M 125 204 L 118 192 L 132 192 Z"/>
+  <path class="s-arr s-flow" d="M 210 233 L 226 233"/>
+  <path class="s-head" d="M 228 233 L 216 226 L 216 240 Z"/>
+  <path class="s-dash s-arr s-flow-soft" d="M 472 262 L 540 348"/>
+  <path class="s-head-dim" d="M 540 348 L 527 342 L 537 334 Z"/>
+  <path class="s-dash s-arr s-flow-soft" d="M 460 368 L 442 368"/>
+  <path class="s-head-dim" d="M 440 368 L 452 361 L 452 375 Z"/>
+  <path class="s-arr s-flow" d="M 645 310 L 645 442"/>
+  <path class="s-head" d="M 645 444 L 638 432 L 652 432 Z"/>
+  <path class="s-dash s-arr s-flow-soft" d="M 385 386 L 322 442"/>
+  <path class="s-head-dim" d="M 322 442 L 327 430 L 335 438 Z"/>
+  <path class="s-arr s-flow" d="M 279 262 L 205 442"/>
+  <path class="s-head" d="M 205 442 L 201 425 L 219 433 Z"/>
 
-    style AG fill:#0f766e,color:#fff,stroke:#0f766e
-    style WDB fill:#0f766e,color:#fff,stroke:#0f766e
-    style RDB fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 565 92 L 640 148"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 205 92 L 130 148"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 645 186 L 645 202"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 560 220 L 544 220"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 645 262 L 645 270"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 125 186 L 125 202"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 210 233 L 226 233"/>
+  </circle>
+  <circle class="s-runner s-runner-dim" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 472 262 L 540 348"/>
+  </circle>
+  <circle class="s-runner s-runner-dim" r="4.5">
+    <animateMotion dur="1.8s" repeatCount="indefinite" path="M 460 368 L 442 368"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 645 310 L 645 442"/>
+  </circle>
+  <circle class="s-runner s-runner-dim" r="4.5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 385 386 L 322 442"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 279 262 L 205 442"/>
+  </circle>
+</svg>
+<figcaption><b>مرزهای روشن، نه فقط پوشه‌بندی:</b> سوی فرمان و سوی کوئری هیچ تماس مستقیمی با هم ندارند و تنها پیوندشان رویداد دامنه است. دیتابیس نوشتن فقط از <code>OrderRepository</code> تغذیه می‌شود و دیتابیس خواندن فقط از <code>ProjectionHandler</code>. به همین دلیل می‌توانید دیتابیس خواندن را کاملاً حذف و دوباره بسازید، بدون آنکه به داده‌ی اصلی دست بزنید.</figcaption>
+</figure>
 
 <h3>مرزهای روشن</h3>
 
@@ -862,66 +1213,249 @@ CQRS را از دست داده‌اید. این را می‌توانید با Ar
 
 <h3>جریان Command</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant U as کاربر
-    participant C as CommandController
-    participant H as CommandHandler
-    participant A as Order (Aggregate)
-    participant R as OrderRepository
-    participant DB as دیتابیس نوشتن
-    participant B as EventBus
+<figure class="kl-fig">
+<svg viewBox="0 0 770 500" role="img" aria-label="جریان Command در CQRS: ثبت سفارش از کاربر تا کنترلر، هندلر، موجودیت، ذخیره در دیتابیس نوشتن و انتشار رویداد">
+  <!-- خطوط زندگی -->
+  <path class="s-dash" d="M 720 60 L 720 436"/>
+  <path class="s-dash" d="M 620 60 L 620 436"/>
+  <path class="s-dash" d="M 520 60 L 520 436"/>
+  <path class="s-dash" d="M 420 60 L 420 436"/>
+  <path class="s-dash" d="M 320 60 L 320 436"/>
+  <path class="s-dash" d="M 220 60 L 220 436"/>
+  <path class="s-dash" d="M 120 60 L 120 436"/>
 
-    U->>C: POST /api/orders
-    C->>C: اعتبارسنجی فرم
-    C->>H: execute(PlaceOrderCommand)
-    H->>A: create + addLine (اجرای قواعد)
-    A-->>H: رویداد OrderPlaced
-    H->>R: save(order)
-    R->>DB: INSERT
-    H->>B: publish(OrderPlaced)
-    H-->>C: orderId
-    C-->>U: 201 Created (id)
+  <!-- سرهای بازیگر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="674" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="720" y="38" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="574" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="620" y="30" text-anchor="middle">Command</text>
+    <text class="s-t2" x="620" y="46" text-anchor="middle">Controller</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="474" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="520" y="30" text-anchor="middle">Command</text>
+    <text class="s-t2" x="520" y="46" text-anchor="middle">Handler</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="374" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="420" y="30" text-anchor="middle">Order</text>
+    <text class="s-t2" x="420" y="46" text-anchor="middle">Aggregate</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="274" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="320" y="30" text-anchor="middle">Order</text>
+    <text class="s-t2" x="320" y="46" text-anchor="middle">Repository</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="174" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="220" y="38" text-anchor="middle">دیتابیس نوشتن</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="74" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="120" y="38" text-anchor="middle">EventBus</text>
+  </g>
 
-    Note over U,DB: کل مسیر فوری و سازگار</code></pre>
+  <!-- ۱) درخواست کاربر -->
+  <path class="s-arr s-flow" d="M 720 100 L 620 100"/>
+  <path class="s-head" d="M 620 100 L 632 93 L 632 107 Z"/>
+  <text class="s-t2 s-lbl" x="670" y="90" text-anchor="middle" style="--kl-i:1">POST /orders</text>
+
+  <!-- ۲) اعتبارسنجی در کنترلر -->
+  <path class="s-arr s-flow" d="M 620 136 C 586 136, 586 110, 620 110"/>
+  <path class="s-head" d="M 620 106 L 613 120 L 627 120 Z"/>
+  <text class="s-t2 s-lbl" x="666" y="130" text-anchor="middle" style="--kl-i:2">اعتبارسنجی</text>
+
+  <!-- ۳) اجرای فرمان -->
+  <path class="s-arr s-flow" d="M 620 172 L 520 172"/>
+  <path class="s-head" d="M 520 172 L 532 165 L 532 179 Z"/>
+  <text class="s-t2 s-lbl" x="570" y="162" text-anchor="middle" style="--kl-i:3">execute(cmd)</text>
+
+  <!-- ۴) اجرای قواعد کسب‌وکار -->
+  <path class="s-arr s-flow" d="M 520 208 L 420 208"/>
+  <path class="s-head" d="M 420 208 L 432 201 L 432 215 Z"/>
+  <text class="s-t2 s-lbl" x="470" y="198" text-anchor="middle" style="--kl-i:4">create+addLine</text>
+
+  <!-- ۵) بازگشت رویداد از موجودیت -->
+  <path class="s-dash s-arr s-flow-soft" d="M 420 244 L 520 244"/>
+  <path class="s-head-dim" d="M 520 244 L 508 237 L 508 251 Z"/>
+  <text class="s-t2 s-lbl" x="470" y="234" text-anchor="middle" style="--kl-i:5">OrderPlaced</text>
+
+  <!-- ۶) ذخیره در repository -->
+  <path class="s-arr s-flow" d="M 520 280 L 320 280"/>
+  <path class="s-head" d="M 320 280 L 332 273 L 332 287 Z"/>
+  <text class="s-t2 s-lbl" x="420" y="270" text-anchor="middle" style="--kl-i:6">save(order)</text>
+
+  <!-- ۷) درج در دیتابیس نوشتن -->
+  <path class="s-arr s-flow" d="M 320 316 L 220 316"/>
+  <path class="s-head" d="M 220 316 L 232 309 L 232 323 Z"/>
+  <text class="s-t2 s-lbl" x="270" y="306" text-anchor="middle" style="--kl-i:7">INSERT</text>
+
+  <!-- ۸) انتشار رویداد -->
+  <path class="s-dash s-arr s-flow-soft" d="M 520 352 L 120 352"/>
+  <path class="s-head-dim" d="M 120 352 L 132 345 L 132 359 Z"/>
+  <text class="s-t2 s-lbl" x="320" y="342" text-anchor="middle" style="--kl-i:8">publish(event)</text>
+
+  <!-- ۹) بازگشت شناسه -->
+  <path class="s-dash s-arr s-flow-soft" d="M 520 388 L 620 388"/>
+  <path class="s-head-dim" d="M 620 388 L 608 381 L 608 395 Z"/>
+  <text class="s-t2 s-lbl" x="570" y="378" text-anchor="middle" style="--kl-i:9">orderId</text>
+
+  <!-- ۱۰) پاسخ به کاربر -->
+  <path class="s-dash s-arr s-flow-soft" d="M 620 424 L 720 424"/>
+  <path class="s-head-dim" d="M 720 424 L 708 417 L 708 431 Z"/>
+  <text class="s-t2 s-lbl" x="670" y="414" text-anchor="middle" style="--kl-i:10">201 Created</text>
+
+  <!-- یادداشت -->
+  <rect class="s-group-acc" x="50" y="444" width="700" height="44" rx="12"/>
+  <text class="s-t2 s-lbl" x="400" y="472" text-anchor="middle" style="--kl-i:11">کل مسیر تا پاسخ کاربر فوری و سازگار است</text>
+
+  <!-- شماره‌ی گام‌ها -->
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="754" cy="100" r="11"/><text class="s-tc" x="754" y="104" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="754" cy="136" r="11"/><text class="s-tc" x="754" y="140" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="754" cy="172" r="11"/><text class="s-tc" x="754" y="176" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="754" cy="208" r="11"/><text class="s-tc" x="754" y="212" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="754" cy="244" r="11"/><text class="s-tc" x="754" y="248" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="754" cy="280" r="11"/><text class="s-tc" x="754" y="284" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:7"><circle class="s-chip" cx="754" cy="316" r="11"/><text class="s-tc" x="754" y="320" text-anchor="middle">۷</text></g>
+  <g class="s-node" style="--kl-i:8"><circle class="s-chip" cx="754" cy="352" r="11"/><text class="s-tc" x="754" y="356" text-anchor="middle">۸</text></g>
+  <g class="s-node" style="--kl-i:9"><circle class="s-chip" cx="754" cy="388" r="11"/><text class="s-tc" x="754" y="392" text-anchor="middle">۹</text></g>
+  <g class="s-node" style="--kl-i:10"><circle class="s-chip" cx="754" cy="424" r="11"/><text class="s-tc" x="754" y="428" text-anchor="middle">۱۰</text></g>
+</svg>
+<figcaption><b>جریان Command یک خط مستقیم است:</b> کنترلر فقط اعتبارسنجی می‌کند، قواعد کسب‌وکار فقط در موجودیت اجرا می‌شود و نوشتن فقط از راه <code>OrderRepository</code> انجام می‌گیرد. انتشار رویداد بعد از ذخیره‌ی موفق انجام می‌شود، پس شاخه‌ی خواندن هرگز نمی‌تواند رویدادی ببیند که در دیتابیس نوشتن ثبت نشده باشد.</figcaption>
+</figure>
 
 <h3>جریان Query</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant U as کاربر
-    participant C as QueryController
-    participant Q as QueryHandler
-    participant V as OrderViewRepository
-    participant DB as دیتابیس خواندن
+<figure class="kl-fig">
+<svg viewBox="0 0 770 380" role="img" aria-label="جریان Query در CQRS: خواندن از مدل خواندن با یک کوئری ساده و بدون join">
+  <path class="s-dash" d="M 660 60 L 660 316"/>
+  <path class="s-dash" d="M 520 60 L 520 316"/>
+  <path class="s-dash" d="M 380 60 L 380 316"/>
+  <path class="s-dash" d="M 240 60 L 240 316"/>
+  <path class="s-dash" d="M 100 60 L 100 316"/>
 
-    U->>C: GET /api/orders?customerId=1
-    C->>Q: search(customerId)
-    Q->>V: findByCustomer(1)
-    V->>DB: SELECT * FROM order_summary WHERE customer_id = ?
-    DB-->>V: ۲۰ ردیف آماده
-    V-->>Q: OrderSummary
-    Q-->>C: List&lt;OrderSummary&gt;
-    C-->>U: JSON
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="614" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="660" y="38" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="474" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="520" y="30" text-anchor="middle">Query</text>
+    <text class="s-t2" x="520" y="46" text-anchor="middle">Controller</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="334" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="380" y="30" text-anchor="middle">Query</text>
+    <text class="s-t2" x="380" y="46" text-anchor="middle">Handler</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="184" y="10" width="112" height="44" rx="10"/>
+    <text class="s-t2" x="240" y="30" text-anchor="middle">OrderView</text>
+    <text class="s-t2" x="240" y="46" text-anchor="middle">Repository</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="54" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="100" y="38" text-anchor="middle">دیتابیس خواندن</text>
+  </g>
 
-    Note over U,DB: یک کوئری، بدون join، ایندکس‌شده</code></pre>
+  <path class="s-arr s-flow" d="M 660 100 L 520 100"/>
+  <path class="s-head" d="M 520 100 L 532 93 L 532 107 Z"/>
+  <text class="s-t2 s-lbl" x="590" y="90" text-anchor="middle" style="--kl-i:1">GET /orders</text>
+
+  <path class="s-arr s-flow" d="M 520 148 L 380 148"/>
+  <path class="s-head" d="M 380 148 L 392 141 L 392 155 Z"/>
+  <text class="s-t2 s-lbl" x="450" y="138" text-anchor="middle" style="--kl-i:2">search(id)</text>
+
+  <path class="s-arr s-flow" d="M 380 196 L 240 196"/>
+  <path class="s-head" d="M 240 196 L 252 189 L 252 203 Z"/>
+  <text class="s-t2 s-lbl" x="310" y="186" text-anchor="middle" style="--kl-i:3">findByCustomer</text>
+
+  <path class="s-arr s-flow" d="M 240 244 L 100 244"/>
+  <path class="s-head" d="M 100 244 L 112 237 L 112 251 Z"/>
+  <text class="s-t2 s-lbl" x="170" y="234" text-anchor="middle" style="--kl-i:4">یک SELECT ساده</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 100 292 L 240 292"/>
+  <path class="s-head-dim" d="M 240 292 L 228 285 L 228 299 Z"/>
+  <text class="s-t2 s-lbl" x="170" y="282" text-anchor="middle" style="--kl-i:5">۲۰ ردیف آماده</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 240 316 L 380 316"/>
+  <path class="s-head-dim" d="M 380 316 L 368 309 L 368 323 Z"/>
+  <text class="s-t2 s-lbl" x="310" y="306" text-anchor="middle" style="--kl-i:6">OrderSummary</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 380 340 L 520 340"/>
+  <path class="s-head-dim" d="M 520 340 L 508 333 L 508 347 Z"/>
+  <text class="s-t2 s-lbl" x="450" y="330" text-anchor="middle" style="--kl-i:7">فقط خواندن</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 520 364 L 660 364"/>
+  <path class="s-head-dim" d="M 660 364 L 648 357 L 648 371 Z"/>
+  <text class="s-t2 s-lbl" x="590" y="354" text-anchor="middle" style="--kl-i:8">JSON</text>
+
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="754" cy="100" r="11"/><text class="s-tc" x="754" y="104" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="754" cy="148" r="11"/><text class="s-tc" x="754" y="152" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="754" cy="196" r="11"/><text class="s-tc" x="754" y="200" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="754" cy="244" r="11"/><text class="s-tc" x="754" y="248" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="754" cy="292" r="11"/><text class="s-tc" x="754" y="296" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="754" cy="316" r="11"/><text class="s-tc" x="754" y="320" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:7"><circle class="s-chip" cx="754" cy="340" r="11"/><text class="s-tc" x="754" y="344" text-anchor="middle">۷</text></g>
+  <g class="s-node" style="--kl-i:8"><circle class="s-chip" cx="754" cy="364" r="11"/><text class="s-tc" x="754" y="368" text-anchor="middle">۸</text></g>
+</svg>
+<figcaption><b>جریان Query فقط خواندنی است:</b> هیچ‌جای این مسیر قفل نمی‌گیرد و هیچ‌چیز نوشته نمی‌شود، چون مدل خواندن از قبل دقیقاً همان ستون‌هایی را دارد که صفحه لازم دارد. کوئری نه join دارد و نه زیرکوئری؛ همان چیزی که در بخش ۴ ۳ ثانیه طول می‌کشید، اینجا یک خواندن ایندکس‌شده است.</figcaption>
+</figure>
 
 <h3>جریان همگام‌سازی (پروژکشن)</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant B as EventBus
-    participant P as OrderSummaryProjector
-    participant V as OrderViewRepository
-    participant DB as دیتابیس خواندن
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="جریان همگام‌سازی: دو رویداد OrderPlaced و OrderShipped که پروژکشن را به‌روزرسانی می‌کنند">
+  <path class="s-dash" d="M 620 60 L 620 236"/>
+  <path class="s-dash" d="M 430 60 L 430 236"/>
+  <path class="s-dash" d="M 240 60 L 240 236"/>
+  <path class="s-dash" d="M 90 60 L 90 236"/>
 
-    Note over B: پس از commit تراکنش نوشتن
-    B->>P: OrderPlaced
-    P->>V: upsert(ساخت خلاصه)
-    V->>DB: INSERT ON CONFLICT UPDATE
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="574" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="620" y="38" text-anchor="middle">EventBus</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="360" y="10" width="140" height="44" rx="10"/>
+    <text class="s-t2" x="430" y="30" text-anchor="middle">OrderSummary</text>
+    <text class="s-t2" x="430" y="46" text-anchor="middle">Projector</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="170" y="10" width="140" height="44" rx="10"/>
+    <text class="s-t2" x="240" y="30" text-anchor="middle">OrderView</text>
+    <text class="s-t2" x="240" y="46" text-anchor="middle">Repository</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="44" y="10" width="92" height="44" rx="10"/>
+    <text class="s-t2" x="90" y="38" text-anchor="middle">دیتابیس خواندن</text>
+  </g>
 
-    B->>P: OrderShipped
-    P->>V: updateShippingStatus("SHIPPED")
-    V->>DB: UPDATE
+  <text class="s-t2 s-lbl" x="400" y="82" text-anchor="middle" style="--kl-i:1">پس از commit تراکنش نوشتن</text>
 
-    Note over P,DB: هر پروژکشن باید idempotent باشد</code></pre>
+  <path class="s-dash s-arr s-flow-soft" d="M 620 110 L 430 110"/>
+  <path class="s-head-dim" d="M 430 110 L 442 103 L 442 117 Z"/>
+  <text class="s-t2 s-lbl" x="525" y="100" text-anchor="middle" style="--kl-i:2">OrderPlaced</text>
+
+  <path class="s-arr s-flow" d="M 430 158 L 240 158"/>
+  <path class="s-head" d="M 240 158 L 252 151 L 252 165 Z"/>
+  <text class="s-t2 s-lbl" x="335" y="148" text-anchor="middle" style="--kl-i:3">upsert(خلاصه)</text>
+
+  <path class="s-arr s-flow" d="M 240 198 L 90 198"/>
+  <path class="s-head" d="M 90 198 L 102 191 L 102 205 Z"/>
+  <text class="s-t2 s-lbl" x="165" y="188" text-anchor="middle" style="--kl-i:4">INSERT ON CONFLICT</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 620 234 L 430 234"/>
+  <path class="s-head-dim" d="M 430 234 L 442 227 L 442 241 Z"/>
+  <text class="s-t2 s-lbl" x="525" y="224" text-anchor="middle" style="--kl-i:5">OrderShipped</text>
+
+  <rect class="s-group" x="44" y="252" width="622" height="40" rx="12"/>
+  <text class="s-t2 s-lbl" x="355" y="278" text-anchor="middle" style="--kl-i:6">هر پروژکشن باید idempotent باشد تا اجرای دوباره‌ی رویداد بی‌خطر بماند</text>
+</svg>
+<figcaption><b>پروژکشن، تنها نویسنده‌ی مدل خواندن است:</b> هر رویداد دامنه دقیقاً یک تغییر در مدل خواندن است و چون پیام‌ها ممکن است دوباره برسند، هر پروژکشن باید <code>idempotent</code> نوشته شود؛ وگرنه یک سفارش دو بار در فهرست مشتری ظاهر می‌شود.</figcaption>
+</figure>
 
 <h3>سازگاری نهایی در عمل</h3>
 
@@ -2170,7 +2704,7 @@ class OrderSummaryProjector {
 </tbody>
 </table>
 
-<h3>Command Bus — مدیریت Command ها</h3>
+<h3>Command Bus — مدیریت Commandها</h3>
 
 <pre class="kl-code" data-lang="java"><code>public interface CommandBus {
     &lt;R&gt; R dispatch(Command&lt;R&gt; command);
@@ -2784,6 +3318,61 @@ CQRS در اینجا <strong>متقابلاً</strong> سریع است: تنها
 </tbody>
 </table>
 
+<figure class="kl-fig">
+<svg viewBox="0 0 770 388" role="img" aria-label="مقایسه‌ی تأخیر کوئری در معماری تک‌مدل و CQRS برای پنج الگوی نمایش">
+  <path class="s-grid" d="M 531 4 L 531 366"/>
+  <path class="s-grid" d="M 452 4 L 452 366"/>
+  <path class="s-grid" d="M 373 4 L 373 366"/>
+  <path class="s-grid" d="M 294 4 L 294 366"/>
+  <path class="s-grid" d="M 215 4 L 215 366"/>
+  <path class="s-grid" d="M 136 4 L 136 366"/>
+  <path class="s-grid" d="M 57 4 L 57 366"/>
+  <text class="s-axlabel" x="57" y="380" text-anchor="middle">۰</text>
+  <text class="s-axlabel" x="136" y="380" text-anchor="middle">۱۰۰۰</text>
+  <text class="s-axlabel" x="215" y="380" text-anchor="middle">۲۰۰۰</text>
+  <text class="s-axlabel" x="294" y="380" text-anchor="middle">۳۰۰۰</text>
+  <text class="s-axlabel" x="373" y="380" text-anchor="middle">۴۰۰۰</text>
+  <text class="s-axlabel" x="452" y="380" text-anchor="middle">۵۰۰۰</text>
+  <text class="s-axlabel" x="531" y="380" text-anchor="middle">۶۰۰۰</text>
+  <path class="s-axis" d="M 610 4 L 610 366"/>
+
+  <text class="s-cat" x="698" y="36" text-anchor="middle">فهرست ۲۰ رکورد</text>
+  <rect class="s-bad s-hbar" x="586" y="16" width="24" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="570" y="24" text-anchor="middle">۲۵۰</text>
+  <rect class="s-acc s-hbar" x="605" y="27" width="5" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="589" y="35" text-anchor="middle">۱۲</text>
+
+  <text class="s-cat" x="698" y="108" text-anchor="middle">فهرست ۱۰۰ رکورد</text>
+  <rect class="s-bad s-hbar" x="452" y="88" width="158" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="436" y="96" text-anchor="middle">۱٬۸۰۰</text>
+  <rect class="s-acc s-hbar" x="603" y="99" width="7" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="587" y="107" text-anchor="middle">۳۵</text>
+
+  <text class="s-cat" x="698" y="180" text-anchor="middle">داشبورد تجمیعی</text>
+  <rect class="s-bad s-hbar" x="57" y="160" width="553" height="8" rx="4" style="--kl-i:4"/>
+  <text class="s-val" x="41" y="168" text-anchor="middle">۶٬۰۰۰</text>
+  <rect class="s-acc s-hbar" x="605" y="171" width="5" height="8" rx="4" style="--kl-i:5"/>
+  <text class="s-val" x="589" y="179" text-anchor="middle">۵</text>
+
+  <text class="s-cat" x="698" y="252" text-anchor="middle">جست‌وجوی متنی</text>
+  <rect class="s-bad s-hbar" x="294" y="232" width="316" height="8" rx="4" style="--kl-i:6"/>
+  <text class="s-val" x="278" y="240" text-anchor="middle">۳٬۰۰۰</text>
+  <rect class="s-acc s-hbar" x="601" y="243" width="9" height="8" rx="4" style="--kl-i:7"/>
+  <text class="s-val" x="585" y="251" text-anchor="middle">۴۰</text>
+
+  <text class="s-cat" x="698" y="324" text-anchor="middle">محاسبه‌ی آمار</text>
+  <rect class="s-bad s-hbar" x="531" y="304" width="79" height="8" rx="4" style="--kl-i:8"/>
+  <text class="s-val" x="515" y="312" text-anchor="middle">۸۰۰</text>
+  <rect class="s-acc s-hbar" x="609" y="315" width="1" height="8" rx="4" style="--kl-i:9"/>
+  <text class="s-val" x="593" y="323" text-anchor="middle">۱</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-bad"></i>تک‌مدل</span>
+  <span><i class="c-acc"></i>CQRS</span>
+</div>
+<figcaption><b>اختلاف، در همه‌ی الگوها یک‌دست است:</b> میله‌ها دقیقاً همان اعداد جدول بالا بر حسب میلی‌ثانیه‌اند و مقیاس مشترکشان ۶۰۰۰ است. میله‌های کوتاه‌تر از ۵ پیکسل با کفِ ۵ پیکسل کشیده شده‌اند تا دیده شوند؛ عدد واقعی کنار هر میله آمده است. بیشترین فاصله مربوط به داشبورد تجمیعی است، چون حذف <code>COUNT</code> و <code>SUM</code> زمان محاسبه را کاملاً از مسیر خواندن بیرون می‌برد.</figcaption>
+</figure>
+
 <div class="kl-box kl-ok">
 <span class="kl-h">چرا این‌قدر تفاوت؟</span>
 سه دلیل مستقل که با هم ضرب می‌شوند: (۱) <strong>حذف join</strong> — ۵ جدول به ۱؛
@@ -2871,6 +3460,41 @@ void listQueryStaysFast() {
 بدترین حالت است: سیستم بدون صدا دروغ می‌گوید. پایش lag را <strong>از روز اول</strong>
 بسازید، نه وقتی مشکل پیش آمد.
 </div>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="نمودار رشد lag پس از توقف پروژکشن، عبور از آستانه‌ی هشدار صد رکورد و بازسازی پس از راه‌اندازی دوباره">
+  <path class="s-grid" d="M 610 4 L 610 224"/>
+  <path class="s-grid" d="M 473 4 L 473 224"/>
+  <path class="s-grid" d="M 336 4 L 336 224"/>
+  <path class="s-grid" d="M 199 4 L 199 224"/>
+  <text class="s-axlabel" x="610" y="240" text-anchor="middle">۰</text>
+  <text class="s-axlabel" x="541" y="240" text-anchor="middle">۵۰</text>
+  <text class="s-axlabel" x="473" y="240" text-anchor="middle">۱۰۰</text>
+  <text class="s-axlabel" x="404" y="240" text-anchor="middle">۱۵۰</text>
+  <text class="s-axlabel" x="336" y="240" text-anchor="middle">۲۰۰</text>
+  <text class="s-axlabel" x="267" y="240" text-anchor="middle">۲۵۰</text>
+  <text class="s-axlabel" x="199" y="240" text-anchor="middle">۳۰۰</text>
+  <text class="s-axlabel" x="404" y="258" text-anchor="middle">فاصله‌ی مدل نوشتن و مدل خواندن (رکورد)</text>
+  <path class="s-axis" d="M 610 4 L 610 224"/>
+
+  <!-- آستانه‌ی هشدار -->
+  <path class="s-dash" d="M 473 4 L 473 224"/>
+  <text class="s-t2 s-lbl" x="556" y="18" text-anchor="middle" style="--kl-i:0">آستانه‌ی هشدار: ۱۰۰ رکورد</text>
+
+  <!-- ناحیه‌ی زیر خط -->
+  <path class="s-area" d="M 610 224 L 473 224 L 450 106 L 336 224 L 199 224 Z"/>
+  <!-- خط رشد lag -->
+  <path class="s-bad s-linechart" pathLength="1" d="M 610 224 L 473 224 L 450 106 L 336 224 L 199 224" style="--kl-i:1"/>
+  <!-- خط بازسازی پس از راه‌اندازی دوباره -->
+  <path class="s-acc s-linechart" pathLength="1" d="M 199 224 L 420 224 L 560 222" style="--kl-i:3"/>
+
+  <text class="s-t2 s-lbl" x="560" y="192" text-anchor="middle" style="--kl-i:0">پیش از توقف: صفر</text>
+  <text class="s-t2 s-lbl" x="452" y="92" text-anchor="middle" style="--kl-i:2">توقف پروژکشن</text>
+  <text class="s-t2 s-lbl" x="267" y="196" text-anchor="middle" style="--kl-i:4">بازسازی Read Model</text>
+  <text class="s-t2 s-lbl" x="590" y="272" text-anchor="middle" style="--kl-i:5">شکل نمونه است؛ زمان و مقدار واقعی lag در پروژه‌ی شما فرق می‌کند</text>
+</svg>
+<figcaption><b>شکل lag، همان بی‌صدایی است که نگران‌کننده است:</b> تا وقتی پروژکشن کار می‌کند فاصله صفر است و هیچ نشانه‌ای دیده نمی‌شود؛ درست وقتی پروژکشن می‌ایستد، شیب بالا می‌رود و lag از آستانه‌ی ۱۰۰ رکورد کد بالا می‌گذرد. اگر این نمودار را پایش نکنید، هیچ خطایی ثبت نمی‌شود و سیستم فقط داده‌ی کهنه نشان می‌دهد.</figcaption>
+</figure>
 </section>
 <!-- ==================== 23 ==================== -->
 <section id="s23">
@@ -2999,7 +3623,7 @@ join مناسب‌تر است.
 </div>
 
 <div class="kl-box kl-h">
-<span class="kl-h">سؤال ۱۹ — چگونه تعداد Read Model ها را کنترل می‌کنید؟</span>
+<span class="kl-h">سؤال ۱۹ — چگونه تعداد Read Modelها را کنترل می‌کنید؟</span>
 با هم‌ترکیبی: نمایش‌هایی که فیلدهای مشابه دارند را در یک جدول نگه می‌دارید و فقط
 نمایه‌های متفاوت را جدا می‌کنید. برای هر Read Model باید دلیل مشخص و قابل دفاع
 داشته باشید (مثال: «فهرست اصلی» و «داشبورد تجمیعی»).
@@ -3113,7 +3737,7 @@ Event-Driven Architecture (رویدادها به سرویس دیگر می‌رو
 
 <div class="kl-box kl-h">
 <span class="kl-h">مهم‌ترین توصیه برای شروع چیست؟</span>
-از سطح ۱ شروع کنید (جدا کردن interface ها). اگر بعد از آن کوئری هنوز کند بود، آن‌وقت
+از سطح ۱ شروع کنید (جدا کردن interfaceها). اگر بعد از آن کوئری هنوز کند بود، آن‌وقت
 Read Model بسازید. CQRS کامل را فقط وقتی به کار ببرید که واقعاً به آن نیاز دارید.
 </div>
 </section>
@@ -3174,7 +3798,7 @@ CQRS = «مدل نوشتن را برای درستی نگه دار، مدل خو�
 <tr><th>مرحله</th><th>مدت</th><th>هدف</th><th>تمرین</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>۱. CQS</strong></td><td>۱ هفته</td><td>جدا کردن interface ها</td><td>یک سرویس را به Commands/Queries بشکنید</td></tr>
+<tr><td><strong>۱. CQS</strong></td><td>۱ هفته</td><td>جدا کردن interfaceها</td><td>یک سرویس را به Commands/Queries بشکنید</td></tr>
 <tr><td><strong>۲. مدل خواندن</strong></td><td>۲ هفته</td><td>DTO اختصاصی برای نمایش</td><td>برای ۳ صفحه View بنویسید</td></tr>
 <tr><td><strong>۳. پروژکشن</strong></td><td>۳ هفته</td><td>ساخت و به‌روزرسانی Read Model</td><td>پروژکشن idempotent با تست</td></tr>
 <tr><td><strong>۴. پایش</strong></td><td>۱ هفته</td><td>lag، هشدار، بازسازی</td><td>اسکریپت بازسازی کامل</td></tr>

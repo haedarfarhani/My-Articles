@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -249,8 +251,8 @@ private MutableLiveData&lt;Integer&gt;     page      = ...;
 <table>
   <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
   <tr><td>دهه‌ی ۱۹۸۰ — Elm</td><td>الگوی <code>Model → Update → View</code> با تابع خالص؛ اولین شکل جدی MVI</td></tr>
-  <tr><td>۱۹۹۰s — Haskell</td><td>مفهوم State خالص و عدم تکرار اثر جانبی تثبیت شد</td></tr>
-  <tr><td>۲۰۱۰s — Elm / React</td><td>الگوی <code>update(state, action) → state</code> به‌طور گسترده استفاده شد</td></tr>
+  <tr><td>دهه‌ی ۱۹۹۰ — Haskell</td><td>مفهوم State خالص و عدم تکرار اثر جانبی تثبیت شد</td></tr>
+  <tr><td>دهه‌ی ۲۰۱۰ — Elm / React</td><td>الگوی <code>update(state, action) → state</code> به‌طور گسترده استفاده شد</td></tr>
   <tr><td>۲۰۱۶ — Cycle.js</td><td>نام MVI را برای ترکیب این مفاهیم به‌طور رسمی به کار برد</td></tr>
   <tr><td>۲۰۱۸ — Kotlin/Multiplatform</td><td>الگو به اشتراک‌گذاری منطق بین پلتفرم‌ها کمک کرد</td></tr>
   <tr><td>۲۰۱۹ به بعد — Jetpack Compose</td><td>چون Compose خودش یک مدل State دارد، MVI الگوی طبیعی شد</td></tr>
@@ -388,20 +390,75 @@ MVI با MVVM یکی نیست، در حالی که هر دو ViewModel دارن�
 ۳) <strong>تابع خالص</strong> — State جدید فقط از ترکیب State قبلی و Intent ساخته می‌شود.
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    U["کاربر"] -->|"کلیک / تایپ / کشیدن"| V["View (Compose / Fragment)"]
-    V -->|"dispatch(Intent)"| VM["ViewModel — نگه‌دارنده‌ی State"]
-    VM -->|"reduce(state, intent)"| R["Reducer — تابع خالص"]
-    R -->|"State جدید"| VM
-    VM -->|"State"| V
-    VM -->|"اثر جانبی (شبکه، DB)"| S["Side Effect — بیرون از Reducer"]
-    S -->|"نتیجه به‌صورت Intent"| VM
+<figure class="kl-fig">
+<svg viewBox="0 0 770 320" role="img" aria-label="چرخه‌ی MVI: Intent، Reducer، State و اثر جانبی">
+  <!-- زنجیره‌ی اصلی: کاربر ← View ← ViewModel ← Reducer -->
+  <path class="s-arr s-flow" d="M 616 52 L 578 52"/>
+  <path class="s-head" d="M 572 52 L 584 45 L 584 59 Z"/>
+  <text class="s-t2 s-lbl" x="594" y="40" text-anchor="middle" style="--kl-i:0">رویداد</text>
 
-    style U fill:#78350f,stroke:#fbbf24,color:#fff
-    style V fill:#0f766e,stroke:#14b8a6,color:#fff
-    style VM fill:#115e59,stroke:#2dd4bf,color:#fff
-    style R fill:#134e4a,stroke:#5eead4,color:#fff
-    style S fill:#7f1d1d,stroke:#f87171,color:#fff</code></pre>
+  <path class="s-arr s-flow" d="M 432 52 L 388 52"/>
+  <path class="s-head" d="M 382 52 L 394 45 L 394 59 Z"/>
+  <text class="s-tc s-lbl" x="410" y="40" text-anchor="middle" style="--kl-i:1">dispatch</text>
+
+  <path class="s-arr s-flow" d="M 242 52 L 198 52"/>
+  <path class="s-head" d="M 192 52 L 204 45 L 204 59 Z"/>
+  <text class="s-tc s-lbl" x="220" y="40" text-anchor="middle" style="--kl-i:2">reduce</text>
+
+  <!-- بازگشت State -->
+  <path class="s-arr-ok s-flow-ok" d="M 198 88 L 242 88"/>
+  <path class="s-head-ok" d="M 248 88 L 236 81 L 236 95 Z"/>
+  <text class="s-tc s-lbl" x="220" y="78" text-anchor="middle" style="--kl-i:3">State</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 388 88 L 432 88"/>
+  <path class="s-head-ok" d="M 438 88 L 426 81 L 426 95 Z"/>
+  <text class="s-tc s-lbl" x="410" y="78" text-anchor="middle" style="--kl-i:3">State</text>
+
+  <!-- اثر جانبی -->
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 315 102 L 315 184"/>
+  <path class="s-head-bad" d="M 315 190 L 308 178 L 322 178 Z"/>
+  <text class="s-t2 s-lbl" x="315" y="148" text-anchor="middle" style="--kl-i:4">اثر جانبی: شبکه و دیتابیس</text>
+
+  <path class="s-dash s-arr s-flow" d="M 400 214 C 449 214, 449 102, 386 102"/>
+  <path class="s-head" d="M 380 102 L 392 95 L 392 109 Z"/>
+  <text class="s-t2 s-lbl" x="315" y="292" text-anchor="middle" style="--kl-i:5">نتیجه به‌صورت Intent برمی‌گردد</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 612 52 L 196 52"/>
+  </circle>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="624" y="30" width="130" height="72" rx="12"/>
+    <text class="s-t" x="689" y="60" text-anchor="middle">کاربر</text>
+    <text class="s-t2" x="689" y="84" text-anchor="middle">انسان</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="440" y="30" width="130" height="72" rx="12"/>
+    <text class="s-t" x="505" y="60" text-anchor="middle">View</text>
+    <text class="s-t2" x="505" y="84" text-anchor="middle">نمایش و Intent</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="250" y="30" width="130" height="72" rx="12"/>
+    <text class="s-t" x="315" y="60" text-anchor="middle">ViewModel</text>
+    <text class="s-t2" x="315" y="84" text-anchor="middle">نگه‌دارنده‌ی State</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok s-pulse" x="60" y="30" width="130" height="72" rx="12"/>
+    <text class="s-t" x="125" y="60" text-anchor="middle">Reducer</text>
+    <text class="s-t2" x="125" y="84" text-anchor="middle">تابع خالص</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-bad" x="230" y="190" width="170" height="70" rx="12"/>
+    <text class="s-tbad" x="315" y="220" text-anchor="middle">Side Effect</text>
+    <text class="s-t2" x="315" y="244" text-anchor="middle">بیرون از Reducer</text>
+  </g>
+</svg>
+<figcaption><b>چرخه‌ی MVI:</b> هر تغییر وضعیت با یک <code>Intent</code> آغاز می‌شود، از <code>Reducer</code> خالص عبور می‌کند و <code>State</code> جدید به <code>View</code> می‌رسد. <code>Side Effect</code> عمداً بیرون از <code>Reducer</code> است و نتیجه‌اش دوباره به‌صورت <code>Intent</code> وارد چرخه می‌شود.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>قانون طلایی MVI:
 
@@ -438,41 +495,96 @@ MVI با MVVM یکی نیست، در حالی که هر دو ViewModel دارن�
 </table>
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    subgraph VIEW["View — فقط نمایش و ارسال Intent"]
-        V1["Composable یا Fragment"]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 344" role="img" aria-label="اجزای MVI: View، ViewModel، Core و Data Layer">
+  <!-- View ↔ ViewModel -->
+  <path class="s-arr s-flow" d="M 602 95 L 570 95"/>
+  <path class="s-head" d="M 564 95 L 576 88 L 576 102 Z"/>
+  <text class="s-tc s-lbl" x="583" y="82" text-anchor="middle" style="--kl-i:0">Intent</text>
+  <path class="s-arr-ok s-flow-ok" d="M 570 140 L 602 140"/>
+  <path class="s-head-ok" d="M 608 140 L 596 133 L 596 147 Z"/>
+  <text class="s-tc s-lbl" x="583" y="127" text-anchor="middle" style="--kl-i:1">State</text>
 
-    subgraph CORE["Core MVI — قابل تست و قابل اشتراک"]
-        I["SearchIntent (sealed)"]
-        S["SearchState (immutable)"]
-        R["SearchReducer (pure function)"]
-    end
+  <!-- ViewModel ↔ Core -->
+  <path class="s-arr s-flow" d="M 402 95 L 370 95"/>
+  <path class="s-head" d="M 364 95 L 376 88 L 376 102 Z"/>
+  <text class="s-tc s-lbl" x="383" y="82" text-anchor="middle" style="--kl-i:2">reduce</text>
+  <path class="s-arr-ok s-flow-ok" d="M 370 140 L 402 140"/>
+  <path class="s-head-ok" d="M 408 140 L 396 133 L 396 147 Z"/>
+  <text class="s-tc s-lbl" x="383" y="127" text-anchor="middle" style="--kl-i:2">State</text>
 
-    subgraph VM["ViewModel — نگه‌دارنده‌ی State + اثرات جانبی"]
-        M1["MutableStateFlow&lt;SearchState&gt;"]
-        M2["Channel&lt;SearchIntent&gt;"]
-        M3["Effect Flow (ناوبری، پیام)"]
-    end
+  <!-- Core → Data -->
+  <path class="s-arr s-flow" d="M 202 95 L 170 95"/>
+  <path class="s-head" d="M 164 95 L 176 88 L 176 102 Z"/>
+  <text class="s-t2 s-lbl" x="183" y="82" text-anchor="middle" style="--kl-i:3">داده</text>
 
-    subgraph DATA["Data Layer"]
-        D1["SearchRepository (Interface)"]
-        D2["RemoteSearchDataSource"]
-    end
+  <!-- Data → ViewModel (مسیر برگشتی زیر شکل) -->
+  <path class="s-dash s-arr s-flow-soft" d="M 86 250 C 86 302, 486 302, 486 250"/>
+  <path class="s-head" d="M 486 244 L 479 256 L 493 256 Z"/>
+  <text class="s-t2 s-lbl" x="300" y="326" text-anchor="middle" style="--kl-i:4">نتیجه به‌صورت Intent برمی‌گردد — و Side Effect به سمت Data می‌رود</text>
 
-    V1 -->|"onIntent(...)"| M2
-    M2 --> M1
-    M1 --> R
-    R --> M1
-    M1 -->|"State"| V1
-    M1 -->|"Side Effect"| D1
-    D1 -->|"نتیجه → Intent"| M2
-    M3 -->|"یک‌بارمصرف"| V1
+  <!-- View -->
+  <rect class="s-group" x="610" y="20" width="152" height="230" rx="14"/>
+  <text class="s-group-t" x="686" y="44" text-anchor="middle">View</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="618" y="62" width="136" height="36" rx="8"/>
+    <text class="s-t" x="686" y="85" text-anchor="middle">Composable</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="618" y="106" width="136" height="36" rx="8"/>
+    <text class="s-t" x="686" y="129" text-anchor="middle">Fragment</text>
+  </g>
+  <text class="s-t2" x="686" y="200" text-anchor="middle">فقط Intent می‌فرستد</text>
 
-    style VIEW fill:#0f766e,stroke:#14b8a6,color:#fff
-    style CORE fill:#134e4a,stroke:#5eead4,color:#fff
-    style VM fill:#115e59,stroke:#2dd4bf,color:#fff
-    style DATA fill:#1c1917,stroke:#a8a29e,color:#fff</code></pre>
+  <!-- ViewModel -->
+  <rect class="s-group" x="410" y="20" width="152" height="230" rx="14"/>
+  <text class="s-group-t" x="486" y="44" text-anchor="middle">ViewModel</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="418" y="62" width="136" height="36" rx="8"/>
+    <text class="s-tc" x="486" y="85" text-anchor="middle">StateFlow&lt;State&gt;</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="418" y="106" width="136" height="36" rx="8"/>
+    <text class="s-tc" x="486" y="129" text-anchor="middle">Channel&lt;Intent&gt;</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="418" y="150" width="136" height="36" rx="8"/>
+    <text class="s-tc" x="486" y="173" text-anchor="middle">Effect Flow</text>
+  </g>
+  <text class="s-t2" x="486" y="216" text-anchor="middle">نگه‌دارنده‌ی State</text>
+
+  <!-- Core -->
+  <rect class="s-group s-group-acc" x="210" y="20" width="152" height="230" rx="14"/>
+  <text class="s-group-t" x="286" y="44" text-anchor="middle">Core MVI</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="218" y="62" width="136" height="36" rx="8"/>
+    <text class="s-t" x="286" y="85" text-anchor="middle">Intent (sealed)</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="218" y="106" width="136" height="36" rx="8"/>
+    <text class="s-t" x="286" y="129" text-anchor="middle">State (immutable)</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok s-pulse" x="218" y="150" width="136" height="36" rx="8"/>
+    <text class="s-t" x="286" y="173" text-anchor="middle">Reducer (pure)</text>
+  </g>
+  <text class="s-t2" x="286" y="216" text-anchor="middle">قابل تست و قابل اشتراک</text>
+
+  <!-- Data -->
+  <rect class="s-group" x="10" y="20" width="152" height="230" rx="14"/>
+  <text class="s-group-t" x="86" y="44" text-anchor="middle">Data Layer</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-c6" x="18" y="62" width="136" height="36" rx="8"/>
+    <text class="s-t" x="86" y="85" text-anchor="middle">Repository</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c6" x="18" y="106" width="136" height="36" rx="8"/>
+    <text class="s-t" x="86" y="129" text-anchor="middle">DataSource</text>
+  </g>
+  <text class="s-t2" x="86" y="200" text-anchor="middle">شبکه و دیتابیس</text>
+</svg>
+<figcaption><b>مرز Core:</b> پوشه‌ی <code>core</code> هیچ وابستگی‌ای به اندروید و هیچ کدِ I/O ندارد؛ به همین دلیل <code>Reducer</code> را می‌توان در یک تست واحد ساده و بدون شبیه‌ساز اجرا کرد. تنها کانال خروجی، Intent و تنها ورودی، State است.</figcaption>
+</figure>
 
 <div class="kl-box kl-warn">
 <span class="kl-h">مرز مهم: Reducer و Side Effect</span>
@@ -487,25 +599,88 @@ MVI با MVVM یکی نیست، در حالی که هر دو ViewModel دارن�
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    autonumber
-    actor U as کاربر
-    participant V as View
-    participant VM as ViewModel
-    participant R as Reducer (pure)
-    participant Repo as Repository
+<figure class="kl-fig">
+<svg viewBox="0 0 770 440" role="img" aria-label="ترتیب رویدادها در جریان جست‌وجوی MVI">
+  <path class="s-dash" d="M 700 54 L 700 430"/>
+  <path class="s-dash" d="M 560 54 L 560 430"/>
+  <path class="s-dash" d="M 400 54 L 400 430"/>
+  <path class="s-dash" d="M 250 54 L 250 430"/>
+  <path class="s-dash" d="M 100 54 L 100 430"/>
 
-    U->>V: تایپ «kotlin»
-    V->>VM: dispatch(SearchIntent.QueryChanged("kotlin"))
-    VM->>R: reduce(state, QueryChanged)
-    R-->>VM: state.copy(query=«kotlin», loading=true, page=1)
-    VM-->>V: State جدید → نمایش loader
-    VM->>Repo: search("kotlin")   ← اثر جانبی، بیرون از Reducer
-    Repo-->>VM: نتیجه
-    VM->>VM: dispatch(SearchIntent.SearchSucceeded(results))
-    VM->>R: reduce(state, SearchSucceeded)
-    R-->>VM: state.copy(loading=false, results=results, error=null)
-    VM-->>V: State نهایی → نمایش نتایج</code></pre>
+  <path class="s-arr s-flow" d="M 700 80 L 566 80"/>
+  <path class="s-head" d="M 560 80 L 572 73 L 572 87 Z"/>
+  <text class="s-t2 s-lbl" x="633" y="70" text-anchor="middle" style="--kl-i:0">تایپ «kotlin»</text>
+
+  <path class="s-arr s-flow" d="M 560 116 L 466 116"/>
+  <path class="s-head" d="M 460 116 L 472 109 L 472 123 Z"/>
+  <text class="s-tc s-lbl" x="513" y="106" text-anchor="middle" style="--kl-i:1">dispatch(...)</text>
+
+  <path class="s-arr s-flow" d="M 400 152 L 256 152"/>
+  <path class="s-head" d="M 250 152 L 262 145 L 262 159 Z"/>
+  <text class="s-tc s-lbl" x="328" y="142" text-anchor="middle" style="--kl-i:2">reduce(state, …)</text>
+
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 256 188 L 394 188"/>
+  <path class="s-head-ok" d="M 400 188 L 388 181 L 388 195 Z"/>
+  <text class="s-tc s-lbl" x="328" y="178" text-anchor="middle" style="--kl-i:3">loading = true</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 400 224 L 554 224"/>
+  <path class="s-head-ok" d="M 560 224 L 548 217 L 548 231 Z"/>
+  <text class="s-t2 s-lbl" x="477" y="214" text-anchor="middle" style="--kl-i:4">State جدید — نمایش loader</text>
+
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 400 260 L 106 260"/>
+  <path class="s-head-bad" d="M 100 260 L 112 253 L 112 267 Z"/>
+  <text class="s-tc s-lbl" x="250" y="250" text-anchor="middle" style="--kl-i:5">اثر جانبی: search(...)</text>
+
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 106 296 L 394 296"/>
+  <path class="s-head-ok" d="M 400 296 L 388 289 L 388 303 Z"/>
+  <text class="s-t2 s-lbl" x="250" y="286" text-anchor="middle" style="--kl-i:6">نتیجه</text>
+
+  <path class="s-arr s-flow" d="M 400 332 L 256 332"/>
+  <path class="s-head" d="M 250 332 L 262 325 L 262 339 Z"/>
+  <text class="s-tc s-lbl" x="328" y="322" text-anchor="middle" style="--kl-i:7">reduce(state, …)</text>
+
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 256 368 L 394 368"/>
+  <path class="s-head-ok" d="M 400 368 L 388 361 L 388 375 Z"/>
+  <text class="s-tc s-lbl" x="328" y="358" text-anchor="middle" style="--kl-i:8">loading = false</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 400 404 L 554 404"/>
+  <path class="s-head-ok" d="M 560 404 L 548 397 L 548 411 Z"/>
+  <text class="s-t2 s-lbl" x="477" y="394" text-anchor="middle" style="--kl-i:9">State نهایی — نمایش نتیجه</text>
+
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="22" cy="80" r="12"/><text class="s-tc" x="22" y="84" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="22" cy="116" r="12"/><text class="s-tc" x="22" y="120" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="22" cy="152" r="12"/><text class="s-tc" x="22" y="156" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="22" cy="188" r="12"/><text class="s-tc" x="22" y="192" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="22" cy="224" r="12"/><text class="s-tc" x="22" y="228" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="22" cy="260" r="12"/><text class="s-tc" x="22" y="264" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="22" cy="296" r="12"/><text class="s-tc" x="22" y="300" text-anchor="middle">۷</text></g>
+  <g class="s-node" style="--kl-i:7"><circle class="s-chip" cx="22" cy="332" r="12"/><text class="s-tc" x="22" y="336" text-anchor="middle">۸</text></g>
+  <g class="s-node" style="--kl-i:8"><circle class="s-chip" cx="22" cy="368" r="12"/><text class="s-tc" x="22" y="372" text-anchor="middle">۹</text></g>
+  <g class="s-node" style="--kl-i:9"><circle class="s-chip" cx="22" cy="404" r="12"/><text class="s-tc" x="22" y="408" text-anchor="middle">۱۰</text></g>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="648" y="14" width="104" height="40" rx="10"/>
+    <text class="s-t" x="700" y="40" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="508" y="14" width="104" height="40" rx="10"/>
+    <text class="s-t" x="560" y="40" text-anchor="middle">View</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="340" y="14" width="120" height="40" rx="10"/>
+    <text class="s-t" x="400" y="40" text-anchor="middle">ViewModel</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="195" y="14" width="110" height="40" rx="10"/>
+    <text class="s-t" x="250" y="40" text-anchor="middle">Reducer</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="35" y="14" width="130" height="40" rx="10"/>
+    <text class="s-tc" x="100" y="40" text-anchor="middle">Repository</text>
+  </g>
+</svg>
+<figcaption><b>الگوی عملیات ناهمگام:</b> در گام ۴ فقط <code>loading</code> روشن می‌شود و داده‌ی قبلی حفظ می‌شود تا صفحه «چشمک» نزند. در گام ۶ کار شبکه <strong>بیرون از</strong> <code>Reducer</code> انجام می‌شود و نتیجه در گام ۷ دوباره به‌صورت <code>Intent</code> وارد چرخه می‌گردد.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>الگوی استاندارد MVI برای هر عملیات ناهمگام:
 
@@ -1104,18 +1279,78 @@ Intent تغییر می‌کند». نتیجه: الگویی که با ذات Com
 <section id="s16">
 <h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    MVP["MVP — Presenter فرمان می‌دهد"]
-    MVVM["MVVM — ViewModel و چند LiveData"]
-    MVI["MVI — ViewModel و یک State + Intent"]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="امتیاز مقایسه‌ی MVC، MVP، MVVM و MVI در پنج معیار">
+  <path class="s-grid" d="M 528 4 L 528 300"/>
+  <path class="s-grid" d="M 446 4 L 446 300"/>
+  <path class="s-grid" d="M 364 4 L 364 300"/>
+  <path class="s-grid" d="M 282 4 L 282 300"/>
+  <path class="s-grid" d="M 200 4 L 200 300"/>
+  <text class="s-axlabel" x="528" y="313" text-anchor="middle">۱</text>
+  <text class="s-axlabel" x="446" y="313" text-anchor="middle">۲</text>
+  <text class="s-axlabel" x="364" y="313" text-anchor="middle">۳</text>
+  <text class="s-axlabel" x="282" y="313" text-anchor="middle">۴</text>
+  <text class="s-axlabel" x="200" y="313" text-anchor="middle">۵</text>
+  <path class="s-axis" d="M 610 4 L 610 300"/>
 
-    MVP -. "Presenter → View (پیام) .- MVVM
-    MVVM -. "ViewModel → LiveData (انتشار) .- MVI
-    MVI -. "ViewModel → State واحد (زمان) .- MVP
+  <text class="s-cat" x="698" y="36" text-anchor="middle">یک منبع وضعیت</text>
+  <rect class="s-acc s-hbar" x="446" y="16" width="164" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="430" y="24" text-anchor="middle">۲</text>
+  <rect class="s-ok s-hbar" x="200" y="27" width="410" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="184" y="35" text-anchor="middle">۵</text>
+  <rect class="s-warn s-hbar" x="446" y="38" width="164" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="430" y="46" text-anchor="middle">۲</text>
+  <rect class="s-c4 s-hbar" x="200" y="49" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="57" text-anchor="middle">۵</text>
 
-    style MVP fill:#78350f,stroke:#fbbf24,color:#fff
-    style MVVM fill:#115e59,stroke:#2dd4bf,color:#fff
-    style MVI fill:#0f766e,stroke:#14b8a6,color:#fff</code></pre>
+  <text class="s-cat" x="698" y="96" text-anchor="middle">تابع خالص</text>
+  <rect class="s-acc s-hbar" x="528" y="76" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="84" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="528" y="87" width="82" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="512" y="95" text-anchor="middle">۱</text>
+  <rect class="s-warn s-hbar" x="528" y="98" width="82" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="512" y="106" text-anchor="middle">۱</text>
+  <rect class="s-c4 s-hbar" x="200" y="109" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="117" text-anchor="middle">۵</text>
+
+  <text class="s-cat" x="698" y="156" text-anchor="middle">درخواست ناهمگام</text>
+  <rect class="s-acc s-hbar" x="528" y="136" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="144" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="364" y="147" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="155" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="364" y="158" width="246" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="348" y="166" text-anchor="middle">۳</text>
+  <rect class="s-c4 s-hbar" x="200" y="169" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="177" text-anchor="middle">۵</text>
+
+  <text class="s-cat" x="698" y="216" text-anchor="middle">مناسب Multiplatform</text>
+  <rect class="s-acc s-hbar" x="528" y="196" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="204" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="364" y="207" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="215" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="364" y="218" width="246" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="348" y="226" text-anchor="middle">۳</text>
+  <rect class="s-c4 s-hbar" x="200" y="229" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="237" text-anchor="middle">۵</text>
+
+  <text class="s-cat" x="698" y="276" text-anchor="middle">سادگی یادگیری</text>
+  <rect class="s-acc s-hbar" x="200" y="256" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="264" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="282" y="267" width="328" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="266" y="275" text-anchor="middle">۴</text>
+  <rect class="s-warn s-hbar" x="282" y="278" width="328" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="266" y="286" text-anchor="middle">۴</text>
+  <rect class="s-c4 s-hbar" x="446" y="289" width="164" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="430" y="297" text-anchor="middle">۲</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>MVC</span>
+  <span><i class="c-ok"></i>MVP</span>
+  <span><i class="c-warn"></i>MVVM</span>
+  <span><i class="c-c4"></i>MVI</span>
+</div>
+<figcaption><b>امتیاز نسبی (از ۵):</b> امتیازها از نشانه‌های جدول مقایسه‌ی همین بخش گرفته شده‌اند. <code>MVI</code> تنها الگویی است که در هر پنج معیار نمره‌ی بالا می‌گیرد، اما هزینه‌ی آن، همان «سادگی یادگیری» پایین است؛ این معامله فقط وقتی می‌ارزد که پروژه پیچیدگی وضعیت داشته باشد.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -1130,7 +1365,7 @@ Intent تغییر می‌کند». نتیجه: الگویی که با ذات Com
   <tr><td>مناسب Multiplatform</td><td>❌</td><td>⚠️</td><td>⚠️</td><td>✅</td></tr>
   <tr><td>حجم کد</td><td>کم</td><td>زیاد</td><td>متوسط</td><td>زیاد</td></tr>
   <tr><td>سختی یادگیری</td><td>کم</td><td>متوسط</td><td>متوسط</td><td>زیاد</td></tr>
-  <tr><td>سال معرفی</td><td>۱۹۷۹</td><td>۱۹۹۰s</td><td>۲۰۰۵</td><td>۲۰۱۰s</td></tr>
+  <tr><td>سال معرفی</td><td>۱۹۷۹</td><td>دهه‌ی ۱۹۹۰</td><td>۲۰۰۵</td><td>دهه‌ی ۲۰۱۰</td></tr>
 </table>
 </div>
 

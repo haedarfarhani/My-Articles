@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -259,7 +261,7 @@
 <h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
 
 <p>
-ایده‌ی Repository به دهه‌ی ۱۹۹۰s برمی‌گردد و از دنیای پایگاه‌داده‌ی شیءگرا
+ایده‌ی Repository به دهه‌ی ۱۹۹۰ برمی‌گردد و از دنیای پایگاه‌داده‌ی شیءگرا
 (<strong>OODB</strong>) می‌آید. محققانی مثل <strong>Jim Fowler</strong> و
 <strong>David Martin</strong> در کتاب <em>Patterns of Enterprise Application Architecture</em>
 (۲۰۰۲) آن را به‌صورت رسمی در کنار <strong>Data Mapper</strong> و
@@ -269,8 +271,8 @@
 <div class="kl-scroll">
 <table>
   <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
-  <tr><td>۱۹۹۰s — OODB</td><td>مشکل «ناهمخوانی شیءگرایی» میان مدل شیء و مدل رابطه‌ای</td></tr>
-  <tr><td>۱۹۹۶ — EJB و Entity Bean</td><td>مخزن به‌عنوان راه دوررسی به موجودیت‌های پایدار</td></tr>
+  <tr><td>دهه‌ی ۱۹۹۰ — OODB</td><td>مشکل «ناهمخوانی شیءگرایی» میان مدل شیء و مدل رابطه‌ای</td></tr>
+  <tr><td>۱۹۹۶ — EJB و Entity Bean</td><td>مخزن به‌عنوان راه دسترسی به موجودیت‌های پایدار</td></tr>
   <tr><td>۱۹۹۹ — Hibernate</td><td>Session به‌عنوان مخزن پنهان (Session-per-Request)</td></tr>
   <tr><td>۲۰۰۲ — Martin &amp; Fowler</td><td>معرفی رسمی الگو در کتاب مرجع معماری سازمانی</td></tr>
   <tr><td>۲۰۰۱–۲۰۱۰ — Spring Data</td><td>تولید خودکار پیاده‌سازی مخزن از Interface</td></tr>
@@ -289,7 +291,7 @@
 
 <!-- ==================== 3 ==================== -->
 <section id="s3">
-<h2><span class="kl-num">بخش ۳</span>Repository Pattern چیست؟ (تعریف دقیق)</h2>
+<h2><span class="kl-num">بخش ۳</span>Repository Pattern چیست؟</h2>
 
 <div class="kl-box kl-ok">
 <span class="kl-h">تعریف رسمی</span>
@@ -371,30 +373,79 @@
 <strong>تفاوت این دو، همان تفاوت کل معماری است.</strong>
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph CLEAN["در معماری Clean / Onion"]
-        D1["Domain Layer"]
-        P1["UserRepository (Port / Interface)"]
-        I1["JpaUserRepository (Adapter)"]
-        DB1[("Database")]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 276" role="img" aria-label="زنجیره‌ی لایه‌ها از رابط کاربری تا پایگاه داده و جایگاه رابط مخزن">
+  <!-- پوسته‌ی لایه‌ها -->
+  <rect class="s-group" x="653" y="38" width="112" height="100" rx="14"/>
+  <rect class="s-group-acc" x="327" y="38" width="276" height="100" rx="14"/>
+  <rect class="s-group" x="1" y="38" width="276" height="100" rx="14"/>
 
-        D1 --> P1
-        I1 -. "implements" .-> P1
-        I1 --> DB1
-    end
+  <text class="s-group-t" x="709" y="28" text-anchor="middle">Presentation</text>
+  <text class="s-group-t" x="465" y="28" text-anchor="middle">Domain — پورت اینجاست</text>
+  <text class="s-group-t" x="139" y="28" text-anchor="middle">Infrastructure</text>
 
-    subgraph LAYERED["در لایه‌بندی کلاسیک"]
-        S1["Service Layer"]
-        R1["UserDao"]
-        DB2[("Database")]
+  <!-- مسیر اصلی: رابط کاربری ← سرویس ← رابط مخزن ← پیاده‌سازی ← دیتابیس -->
+  <path class="s-arr s-flow-soft" d="M 713 88 L 49 88"/>
+  <path class="s-head-dim" d="M 597 88 L 609 81 L 609 95 Z"/>
+  <path class="s-head-dim" d="M 433 88 L 445 81 L 445 95 Z"/>
+  <path class="s-head-dim" d="M 269 88 L 281 81 L 281 95 Z"/>
+  <path class="s-head-dim" d="M 105 88 L 117 81 L 117 95 Z"/>
 
-        S1 --> R1
-        R1 --> DB2
-    end
+  <text class="s-t2 s-lbl" x="631" y="112" text-anchor="middle" style="--kl-i:1">فراخوانی</text>
+  <text class="s-t2 s-lbl" x="467" y="112" text-anchor="middle" style="--kl-i:2">findById</text>
+  <text class="s-t2 s-lbl" x="303" y="112" text-anchor="middle" style="--kl-i:3">تزریق</text>
+  <text class="s-t2 s-lbl" x="139" y="112" text-anchor="middle" style="--kl-i:4">SQL</text>
 
-    style CLEAN fill:#134e4a,stroke:#5eead4,color:#fff
-    style LAYERED fill:#115e59,stroke:#2dd4bf,color:#fff
-    style P1 fill:#0f766e,stroke:#14b8a6,color:#fff</code></pre>
+  <!-- ذره‌ی متحرک روی مسیر اصلی -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="4.2s" repeatCount="indefinite" path="M 705 88 L 57 88"/>
+  </circle>
+
+  <!-- نودهای زنجیره -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="665" y="52" width="96" height="72" rx="12"/>
+    <text class="s-t" x="713" y="82" text-anchor="middle">Presentation</text>
+    <text class="s-t2" x="713" y="104" text-anchor="middle">رابط کاربری</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="501" y="52" width="96" height="72" rx="12"/>
+    <text class="s-t" x="549" y="82" text-anchor="middle">Service</text>
+    <text class="s-t2" x="549" y="104" text-anchor="middle">منطق کسب‌وکار</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc s-pulse" x="337" y="52" width="96" height="72" rx="12"/>
+    <text class="s-acc-t" x="385" y="82" text-anchor="middle">Repository</text>
+    <text class="s-t2" x="385" y="104" text-anchor="middle">رابط (Port)</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="173" y="52" width="96" height="72" rx="12"/>
+    <text class="s-t" x="221" y="82" text-anchor="middle">پیاده‌سازی</text>
+    <text class="s-t2" x="221" y="104" text-anchor="middle">مخزن</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="9" y="52" width="96" height="72" rx="12"/>
+    <text class="s-tc" x="57" y="82" text-anchor="middle">Database</text>
+    <text class="s-t2" x="57" y="104" text-anchor="middle">ذخیره‌سازی</text>
+  </g>
+
+  <!-- قانون وابستگی: پیاده‌سازی به رابط وابسته است، نه دامنه به پیاده‌سازی -->
+  <path class="s-dash s-flow-soft" d="M 221 124 C 221 176, 385 176, 385 130"/>
+  <path class="s-head-dim" d="M 385 124 L 378 136 L 392 136 Z"/>
+  <text class="s-t2 s-lbl" x="303" y="196" text-anchor="middle" style="--kl-i:5">پیاده‌سازی به رابط وابسته است، نه برعکس</text>
+
+  <!-- تفاوت با لایه‌بندی کلاسیک -->
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-c4" x="9" y="212" width="752" height="48" rx="12"/>
+    <text class="s-t2" x="385" y="234" text-anchor="middle">در لایه‌بندی کلاسیک همین زنجیره برقرار است، اما رابط مخزن در لایه‌ی Data تعریف می‌شود</text>
+    <text class="s-t2" x="385" y="252" text-anchor="middle">و همین یک جابه‌جایی، قانون وابستگی را نقض می‌کند.</text>
+  </g>
+</svg>
+<figcaption><b>زنجیره‌ی لایه‌ها:</b> هر لایه فقط یک کار می‌کند و از لایه‌ی بیرونی خود بی‌خبر است. نقطه‌ی کلیدی شکل، جای <code>Repository</code> است: این رابط در لایه‌ی <code>Domain</code> می‌نشیند و پیاده‌سازی‌های بیرونی به آن تزریق می‌شوند.</figcaption>
+</figure>
 
 <div class="kl-box kl-deep">
 <span class="kl-h">قانون جهت وابستگی</span>
@@ -418,34 +469,90 @@
 </table>
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    subgraph DOMAIN["Domain — بدون وابستگی بیرونی"]
-        AGG["User (Aggregate Root)"]
-        IFACE["UserRepository (Port)"]
-        AGG --- IFACE
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 366" role="img" aria-label="اجزای مخزن در سه لایه‌ی کاربرد، دامنه و زیرساخت">
+  <!-- پوسته‌ی لایه‌ها -->
+  <rect class="s-group" x="535" y="42" width="218" height="238" rx="16"/>
+  <rect class="s-group-acc" x="265" y="42" width="218" height="238" rx="16"/>
+  <rect class="s-group" x="3" y="42" width="214" height="238" rx="16"/>
 
-    subgraph APP["Application"]
-        SVC["UserService"]
-    end
+  <text class="s-group-t" x="644" y="64" text-anchor="middle">Application</text>
+  <text class="s-group-t" x="374" y="64" text-anchor="middle">Domain</text>
+  <text class="s-group-t" x="110" y="64" text-anchor="middle">Infrastructure</text>
 
-    subgraph INFRA["Infrastructure — پیاده‌سازی"]
-        IMPL["JpaUserRepository"]
-        MAP["UserRowMapper"]
-        SPRING["SpringDataUserCrudRepository"]
-    end
+  <!-- جریان اجرا: سرویس ← رابط مخزن ← پیاده‌سازی ← دیتابیس -->
+  <path class="s-arr s-flow" d="M 537 114 L 491 114"/>
+  <path class="s-head" d="M 483 114 L 495 107 L 495 121 Z"/>
+  <text class="s-t2 s-lbl" x="510" y="102" text-anchor="middle" style="--kl-i:1">save</text>
 
-    DB[("Database")]
+  <path class="s-dash s-flow-soft" d="M 182 114 L 263 114"/>
+  <path class="s-head-dim" d="M 275 114 L 263 107 L 263 121 Z"/>
+  <text class="s-t2 s-lbl" x="225" y="102" text-anchor="middle" style="--kl-i:2">implements</text>
 
-    SVC -->|"save(user) · findById(id)"| IFACE
-    IMPL -. "implements" .-> IFACE
-    IMPL --> SPRING
-    IMPL --> MAP
-    SPRING --> DB
+  <!-- پورت ← ریشه‌ی تجمیع -->
+  <path class="s-arr s-flow-soft" d="M 375 140 L 375 184"/>
+  <path class="s-head-dim" d="M 375 196 L 368 184 L 382 184 Z"/>
 
-    style DOMAIN fill:#134e4a,stroke:#5eead4,color:#fff
-    style APP fill:#115e59,stroke:#2dd4bf,color:#fff
-    style INFRA fill:#1c1917,stroke:#a8a29e,color:#fff</code></pre>
+  <!-- پیاده‌سازی ← mapper و ← Spring Data -->
+  <path class="s-arr s-flow-soft" d="M 105 130 L 105 140"/>
+  <path class="s-head-dim" d="M 105 152 L 98 140 L 112 140 Z"/>
+  <path class="s-arr s-flow-soft" d="M 105 194 L 105 204"/>
+  <path class="s-head-dim" d="M 105 216 L 98 204 L 112 204 Z"/>
+
+  <!-- ذره‌ی متحرک روی مسیر پیاده‌سازی تا دیتابیس -->
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 105 260 L 105 296"/>
+  </circle>
+
+  <!-- لایه‌ی کاربرد -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="545" y="88" width="200" height="52" rx="11"/>
+    <text class="s-t" x="645" y="110" text-anchor="middle">UserService</text>
+    <text class="s-t2" x="645" y="130" text-anchor="middle">منطق کسب‌وکار</text>
+  </g>
+  <text class="s-t2" x="645" y="168" text-anchor="middle">قواعد کسب‌وکار اینجاست، نه در مخزن</text>
+
+  <!-- لایه‌ی دامنه -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc s-pulse" x="275" y="88" width="200" height="52" rx="11"/>
+    <text class="s-acc-t" x="375" y="110" text-anchor="middle">UserRepository</text>
+    <text class="s-t2" x="375" y="130" text-anchor="middle">پورت دامنه</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="275" y="196" width="200" height="62" rx="11"/>
+    <text class="s-t" x="375" y="220" text-anchor="middle">User</text>
+    <text class="s-t2" x="375" y="242" text-anchor="middle">ریشه‌ی تجمیع (Aggregate Root)</text>
+  </g>
+
+  <!-- لایه‌ی زیرساخت -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="30" y="88" width="150" height="42" rx="10"/>
+    <text class="s-t" x="105" y="114" text-anchor="middle">JpaUserRepository</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-box" x="30" y="152" width="150" height="42" rx="10"/>
+    <text class="s-t" x="105" y="178" text-anchor="middle">UserRowMapper</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-box" x="30" y="216" width="150" height="42" rx="10"/>
+    <text class="s-t2" x="105" y="236" text-anchor="middle">Spring Data</text>
+    <text class="s-t2" x="105" y="252" text-anchor="middle">CrudRepository</text>
+  </g>
+
+  <!-- دیتابیس بیرون از لایه‌ی زیرساخت -->
+  <path class="s-arr s-flow" d="M 105 258 L 105 288"/>
+  <path class="s-head" d="M 105 300 L 98 288 L 112 288 Z"/>
+
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-chip" x="45" y="300" width="120" height="44" rx="10"/>
+    <text class="s-tc" x="105" y="327" text-anchor="middle">Database</text>
+  </g>
+</svg>
+<figcaption><b>اجزای مخزن:</b> پورت و ریشه‌ی تجمیع در <code>Domain</code> می‌مانند و هیچ وابستگی بیرونی ندارند؛ کار با جدول‌ها و نگاشت، کاملاً در <code>Infrastructure</code> اتفاق می‌افتد. به همین دلیل است که سرویس هرگز نامی از <code>JPA</code> نمی‌شنود.</figcaption>
+</figure>
 
 <div class="kl-box kl-ok">
 <span class="kl-h">سه تکنیک پرکاربرد در پیاده‌سازی</span>
@@ -459,25 +566,120 @@
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    autonumber
-    participant S as UserService
-    participant R as UserRepository (Port)
-    participant I as JpaUserRepository
-    participant DB as Database
+<figure class="kl-fig">
+<svg viewBox="0 0 770 500" role="img" aria-label="جریان خواندن و نوشتن میان سرویس، رابط مخزن، پیاده‌سازی و دیتابیس">
+  <!-- سرهای بازیگر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-chip" x="601" y="20" width="150" height="56" rx="11"/>
+    <text class="s-tc" x="676" y="44" text-anchor="middle">UserService</text>
+    <text class="s-t2" x="676" y="64" text-anchor="middle">سرویس</text>
+  </g>
 
-    S->>R: findByEmail("ali@test.com")
-    R->>I: (تزریق در زمان اجرا)
-    I->>DB: SELECT * FROM users WHERE email = ?
-    DB-->>I: UserRow
-    I->>I: تبدیل UserRow → User
-    I-->>R: Optional&lt;User&gt;
-    R-->>S: Optional&lt;User&gt;
-    S-->>S: قوانین دامنه را اعمال می‌کند
-    S->>R: save(user)
-    R->>I: UPDATE users SET ...
-    I-->>R: void
-    R-->>S: User (بازگشتی)</code></pre>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc s-pulse" x="407" y="20" width="150" height="56" rx="11"/>
+    <text class="s-acc-t" x="482" y="44" text-anchor="middle">UserRepository</text>
+    <text class="s-t2" x="482" y="64" text-anchor="middle">رابط (Port)</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="213" y="20" width="150" height="56" rx="11"/>
+    <text class="s-t" x="288" y="44" text-anchor="middle">JpaUserRepository</text>
+    <text class="s-t2" x="288" y="64" text-anchor="middle">پیاده‌سازی</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="19" y="20" width="150" height="56" rx="11"/>
+    <text class="s-tc" x="94" y="44" text-anchor="middle">Database</text>
+    <text class="s-t2" x="94" y="64" text-anchor="middle">ذخیره‌سازی</text>
+  </g>
+
+  <!-- خطوط زندگی -->
+  <path class="s-dash" d="M 676 76 L 676 458"/>
+  <path class="s-dash" d="M 482 76 L 482 458"/>
+  <path class="s-dash" d="M 288 76 L 288 458"/>
+  <path class="s-dash" d="M 94 76 L 94 458"/>
+
+  <!-- ۱) فراخوانی پورت -->
+  <path class="s-arr s-flow" d="M 601 104 L 565 104"/>
+  <path class="s-head" d="M 557 104 L 569 97 L 569 111 Z"/>
+  <text class="s-t2 s-lbl" x="579" y="94" text-anchor="middle" style="--kl-i:1">findByEmail("ali@test.io")</text>
+  <circle class="s-chip" cx="676" cy="104" r="11"/>
+  <text class="s-tc" x="676" y="109" text-anchor="middle">۱</text>
+
+  <!-- ۲) تزریق پیاده‌سازی در زمان اجرا -->
+  <path class="s-dash s-flow-soft" d="M 407 138 L 371 138"/>
+  <path class="s-head-dim" d="M 363 138 L 375 131 L 375 145 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="128" text-anchor="middle" style="--kl-i:2">تزریق پیاده‌سازی</text>
+  <circle class="s-chip" cx="482" cy="138" r="11"/>
+  <text class="s-tc" x="482" y="143" text-anchor="middle">۲</text>
+
+  <!-- ۳) کوئری به دیتابیس -->
+  <path class="s-arr s-flow" d="M 213 172 L 177 172"/>
+  <path class="s-head" d="M 169 172 L 181 165 L 181 179 Z"/>
+  <text class="s-t2 s-lbl" x="191" y="162" text-anchor="middle" style="--kl-i:3">SELECT … FROM users WHERE email = ?</text>
+  <circle class="s-chip" cx="288" cy="172" r="11"/>
+  <text class="s-tc" x="288" y="177" text-anchor="middle">۳</text>
+
+  <!-- ۴) بازگشت ردیف خام -->
+  <path class="s-arr-ok s-flow-ok" d="M 169 206 L 205 206"/>
+  <path class="s-head-ok" d="M 213 206 L 201 199 L 201 213 Z"/>
+  <text class="s-t2 s-lbl" x="191" y="196" text-anchor="middle" style="--kl-i:4">UserRow</text>
+  <circle class="s-chip" cx="94" cy="206" r="11"/>
+  <text class="s-tc" x="94" y="211" text-anchor="middle">۴</text>
+
+  <!-- ۵) نگاشت ردیف به شیء دامنه -->
+  <path class="s-arr-ok s-flow-ok" d="M 288 240 C 348 240, 348 270, 296 268"/>
+  <path class="s-head-ok" d="M 288 268 L 300 261 L 300 275 Z"/>
+  <text class="s-t2 s-lbl" x="350" y="232" text-anchor="middle" style="--kl-i:5">تبدیل UserRow به User</text>
+  <circle class="s-chip" cx="288" cy="240" r="11"/>
+  <text class="s-tc" x="288" y="245" text-anchor="middle">۵</text>
+
+  <!-- ۶) بازگشت به پورت -->
+  <path class="s-arr-ok s-flow-ok" d="M 363 274 L 399 274"/>
+  <path class="s-head-ok" d="M 407 274 L 395 267 L 395 281 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="264" text-anchor="middle" style="--kl-i:6">Optional&lt;User&gt;</text>
+  <circle class="s-chip" cx="288" cy="274" r="11"/>
+  <text class="s-tc" x="288" y="279" text-anchor="middle">۶</text>
+
+  <!-- ۷) بازگشت به سرویس -->
+  <path class="s-arr-ok s-flow-ok" d="M 407 308 L 593 308"/>
+  <path class="s-head-ok" d="M 601 308 L 589 301 L 589 315 Z"/>
+  <text class="s-t2 s-lbl" x="504" y="298" text-anchor="middle" style="--kl-i:7">Optional&lt;User&gt;</text>
+  <circle class="s-chip" cx="482" cy="308" r="11"/>
+  <text class="s-tc" x="482" y="313" text-anchor="middle">۷</text>
+
+  <!-- ۸) اعمال قوانین دامنه -->
+  <path class="s-arr s-flow" d="M 676 342 C 728 342, 728 372, 684 370"/>
+  <path class="s-head" d="M 676 370 L 688 363 L 688 377 Z"/>
+  <text class="s-t2 s-lbl" x="716" y="362" text-anchor="middle" style="--kl-i:8">قواعد دامنه</text>
+  <circle class="s-chip" cx="676" cy="342" r="11"/>
+  <text class="s-tc" x="676" y="347" text-anchor="middle">۸</text>
+
+  <!-- ۹) ذخیره از راه پورت -->
+  <path class="s-arr s-flow" d="M 601 376 L 565 376"/>
+  <path class="s-head" d="M 557 376 L 569 369 L 569 383 Z"/>
+  <text class="s-t2 s-lbl" x="579" y="366" text-anchor="middle" style="--kl-i:9">save(user)</text>
+  <circle class="s-chip" cx="676" cy="376" r="11"/>
+  <text class="s-tc" x="676" y="381" text-anchor="middle">۹</text>
+
+  <!-- ۱۰) به‌روزرسانی در دیتابیس -->
+  <path class="s-arr s-flow" d="M 407 410 L 371 410"/>
+  <path class="s-head" d="M 363 410 L 375 403 L 375 417 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="400" text-anchor="middle" style="--kl-i:10">UPDATE users SET …</text>
+  <circle class="s-chip" cx="482" cy="410" r="11"/>
+  <text class="s-tc" x="482" y="415" text-anchor="middle">۱۰</text>
+
+  <!-- ۱۱) بازگشت شیء ذخیره‌شده -->
+  <path class="s-arr-ok s-flow-ok" d="M 363 444 L 399 444"/>
+  <path class="s-head-ok" d="M 407 444 L 395 437 L 395 451 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="434" text-anchor="middle" style="--kl-i:11">User</text>
+  <circle class="s-chip" cx="288" cy="444" r="11"/>
+  <text class="s-tc" x="288" y="449" text-anchor="middle">۱۱</text>
+
+  <text class="s-t2" x="385" y="482" text-anchor="middle">سرویس در پایان شیء دامنه را تحویل می‌گیرد، نه ردیف دیتابیس را.</text>
+</svg>
+<figcaption><b>جریان داده:</b> سرویس فقط پورت را می‌بیند و پیاده‌سازی در زمان اجرا تزریق می‌شود. مرحله‌ی پنجم نشان می‌دهد که تبدیل <code>UserRow</code> به <code>User</code> داخل مخزن انجام می‌شود؛ قاعده‌ی کسب‌وکار (گام هشتم) اما در سرویس می‌ماند.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>نکته‌ی مهم درباره‌ی جریان Repository:
 
@@ -494,7 +696,7 @@
 <div class="kl-box kl-bad">
 <span class="kl-h">مرز مخزن و سرویس</span>
 متدی مثل <code>saveOnlyVipUsers()</code> یا <code>updateAndNotify()</code>
-از پس responsibilities مخزن خارج شده است. اگر مخزن شما شروع به «تصمیم‌گیری»
+از عهده‌ی مسئولیت‌های مخزن خارج شده است. اگر مخزن شما شروع به «تصمیم‌گیری»
 کرد، دیگر مخزن نیست — یک سرویس است با نام اشتباه.
 </div>
 </section>
@@ -864,33 +1066,97 @@ public final class UserEntityMapper {
 <section id="s11">
 <h2><span class="kl-num">بخش ۱۱</span>مقایسه با DAO و Data Mapper</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    subgraph DAOg["DAO — Data Access Object"]
-        D1["UserDao"]
-        D2["UserRow (رکورد خام)"]
-        D3[("Database")]
-        D1 --> D2 --> D3
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 320" role="img" aria-label="سه الگوی DAO، Data Mapper و Repository در کنار هم">
+  <!-- پوسته‌ی سه الگو: راست به چپ -->
+  <rect class="s-group" x="520" y="20" width="240" height="280" rx="16"/>
+  <rect class="s-group" x="265" y="20" width="240" height="280" rx="16"/>
+  <rect class="s-group-acc" x="10" y="20" width="240" height="280" rx="16"/>
 
-    subgraph MAPg["Data Mapper"]
-        M1["UserMapper"]
-        M2["User (دامنه)"]
-        M3["UserRow"]
-        M1 --> M2
-        M1 --> M3
-    end
+  <text class="s-group-t" x="640" y="46" text-anchor="middle">DAO</text>
+  <text class="s-group-t" x="385" y="46" text-anchor="middle">Data Mapper</text>
+  <text class="s-group-t" x="130" y="46" text-anchor="middle">Repository + Mapper</text>
 
-    subgraph REPOg["Repository + Mapper"]
-        R1["UserRepository"]
-        R2["User (دامنه)"]
-        R3["JpaUserEntity"]
-        R1 --> R2
-        R1 --> R3
-    end
+  <!-- DAO: کاربر ← ردیف ← دیتابیس -->
+  <path class="s-arr s-flow" d="M 640 110 L 640 128"/>
+  <path class="s-head" d="M 640 140 L 633 128 L 647 128 Z"/>
+  <path class="s-arr s-flow" d="M 640 184 L 640 202"/>
+  <path class="s-head" d="M 640 214 L 633 202 L 647 202 Z"/>
 
-    style DAOg fill:#78350f,stroke:#fbbf24,color:#fff
-    style MAPg fill:#115e59,stroke:#2dd4bf,color:#fff
-    style REPOg fill:#0f766e,stroke:#14b8a6,color:#fff</code></pre>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 640 116 L 640 232"/>
+  </circle>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="550" y="66" width="180" height="44" rx="10"/>
+    <text class="s-t" x="640" y="93" text-anchor="middle">UserDao</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="550" y="140" width="180" height="44" rx="10"/>
+    <text class="s-t" x="640" y="160" text-anchor="middle">UserRow</text>
+    <text class="s-t2" x="640" y="177" text-anchor="middle">رکورد خام</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-chip" x="550" y="214" width="180" height="44" rx="10"/>
+    <text class="s-tc" x="640" y="241" text-anchor="middle">Database</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-box" x="540" y="264" width="200" height="30" rx="8"/>
+    <text class="s-t2" x="640" y="284" text-anchor="middle">زبان فنی، یک جدول</text>
+  </g>
+
+  <!-- Data Mapper: یک mapper به دو خروجی -->
+  <path class="s-arr s-flow" d="M 385 110 L 385 122"/>
+  <path class="s-arr s-flow" d="M 331 122 L 429 122"/>
+  <path class="s-arr s-flow" d="M 331 122 L 331 142"/>
+  <path class="s-head" d="M 331 150 L 324 138 L 338 138 Z"/>
+  <path class="s-arr s-flow" d="M 429 122 L 429 142"/>
+  <path class="s-head" d="M 429 150 L 422 138 L 436 138 Z"/>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="295" y="66" width="180" height="44" rx="10"/>
+    <text class="s-t" x="385" y="93" text-anchor="middle">UserMapper</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="290" y="150" width="82" height="44" rx="9"/>
+    <text class="s-t2" x="331" y="176" text-anchor="middle">User دامنه</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="388" y="150" width="82" height="44" rx="9"/>
+    <text class="s-t2" x="429" y="176" text-anchor="middle">UserRow</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-box" x="285" y="264" width="200" height="30" rx="8"/>
+    <text class="s-t2" x="385" y="284" text-anchor="middle">فقط حل مسئله‌ی نگاشت</text>
+  </g>
+
+  <!-- Repository: یک پورت به دامنه و به مدل دیتابیس -->
+  <path class="s-arr s-flow" d="M 130 110 L 130 122"/>
+  <path class="s-arr s-flow" d="M 76 122 L 174 122"/>
+  <path class="s-arr s-flow" d="M 76 122 L 76 142"/>
+  <path class="s-head" d="M 76 150 L 69 138 L 83 138 Z"/>
+  <path class="s-arr s-flow" d="M 174 122 L 174 142"/>
+  <path class="s-head" d="M 174 150 L 167 138 L 181 138 Z"/>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc s-pulse" x="40" y="66" width="180" height="44" rx="10"/>
+    <text class="s-acc-t" x="130" y="93" text-anchor="middle">UserRepository</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="35" y="150" width="82" height="44" rx="9"/>
+    <text class="s-t2" x="76" y="176" text-anchor="middle">User دامنه</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="133" y="150" width="82" height="44" rx="9"/>
+    <text class="s-t2" x="174" y="176" text-anchor="middle">Entity پایداری</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="30" y="264" width="200" height="30" rx="8"/>
+    <text class="s-t2" x="130" y="284" text-anchor="middle">کار روی Aggregate، زبان کسب‌وکار</text>
+  </g>
+</svg>
+<figcaption><b>سه الگو در یک نگاه:</b> هرچه به سمت چپ می‌رویم، واحد کار از «جدول» به «مجموعه‌ی موجودیت‌های دامنه» تغییر می‌کند و زبان کد به زبان کسب‌وکار نزدیک‌تر می‌شود. توجه کنید که <code>Repository</code> خودش نگاشت را هم در بر می‌گیرد.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -904,6 +1170,74 @@ public final class UserEntityMapper {
   <tr><td>کاربرد امروزی</td><td>زیاد در سیستم‌های قدیمی</td><td>کمتر به‌صورت مستقل</td><td>✅ بسیار رایج</td></tr>
 </table>
 </div>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="امتیاز مقایسه‌ی DAO، Data Mapper و Repository در پنج معیار">
+  <!-- خطوط شبکه و محور -->
+  <path class="s-grid" d="M 528 4 L 528 300"/>
+  <path class="s-grid" d="M 446 4 L 446 300"/>
+  <path class="s-grid" d="M 364 4 L 364 300"/>
+  <path class="s-grid" d="M 282 4 L 282 300"/>
+  <path class="s-grid" d="M 200 4 L 200 300"/>
+  <text class="s-axlabel" x="528" y="313" text-anchor="middle">۱</text>
+  <text class="s-axlabel" x="446" y="313" text-anchor="middle">۲</text>
+  <text class="s-axlabel" x="364" y="313" text-anchor="middle">۳</text>
+  <text class="s-axlabel" x="282" y="313" text-anchor="middle">۴</text>
+  <text class="s-axlabel" x="200" y="313" text-anchor="middle">۵</text>
+  <path class="s-axis" d="M 610 4 L 610 300"/>
+
+  <!-- ردیف ۱: زبان کسب‌وکار -->
+  <text class="s-cat" x="698" y="36" text-anchor="middle">زبان کسب‌وکار</text>
+  <rect class="s-acc s-hbar" x="200" y="16" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="24" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="446" y="27" width="164" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="430" y="35" text-anchor="middle">۲</text>
+  <rect class="s-warn s-hbar" x="528" y="38" width="82" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="512" y="46" text-anchor="middle">۱</text>
+
+  <!-- ردیف ۲: بی‌خبری از جدول و ستون -->
+  <text class="s-cat" x="698" y="96" text-anchor="middle">بی‌خبری از جدول و ستون</text>
+  <rect class="s-acc s-hbar" x="200" y="76" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="84" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="446" y="87" width="164" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="430" y="95" text-anchor="middle">۲</text>
+  <rect class="s-warn s-hbar" x="528" y="98" width="82" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="512" y="106" text-anchor="middle">۱</text>
+
+  <!-- ردیف ۳: بازگشت شیء دامنه -->
+  <text class="s-cat" x="698" y="156" text-anchor="middle">بازگشت شیء دامنه</text>
+  <rect class="s-acc s-hbar" x="200" y="136" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="144" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="282" y="147" width="328" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="266" y="155" text-anchor="middle">۴</text>
+  <rect class="s-warn s-hbar" x="528" y="158" width="82" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="512" y="166" text-anchor="middle">۱</text>
+
+  <!-- ردیف ۴: واحد کار -->
+  <text class="s-cat" x="698" y="216" text-anchor="middle">واحد کار</text>
+  <rect class="s-acc s-hbar" x="200" y="196" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="204" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="364" y="207" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="215" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="528" y="218" width="82" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="512" y="226" text-anchor="middle">۱</text>
+
+  <!-- ردیف ۵: کاربرد امروزی -->
+  <text class="s-cat" x="698" y="276" text-anchor="middle">کاربرد امروزی</text>
+  <rect class="s-acc s-hbar" x="200" y="256" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="264" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="446" y="267" width="164" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="430" y="275" text-anchor="middle">۲</text>
+  <rect class="s-warn s-hbar" x="446" y="278" width="164" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="430" y="286" text-anchor="middle">۲</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-warn"></i>DAO</span>
+  <span><i class="c-ok"></i>Data Mapper</span>
+  <span><i class="c-acc"></i>Repository</span>
+</div>
+<figcaption><b>امتیاز نسبی (از ۵):</b> هر امتیاز از سطر متناظر همین جدول خوانده شده است؛ مثلاً «فنی» در برابر «کسب‌وکار» برای سطر زبان، ۱ در برابر ۵. <code>Data Mapper</code> در نگاشت قوی است اما واحد کارش مدل است نه مجموعه‌ی موجودیت‌ها، بنابراین در دو معیار میانی می‌ماند.</figcaption>
+</figure>
 
 <div class="kl-box kl-deep">
 <span class="kl-h">رابطه‌ی این سه</span>
@@ -951,7 +1285,7 @@ public final class UserEntityMapper {
   <tr><td>۶</td><td><strong>نگاشت دستی خسته‌کننده</strong></td><td>برای هر فیلد یک خط کد نگاشت لازم است</td></tr>
   <tr><td>۷</td><td><strong>طراحی اولیه‌ی دشوار</strong></td><td>تشخیص اینکه مخزن چه باشد و چه نباشد دشوار است</td></tr>
   <tr><td>۸</td><td><strong>ریسک پوسیدگی</strong></td><td>مخزن‌های بدون استفاده به‌تدریج ناسازگار می‌شوند</td></tr>
-  <tr><td>۹</td><td><strong>تعارض با DDD خالص</strong></td><td>در مدل دامنه، هر مخزن یک Aggregate است نه یک جدول</td></tr>
+  <tr><td>۹</td><td><strong>ناسازگاری با DDD خالص</strong></td><td>در DDD خالص مخزن فقط برای ریشه‌ی تجمیع تعریف می‌شود، نه برای هر جدول</td></tr>
 </table>
 </div>
 
@@ -999,7 +1333,7 @@ public final class UserEntityMapper {
   <li>پروژه‌های <strong>تک‌جدولی</strong> با دو یا سه عملیات</li>
   <li>تیم‌هایی که <strong>تست نمی‌نویسند</strong> و فایل اضافه فقط شلوغی است</li>
   <li><strong>پروژه‌های SQL سنگین</strong> که هر لایه‌ی اضافه کارایی را کم می‌کند</li>
-  <li>جایی که <strong>گزارش‌های تحلیلی</strong> حرف اول را می‌زنند (بهتر است از ORM سمت BI استفاده شود)</li>
+  <li>جایی که <strong>گزارش‌های تحلیلی</strong> در اولویت‌اند؛ در این حالت ابزار گزارش‌گیری BI گزینه‌ی مناسب‌تری است</li>
   <li>تیم‌هایی که <strong>مرز Aggregate را نمی‌فهمند</strong> و مخزن‌های اشتباه می‌سازند</li>
   <li>زمانی که فقط یک <strong>لایه‌ی نازک روی ORM</strong> لازم است</li>
 </ul>
@@ -1022,27 +1356,97 @@ public final class UserEntityMapper {
 <section id="s16">
 <h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    subgraph SIMPLE["بدون مخزن — لایه‌بندی ساده"]
-        S1["Service"] --> E1["JPA Entity"] --> DB1[("DB")]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 380" role="img" aria-label="مقایسه‌ی لایه‌بندی ساده، معماری با مخزن و Active Record">
+  <!-- پوسته‌ی سه رویکرد -->
+  <rect class="s-group" x="520" y="20" width="240" height="280" rx="16"/>
+  <rect class="s-group-acc" x="265" y="20" width="240" height="280" rx="16"/>
+  <rect class="s-group" x="10" y="20" width="240" height="280" rx="16"/>
 
-    subgraph REPO["با مخزن"]
-        S2["Service"] --> P2["Repository (Port)"]
-        P2 -. "implements" .-> I2["Jpa Repository"] --> DB2[("DB")]
-    end
+  <text class="s-group-t" x="640" y="46" text-anchor="middle">بدون مخزن — لایه‌بندی ساده</text>
+  <text class="s-group-t" x="385" y="46" text-anchor="middle">با مخزن — Repository</text>
+  <text class="s-group-t" x="130" y="46" text-anchor="middle">Active Record</text>
 
-    subgraph ACTIVE["مخزن فعال (Active Record)"]
-        E3["Entity"] --> DB3[("DB")]
-        E3 --> "قاعده‌ی کسب‌وکار"
-    end
+  <!-- بدون مخزن: سرویس ← Entity ← دیتابیس -->
+  <path class="s-arr s-flow" d="M 640 110 L 640 132"/>
+  <path class="s-head" d="M 640 144 L 633 132 L 647 132 Z"/>
+  <path class="s-arr s-flow" d="M 640 184 L 640 206"/>
+  <path class="s-head" d="M 640 218 L 633 206 L 647 206 Z"/>
 
-    SIMPLE -. "افزودن مخزن لایه را تمیز می‌کند" .- REPO
-    REPO -. "Active Record نقطه‌ی مقابل" .- ACTIVE
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 640 116 L 640 238"/>
+  </circle>
 
-    style SIMPLE fill:#78350f,stroke:#fbbf24,color:#fff
-    style REPO fill:#0f766e,stroke:#14b8a6,color:#fff
-    style ACTIVE fill:#115e59,stroke:#2dd4bf,color:#fff</code></pre>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="550" y="70" width="180" height="40" rx="10"/>
+    <text class="s-t" x="640" y="95" text-anchor="middle">Service</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="550" y="144" width="180" height="40" rx="10"/>
+    <text class="s-t" x="640" y="169" text-anchor="middle">JPA Entity</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-chip" x="550" y="218" width="180" height="40" rx="10"/>
+    <text class="s-tc" x="640" y="243" text-anchor="middle">Database</text>
+  </g>
+
+  <!-- با مخزن: سرویس ← پورت ← پیاده‌سازی ← دیتابیس -->
+  <path class="s-arr s-flow" d="M 385 110 L 385 116"/>
+  <path class="s-head" d="M 385 124 L 378 112 L 392 112 Z"/>
+  <path class="s-dash s-flow-soft" d="M 385 178 L 385 170"/>
+  <path class="s-head-dim" d="M 385 164 L 378 176 L 392 176 Z"/>
+  <path class="s-arr s-flow" d="M 385 218 L 385 224"/>
+  <path class="s-head" d="M 385 232 L 378 220 L 392 220 Z"/>
+  <text class="s-t2 s-lbl" x="440" y="175" text-anchor="middle" style="--kl-i:3">implements</text>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="295" y="70" width="180" height="40" rx="10"/>
+    <text class="s-t" x="385" y="95" text-anchor="middle">Service</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc s-pulse" x="295" y="124" width="180" height="40" rx="10"/>
+    <text class="s-acc-t" x="385" y="149" text-anchor="middle">Repository (Port)</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="295" y="178" width="180" height="40" rx="10"/>
+    <text class="s-t2" x="385" y="196" text-anchor="middle">JpaUserRepository</text>
+    <text class="s-t2" x="385" y="212" text-anchor="middle">پیاده‌سازی</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="295" y="232" width="180" height="40" rx="10"/>
+    <text class="s-tc" x="385" y="257" text-anchor="middle">Database</text>
+  </g>
+
+  <!-- Active Record: داده و قاعده در یک کلاس -->
+  <path class="s-arr s-flow" d="M 130 110 L 130 128"/>
+  <path class="s-arr s-flow" d="M 80 128 L 195 128"/>
+  <path class="s-arr s-flow" d="M 80 128 L 80 142"/>
+  <path class="s-head" d="M 80 150 L 73 138 L 87 138 Z"/>
+  <path class="s-arr s-flow" d="M 195 128 L 195 142"/>
+  <path class="s-head" d="M 195 150 L 188 138 L 202 138 Z"/>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="55" y="70" width="150" height="40" rx="10"/>
+    <text class="s-t" x="130" y="95" text-anchor="middle">Entity</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-chip" x="20" y="150" width="120" height="44" rx="10"/>
+    <text class="s-tc" x="80" y="177" text-anchor="middle">Database</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-bad" x="145" y="150" width="100" height="44" rx="10"/>
+    <text class="s-t2" x="195" y="177" text-anchor="middle">قاعده‌ی کسب‌وکار</text>
+  </g>
+
+  <!-- رابطه‌ی رویکردها -->
+  <path class="s-dash" d="M 520 326 L 265 326"/>
+  <text class="s-t2 s-lbl" x="392" y="318" text-anchor="middle" style="--kl-i:4">افزودن مخزن، لایه را تمیز‌تر می‌کند</text>
+
+  <path class="s-dash" d="M 265 356 L 10 356"/>
+  <text class="s-t2 s-lbl" x="137" y="348" text-anchor="middle" style="--kl-i:5">Active Record نقطه‌ی مقابل مخزن است</text>
+</svg>
+<figcaption><b>سه راه برای رسیدن به داده:</b> در لایه‌بندی ساده، منطق کسب‌وکار و مدل دیتابیس در یک کلاس جمع می‌شوند؛ در مخزن، این دو جدا و قابل تعویض می‌شوند؛ در <code>Active Record</code>، داده و قاعده در یک Entity ادغام شده‌اند.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -1254,6 +1658,64 @@ class UserServiceTest {
 <strong>Testcontainer</strong> اجرا می‌شوند. برای تست‌های CI، این یعنی
 اجرای ده‌ها بار در روز بدون هزینه‌ی زیرساخت.
 </div>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 420" role="img" aria-label="تعویض پیاده‌سازی مخزن میان InMemory و JDBC از نگاه یک سرویس واحد">
+  <!-- سرویس: از پیاده‌سازی بی‌خبر است -->
+  <path class="s-arr-ok s-flow-ok" d="M 385 92 L 385 130"/>
+  <path class="s-head-ok" d="M 385 142 L 378 130 L 392 130 Z"/>
+  <text class="s-t2 s-lbl" x="432" y="122" text-anchor="middle" style="--kl-i:1">صدا زدن پورت</text>
+
+  <!-- یک قرارداد، دو پیاده‌سازی -->
+  <path class="s-arr-ok s-flow-ok" d="M 385 204 L 385 230 L 615 230 L 615 256"/>
+  <path class="s-head-ok" d="M 615 268 L 608 256 L 622 256 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 385 230 L 155 230 L 155 256"/>
+  <path class="s-head-ok" d="M 155 268 L 148 256 L 162 256 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="252" text-anchor="middle" style="--kl-i:2">یک قرارداد، دو پیاده‌سازی</text>
+
+  <!-- ذره‌های متحرک روی مسیرها -->
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 385 96 L 385 138"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" begin="1.1s" repeatCount="indefinite"
+                   path="M 385 204 L 385 230 L 615 230 L 615 262"/>
+  </circle>
+
+  <!-- سرویس -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="270" y="30" width="230" height="62" rx="12"/>
+    <text class="s-t" x="385" y="58" text-anchor="middle">UserService</text>
+    <text class="s-t2" x="385" y="80" text-anchor="middle">منطق کسب‌وکار</text>
+  </g>
+
+  <!-- پورت -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc s-pulse" x="270" y="142" width="230" height="62" rx="12"/>
+    <text class="s-acc-t" x="385" y="170" text-anchor="middle">UserRepository</text>
+    <text class="s-t2" x="385" y="192" text-anchor="middle">رابط (Port)</text>
+  </g>
+
+  <!-- پیاده‌سازی‌ها -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="470" y="268" width="290" height="76" rx="12"/>
+    <text class="s-t" x="615" y="298" text-anchor="middle">InMemoryUserRepository</text>
+    <text class="s-t2" x="615" y="322" text-anchor="middle">در تست: بدون دیتابیس</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c4" x="10" y="268" width="290" height="76" rx="12"/>
+    <text class="s-c4-t" x="155" y="298" text-anchor="middle">JdbcUserRepository</text>
+    <text class="s-t2" x="155" y="322" text-anchor="middle">در پروداکشن: دیتابیس واقعی</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-box" x="10" y="364" width="750" height="40" rx="12"/>
+    <text class="s-t2" x="385" y="390" text-anchor="middle">کد سرویس هرگز تغییر نمی‌کند؛ تنها چیزی که عوض می‌شود، پیاده‌سازیِ پورت است.</text>
+  </g>
+</svg>
+<figcaption><b>تعویض پیاده‌سازی:</b> سرویس فقط <code>UserRepository</code> را می‌شناسد، پس در تست به <code>InMemory</code> و در پروداکشن به <code>JDBC</code> وصل می‌شود بی‌آنکه حتی یک خط از کد آن تغییر کند. همین جایگزینی، سخت‌ترین تست واحد را ممکن می‌کند.</figcaption>
+</figure>
 </section>
 
 <!-- ==================== 20 ==================== -->
@@ -1280,7 +1742,7 @@ class UserServiceTest {
 <div class="kl-box kl-bad">
 <span class="kl-h">اشتباه مرگبار: مخزن آینه‌ی جدول</span>
 اگر تعداد مخزن‌های شما با تعداد جداول برابر است، مخزن‌ها آینه‌ی دیتابیس‌اند
-نه دامنه. این یعنی با هر تغییر اسکیمای جدول، باید Interfaceهای دامنه را هم
+نه دامنه. این یعنی با هر تغییر اسکیمای جدول، باید رابط‌های دامنه را هم
 تغییر دهید — دقیقاً همان چیزی که می‌خواستیم از آن فرار کنیم.
 </div>
 </section>
@@ -1382,7 +1844,7 @@ Core Data، و در تست In-Memory. منطق دامنه و تست‌ها <stro
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۱ — Repository Pattern چیست؟</span>
-الگوی دسترسی به داده که یک <strong>مجموعه‌ی موجودیت‌های دامنه</strong> را مانند یک
+الگویی است که دسترسی به یک <strong>مجموعه‌ی موجودیت‌های دامنه</strong> را مانند یک
 کتابخانه در حافظه در اختیار لایه‌ی بالاتر قرار می‌دهد و جزئیات ذخیره‌سازی را پنهان می‌کند.
 </div>
 
@@ -1435,7 +1897,7 @@ Repository مسئله‌ی «دسترسی به مجموعه». مخزن تقری
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۹ — Unit of Work چیست؟</span>
-الگویی که تغییرات مدل در حافظه را ردیابی می‌کند و در پایان تراکنش، همه را
+الگویی است که تغییرات مدل در حافظه را ردیابی می‌کند و در پایان تراکنش، همه را
 یک‌جا ذخیره و commit می‌کند. در JPA همان <code>EntityManager</code> است.
 </div>
 
@@ -1534,8 +1996,8 @@ Repository می‌سازد، ولی معمولاً یک لایه‌ی نازک �
 
 <div class="kl-box">
 <span class="kl-h">۱) تفاوت Repository و DAO دقیقاً چیست؟</span>
-DAO یک ابزار فنی برای یک جدول است و به زبان دیتابیس حرف می‌زند. Repository
-یک انتزاع دامنه‌ای است و به زبان کسب‌وکار حرف می‌زند. مثال: DAO می‌گوید
+DAO یک ابزار فنی برای یک جدول است و به زبان دیتابیس صحبت می‌کند. Repository
+یک انتزاع دامنه‌ای است و به زبان کسب‌وکار صحبت می‌کند. مثال: DAO می‌گوید
 <code>findByStatus(1)</code>، Repository می‌گوید <code>findActive()</code>.
 </div>
 
@@ -1549,8 +2011,8 @@ CrudRepository وابسته باشد، الگو را واقعاً پیاده ک�
 
 <div class="kl-box">
 <span class="kl-h">۳) آیا برای هر جدول یک مخزن لازم است؟</span>
-نه. برای هر <strong>Aggregate</strong> یک مخزن کافی است. گاهی حتی
-<strong>یک مخزن</strong> برای کل Aggregate کافی است، حتی اگر چند جدول داشته باشد.
+نه. برای هر <strong>Aggregate</strong> یک مخزن بسازید؛ اگر چند جدول به یک
+Aggregate تعلق دارند، همان یک مخزن برای همه‌ی آن‌ها کافی است.
 </div>
 
 <div class="kl-box">
@@ -1609,7 +2071,7 @@ CrudRepository وابسته باشد، الگو را واقعاً پیاده ک�
 <div class="kl-box">
 <span class="kl-h">۱۲) آیا Repository Pattern و DDD با هم سازگارند؟</span>
 بله، Repository یکی از <strong>الگوهای تاکتیکی</strong> اصلی DDD است.
-در DDD، مخزن فقط برای Aggregate Rootها تعریف می‌شود، نه برای هر موجودیت.
+در DDD، مخزن فقط برای ریشه‌های Aggregate تعریف می‌شود، نه برای هر موجودیت.
 </div>
 
 <div class="kl-box">
@@ -1644,7 +2106,7 @@ CrudRepository وابسته باشد، الگو را واقعاً پیاده ک�
   <tr><td>محل پیاده‌سازی</td><td>لایه‌ی زیرساخت (Adapter)</td></tr>
   <tr><td>زبان متدها</td><td>زبان کسب‌وکار، نه زبان جدول و ستون</td></tr>
   <tr><td>قانون طلایی</td><td>مخزن داده را جابه‌جا می‌کند، تصمیم نمی‌گیرد</td></tr>
-  <tr><td>ممنوعیت</td><td>منطق کسب‌وکار، اعلان، SQLException نشتی، یک مخزن برای هر جدول</td></tr>
+  <tr><td>ممنوعیت</td><td>منطق کسب‌وکار، اعلان، نشت <code>SQLException</code>، یک مخزن برای هر جدول</td></tr>
   <tr><td>واحد طراحی</td><td>هر Aggregate، نه هر جدول</td></tr>
   <tr><td>مدل دیتابیس</td><td>جدا از مدل دامنه</td></tr>
   <tr><td>مزیت اصلی</td><td>تست دامنه بدون دیتابیس</td></tr>

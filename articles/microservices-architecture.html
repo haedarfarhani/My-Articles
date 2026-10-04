@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -369,29 +371,118 @@ API Gateway، Service Discovery، Circuit Breaker و پیام‌رسان لاز�
 
 <h3>ساختار مفهومی</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    U["کاربر / کلاینت"] --> GW["API Gateway"]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 520" role="img" aria-label="ساختار مفهومی میکروسرویس: کاربر از طریق API Gateway به سه سرویس می‌رود، هر سرویس دیتابیس خودش را دارد و از راه پیام‌رسان سه سرویس دیگر را تغذیه می‌کند">
+  <!-- کاربر و دروازه -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="305" y="16" width="160" height="40" rx="9"/>
+    <text class="s-t" x="385" y="42" text-anchor="middle">کاربر / کلاینت</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 56 L 385 92"/>
+  <path class="s-head" d="M 385 92 L 378 80 L 392 80 Z"/>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="305" y="92" width="160" height="40" rx="9"/>
+    <text class="s-t" x="385" y="118" text-anchor="middle">API Gateway</text>
+  </g>
 
-    GW --> S1["سرویس سفارش"]
-    GW --> S2["سرویس کاتالوگ"]
-    GW --> S3["سرویس کاربر"]
+  <!-- مسیریابی به سه سرویس تولیدکننده -->
+  <path class="s-arr s-flow" d="M 385 132 L 385 141 L 645 141 L 645 150"/>
+  <path class="s-head" d="M 645 150 L 638 138 L 652 138 Z"/>
+  <path class="s-arr s-flow" d="M 385 132 L 385 150"/>
+  <path class="s-head" d="M 385 150 L 378 138 L 392 138 Z"/>
+  <path class="s-arr s-flow" d="M 385 132 L 385 141 L 125 141 L 125 150"/>
+  <path class="s-head" d="M 125 150 L 118 138 L 132 138 Z"/>
 
-    S1 --> DB1[("دیتابیس سفارش")]
-    S2 --> DB2[("دیتابیس کاتالوگ")]
-    S3 --> DB3[("دیتابیس کاربر")]
+  <!-- سرویس‌های بالادست و دیتابیس اختصاصی هرکدام -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="534" y="150" width="222" height="40" rx="9"/>
+    <text class="s-t" x="645" y="176" text-anchor="middle">سرویس سفارش</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="274" y="150" width="222" height="40" rx="9"/>
+    <text class="s-t" x="385" y="176" text-anchor="middle">سرویس کاتالوگ</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="14" y="150" width="222" height="40" rx="9"/>
+    <text class="s-t" x="125" y="176" text-anchor="middle">سرویس کاربر</text>
+  </g>
 
-    S1 -.->|"رویداد"| MQ[("پیام‌رسان")]
-    S2 -.->|"رویداد"| MQ
-    S3 -.->|"رویداد"| MQ
+  <path class="s-arr s-flow" d="M 645 190 L 645 214"/>
+  <path class="s-head" d="M 645 214 L 638 202 L 652 202 Z"/>
+  <path class="s-arr s-flow" d="M 385 190 L 385 214"/>
+  <path class="s-head" d="M 385 214 L 378 202 L 392 202 Z"/>
+  <path class="s-arr s-flow" d="M 125 190 L 125 214"/>
+  <path class="s-head" d="M 125 214 L 118 202 L 132 202 Z"/>
 
-    MQ --> S4["سرویس انبار"]
-    MQ --> S5["سرویس اعلان"]
-    MQ --> S6["سرویس گزارش"]
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="554" y="214" width="182" height="36" rx="10"/>
+    <text class="s-tc" x="645" y="237" text-anchor="middle">دیتابیس سفارش</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="294" y="214" width="182" height="36" rx="10"/>
+    <text class="s-tc" x="385" y="237" text-anchor="middle">دیتابیس کاتالوگ</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="34" y="214" width="182" height="36" rx="10"/>
+    <text class="s-tc" x="125" y="237" text-anchor="middle">دیتابیس کاربر</text>
+  </g>
 
-    S4 --> DB4[("دیتابیس انبار")]
+  <!-- انتشار رویداد از راه پیام‌رسان -->
+  <path class="s-dash s-arr s-flow-soft" d="M 645 250 L 752 250 L 752 340 L 470 340"/>
+  <path class="s-head-dim" d="M 470 340 L 482 333 L 482 347 Z"/>
+  <path class="s-dash s-arr s-flow-soft" d="M 385 250 L 385 320"/>
+  <path class="s-head-dim" d="M 385 320 L 378 308 L 392 308 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="292" text-anchor="middle" style="--kl-i:4">رویداد</text>
+  <path class="s-dash s-arr s-flow-soft" d="M 125 250 L 18 250 L 18 340 L 300 340"/>
+  <path class="s-head-dim" d="M 300 340 L 288 333 L 288 347 Z"/>
 
-    style GW fill:#334155,color:#fff,stroke:#334155
-    style MQ fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c5" x="300" y="320" width="170" height="52" rx="11"/>
+    <text class="s-t" x="385" y="341" text-anchor="middle">پیام‌رسان</text>
+    <text class="s-t2" x="385" y="359" text-anchor="middle">صف رویداد</text>
+  </g>
+
+  <!-- تحویل رویداد به سه سرویس پایین‌دستی -->
+  <path class="s-arr s-flow" d="M 385 372 L 385 390 L 645 390 L 645 412"/>
+  <path class="s-head" d="M 645 412 L 638 400 L 652 400 Z"/>
+  <path class="s-arr s-flow" d="M 385 372 L 385 412"/>
+  <path class="s-head" d="M 385 412 L 378 400 L 392 400 Z"/>
+  <path class="s-arr s-flow" d="M 385 372 L 385 390 L 125 390 L 125 412"/>
+  <path class="s-head" d="M 125 412 L 118 400 L 132 400 Z"/>
+
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-warn" x="534" y="412" width="222" height="40" rx="9"/>
+    <text class="s-t" x="645" y="438" text-anchor="middle">سرویس انبار</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-warn" x="274" y="412" width="222" height="40" rx="9"/>
+    <text class="s-t" x="385" y="438" text-anchor="middle">سرویس اعلان</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-warn" x="14" y="412" width="222" height="40" rx="9"/>
+    <text class="s-t" x="125" y="438" text-anchor="middle">سرویس گزارش</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 645 452 L 645 476"/>
+  <path class="s-head" d="M 645 476 L 638 464 L 652 464 Z"/>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-chip" x="554" y="476" width="182" height="36" rx="10"/>
+    <text class="s-tc" x="645" y="499" text-anchor="middle">دیتابیس انبار</text>
+  </g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 385 56 L 385 92"/>
+  </circle>
+  <circle class="s-runner-dim" r="4.5">
+    <animateMotion dur="3.4s" begin="0.8s" repeatCount="indefinite" path="M 385 250 L 385 320"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" begin="1.4s" repeatCount="indefinite" path="M 385 372 L 385 412"/>
+  </circle>
+</svg>
+<figcaption><b>ساختار مفهومی:</b> هر سرویس دیتابیس خودش را دارد و هیچ سرویسی مستقیم به دیتابیس سرویس دیگر دست نمی‌زند. ارتباط هم‌زمان از راه <code>API Gateway</code> و ارتباط ناهمگام از راه پیام‌رسان است؛ یعنی سرویس سفارش، کاتالوگ و کاربر رویداد منتشر می‌کنند و سرویس انبار، اعلان و گزارش آن را مصرف می‌کنند.</figcaption>
+</figure>
 </section>
 
 <!-- ==================== 4 ==================== -->
@@ -535,15 +626,77 @@ API Gateway، Service Discovery، Circuit Breaker و پیام‌رسان لاز�
 
 <h3>از مونولیت تا میکروسرویس — مسیر کم‌ریسک</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    A["مونولیت\nهمه‌چیز یک‌جا"] --> B["Modular Monolith\nمرز ماژول، یک استقرار"]
-    B --> C["استخراج سرویس ۱\nپرترافیک‌ترین بخش"]
-    C --> D["سرویس ۲ و ۳\nفقط بخش‌های مستقل"]
-    D --> E["میکروسرویس کامل"]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 400" role="img" aria-label="مسیر پنج‌مرحله‌ای مهاجرت از مونولیت تا میکروسرویس کامل">
+  <!-- گام یک: مونولیت -->
+  <circle class="s-count" cx="700" cy="42" r="15"/>
+  <text class="s-tc" x="700" y="48" text-anchor="middle">۱</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-bad" x="90" y="14" width="580" height="56" rx="11"/>
+    <text class="s-t" x="380" y="36" text-anchor="middle">مونولیت</text>
+    <text class="s-t2" x="380" y="54" text-anchor="middle">همه‌چیز یک‌جا</text>
+  </g>
+  <path class="s-arr s-flow" d="M 380 70 L 380 92"/>
+  <path class="s-head" d="M 380 92 L 373 80 L 387 80 Z"/>
 
-    style A fill:#7f1d1d,color:#fff,stroke:#7f1d1d
-    style B fill:#a16207,color:#fff,stroke:#a16207
-    style E fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+  <!-- گام دو: مونولیت ماژولار -->
+  <circle class="s-count" cx="700" cy="120" r="15"/>
+  <text class="s-tc" x="700" y="126" text-anchor="middle">۲</text>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="90" y="92" width="580" height="56" rx="11"/>
+    <text class="s-t" x="380" y="114" text-anchor="middle">Modular Monolith</text>
+    <text class="s-t2" x="380" y="132" text-anchor="middle">مرز ماژول، یک استقرار</text>
+  </g>
+  <path class="s-arr s-flow" d="M 380 148 L 380 170"/>
+  <path class="s-head" d="M 380 170 L 373 158 L 387 158 Z"/>
+
+  <!-- گام سه: استخراج نخستین سرویس -->
+  <circle class="s-count" cx="700" cy="198" r="15"/>
+  <text class="s-tc" x="700" y="204" text-anchor="middle">۳</text>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="90" y="170" width="580" height="56" rx="11"/>
+    <text class="s-t" x="380" y="192" text-anchor="middle">استخراج سرویس ۱</text>
+    <text class="s-t2" x="380" y="210" text-anchor="middle">پرترافیک‌ترین بخش</text>
+  </g>
+  <path class="s-arr s-flow" d="M 380 226 L 380 248"/>
+  <path class="s-head" d="M 380 248 L 373 236 L 387 236 Z"/>
+
+  <!-- گام چهار: سرویس‌های مستقل -->
+  <circle class="s-count" cx="700" cy="276" r="15"/>
+  <text class="s-tc" x="700" y="282" text-anchor="middle">۴</text>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="90" y="248" width="580" height="56" rx="11"/>
+    <text class="s-t" x="380" y="270" text-anchor="middle">سرویس ۲ و ۳</text>
+    <text class="s-t2" x="380" y="288" text-anchor="middle">فقط بخش‌های مستقل</text>
+  </g>
+  <path class="s-arr s-flow" d="M 380 304 L 380 326"/>
+  <path class="s-head" d="M 380 326 L 373 314 L 387 314 Z"/>
+
+  <!-- گام پنج: میکروسرویس کامل -->
+  <circle class="s-count s-pulse" cx="700" cy="354" r="15"/>
+  <text class="s-tc" x="700" y="360" text-anchor="middle">۵</text>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-ok" x="90" y="326" width="580" height="56" rx="11"/>
+    <text class="s-t" x="380" y="348" text-anchor="middle">میکروسرویس کامل</text>
+    <text class="s-t2" x="380" y="366" text-anchor="middle">استقلال کامل استقرار</text>
+  </g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.8s" repeatCount="indefinite" path="M 380 70 L 380 92"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.8s" begin="0.9s" repeatCount="indefinite" path="M 380 148 L 380 170"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.8s" begin="1.8s" repeatCount="indefinite" path="M 380 226 L 380 248"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.8s" begin="2.7s" repeatCount="indefinite" path="M 380 304 L 380 326"/>
+  </circle>
+</svg>
+<figcaption><b>مسیر کم‌ریسک:</b> مهاجرت پنج گام دارد و در هیچ گامی سیستم از کار نمی‌افتد. از مونولیت (قرمز) به مونولیت ماژولار (کهربایی) می‌روید، سپس پرترافیک‌ترین بخش به سرویس مستقل جدا می‌شود و در پایان میکروسرویس کامل (سبز) به دست می‌آید.</figcaption>
+</figure>
 
 <div class="kl-box kl-ok">
 <span class="kl-h">الگوی Strangler Fig</span>
@@ -576,21 +729,85 @@ API Gateway، Service Discovery، Circuit Breaker و پیام‌رسان لاز�
 
 <h3>API Gateway — نقطه‌ی ورود واحد</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    W["کلاینت وب"] --> GW["API Gateway"]
-    M["اپ موبایل"] --> BFF["Mobile BFF"]
-    GW --> S1["order"]
-    GW --> S2["catalog"]
-    GW --> S3["customer"]
-    BFF --> S1
-    BFF --> S3
-    BFF --> S4["search"]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 346" role="img" aria-label="نقش API Gateway و Mobile BFF در مسیریابی به چهار سرویس">
+  <!-- کلاینت‌ها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="470" y="16" width="250" height="40" rx="9"/>
+    <text class="s-t" x="595" y="42" text-anchor="middle">کلاینت وب</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="16" y="16" width="250" height="40" rx="9"/>
+    <text class="s-t" x="141" y="42" text-anchor="middle">اپ موبایل</text>
+  </g>
 
-    GW -.->|"مسیریابی، احراز هویت،
-    نرخ‌گیری، بازنویسی"| S1
+  <path class="s-arr s-flow" d="M 595 56 L 595 92"/>
+  <path class="s-head" d="M 595 92 L 588 80 L 602 80 Z"/>
+  <path class="s-arr s-flow" d="M 141 56 L 141 92"/>
+  <path class="s-head" d="M 141 92 L 134 80 L 148 80 Z"/>
 
-    style GW fill:#334155,color:#fff,stroke:#334155
-    style BFF fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <!-- دروازه‌ها -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="470" y="92" width="250" height="40" rx="9"/>
+    <text class="s-t" x="595" y="118" text-anchor="middle">API Gateway</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="16" y="92" width="250" height="40" rx="9"/>
+    <text class="s-t" x="141" y="118" text-anchor="middle">Mobile BFF</text>
+  </g>
+
+  <!-- وظایف دروازه -->
+  <rect class="s-group" x="240" y="150" width="300" height="76" rx="14"/>
+  <text class="s-group-t" x="390" y="174" text-anchor="middle">وظایف دروازه</text>
+  <text class="s-t2" x="390" y="196" text-anchor="middle">مسیریابی، احراز هویت،</text>
+  <text class="s-t2" x="390" y="214" text-anchor="middle">نرخ‌گیری، بازنویسی</text>
+  <path class="s-dash s-arr s-flow-soft" d="M 540 200 L 700 200 L 700 290"/>
+  <path class="s-head-dim" d="M 700 290 L 693 278 L 707 278 Z"/>
+
+  <!-- سرویس‌های مقصد -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="580" y="290" width="176" height="40" rx="9"/>
+    <text class="s-t" x="668" y="316" text-anchor="middle">order</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="392" y="290" width="176" height="40" rx="9"/>
+    <text class="s-t" x="480" y="316" text-anchor="middle">catalog</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="204" y="290" width="176" height="40" rx="9"/>
+    <text class="s-t" x="292" y="316" text-anchor="middle">customer</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="16" y="290" width="176" height="40" rx="9"/>
+    <text class="s-t" x="104" y="316" text-anchor="middle">search</text>
+  </g>
+
+  <!-- مسیرهای API Gateway -->
+  <path class="s-arr s-flow" d="M 595 132 L 595 262 L 668 262 L 668 290"/>
+  <path class="s-head" d="M 668 290 L 661 278 L 675 278 Z"/>
+  <path class="s-arr s-flow" d="M 595 132 L 595 262 L 480 262 L 480 290"/>
+  <path class="s-head" d="M 480 290 L 473 278 L 487 278 Z"/>
+  <path class="s-arr s-flow" d="M 595 132 L 595 262 L 292 262 L 292 290"/>
+  <path class="s-head" d="M 292 290 L 285 278 L 299 278 Z"/>
+
+  <!-- مسیرهای Mobile BFF -->
+  <path class="s-arr s-flow" d="M 141 132 L 141 244 L 668 244 L 668 290"/>
+  <path class="s-head" d="M 668 290 L 661 278 L 675 278 Z"/>
+  <path class="s-arr s-flow" d="M 141 132 L 141 244 L 292 244 L 292 290"/>
+  <path class="s-head" d="M 292 290 L 285 278 L 299 278 Z"/>
+  <path class="s-arr s-flow" d="M 141 132 L 141 244 L 104 244 L 104 290"/>
+  <path class="s-head" d="M 104 290 L 97 278 L 111 278 Z"/>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 595 56 L 595 92"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite" path="M 141 56 L 141 92"/>
+  </circle>
+</svg>
+<figcaption><b>نقطه‌ی ورود واحد:</b> هر کلاینت دروازه‌ی خودش را دارد؛ کلاینت وب از <code>API Gateway</code> و اپ موبایل از <code>Mobile BFF</code> وارد می‌شود. توجه کنید که <code>BFF</code> به سرویس <code>catalog</code> وصل نیست، چون موبایل آن را مصرف نمی‌کند؛ مسیریابی، احراز هویت، نرخ‌گیری و بازنویسی همگی در همین دروازه‌ها انجام می‌شود.</figcaption>
+</figure>
 
 <div class="kl-check">
 <ul>
@@ -619,13 +836,69 @@ API Gateway، Service Discovery، Circuit Breaker و پیام‌رسان لاز�
 
 <h3>Circuit Breaker — توقف تماس با سرویس خراب</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>stateDiagram-v2
-    [*] --> Closed
-    Closed --> Open: خطاها از آستانه گذشت
-    Open --> HalfOpen: بعد از زمان انتظار
-    HalfOpen --> Closed: یک درخواست موفق
-    HalfOpen --> Open: دوباره خطا
-    Open --> Open: درخواست فوراً رد می‌شود</code></pre>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 288" role="img" aria-label="چرخه‌ی حالت‌های Circuit Breaker: بسته، نیمه‌باز و باز">
+  <!-- نقطه‌ی شروع -->
+  <circle class="s-acc" cx="762" cy="148" r="6"/>
+  <path class="s-arr s-flow-ok" d="M 756 148 L 732 148"/>
+  <path class="s-head-ok" d="M 732 148 L 744 141 L 744 155 Z"/>
+
+  <!-- حالت بسته -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="560" y="120" width="170" height="56" rx="11"/>
+    <text class="s-t" x="645" y="142" text-anchor="middle">Closed</text>
+    <text class="s-t2" x="645" y="162" text-anchor="middle">سالم</text>
+  </g>
+
+  <!-- حالت نیمه‌باز -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="281" y="120" width="170" height="56" rx="11"/>
+    <text class="s-t" x="366" y="142" text-anchor="middle">HalfOpen</text>
+    <text class="s-t2" x="366" y="162" text-anchor="middle">نیمه‌باز</text>
+  </g>
+
+  <!-- حالت باز -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-bad" x="16" y="120" width="170" height="56" rx="11"/>
+    <text class="s-t" x="101" y="142" text-anchor="middle">Open</text>
+    <text class="s-t2" x="101" y="162" text-anchor="middle">باز</text>
+  </g>
+
+  <!-- بسته به باز: خطاها از آستانه گذشت -->
+  <path class="s-arr s-flow-bad" d="M 560 130 C 430 52, 260 52, 170 120"/>
+  <path class="s-head-bad" d="M 170 120 L 163 106 L 177 108 Z"/>
+  <text class="s-t2 s-lbl" x="365" y="46" text-anchor="middle" style="--kl-i:3">خطاها از آستانه گذشت</text>
+
+  <!-- نیمه‌باز به بسته: یک درخواست موفق -->
+  <path class="s-arr s-flow-ok" d="M 451 148 L 558 148"/>
+  <path class="s-head-ok" d="M 558 148 L 546 141 L 546 155 Z"/>
+  <text class="s-t2 s-lbl" x="505" y="134" text-anchor="middle" style="--kl-i:3">یک درخواست موفق</text>
+
+  <!-- نیمه‌باز به باز: دوباره خطا -->
+  <path class="s-arr s-flow-bad" d="M 281 196 L 188 196"/>
+  <path class="s-head-bad" d="M 188 196 L 200 189 L 200 203 Z"/>
+  <text class="s-t2 s-lbl" x="234" y="216" text-anchor="middle" style="--kl-i:3">دوباره خطا</text>
+
+  <!-- باز به نیمه‌باز: بعد از زمان انتظار -->
+  <path class="s-arr s-flow-soft" d="M 170 176 C 240 246, 340 246, 366 177"/>
+  <path class="s-head-dim" d="M 366 177 L 356 165 L 370 167 Z"/>
+  <text class="s-t2 s-lbl" x="272" y="266" text-anchor="middle" style="--kl-i:4">بعد از زمان انتظار</text>
+
+  <!-- حلقه‌ی خودِ باز: رد فوری درخواست -->
+  <path class="s-arr s-flow-bad" d="M 60 176 C 20 204, 50 232, 101 232 C 152 232, 182 204, 142 176"/>
+  <path class="s-head-bad" d="M 142 176 L 148 188 L 134 186 Z"/>
+  <text class="s-t2 s-lbl" x="101" y="256" text-anchor="middle" style="--kl-i:3">درخواست فوراً رد می‌شود</text>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner-bad" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 560 130 C 430 52, 260 52, 170 120"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M 451 148 L 558 148"/>
+  </circle>
+</svg>
+<figcaption><b>چرخه‌ی Circuit Breaker:</b> در حالت <code>Closed</code> (سبز) همه‌ی درخواست‌ها عبور می‌کنند و خطاها شمرده می‌شوند. اگر خطاها از آستانه بگذرند مدار <b>باز</b> (قرمز) می‌شود و هر درخواست بعدی بدون تماس با سرویس خراب رد می‌شود. پس از زمان انتظار مدار <b>نیمه‌باز</b> (کهربایی) می‌شود تا چند درخواست آزمایشی بفرستد؛ یک موفقیت آن را می‌بندد و خطای دوباره دوباره بازش می‌کند.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>Closed  (سالم):    همه درخواست‌ها می‌روند، شکست‌ها شمرده می‌شوند
 Open    (باز):     همه درخواست‌ها فوری رد می‌شوند ← سرویس خراب را نجات می‌دهد
@@ -674,57 +947,151 @@ HalfOpen(نیمه‌باز): چند درخواست آزمایشی می‌رود 
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>ساختار معماری</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph Edge["لایه‌ی لبه"]
-        CL["کلاینت‌ها"]
-        GW["API Gateway"]
-        BFF["BFF موبایل"]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 586" role="img" aria-label="ساختار معماری در پنج لایه: لبه، سرویس، ارتباط، داده و عملیات">
+  <!-- لایه‌ی لبه -->
+  <rect class="s-group" x="14" y="14" width="742" height="110" rx="16"/>
+  <text class="s-group-t" x="385" y="36" text-anchor="middle">لایه‌ی لبه</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="210" y="48" width="350" height="32" rx="9"/>
+    <text class="s-t" x="385" y="69" text-anchor="middle">کلاینت‌ها</text>
+  </g>
+  <path class="s-arr s-flow" d="M 485 80 L 485 90"/>
+  <path class="s-head" d="M 485 90 L 478 78 L 492 78 Z"/>
+  <path class="s-arr s-flow" d="M 285 80 L 285 90"/>
+  <path class="s-head" d="M 285 90 L 278 78 L 292 78 Z"/>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="400" y="90" width="170" height="32" rx="9"/>
+    <text class="s-t" x="485" y="111" text-anchor="middle">API Gateway</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="200" y="90" width="170" height="32" rx="9"/>
+    <text class="s-t" x="285" y="111" text-anchor="middle">BFF موبایل</text>
+  </g>
 
-    subgraph Core["لایه‌ی سرویس"]
-        S1["order-service"]
-        S2["catalog-service"]
-        S3["payment-service"]
-        S4["inventory-service"]
-        S5["notification-service"]
-    end
+  <!-- لایه‌ی سرویس -->
+  <rect class="s-group" x="14" y="140" width="742" height="118" rx="16"/>
+  <text class="s-group-t" x="385" y="162" text-anchor="middle">لایه‌ی سرویس</text>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="603" y="176" width="133" height="40" rx="9"/>
+    <text class="s-t" x="669" y="201" text-anchor="middle">order-service</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="460" y="176" width="133" height="40" rx="9"/>
+    <text class="s-t" x="526" y="201" text-anchor="middle">catalog-service</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="317" y="176" width="133" height="40" rx="9"/>
+    <text class="s-t" x="383" y="201" text-anchor="middle">payment-service</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="174" y="176" width="133" height="40" rx="9"/>
+    <text class="s-t" x="240" y="201" text-anchor="middle">inventory-service</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="31" y="176" width="133" height="40" rx="9"/>
+    <text class="s-t" x="97" y="201" text-anchor="middle">notification-service</text>
+  </g>
 
-    subgraph Bus["لایه‌ی ارتباط"]
-        MQ[("پیام‌رسان")]
-        SD["Service Discovery"]
-    end
+  <!-- لایه‌ی ارتباط -->
+  <rect class="s-group" x="14" y="274" width="742" height="92" rx="16"/>
+  <text class="s-group-t" x="385" y="298" text-anchor="middle">لایه‌ی ارتباط</text>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c5" x="390" y="318" width="150" height="34" rx="10"/>
+    <text class="s-t" x="465" y="340" text-anchor="middle">پیام‌رسان</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="600" y="318" width="100" height="34" rx="10"/>
+    <text class="s-tc" x="650" y="340" text-anchor="middle">Service Discovery</text>
+  </g>
 
-    subgraph Data["لایه‌ی داده"]
-        D1[("orders-db")]
-        D2[("catalog-db")]
-        D3[("payments-db")]
-        D4[("inventory-db")]
-    end
+  <!-- لایه‌ی داده -->
+  <rect class="s-group" x="14" y="386" width="742" height="84" rx="16"/>
+  <text class="s-group-t" x="385" y="408" text-anchor="middle">لایه‌ی داده</text>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="560" y="422" width="140" height="34" rx="10"/>
+    <text class="s-tc" x="630" y="444" text-anchor="middle">orders-db</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="378" y="422" width="140" height="34" rx="10"/>
+    <text class="s-tc" x="448" y="444" text-anchor="middle">catalog-db</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="196" y="422" width="140" height="34" rx="10"/>
+    <text class="s-tc" x="266" y="444" text-anchor="middle">payments-db</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="14" y="422" width="140" height="34" rx="10"/>
+    <text class="s-tc" x="84" y="444" text-anchor="middle">inventory-db</text>
+  </g>
 
-    subgraph Ops["لایه‌ی عملیات"]
-        OBS["پایش و لاگ مرکزی"]
-        CFG["پیکربندی مرکزی"]
-        SEC["رازها و گواهی"]
-    end
+  <!-- لایه‌ی عملیات -->
+  <rect class="s-group" x="14" y="486" width="742" height="84" rx="16"/>
+  <text class="s-group-t" x="385" y="508" text-anchor="middle">لایه‌ی عملیات</text>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-warn" x="512" y="522" width="224" height="34" rx="10"/>
+    <text class="s-t" x="624" y="544" text-anchor="middle">پایش و لاگ مرکزی</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-warn" x="273" y="522" width="224" height="34" rx="10"/>
+    <text class="s-t" x="385" y="544" text-anchor="middle">پیکربندی مرکزی</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-warn" x="34" y="522" width="224" height="34" rx="10"/>
+    <text class="s-t" x="146" y="544" text-anchor="middle">رازها و گواهی</text>
+  </g>
 
-    CL --> GW
-    CL --> BFF
-    GW --> S1
-    GW --> S2
-    BFF --> S1
-    S1 -->|"هم‌زمان"| S3
-    S1 -.->|"رویداد"| MQ
-    S1 -.->|"رویداد"| MQ
-    MQ --> S4
-    MQ --> S5
-    S1 --> D1
-    S2 --> D2
-    S3 --> D3
-    S4 --> D4
-    MQ --> OBS
+  <!-- ورود از لایه‌ی لبه به سرویس‌ها -->
+  <path class="s-arr s-flow" d="M 485 122 L 485 130 L 669 130 L 669 176"/>
+  <path class="s-head" d="M 669 176 L 662 164 L 676 164 Z"/>
+  <path class="s-arr s-flow" d="M 485 122 L 485 130 L 526 130 L 526 176"/>
+  <path class="s-head" d="M 526 176 L 519 164 L 533 164 Z"/>
+  <path class="s-arr s-flow" d="M 285 122 L 285 136 L 690 136 L 690 176"/>
+  <path class="s-head" d="M 690 176 L 683 164 L 697 164 Z"/>
 
-    style MQ fill:#0f766e,color:#fff,stroke:#0f766e
-    style GW fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <!-- تماس هم‌زمان میان دو سرویس -->
+  <path class="s-arr s-flow-ok" d="M 640 216 L 640 224 L 410 224 L 410 216"/>
+  <path class="s-head-ok" d="M 410 216 L 417 228 L 403 228 Z"/>
+  <text class="s-t2 s-lbl" x="525" y="238" text-anchor="middle" style="--kl-i:6">هم‌زمان</text>
+
+  <!-- انتشار رویداد به پیام‌رسان -->
+  <path class="s-dash s-arr s-flow-soft" d="M 700 216 L 700 228 L 465 228 L 465 318"/>
+  <path class="s-head-dim" d="M 465 318 L 458 306 L 472 306 Z"/>
+  <text class="s-t2 s-lbl" x="712" y="240" text-anchor="middle" style="--kl-i:6">رویداد</text>
+
+  <!-- تحویل رویداد به انبار و اعلان -->
+  <path class="s-arr s-flow" d="M 500 352 L 500 372 L 280 372 L 280 216"/>
+  <path class="s-head" d="M 280 216 L 273 228 L 287 228 Z"/>
+  <path class="s-arr s-flow" d="M 430 352 L 430 380 L 24 380 L 24 222 L 97 222"/>
+  <path class="s-head" d="M 97 222 L 90 234 L 104 234 Z"/>
+
+  <!-- اتصال هر سرویس به دیتابیس خودش -->
+  <path class="s-arr s-flow" d="M 640 216 L 640 252 L 580 252 L 580 422"/>
+  <path class="s-head" d="M 580 422 L 573 410 L 587 410 Z"/>
+  <path class="s-arr s-flow" d="M 526 216 L 526 234 L 380 234 L 380 422"/>
+  <path class="s-head" d="M 380 422 L 373 410 L 387 410 Z"/>
+  <path class="s-arr s-flow" d="M 383 216 L 383 244 L 266 244 L 266 422"/>
+  <path class="s-head" d="M 266 422 L 259 410 L 273 410 Z"/>
+  <path class="s-arr s-flow" d="M 240 216 L 240 256 L 84 256 L 84 422"/>
+  <path class="s-head" d="M 84 422 L 77 410 L 91 410 Z"/>
+
+  <!-- رسیدن رویداد به پایش مرکزی -->
+  <path class="s-arr s-flow" d="M 465 352 L 465 376 L 730 376 L 730 522"/>
+  <path class="s-head" d="M 730 522 L 723 510 L 737 510 Z"/>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 485 80 L 485 90"/>
+  </circle>
+  <circle class="s-runner-dim" r="4.5">
+    <animateMotion dur="3.6s" begin="0.7s" repeatCount="indefinite" path="M 700 216 L 700 228 L 465 228 L 465 318"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.2s" begin="1.4s" repeatCount="indefinite" path="M 465 352 L 465 376 L 730 376 L 730 522"/>
+  </circle>
+</svg>
+<figcaption><b>پنج لایه:</b> لایه‌ی لبه درخواست را می‌گیرد، لایه‌ی سرویس منطق را اجرا می‌کند، لایه‌ی ارتباط پیام‌رسان و <code>Service Discovery</code> را نگه می‌دارد، لایه‌ی داده مالکیت داده را نگه می‌دارد و لایه‌ی عملیات پایش، پیکربندی و رازها را متمرکز می‌کند. هر سرویس فقط به دیتابیس خودش وصل است؛ تنها تماس هم‌زمان میان‌سرویسی از <code>order-service</code> به <code>payment-service</code> است و بقیه از راه پیام‌رسان و خط‌چین انجام می‌شود.</figcaption>
+</figure>
 
 <h3>دو الگوی استقرار</h3>
 
@@ -835,34 +1202,155 @@ spec:
 
 <h3>جریان یک سفارش — نمای کامل</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant U as کاربر
-    participant GW as API Gateway
-    participant OS as order-service
-    participant PS as payment-service
-    participant MQ as پیام‌رسان
-    participant IS as inventory-service
-    participant NS as notification-service
+<figure class="kl-fig">
+<svg viewBox="0 0 770 624" role="img" aria-label="جریان کامل ثبت سفارش از کاربر تا اعلان، با چهارده پیام شماره‌گذاری‌شده">
+  <!-- سرستون‌ها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="664" y="14" width="92" height="40" rx="9"/>
+    <text class="s-t" x="710" y="39" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="556" y="14" width="92" height="40" rx="9"/>
+    <text class="s-t" x="602" y="39" text-anchor="middle">Gateway</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="448" y="14" width="92" height="40" rx="9"/>
+    <text class="s-t" x="494" y="39" text-anchor="middle">order</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="340" y="14" width="92" height="40" rx="9"/>
+    <text class="s-t" x="386" y="39" text-anchor="middle">payment</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-c5" x="232" y="14" width="92" height="40" rx="9"/>
+    <text class="s-t" x="278" y="39" text-anchor="middle">پیام‌رسان</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-acc" x="124" y="14" width="92" height="40" rx="9"/>
+    <text class="s-t" x="170" y="39" text-anchor="middle">inventory</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-warn" x="16" y="14" width="92" height="40" rx="9"/>
+    <text class="s-t" x="62" y="39" text-anchor="middle">notification</text>
+  </g>
 
-    U->>GW: POST /api/orders
-    GW->>GW: احراز هویت + نرخ‌گیری
-    GW->>OS: POST /orders (توکن معتبر)
+  <!-- خطوط زندگی -->
+  <path class="s-grid" d="M 710 54 L 710 610"/>
+  <path class="s-grid" d="M 602 54 L 602 610"/>
+  <path class="s-grid" d="M 494 54 L 494 610"/>
+  <path class="s-grid" d="M 386 54 L 386 610"/>
+  <path class="s-grid" d="M 278 54 L 278 610"/>
+  <path class="s-grid" d="M 170 54 L 170 610"/>
+  <path class="s-grid" d="M 62 54 L 62 610"/>
 
-    OS->>OS: قوانین دامنه
-    OS->>OS: ثبت سفارش + Outbox
-    OS-->>GW: 201 + orderId
-    GW-->>U: 201
+  <!-- ۱: درخواست کاربر -->
+  <path class="s-arr s-flow" d="M 710 80 L 604 80"/>
+  <path class="s-head" d="M 604 80 L 616 73 L 616 87 Z"/>
+  <text class="s-t2 s-lbl" x="656" y="72" text-anchor="middle" style="--kl-i:7">POST /api/orders</text>
 
-    Note over OS,MQ: کاربر منتظر نیست
-    OS->>PS: POST /payments (هم‌زمان، درگاه)
+  <!-- ۲: احراز هویت در دروازه -->
+  <path class="s-arr s-flow" d="M 602 110 L 690 110 L 690 132 L 604 132"/>
+  <path class="s-head" d="M 604 132 L 616 125 L 616 139 Z"/>
+  <text class="s-t2 s-lbl" x="646" y="104" text-anchor="middle" style="--kl-i:7">احراز هویت + نرخ‌گیری</text>
 
-    OS->>MQ: OrderPlaced
-    MQ->>IS: OrderPlaced
-    IS->>IS: کم‌کردن موجودی
-    IS->>MQ: StockReserved / OutOfStock
+  <!-- ۳: ارسال به سرویس سفارش -->
+  <path class="s-arr s-flow" d="M 602 160 L 496 160"/>
+  <path class="s-head" d="M 496 160 L 508 153 L 508 167 Z"/>
+  <text class="s-t2 s-lbl" x="548" y="152" text-anchor="middle" style="--kl-i:7">POST /orders (توکن معتبر)</text>
 
-    MQ->>NS: OrderPlaced
-    NS->>NS: ارسال ایمیل</code></pre>
+  <!-- ۴ و ۵: قوانین دامنه و ثبت سفارش -->
+  <path class="s-arr s-flow" d="M 494 190 L 580 190 L 580 212 L 496 212"/>
+  <path class="s-head" d="M 496 212 L 508 205 L 508 219 Z"/>
+  <text class="s-t2 s-lbl" x="537" y="184" text-anchor="middle" style="--kl-i:7">قوانین دامنه</text>
+  <path class="s-arr s-flow" d="M 494 222 L 580 222 L 580 244 L 496 244"/>
+  <path class="s-head" d="M 496 244 L 508 237 L 508 251 Z"/>
+  <text class="s-t2 s-lbl" x="537" y="216" text-anchor="middle" style="--kl-i:7">ثبت سفارش + Outbox</text>
+
+  <!-- ۶ و ۷: پاسخ به کاربر -->
+  <path class="s-dash s-arr s-flow-soft" d="M 494 272 L 600 272"/>
+  <path class="s-head-dim" d="M 600 272 L 588 265 L 588 279 Z"/>
+  <text class="s-t2 s-lbl" x="548" y="264" text-anchor="middle" style="--kl-i:8">201 + orderId</text>
+  <path class="s-dash s-arr s-flow-soft" d="M 602 300 L 708 300"/>
+  <path class="s-head-dim" d="M 708 300 L 696 293 L 696 307 Z"/>
+  <text class="s-t2 s-lbl" x="656" y="292" text-anchor="middle" style="--kl-i:8">201</text>
+
+  <!-- یادداشت: کاربر منتظر نیست -->
+  <rect class="s-group" x="262" y="326" width="248" height="34" rx="10"/>
+  <text class="s-t2" x="386" y="349" text-anchor="middle" style="--kl-i:8">کاربر منتظر نیست</text>
+
+  <!-- ۸: تماس هم‌زمان با درگاه -->
+  <path class="s-arr s-flow" d="M 494 386 L 388 386"/>
+  <path class="s-head" d="M 388 386 L 400 379 L 400 393 Z"/>
+  <text class="s-t2 s-lbl" x="440" y="378" text-anchor="middle" style="--kl-i:7">POST /payments (هم‌زمان، درگاه)</text>
+
+  <!-- ۹ تا ۱۳: زنجیره‌ی ناهمگام -->
+  <path class="s-dash s-arr s-flow-soft" d="M 494 414 L 280 414"/>
+  <path class="s-head-dim" d="M 280 414 L 292 407 L 292 421 Z"/>
+  <text class="s-t2 s-lbl" x="386" y="406" text-anchor="middle" style="--kl-i:9">OrderPlaced</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 278 442 L 172 442"/>
+  <path class="s-head-dim" d="M 172 442 L 184 435 L 184 449 Z"/>
+  <text class="s-t2 s-lbl" x="224" y="434" text-anchor="middle" style="--kl-i:9">OrderPlaced</text>
+
+  <path class="s-arr s-flow" d="M 170 470 L 250 470 L 250 492 L 172 492"/>
+  <path class="s-head" d="M 172 492 L 184 485 L 184 499 Z"/>
+  <text class="s-t2 s-lbl" x="210" y="464" text-anchor="middle" style="--kl-i:7">کم‌کردن موجودی</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 170 520 L 276 520"/>
+  <path class="s-head-dim" d="M 276 520 L 264 513 L 264 527 Z"/>
+  <text class="s-t2 s-lbl" x="224" y="512" text-anchor="middle" style="--kl-i:9">StockReserved / OutOfStock</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 278 548 L 64 548"/>
+  <path class="s-head-dim" d="M 64 548 L 76 541 L 76 555 Z"/>
+  <text class="s-t2 s-lbl" x="170" y="540" text-anchor="middle" style="--kl-i:9">OrderPlaced</text>
+
+  <!-- ۱۴: ارسال ایمیل -->
+  <path class="s-arr s-flow" d="M 62 576 L 140 576 L 140 598 L 64 598"/>
+  <path class="s-head" d="M 64 598 L 76 591 L 76 605 Z"/>
+  <text class="s-t2 s-lbl" x="101" y="570" text-anchor="middle" style="--kl-i:7">ارسال ایمیل</text>
+
+  <!-- شماره‌ی گام‌ها -->
+  <g class="s-node" style="--kl-i:10">
+    <circle class="s-count" cx="736" cy="80" r="11"/>
+    <text class="s-tc" x="736" y="84" text-anchor="middle">۱</text>
+    <circle class="s-count" cx="736" cy="110" r="11"/>
+    <text class="s-tc" x="736" y="114" text-anchor="middle">۲</text>
+    <circle class="s-count" cx="736" cy="160" r="11"/>
+    <text class="s-tc" x="736" y="164" text-anchor="middle">۳</text>
+    <circle class="s-count" cx="736" cy="190" r="11"/>
+    <text class="s-tc" x="736" y="194" text-anchor="middle">۴</text>
+    <circle class="s-count" cx="736" cy="222" r="11"/>
+    <text class="s-tc" x="736" y="226" text-anchor="middle">۵</text>
+    <circle class="s-count" cx="736" cy="272" r="11"/>
+    <text class="s-tc" x="736" y="276" text-anchor="middle">۶</text>
+    <circle class="s-count" cx="736" cy="300" r="11"/>
+    <text class="s-tc" x="736" y="304" text-anchor="middle">۷</text>
+    <circle class="s-count" cx="736" cy="386" r="11"/>
+    <text class="s-tc" x="736" y="390" text-anchor="middle">۸</text>
+    <circle class="s-count" cx="736" cy="414" r="11"/>
+    <text class="s-tc" x="736" y="418" text-anchor="middle">۹</text>
+    <circle class="s-count" cx="736" cy="442" r="11"/>
+    <text class="s-tc" x="736" y="446" text-anchor="middle">۱۰</text>
+    <circle class="s-count" cx="736" cy="470" r="11"/>
+    <text class="s-tc" x="736" y="474" text-anchor="middle">۱۱</text>
+    <circle class="s-count" cx="736" cy="520" r="11"/>
+    <text class="s-tc" x="736" y="524" text-anchor="middle">۱۲</text>
+    <circle class="s-count" cx="736" cy="548" r="11"/>
+    <text class="s-tc" x="736" y="552" text-anchor="middle">۱۳</text>
+    <circle class="s-count" cx="736" cy="576" r="11"/>
+    <text class="s-tc" x="736" y="580" text-anchor="middle">۱۴</text>
+  </g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 710 80 L 604 80"/>
+  </circle>
+  <circle class="s-runner-dim" r="4.5">
+    <animateMotion dur="3.2s" begin="1s" repeatCount="indefinite" path="M 494 414 L 280 414"/>
+  </circle>
+</svg>
+<figcaption><b>جریان یک سفارش:</b> گام‌های ۱ تا ۷ هم‌زمان‌اند و کاربر تا گام ۷ منتظر می‌ماند. تنها تماس هم‌زمانِ پس از آن <code>POST /payments</code> به درگاه است (گام ۸)، چون کاربر باید بداند پرداخت شده یا نه. از گام ۹ به بعد خط‌چین‌ها زنجیره‌ی ناهمگام را نشان می‌دهند: <code>order</code> رویداد <code>OrderPlaced</code> را منتشر می‌کند، <code>inventory</code> موجودی را کم و نتیجه را برمی‌گرداند و <code>notification</code> ایمیل می‌فرستد.</figcaption>
+</figure>
 
 <div class="kl-box kl-hd">
 <span class="kl-h">چه چیزی هم‌زمان و چه چیزی ناهمگام است</span>
@@ -873,23 +1361,102 @@ spec:
 
 <h3>جریان خطا در سیستم توزیع‌شده</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant OS as order-service
-    participant PS as payment-service
-    participant MQ as پیام‌رسان
-    participant IS as inventory-service
+<figure class="kl-fig">
+<svg viewBox="0 0 770 440" role="img" aria-label="جریان خطا در سیستم توزیع‌شده: خطای پرداخت، باز شدن مدار و ادامه‌ی کار بقیه‌ی سرویس‌ها">
+  <!-- سرستون‌ها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="616" y="14" width="140" height="40" rx="9"/>
+    <text class="s-t" x="686" y="39" text-anchor="middle">order-service</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-bad" x="416" y="14" width="140" height="40" rx="9"/>
+    <text class="s-t" x="486" y="39" text-anchor="middle">payment-service</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c5" x="216" y="14" width="140" height="40" rx="9"/>
+    <text class="s-t" x="286" y="39" text-anchor="middle">پیام‌رسان</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="16" y="14" width="140" height="40" rx="9"/>
+    <text class="s-t" x="86" y="39" text-anchor="middle">inventory-service</text>
+  </g>
 
-    OS->>PS: POST /payments
-    PS--xOS: ۵۰۰ Internal Error
-    Note over OS: Circuit Breaker باز می‌شود
-    OS->>PS: درخواست بعدی → رد فوری (بدون تماس)
-    Note over OS: سفارش در وضعیت PAYMENT_PENDING
-    OS->>MQ: PaymentFailed
+  <!-- خطوط زندگی -->
+  <path class="s-grid" d="M 686 54 L 686 380"/>
+  <path class="s-grid" d="M 486 54 L 486 380"/>
+  <path class="s-grid" d="M 286 54 L 286 380"/>
+  <path class="s-grid" d="M 86 54 L 86 380"/>
 
-    MQ->>IS: PaymentFailed
-    IS->>IS: آزادکردن موجودی رزروشده
+  <!-- ۱: تلاش برای پرداخت -->
+  <path class="s-arr s-flow" d="M 686 80 L 488 80"/>
+  <path class="s-head" d="M 488 80 L 500 73 L 500 87 Z"/>
+  <text class="s-t2 s-lbl" x="586" y="72" text-anchor="middle" style="--kl-i:4">POST /payments</text>
 
-    Note over OS,IS: خرابی یک سرویس، بقیه را متوقف نکرد</code></pre>
+  <!-- ۲: خطای سرویس پرداخت -->
+  <path class="s-arr s-flow-bad" d="M 486 118 L 684 118"/>
+  <path class="s-head-bad" d="M 684 118 L 672 111 L 672 125 Z"/>
+  <path class="s-arr-bad" d="M 478 110 L 494 126"/>
+  <path class="s-arr-bad" d="M 494 110 L 478 126"/>
+  <text class="s-t2 s-lbl" x="586" y="110" text-anchor="middle" style="--kl-i:5">۵۰۰ Internal Error</text>
+
+  <!-- یادداشت: باز شدن مدار -->
+  <rect class="s-group" x="506" y="142" width="250" height="34" rx="10"/>
+  <text class="s-t2" x="631" y="165" text-anchor="middle" style="--kl-i:5">Circuit Breaker باز می‌شود</text>
+
+  <!-- ۳: درخواست بعدی بدون تماس رد می‌شود -->
+  <path class="s-arr s-flow-bad" d="M 686 200 L 560 200"/>
+  <path class="s-arr-bad" d="M 542 194 L 554 206"/>
+  <path class="s-arr-bad" d="M 554 194 L 542 206"/>
+  <text class="s-t2 s-lbl" x="623" y="192" text-anchor="middle" style="--kl-i:5">درخواست بعدی → رد فوری (بدون تماس)</text>
+
+  <!-- یادداشت: وضعیت سفارش -->
+  <rect class="s-group" x="506" y="228" width="250" height="34" rx="10"/>
+  <text class="s-t2" x="631" y="251" text-anchor="middle" style="--kl-i:5">سفارش در وضعیت PAYMENT_PENDING</text>
+
+  <!-- ۴ و ۵: انتشار رویداد جبرانی -->
+  <path class="s-dash s-arr s-flow-soft" d="M 686 286 L 288 286"/>
+  <path class="s-head-dim" d="M 288 286 L 300 279 L 300 293 Z"/>
+  <text class="s-t2 s-lbl" x="486" y="278" text-anchor="middle" style="--kl-i:6">PaymentFailed</text>
+
+  <path class="s-dash s-arr s-flow-soft" d="M 286 314 L 88 314"/>
+  <path class="s-head-dim" d="M 88 314 L 100 307 L 100 321 Z"/>
+  <text class="s-t2 s-lbl" x="186" y="306" text-anchor="middle" style="--kl-i:6">PaymentFailed</text>
+
+  <!-- ۶: آزادکردن موجودی رزروشده -->
+  <path class="s-arr s-flow" d="M 86 342 L 176 342 L 176 364 L 88 364"/>
+  <path class="s-head" d="M 88 364 L 100 357 L 100 371 Z"/>
+  <text class="s-t2 s-lbl" x="131" y="336" text-anchor="middle" style="--kl-i:4">آزادکردن موجودی رزروشده</text>
+
+  <!-- یادداشت پایانی -->
+  <rect class="s-group" x="76" y="390" width="620" height="34" rx="10"/>
+  <text class="s-t2" x="386" y="413" text-anchor="middle" style="--kl-i:6">خرابی یک سرویس، بقیه را متوقف نکرد</text>
+
+  <!-- شماره‌ی گام‌ها -->
+  <g class="s-node" style="--kl-i:7">
+    <circle class="s-count" cx="740" cy="80" r="11"/>
+    <text class="s-tc" x="740" y="84" text-anchor="middle">۱</text>
+    <circle class="s-count" cx="740" cy="118" r="11"/>
+    <text class="s-tc" x="740" y="122" text-anchor="middle">۲</text>
+    <circle class="s-count" cx="740" cy="200" r="11"/>
+    <text class="s-tc" x="740" y="204" text-anchor="middle">۳</text>
+    <circle class="s-count" cx="740" cy="286" r="11"/>
+    <text class="s-tc" x="740" y="290" text-anchor="middle">۴</text>
+    <circle class="s-count" cx="740" cy="314" r="11"/>
+    <text class="s-tc" x="740" y="318" text-anchor="middle">۵</text>
+    <circle class="s-count" cx="740" cy="342" r="11"/>
+    <text class="s-tc" x="740" y="346" text-anchor="middle">۶</text>
+  </g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 686 80 L 488 80"/>
+  </circle>
+  <circle class="s-runner-bad" r="4.5">
+    <animateMotion dur="3.2s" begin="1.2s" repeatCount="indefinite" path="M 686 286 L 288 286"/>
+  </circle>
+</svg>
+<figcaption><b>جریان خطا:</b> وقتی <code>payment-service</code> خطای ۵۰۰ برمی‌گرداند (گام ۲)، مدار باز می‌شود و درخواست‌های بعدی بدون هیچ تماسی رد می‌شوند (گام ۳)؛ به همین دلیل سرویس خراب درخواست‌ها را انباشته نمی‌کند. سفارش در وضعیت <code>PAYMENT_PENDING</code> می‌ماند و <code>order-service</code> رویداد <code>PaymentFailed</code> را منتشر می‌کند تا <code>inventory-service</code> موجودی رزروشده را آزاد کند.</figcaption>
+</figure>
 
 <h3>چهار نوع خطا در سیستم توزیع‌شده</h3>
 

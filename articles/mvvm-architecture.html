@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -160,7 +162,7 @@
             <ul class="inline-toc-grid">
               <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی چرخش صفحه همه‌چیز را پاک می‌کند</span></a></li>
               <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
-              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVVM چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVVM چیست؟ (تعریف دقیق)</span></a></li>
               <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
               <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: ViewModel و وضعیت</span></a></li>
               <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: اجزای MVVM</span></a></li>
@@ -239,20 +241,20 @@
 <table>
   <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
   <tr><td>۱۹۸۸ — Smalltalk</td><td>MVC و دشواری مدیریت جریان داده‌ی رو به عقب</td></tr>
-  <tr><td>۱۹۹۰s — MVP</td><td>جداسازی View از Model و حل مشکل تست‌پذیری</td></tr>
+  <tr><td>دهه‌ی ۱۹۹۰ — MVP</td><td>جداسازی View از Model و حل مشکل تست‌پذیری</td></tr>
   <tr><td>۱۹۹۸ — VB6 / VB.NET</td><td>پایداری فرم، تغییر نمایشی و تغییر منطق به‌صورت مستقل</td></tr>
   <tr><td>۲۰۰۵ — WPF</td><td>مایکروسافت MVVM را برای XAML و Data Binding معرفی کرد</td></tr>
   <tr><td>۲۰۱۰ — MVVM Light Toolkit</td><td>MVVM را برای سایر پلتفرم‌ها در دسترس عمومی قرار داد</td></tr>
   <tr><td>۲۰۱۱ — Prism</td><td>MVVM را در برنامه‌های سازمانی WPF و Silverlight استاندارد کرد</td></tr>
   <tr><td>۲۰۱۲ — Android (Google I/O)</td><td>الگوی Lifecycle-aware در پیشنهاد رسمی آمد</td></tr>
   <tr><td>۲۰۱۷ — Jetpack</td><td>MVVM به الگوی پیشنهادی رسمی اندروید تبدیل شد</td></tr>
-  <tr><td>۲۰۲۰s — Flow</td><td>LiveData و متعاقباً Kotlin Flow جایگزین‌های مدرن شدند</td></tr>
+  <tr><td>دهه‌ی ۲۰۲۰ — Flow</td><td>LiveData و متعاقباً Kotlin Flow جایگزین‌های مدرن شدند</td></tr>
 </table>
 </div>
 
 <div class="kl-box kl-ok">
 <span class="kl-h">چرا MVVM جواب داد؟</span>
-چون <strong>حافظه‌ی مشترک (Shared Memory)</strong> بین View و ViewModel ساخت:
+چون <strong>وضعیت مشترک</strong> بین View و ViewModel ساخت:
 هر دو به یک شیء اشاره می‌کنند. با تغییر یکی، دیگری به‌طور خودکار با چرخه‌ی حیات
 هماهنگ می‌شود — بدون اینکه View مجبور باشد مدیریت وضعیت را کد بزند.
 </div>
@@ -267,7 +269,7 @@
 <strong>MVVM</strong> یک الگوی معماری است که برنامه را به سه نقش تقسیم می‌کند:
 <strong>Model</strong> (داده و قواعد کسب‌وکار)، <strong>View</strong> (رابط کاربری کاملاً منفعل)
 و <strong>ViewModel</strong> (که وضعیت صفحه و منطق نمایش را نگه می‌دارد).
-<strong>ViewModel</strong> به View ارجاع مستقیم ندارد؛ این یعنی می‌توان آن را
+<strong>ViewModel</strong> به View ارجاع مستقیم ندارد؛ یعنی می‌توان آن را
 <strong>کاملاً بدون اندروید تست کرد</strong>.
 </div>
 
@@ -290,9 +292,9 @@
 <div class="kl-box kl-bad">
 <span class="kl-h">سوءتفاهم رایج</span>
 MVVM با MVP <strong>تقریباً یکسان</strong> به نظر می‌رسد، اما یک تفاوت حیاتی دارد:
-در MVP، View باید صریحاً از Presenter <strong>داده بگیرد</strong> (به‌صورت پشتیبان یا Observer)؛
+در MVP، View باید صریحاً از Presenter <strong>داده بگیرد</strong> (Presenter مستقیماً متدهای View را صدا می‌زند)؛
 در MVVM، ViewModel وضعیت را <strong>منتشر می‌کند</strong> و View خودش آن را
-مشاهده (observe) می‌کند و به‌روز می‌شود. این تفاوت، همه‌ی قدرت MVVM است.
+مشاهده (observe) می‌کند و به‌روز می‌شود. همین تفاوت، تمام قدرت MVVM است.
 </div>
 </section>
 
@@ -377,23 +379,69 @@ MVVM با MVP <strong>تقریباً یکسان</strong> به نظر می‌رس
 اگر کاربر اپ را کامل ببندد، پاک می‌شود — که درست همان چیزی است که می‌خواهیم.
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    V["View (Fragment) — فقط نمایش"]
-    VM["ViewModel — وضعیت و منطق نمایش"]
-    M["Model — داده و قواعد کسب‌وکار"]
-    R["Repository — دسترسی به داده"]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="نقش View، ViewModel، Repository و Model در MVVM">
+  <!-- View ↔ ViewModel -->
+  <path class="s-arr s-flow" d="M 582 62 L 548 62"/>
+  <path class="s-head" d="M 542 62 L 554 55 L 554 69 Z"/>
+  <text class="s-t2 s-lbl" x="565" y="52" text-anchor="middle" style="--kl-i:0">مشاهده</text>
 
-    V -->|"مشاهده‌ی LiveData / Flow"| VM
-    V -->|"رویداد کاربر"| VM
-    VM -->|"می‌خواند / می‌نویسد"| R
-    R --> M
+  <path class="s-arr s-flow" d="M 582 98 L 548 98"/>
+  <path class="s-head" d="M 542 98 L 554 91 L 554 105 Z"/>
+  <text class="s-t2 s-lbl" x="565" y="88" text-anchor="middle" style="--kl-i:1">رویداد</text>
 
-    VM -. "❌ هرگز ارجاعی به View ندارد" .- V
+  <!-- ViewModel → Repository -->
+  <path class="s-arr s-flow" d="M 372 76 L 348 76"/>
+  <path class="s-head" d="M 342 76 L 354 69 L 354 83 Z"/>
+  <text class="s-t2 s-lbl" x="360" y="62" text-anchor="middle" style="--kl-i:2">داده</text>
 
-    style V fill:#0f766e,stroke:#14b8a6,color:#fff
-    style VM fill:#115e59,stroke:#2dd4bf,color:#fff
-    style M fill:#134e4a,stroke:#5eead4,color:#fff
-    style R fill:#78350f,stroke:#fbbf24,color:#fff</code></pre>
+  <!-- Repository → Model -->
+  <path class="s-arr-ok s-flow-ok" d="M 260 114 L 260 166"/>
+  <path class="s-head-ok" d="M 260 172 L 253 160 L 267 160 Z"/>
+  <text class="s-t2 s-lbl" x="395" y="146" text-anchor="middle" style="--kl-i:3">استخراج و نگه‌داری داده</text>
+
+  <!-- ViewModel ✗ View -->
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 460 120 C 460 158, 670 158, 670 122"/>
+  <path class="s-head-bad" d="M 670 116 L 663 128 L 677 128 Z"/>
+  <text class="s-tbad s-lbl" x="565" y="190" text-anchor="middle" style="--kl-i:4">هرگز ارجاعی به View ندارد</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.4s" repeatCount="indefinite" path="M 578 62 L 548 62"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.4s" begin="1.7s" repeatCount="indefinite"
+                   path="M 372 76 L 348 76 M 260 114 L 260 166"/>
+  </circle>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="590" y="40" width="160" height="74" rx="12"/>
+    <text class="s-t" x="670" y="70" text-anchor="middle">View</text>
+    <text class="s-t2" x="670" y="94" text-anchor="middle">فقط نمایش</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn s-pulse" x="380" y="40" width="160" height="74" rx="12"/>
+    <text class="s-t" x="460" y="70" text-anchor="middle">ViewModel</text>
+    <text class="s-t2" x="460" y="94" text-anchor="middle">وضعیت و منطق نمایش</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c4" x="180" y="40" width="160" height="74" rx="12"/>
+    <text class="s-t" x="260" y="70" text-anchor="middle">Repository</text>
+    <text class="s-t2" x="260" y="94" text-anchor="middle">دسترسی به داده</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="180" y="172" width="160" height="74" rx="12"/>
+    <text class="s-t" x="260" y="202" text-anchor="middle">Model</text>
+    <text class="s-t2" x="260" y="226" text-anchor="middle">داده و قواعد</text>
+  </g>
+
+  <rect class="s-chip" x="180" y="266" width="160" height="26" rx="8"/>
+  <text class="s-tc" x="260" y="284" text-anchor="middle">منبع حقیقت</text>
+</svg>
+<figcaption><b>جریان داده:</b> <code>View</code> فقط LiveData را مشاهده می‌کند و رویداد می‌فرستد؛ <code>ViewModel</code> تنها منبع حقیقت وضعیت صفحه است و به <code>Repository</code> می‌رسد. خط قرمز نشان می‌دهد که <code>ViewModel</code> هرگز نباید ارجاعی به <code>View</code> داشته باشد؛ همین نبودِ وابستگی است که تست واحد را ممکن می‌کند.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>سه سطح مسئولیت در MVVM:
 
@@ -430,34 +478,62 @@ MVVM با MVP <strong>تقریباً یکسان</strong> به نظر می‌رس
 </table>
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    subgraph VLAYER["View — XML یا Compose"]
-        V1["Fragment / Activity"]
-        V2["layout با Data Binding"]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 350" role="img" aria-label="لایه‌های MVVM و نقش Android Framework">
+  <!-- View ↔ ViewModel -->
+  <path class="s-arr-ok s-flow-ok" d="M 462 52 L 312 52"/>
+  <path class="s-head-ok" d="M 306 52 L 318 45 L 318 59 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="40" text-anchor="middle" style="--kl-i:0">مشاهده‌ی LiveData / Flow</text>
 
-    subgraph SLAYER["Shared ViewModel"]
-        S1["LiveData&lt;UiState&gt;"]
-        S2["LiveData&lt;String&gt;"]
-        S3["MutableLiveData&lt;Event&gt;"]
-    end
+  <path class="s-dash s-arr s-flow" d="M 312 100 L 462 100"/>
+  <path class="s-head" d="M 468 100 L 456 93 L 456 107 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="88" text-anchor="middle" style="--kl-i:1">دوحالته: رویداد و مقدار</text>
 
-    subgraph ALAYER["Android Framework — شما کد نمی‌نویسید"]
-        A1["ViewModelProvider"]
-        A2["SavedStateRegistry"]
-        A3["LifecycleOwner (Fragment)"]
-    end
+  <!-- Android Framework -->
+  <path class="s-arr s-flow" d="M 165 268 L 165 138"/>
+  <path class="s-head" d="M 165 132 L 158 144 L 172 144 Z"/>
+  <text class="s-t2 s-lbl" x="165" y="204" text-anchor="middle" style="--kl-i:2">ساخت و نگه‌داری</text>
 
-    V1 --> A3
-    V1 --> A1
-    A1 --> S1
-    V1 -->|"observe" S1
-    V1 -->|"observe" S2
-    V2 -. "دوحالته: UI → ViewModel" .-> S3
+  <path class="s-arr s-flow" d="M 635 268 L 635 138"/>
+  <path class="s-head" d="M 635 132 L 628 144 L 642 144 Z"/>
+  <text class="s-t2 s-lbl" x="635" y="204" text-anchor="middle" style="--kl-i:3">چرخه‌ی حیات و ذخیره‌ی وضعیت</text>
 
-    style VLAYER fill:#0f766e,stroke:#14b8a6,color:#fff
-    style SLAYER fill:#115e59,stroke:#2dd4bf,color:#fff
-    style ALAYER fill:#78350f,stroke:#fbbf24,color:#fff</code></pre>
+  <!-- ViewModel -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="5" y="20" width="295" height="112" rx="14"/>
+    <text class="s-t" x="152" y="52" text-anchor="middle">Shared ViewModel</text>
+    <text class="s-t2" x="152" y="76" text-anchor="middle">تنها منبع حقیقت وضعیت صفحه</text>
+    <rect class="s-chip" x="24" y="90" width="120" height="28" rx="7"/>
+    <text class="s-tc" x="84" y="109" text-anchor="middle">LiveData&lt;UiState&gt;</text>
+    <rect class="s-chip" x="160" y="90" width="120" height="28" rx="7"/>
+    <text class="s-tc" x="220" y="109" text-anchor="middle">LiveData&lt;Event&gt;</text>
+  </g>
+
+  <!-- View -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="470" y="20" width="295" height="112" rx="14"/>
+    <text class="s-t" x="617" y="52" text-anchor="middle">View — XML یا Compose</text>
+    <text class="s-t2" x="617" y="76" text-anchor="middle">فقط نمایش، بدون منطق</text>
+    <rect class="s-box" x="489" y="90" width="130" height="28" rx="7"/>
+    <text class="s-t2" x="554" y="109" text-anchor="middle">Fragment / Activity</text>
+    <rect class="s-box" x="632" y="90" width="130" height="28" rx="7"/>
+    <text class="s-t2" x="697" y="109" text-anchor="middle">layout با Data Binding</text>
+  </g>
+
+  <!-- Android Framework -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-group" x="5" y="230" width="760" height="112" rx="16"/>
+    <text class="s-group-t" x="385" y="258" text-anchor="middle">Android Framework — این کد را شما نمی‌نویسید</text>
+    <rect class="s-c6" x="60" y="272" width="210" height="46" rx="9"/>
+    <text class="s-tc" x="165" y="301" text-anchor="middle">ViewModelProvider</text>
+    <rect class="s-c6" x="310" y="272" width="150" height="46" rx="9"/>
+    <text class="s-tc" x="385" y="301" text-anchor="middle">SavedStateRegistry</text>
+    <rect class="s-c6" x="500" y="272" width="210" height="46" rx="9"/>
+    <text class="s-tc" x="605" y="301" text-anchor="middle">LifecycleOwner (Fragment)</text>
+  </g>
+</svg>
+<figcaption><b>چرا <code>ViewModelProvider</code> مهم است:</b> اگر خودتان <code>new ProfileViewModel()</code> بنویسید، با چرخش صفحه نمونه‌ی شما از بین می‌رود و مزیت اصلی MVVM را از دست داده‌اید. سیستم است که نمونه را نگه می‌دارد و پس از مرگ فرایند، وضعیت را از <code>SavedStateHandle</code> بازیابی می‌کند.</figcaption>
+</figure>
 
 <div class="kl-box kl-warn">
 <span class="kl-h">ViewModel را از کجا بگیریم؟</span>
@@ -471,25 +547,102 @@ MVVM با MVP <strong>تقریباً یکسان</strong> به نظر می‌رس
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    autonumber
-    actor U as کاربر
-    participant V as View
-    participant VM as ViewModel
-    participant R as Repository
+<figure class="kl-fig">
+<svg viewBox="0 0 770 510" role="img" aria-label="ترتیب رویدادها در جریان داده‌ی MVVM">
+  <!-- خطوط زندگی -->
+  <path class="s-dash" d="M 700 54 L 700 500"/>
+  <path class="s-dash" d="M 560 54 L 560 500"/>
+  <path class="s-dash" d="M 330 54 L 330 500"/>
+  <path class="s-dash" d="M 140 54 L 140 500"/>
 
-    VM->>VM: load() — در onInit
-    VM->>R: getUser(id)
-    R-->>VM: User (داده خام)
-    VM->>VM: تبدیل به UiState
-    VM->>V: LiveData منتشر می‌کند
-    V-->>U: نمایش نام و ایمیل
+  <!-- ۱) ViewModel: load -->
+  <path class="s-arr s-flow" d="M 330 86 C 368 86, 368 58, 332 58"/>
+  <path class="s-head" d="M 330 58 L 342 51 L 342 65 Z"/>
+  <text class="s-tc s-lbl" x="420" y="74" text-anchor="middle" style="--kl-i:0">load() در onInit</text>
 
-    U->>V: تغییر متن نام
-    V->>VM: setName("علی")
-    VM->>VM: به‌روزرسانی UiState
-    VM->>V: LiveData جدید منتشر می‌کند
-    V-->>U: دکمه ذخیره فعال می‌شود</code></pre>
+  <!-- ۲) ViewModel → Repository -->
+  <path class="s-arr s-flow" d="M 330 120 L 146 120"/>
+  <path class="s-head" d="M 140 120 L 152 113 L 152 127 Z"/>
+  <text class="s-tc s-lbl" x="238" y="110" text-anchor="middle" style="--kl-i:1">getUser(id)</text>
+
+  <!-- ۳) Repository → ViewModel -->
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 146 160 L 324 160"/>
+  <path class="s-head-ok" d="M 330 160 L 318 153 L 318 167 Z"/>
+  <text class="s-t2 s-lbl" x="238" y="150" text-anchor="middle" style="--kl-i:2">User — داده‌ی خام</text>
+
+  <!-- ۴) ViewModel: تبدیل -->
+  <path class="s-arr s-flow" d="M 330 214 C 368 214, 368 186, 332 186"/>
+  <path class="s-head" d="M 330 186 L 342 179 L 342 193 Z"/>
+  <text class="s-t2 s-lbl" x="430" y="202" text-anchor="middle" style="--kl-i:3">تبدیل به UiState</text>
+
+  <!-- ۵) ViewModel → View -->
+  <path class="s-arr s-flow" d="M 330 240 L 566 240"/>
+  <path class="s-head" d="M 572 240 L 560 233 L 560 247 Z"/>
+  <text class="s-t2 s-lbl" x="448" y="230" text-anchor="middle" style="--kl-i:4">انتشار LiveData</text>
+
+  <!-- ۶) View → کاربر -->
+  <path class="s-arr-ok s-flow-ok" d="M 566 280 L 694 280"/>
+  <path class="s-head-ok" d="M 700 280 L 688 273 L 688 287 Z"/>
+  <text class="s-t2 s-lbl" x="634" y="270" text-anchor="middle" style="--kl-i:5">نمایش نام و ایمیل</text>
+
+  <!-- ۷) کاربر → View -->
+  <path class="s-arr s-flow" d="M 700 320 L 566 320"/>
+  <path class="s-head" d="M 560 320 L 572 313 L 572 327 Z"/>
+  <text class="s-t2 s-lbl" x="634" y="310" text-anchor="middle" style="--kl-i:6">تغییر متن نام</text>
+
+  <!-- ۸) View → ViewModel -->
+  <path class="s-arr s-flow" d="M 560 360 L 336 360"/>
+  <path class="s-head" d="M 330 360 L 342 353 L 342 367 Z"/>
+  <text class="s-tc s-lbl" x="445" y="350" text-anchor="middle" style="--kl-i:7">setName("علی")</text>
+
+  <!-- ۹) ViewModel: به‌روزرسانی -->
+  <path class="s-arr s-flow" d="M 330 414 C 368 414, 368 386, 332 386"/>
+  <path class="s-head" d="M 330 386 L 342 379 L 342 393 Z"/>
+  <text class="s-t2 s-lbl" x="435" y="402" text-anchor="middle" style="--kl-i:8">به‌روزرسانی UiState</text>
+
+  <!-- ۱۰) ViewModel → View -->
+  <path class="s-arr s-flow" d="M 330 440 L 566 440"/>
+  <path class="s-head" d="M 572 440 L 560 433 L 560 447 Z"/>
+  <text class="s-t2 s-lbl" x="448" y="430" text-anchor="middle" style="--kl-i:9">LiveData جدید منتشر می‌شود</text>
+
+  <!-- ۱۱) View → کاربر -->
+  <path class="s-arr-ok s-flow-ok" d="M 566 480 L 694 480"/>
+  <path class="s-head-ok" d="M 700 480 L 688 473 L 688 487 Z"/>
+  <text class="s-t2 s-lbl" x="640" y="470" text-anchor="middle" style="--kl-i:10">دکمه‌ی ذخیره فعال می‌شود</text>
+
+  <!-- شماره‌ی گام‌ها -->
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="22" cy="80" r="12"/><text class="s-tc" x="22" y="84" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="22" cy="120" r="12"/><text class="s-tc" x="22" y="124" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="22" cy="160" r="12"/><text class="s-tc" x="22" y="164" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="22" cy="200" r="12"/><text class="s-tc" x="22" y="204" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="22" cy="240" r="12"/><text class="s-tc" x="22" y="244" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="22" cy="280" r="12"/><text class="s-tc" x="22" y="284" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="22" cy="320" r="12"/><text class="s-tc" x="22" y="324" text-anchor="middle">۷</text></g>
+  <g class="s-node" style="--kl-i:7"><circle class="s-chip" cx="22" cy="360" r="12"/><text class="s-tc" x="22" y="364" text-anchor="middle">۸</text></g>
+  <g class="s-node" style="--kl-i:8"><circle class="s-chip" cx="22" cy="400" r="12"/><text class="s-tc" x="22" y="404" text-anchor="middle">۹</text></g>
+  <g class="s-node" style="--kl-i:9"><circle class="s-chip" cx="22" cy="440" r="12"/><text class="s-tc" x="22" y="444" text-anchor="middle">۱۰</text></g>
+  <g class="s-node" style="--kl-i:10"><circle class="s-chip" cx="22" cy="480" r="12"/><text class="s-tc" x="22" y="484" text-anchor="middle">۱۱</text></g>
+
+  <!-- سرهای بازیگران -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="648" y="14" width="104" height="40" rx="10"/>
+    <text class="s-t" x="700" y="40" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="505" y="14" width="110" height="40" rx="10"/>
+    <text class="s-t" x="560" y="40" text-anchor="middle">View</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="260" y="14" width="140" height="40" rx="10"/>
+    <text class="s-t" x="330" y="40" text-anchor="middle">ViewModel</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-chip" x="85" y="14" width="110" height="40" rx="10"/>
+    <text class="s-tc" x="140" y="40" text-anchor="middle">Repository</text>
+  </g>
+</svg>
+<figcaption><b>نکته‌ی کلیدی نمودار:</b> هر دو جریان — هم بارگذاری اولیه (گام ۱ تا ۶) و هم تعامل کاربر (گام ۷ تا ۱۱) — از <code>ViewModel</code> عبور می‌کنند. <code>View</code> هیچ‌وقت مستقیماً داده نمی‌خواند؛ فقط منتظر می‌ماند تا <code>LiveData</code> مقدار تازه‌ای منتشر کند.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>دو جریان در MVVM:
 
@@ -970,7 +1123,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
   <li>صفحاتی با <strong>داده‌ی دوحالته</strong> (فرم‌ها، فیلترها، تنظیمات)</li>
   <li>تیم‌هایی که <strong>الگوی رسمی گوگل</strong> را ترجیح می‌دهند</li>
   <li>وقتی می‌خواهید <strong>منطق را در Compose و XML</strong> به‌صورت یکسان نگه دارید</li>
-  <li>پروژه‌هایی با <strong>صفحات چندخطی و داده‌محور</strong></li>
+  <li>پروژه‌هایی با <strong>صفحات چندمرحله‌ای و داده‌محور</strong></li>
   <li>تیم‌هایی که <strong>Coroutines و Flow</strong> را بلد هستند</li>
   <li>وقتی به <strong>پشتیبانی رسمی و ابزار</strong> نیاز دارید</li>
 </ul>
@@ -979,7 +1132,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
 <div class="kl-box kl-deep">
 <span class="kl-h">قاعده‌ی سرانگشتی</span>
 اگر رابط کاربری شما وضعیتی دارد که باید از چرخش صفحه و تغییر پیکربندی جان سالم به در ببرد،
-MVVM انتخاب درست است. اگر جریان داده‌ی شما پیوسته و رویدادمحور است، MVI بهتر است.
+MVVM انتخاب درستی است. اگر جریان داده‌ی شما پیوسته و رویدادمحور است، MVI بهتر است.
 </div>
 </section>
 <!-- ==================== 15 ==================== -->
@@ -1015,17 +1168,78 @@ MVVM انتخاب درست است. اگر جریان داده‌ی شما پیو
 <section id="s16">
 <h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    MVP["MVP — Presenter ←→ View (به‌صورت Push)"]
-    MVVM["MVVM — ViewModel → LiveData → View"]
-    MVI["MVI — Intent → Reducer → State → View"]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="امتیاز مقایسه‌ی MVC، MVP، MVVM و MVI در پنج معیار اندروید">
+  <path class="s-grid" d="M 528 4 L 528 300"/>
+  <path class="s-grid" d="M 446 4 L 446 300"/>
+  <path class="s-grid" d="M 364 4 L 364 300"/>
+  <path class="s-grid" d="M 282 4 L 282 300"/>
+  <path class="s-grid" d="M 200 4 L 200 300"/>
+  <text class="s-axlabel" x="528" y="313" text-anchor="middle">۱</text>
+  <text class="s-axlabel" x="446" y="313" text-anchor="middle">۲</text>
+  <text class="s-axlabel" x="364" y="313" text-anchor="middle">۳</text>
+  <text class="s-axlabel" x="282" y="313" text-anchor="middle">۴</text>
+  <text class="s-axlabel" x="200" y="313" text-anchor="middle">۵</text>
+  <path class="s-axis" d="M 610 4 L 610 300"/>
 
-    MVP -. "به‌جای Push از LiveData استفاده می‌شود" .- MVVM
-    MVVM -. "به‌جای چند LiveData از State واحد" .- MVI
+  <text class="s-cat" x="698" y="36" text-anchor="middle">تست واحد</text>
+  <rect class="s-acc s-hbar" x="446" y="16" width="164" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="430" y="24" text-anchor="middle">۲</text>
+  <rect class="s-ok s-hbar" x="200" y="27" width="410" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="184" y="35" text-anchor="middle">۵</text>
+  <rect class="s-warn s-hbar" x="200" y="38" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="46" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="49" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="57" text-anchor="middle">۵</text>
 
-    style MVP fill:#78350f,stroke:#fbbf24,color:#fff
-    style MVVM fill:#0f766e,stroke:#14b8a6,color:#fff
-    style MVI fill:#115e59,stroke:#2dd4bf,color:#fff</code></pre>
+  <text class="s-cat" x="698" y="96" text-anchor="middle">حفظ خودکار وضعیت</text>
+  <rect class="s-acc s-hbar" x="528" y="76" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="84" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="364" y="87" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="95" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="200" y="98" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="106" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="109" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="117" text-anchor="middle">۵</text>
+
+  <text class="s-cat" x="698" y="156" text-anchor="middle">مناسب Compose</text>
+  <rect class="s-acc s-hbar" x="528" y="136" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="144" text-anchor="middle">۱</text>
+  <rect class="s-ok s-hbar" x="364" y="147" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="155" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="200" y="158" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="166" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="169" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="177" text-anchor="middle">۵</text>
+
+  <text class="s-cat" x="698" y="216" text-anchor="middle">سازگاری با XML</text>
+  <rect class="s-acc s-hbar" x="200" y="196" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="204" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="200" y="207" width="410" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="184" y="215" text-anchor="middle">۵</text>
+  <rect class="s-warn s-hbar" x="200" y="218" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="226" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="446" y="229" width="164" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="430" y="237" text-anchor="middle">۲</text>
+
+  <text class="s-cat" x="698" y="276" text-anchor="middle">سادگی مفهومی</text>
+  <rect class="s-acc s-hbar" x="200" y="256" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="264" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="282" y="267" width="328" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="266" y="275" text-anchor="middle">۴</text>
+  <rect class="s-warn s-hbar" x="282" y="278" width="328" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="266" y="286" text-anchor="middle">۴</text>
+  <rect class="s-c4 s-hbar" x="446" y="289" width="164" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="430" y="297" text-anchor="middle">۲</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>MVC</span>
+  <span><i class="c-ok"></i>MVP</span>
+  <span><i class="c-warn"></i>MVVM</span>
+  <span><i class="c-c4"></i>MVI</span>
+</div>
+<figcaption><b>امتیاز نسبی (از ۵):</b> امتیازها از نشانه‌های جدول مقایسه‌ی همین مقاله گرفته شده‌اند. <code>MVVM</code> و <code>MVI</code> هر دو در حفظ خودکار وضعیت و Compose برتری دارند؛ <code>MVI</code> تنها در سازگاری با XML و سادگی ذهنی عقب می‌ماند.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -1290,8 +1504,8 @@ public class ProfileViewModelTest {
 <h3>۴) اپ سلامت و پایش بیمار</h3>
 <p>
 در اپ‌های پایش سلامت، ViewModel داده‌ی حساس را در حافظه نگه می‌دارد و با
-<code>SavedStateHandle</code> از مرگ فرایند محافظت می‌کند. اگر کاربر میان‌بر زده و
-به اپ برگردد، وضعیت فرم از دست نمی‌رود. این برای داده‌های سلامتی حیاتی است.
+<code>SavedStateHandle</code> از مرگ فرایند محافظت می‌کند. اگر کاربر اپ را از فهرست اخیر
+ببندد و دوباره بازش کند، وضعیت فرم از دست نمی‌رود. این برای داده‌های سلامتی حیاتی است.
 </p>
 
 <h3>۵) اپ فروشگاهی با Compose و MVVM</h3>
@@ -1393,7 +1607,7 @@ LiveData مخصوص اندروید است و چرخه‌ی حیات‌آگاه �
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۷ — آیا ViewModel می‌تواند به Context دسترسی داشته باشد؟</span>
-نه به Context خودش (چون دنبال آن نمی‌گردد). اگر واقعاً لازم است (مثلاً برای یک سرویس
+نه به Context خودش؛ ViewModel اصلاً دنبال آن نمی‌گردد. اگر واقعاً لازم است (مثلاً برای یک سرویس
 سیستمی)، باید آن را به‌عنوان وابستگی از بیرون تزریق کنید، نه اینکه خودتان
 <code>getApplication()</code> صدا بزنید.
 </div>
@@ -1446,7 +1660,7 @@ ViewModelProvider تحویل می‌دهد. این اصلی‌ترین دلیل 
 <span class="kl-h">سؤال ۱۴ — مشکل God ViewModel چیست؟</span>
 وقتی یک ViewModel همه‌ی کارهای صفحه (شبکه، ذخیره‌سازی، ناوبری، اعلان، اعتبارسنجی)
 را انجام می‌دهد، تست آن سخت و تغییرش پرهزینه می‌شود. راه‌حل: تقسیم به
-Use Case های کوچک و استفاده از Coordinator برای ناوبری.
+Use Caseهای کوچک و استفاده از Coordinator برای ناوبری.
 </div>
 
 <div class="kl-box">
@@ -1478,7 +1692,7 @@ undo/redo). در این حالت MVI با State واحد و Reducer قابل پ�
 <div class="kl-box">
 <span class="kl-h">سؤال ۱۸ — چطور MVVM را در پروژه‌ی بزرگ‌تر مقیاس‌پذیر می‌کنیم؟</span>
 با تقسیم‌بندی Feature-Based: هر فیچر پوشه‌ی خودش را دارد که شامل View، ViewModel
-و Contract است. در این حالت ViewModel ها مستقل و قابل تست هستند و تیم‌ها
+و Contract است. در این حالت ViewModelها مستقل و قابل تست هستند و تیم‌ها
 کمتر با هم تداخل دارند.
 </div>
 
@@ -1580,7 +1794,7 @@ MVVM یک <strong>الگو</strong> است که فقط لایه‌ی UI را ت�
 <div class="kl-box">
 <span class="kl-h">۱۲) چطور MVVM را با لایه‌بندی ترکیب کنیم؟</span>
 MVVM را در لایه‌ی Presentation (جایی که View و ViewModel هستند) استفاده کنید
-و منطق کسب‌وکار را به لایه‌ی Domain منتقل کنید. ViewModel فقط Use Case ها
+و منطق کسب‌وکار را به لایه‌ی Domain منتقل کنید. ViewModel فقط Use Caseها
 را صدا می‌زند و داده را برای نمایش آماده می‌کند.
 </div>
 
@@ -1592,7 +1806,7 @@ MVVM را در لایه‌ی Presentation (جایی که View و ViewModel هس�
 
 <div class="kl-box">
 <span class="kl-h">۱۴) چطور مشکل God ViewModel را حل کنیم؟</span>
-ViewModel را به Use Case های کوچک تقسیم کنید، برای ناوبری از یک Coordinator
+ViewModel را به Use Caseهای کوچک تقسیم کنید، برای ناوبری از یک Coordinator
 جدا استفاده کنید، و اگر لازم بود از چند ViewModel کوچک برای بخش‌های مختلف صفحه
 به‌کار ببرید.
 </div>

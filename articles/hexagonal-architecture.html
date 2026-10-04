@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -194,7 +196,7 @@
 
 <p>
 یک سرویس رزرو بلیت را تصور کنید که فقط یک ورودی REST دارد. شش ماه بعد باید به <strong>GraphQL</strong>،
-یک <strong>CLI</strong> برای ادمین، <strong> صف پیام</strong> برای پرداخت و <strong>وب‌هوک</strong> پاسخ دهد؛ و ذخیره‌سازی هم
+یک <strong>CLI</strong> برای ادمین، <strong>صف پیام</strong> برای پرداخت و <strong>وب‌هوک</strong> پاسخ دهد؛ و ذخیره‌سازی هم
 از PostgreSQL به <strong>MongoDB</strong> تغییر کرده. در معماری معمولی، این تغییرات یعنی دست‌زدن به هسته‌ی برنامه:
 </p>
 
@@ -236,7 +238,7 @@
   <tr><td>۲۰۰۵ — مقاله‌ی اصلی Cockburn</td><td>الگوی Ports &amp; Adapters با شکل شش‌ضلعی برای تفکیک درایور/درایو معرفی شد</td></tr>
   <tr><td>۲۰۰۸ — Onion (Palermo)</td><td>ایده‌ی مشابه را با حلقه‌های متحدالمرکز بازنویسی کرد</td></tr>
   <tr><td>۲۰۱۲ — Clean (Martin)</td><td>چهار لایه و Dependency Rule را تثبیت کرد</td></tr>
-  <tr><td>۲۰۱۰‌ها — موج Microservices</td><td>سرویس‌های با چند ورودی/خروجی، Hexagonal را به انتخاب پیش‌فرض بسیاری تبدیل کرد</td></tr>
+  <tr><td>دهه‌ی ۲۰۱۰ — موج Microservices</td><td>سرویس‌های با چند ورودی/خروجی، Hexagonal را به انتخاب پیش‌فرض بسیاری تبدیل کرد</td></tr>
 </table>
 </div>
 
@@ -323,35 +325,127 @@ public class BookingController {
 جهت وابستگی: Adapter ← Port ← هسته. هرگز برعکس.
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph Driving[Driving side — ورودی]
-        W[REST Adapter]
-        C[CLI Adapter]
-        Q[Queue Consumer]
-    end
-    subgraph Core[Application Core]
-        P1[BookingPort]
-        USECASE[Booking Use Case]
-        ENTITY[Domain Entity]
-        P2[Inventory Port]
-    end
-    subgraph Driven[Driven side — خروجی]
-        A1[JPA Adapter]
-        A2[Email Adapter]
-        A3[Payment Adapter]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="شش‌ضلعی هسته‌ی دامنه با شش درگاه روی ضلع‌ها و آداپتورهای ورودی در راست و خروجی در چپ">
+  <!-- سرستون‌های دو طرف -->
+  <text class="s-group-t" x="675" y="46" text-anchor="middle">Driving — ورودی</text>
+  <text class="s-group-t" x="95" y="46" text-anchor="middle">Driven — خروجی</text>
 
-    W --&gt; P1
-    C --&gt; P1
-    Q --&gt; P1
-    P1 --&gt; USECASE
-    USECASE --&gt; ENTITY
-    USECASE --&gt; P2
-    P2 --&gt; A1
-    P2 --&gt; A2
-    P2 --&gt; A3</code></pre>
+  <!-- هسته‌ی دامنه -->
+  <g class="s-node" style="--kl-i:0">
+    <path class="s-ok" d="M 470 129 L 385 80 L 300 129 L 300 227 L 385 276 L 470 227 Z"/>
+    <text class="s-t" x="385" y="150" text-anchor="middle">هسته‌ی دامنه</text>
+    <text class="s-t2" x="385" y="172" text-anchor="middle">Application Core</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok s-pulse" x="330" y="190" width="110" height="30" rx="8"/>
+    <text class="s-t" x="385" y="210" text-anchor="middle">Use Case</text>
+  </g>
 
-<p>سه پیامدِ این قاعده:</p>
+  <!-- شش درگاه روی ضلع‌ها -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="406" y="92" width="44" height="26" rx="8"/>
+    <text class="s-acc-t" x="428" y="109" text-anchor="middle">in</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="448" y="165" width="44" height="26" rx="8"/>
+    <text class="s-acc-t" x="470" y="182" text-anchor="middle">in</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="406" y="239" width="44" height="26" rx="8"/>
+    <text class="s-acc-t" x="428" y="256" text-anchor="middle">in</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="321" y="92" width="44" height="26" rx="8"/>
+    <text class="s-acc-t" x="343" y="109" text-anchor="middle">out</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="278" y="165" width="44" height="26" rx="8"/>
+    <text class="s-acc-t" x="300" y="182" text-anchor="middle">out</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="321" y="239" width="44" height="26" rx="8"/>
+    <text class="s-acc-t" x="343" y="256" text-anchor="middle">out</text>
+  </g>
+
+  <!-- آداپتورهای ورودی (راست) -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c4" x="600" y="78" width="150" height="52" rx="12"/>
+    <text class="s-t" x="675" y="100" text-anchor="middle">REST Adapter</text>
+    <text class="s-t2" x="675" y="120" text-anchor="middle">درخواست وب</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-c4" x="600" y="152" width="150" height="52" rx="12"/>
+    <text class="s-t" x="675" y="174" text-anchor="middle">CLI Adapter</text>
+    <text class="s-t2" x="675" y="194" text-anchor="middle">خط فرمان</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c4" x="600" y="226" width="150" height="52" rx="12"/>
+    <text class="s-t" x="675" y="248" text-anchor="middle">Queue Consumer</text>
+    <text class="s-t2" x="675" y="268" text-anchor="middle">پیام صف</text>
+  </g>
+
+  <!-- آداپتورهای خروجی (چپ) -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c4" x="20" y="78" width="150" height="52" rx="12"/>
+    <text class="s-t" x="95" y="100" text-anchor="middle">JPA Adapter</text>
+    <text class="s-t2" x="95" y="120" text-anchor="middle">پایگاه داده</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-c4" x="20" y="152" width="150" height="52" rx="12"/>
+    <text class="s-t" x="95" y="174" text-anchor="middle">Email Adapter</text>
+    <text class="s-t2" x="95" y="194" text-anchor="middle">ارسال ایمیل</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c4" x="20" y="226" width="150" height="52" rx="12"/>
+    <text class="s-t" x="95" y="248" text-anchor="middle">Payment Adapter</text>
+    <text class="s-t2" x="95" y="268" text-anchor="middle">درگاه پرداخت</text>
+  </g>
+
+  <!-- رفت و برگشت در بالای شکل -->
+  <path class="s-arr s-flow" d="M 598 96 L 456 96"/>
+  <path class="s-head" d="M 452 96 L 464 89 L 464 103 Z"/>
+  <text class="s-tc s-lbl" x="526" y="86" text-anchor="middle" style="--kl-i:3">BookSeatPort</text>
+  <path class="s-arr-ok s-flow-ok" d="M 456 116 L 596 116"/>
+  <path class="s-head-ok" d="M 600 116 L 588 109 L 588 123 Z"/>
+  <text class="s-t2 s-lbl" x="526" y="134" text-anchor="middle" style="--kl-i:4">نتیجه</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 168 96 L 364 96"/>
+  <path class="s-head-ok" d="M 368 96 L 356 89 L 356 103 Z"/>
+  <text class="s-tc s-lbl" x="246" y="86" text-anchor="middle" style="--kl-i:3">BookingRepo</text>
+  <path class="s-arr s-flow" d="M 364 116 L 172 116"/>
+  <path class="s-head" d="M 168 116 L 180 109 L 180 123 Z"/>
+  <text class="s-t2 s-lbl" x="246" y="134" text-anchor="middle" style="--kl-i:4">پاسخ داده</text>
+
+  <!-- فراخوانی دو درگاه باقی‌مانده -->
+  <path class="s-arr s-flow" d="M 598 170 L 456 170"/>
+  <path class="s-head" d="M 452 170 L 464 163 L 464 177 Z"/>
+  <text class="s-tc s-lbl" x="526" y="160" text-anchor="middle" style="--kl-i:4">CancelPort</text>
+
+  <path class="s-arr s-flow" d="M 598 244 L 456 244"/>
+  <path class="s-head" d="M 452 244 L 464 237 L 464 251 Z"/>
+  <text class="s-tc s-lbl" x="526" y="234" text-anchor="middle" style="--kl-i:5">CallbackPort</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 168 170 L 320 170"/>
+  <path class="s-head-ok" d="M 324 170 L 312 163 L 312 177 Z"/>
+  <text class="s-tc s-lbl" x="246" y="160" text-anchor="middle" style="--kl-i:4">NotifyPort</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 168 244 L 320 244"/>
+  <path class="s-head-ok" d="M 324 244 L 312 237 L 312 251 Z"/>
+  <text class="s-tc s-lbl" x="246" y="234" text-anchor="middle" style="--kl-i:5">PaymentPort</text>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 598 96 L 456 96"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M 168 96 L 364 96"/>
+  </circle>
+</svg>
+<figcaption><b>شش ضلع، شش درگاه:</b> هر ضلع یک <code>Port</code> است — سه درگاه ورودی در راست که درایورها آن‌ها را پیاده می‌کنند و سه درگاه خروجی در چپ که هسته آن‌ها را تعریف کرده است. پیکان رفت، فراخوانی درگاه و پیکان برگشت، نتیجه را نشان می‌دهد؛ دقت کنید که هیچ پیکانی از هسته به بیرون رسم نشده است.</figcaption>
+</figure>
+
+<p>سه پیامد این قاعده:</p>
 <ul>
   <li><strong>افزودن ورودی جدید</strong> فقط یک Adapter جدید است؛ هسته دست‌نخورده می‌ماند.</li>
   <li><strong>تعویض خروجی</strong> (DB، صف، ایمیل) فقط پیاده‌سازی جدید پشت همان Port.</li>
@@ -361,7 +455,7 @@ public class BookingController {
 <div class="kl-box kl-warn">
 <span class="kl-h">نکته‌ی ظریف</span>
 درایورها هسته را صدا می‌زنند (فراخوانی)، اما <strong>وابستگی کامپایلی</strong> همیشه به سمت داخل است؛
-چون Adapter به interface موجود در هسته وابسته است. این تقارن کل Hexagonal است.
+چون Adapter به interface موجود در هسته وابسته است. این تقارن، ستون فقرات Hexagonal است.
 </div>
 </section>
 
@@ -369,19 +463,99 @@ public class BookingController {
 <section id="s6">
 <h2><span class="kl-num">بخش ۶</span>ساختار معماری</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph Hex[Application Core — وسط شش‌ضلعی]
-        E[Entities] --- U[Use Cases] --- P[Ports]
-    end
-    AD1[REST / GraphQL Adapter] --- P
-    AD2[CLI / Scheduler Adapter] --- P
-    P --- AD3[JPA / Mongo Adapter]
-    P --- AD4[SMTP / Stripe Adapter]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 448" role="img" aria-label="قاعده‌ی وابستگی در هگزاگونال: لایه‌های هسته در وسط، آداپتورها در بیرون و جهت مجاز وابستگی">
+  <!-- سرستون‌های دو طرف -->
+  <text class="s-group-t" x="665" y="40" text-anchor="middle">Driving Adapters — ورودی</text>
+  <text class="s-group-t" x="105" y="40" text-anchor="middle">Driven Adapters — خروجی</text>
 
-    classDef inner fill:#0F766E,color:#fff
-    classDef outer fill:#14B8A6,color:#fff
-    class E,U inner
-    class AD1,AD2,AD3,AD4 outer</code></pre>
+  <!-- پوسته‌ی هسته -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-group s-group-acc" x="270" y="62" width="230" height="270" rx="16"/>
+    <text class="s-group-t" x="385" y="88" text-anchor="middle">Application Core</text>
+  </g>
+
+  <!-- لایه‌های هسته از پایین به بالا: Entity → Use Case → Port -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="290" y="104" width="190" height="42" rx="9"/>
+    <text class="s-t" x="385" y="130" text-anchor="middle">Ports (interface)</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="290" y="170" width="190" height="42" rx="9"/>
+    <text class="s-t" x="385" y="196" text-anchor="middle">Use Cases</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="290" y="236" width="190" height="42" rx="9"/>
+    <text class="s-t" x="385" y="262" text-anchor="middle">Entities</text>
+  </g>
+
+  <!-- پیکان‌های وابستگی درون هسته -->
+  <path class="s-arr s-flow" d="M 385 170 L 385 152"/>
+  <path class="s-head" d="M 385 146 L 378 158 L 392 158 Z"/>
+  <path class="s-arr s-flow" d="M 385 212 L 385 230"/>
+  <path class="s-head" d="M 385 236 L 378 224 L 392 224 Z"/>
+
+  <!-- آداپتورهای ورودی -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c4" x="580" y="83" width="170" height="54" rx="12"/>
+    <text class="s-t" x="665" y="106" text-anchor="middle">REST / GraphQL</text>
+    <text class="s-t2" x="665" y="126" text-anchor="middle">ورودی درخواست</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c4" x="580" y="173" width="170" height="54" rx="12"/>
+    <text class="s-t" x="665" y="196" text-anchor="middle">CLI / Scheduler</text>
+    <text class="s-t2" x="665" y="216" text-anchor="middle">ورودی خط فرمان</text>
+  </g>
+
+  <!-- آداپتورهای خروجی -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c4" x="20" y="83" width="170" height="54" rx="12"/>
+    <text class="s-t" x="105" y="106" text-anchor="middle">JPA / Mongo</text>
+    <text class="s-t2" x="105" y="126" text-anchor="middle">خروجی داده</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c4" x="20" y="173" width="170" height="54" rx="12"/>
+    <text class="s-t" x="105" y="196" text-anchor="middle">SMTP / Stripe</text>
+    <text class="s-t2" x="105" y="216" text-anchor="middle">خروجی بیرونی</text>
+  </g>
+
+  <!-- جهت مجاز: آداپتور ورودی ← هسته -->
+  <path class="s-arr s-flow" d="M 578 110 L 488 110"/>
+  <path class="s-head" d="M 482 110 L 494 103 L 494 117 Z"/>
+  <text class="s-t2 s-lbl" x="531" y="100" text-anchor="middle" style="--kl-i:3">صدا زدن Port</text>
+  <path class="s-arr s-flow" d="M 578 200 L 522 200 L 522 110 L 488 110"/>
+  <text class="s-t2 s-lbl" x="531" y="192" text-anchor="middle" style="--kl-i:4">همان Port</text>
+
+  <!-- جهت مجاز: هسته ← آداپتور خروجی -->
+  <path class="s-arr-ok s-flow-ok" d="M 288 110 L 196 110"/>
+  <path class="s-head-ok" d="M 190 110 L 202 103 L 202 117 Z"/>
+  <text class="s-t2 s-lbl" x="234" y="100" text-anchor="middle" style="--kl-i:3">درخواست</text>
+  <path class="s-arr-ok s-flow-ok" d="M 288 200 L 252 200 L 252 110 L 196 110"/>
+  <text class="s-t2 s-lbl" x="234" y="192" text-anchor="middle" style="--kl-i:4">پیاده‌سازی</text>
+
+  <!-- جهت ممنوع: هسته به آداپتور -->
+  <path class="s-arr-bad s-flow-bad" d="M 288 257 L 196 257"/>
+  <path class="s-head-bad" d="M 190 257 L 202 250 L 202 264 Z"/>
+  <text class="s-t2 s-lbl" x="240" y="249" text-anchor="middle" style="--kl-i:5">ممنوع</text>
+
+  <!-- کادر وابستگی‌ها -->
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-bad" x="40" y="346" width="690" height="88" rx="12"/>
+    <text class="s-t" x="385" y="374" text-anchor="middle">قاعده‌ی وابستگی</text>
+    <text class="s-t2" x="385" y="398" text-anchor="middle">مجاز: Adapter ← Port ← هسته (هسته خودش interface را تعریف می‌کند)</text>
+    <text class="s-t2" x="385" y="416" text-anchor="middle">ممنوع: هسته ← Adapter و Adapter ← Adapter</text>
+  </g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 578 110 L 488 110"/>
+  </circle>
+  <circle class="s-runner-bad" r="4.5">
+    <animateMotion dur="2.8s" repeatCount="indefinite" path="M 288 257 L 196 257"/>
+  </circle>
+</svg>
+<figcaption><b>قاعده‌ی وابستگی:</b> پیکان‌های سبز نشان می‌دهند که همیشه از بیرون به درگاه و از درگاه به هسته حرکت می‌کنیم، نه از هسته به بیرون. پیکان قرمز همان چیزی است که نباید وجود داشته باشد: ارجاع <code>Entity</code> یا <code>Use Case</code> به یک آداپتور مشخص. به همین دلیل آداپتورها هرچقدر هم عوض شوند، کد هسته بی‌نشان نمی‌ماند.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -396,7 +570,7 @@ public class BookingController {
 
 <div class="kl-box">
 <span class="kl-h">چرا شش‌ضلعی؟</span>
-تعداد ضلع‌ها دلخواه است: برنامه‌ای با ۲ ورودی و ۲ خروجی، ۴ ضلع عملی دارد.
+تعداد ضلع‌ها دلخواه است؛ برنامه‌ای با ۲ ورودی و ۲ خروجی، ۴ ضلع عملی دارد.
 شکل هندسی فقط کمک می‌کند مرز را به یاد بسپارید — قاعده، مرز هسته/محیط است.
 </div>
 </section>
@@ -405,19 +579,104 @@ public class BookingController {
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    A[POST /bookings] --&gt; B[BookingController — Driving Adapter]
-    B --&gt; C[BookSeatPort]
-    C --&gt; D[BookSeatUseCase]
-    D --&gt; E[Booking Entity — قوانین]
-    E --&gt; F[BookingRepository Port]
-    F --&gt; G[JpaBookingAdapter — Driven Adapter]
-    G --&gt; H[(Database)]
-    H --&gt; F
-    F --&gt; D
-    D --&gt; I[BookingResult]
-    I --&gt; B
-    B --&gt; J[HTTP Response]</code></pre>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 500" role="img" aria-label="جریان یک درخواست از کلاینت تا پایگاه داده و مسیر برگشت نتیجه">
+  <!-- مسیر برگشت -->
+  <path class="s-arr-ok s-flow-ok" d="M 502 466 L 690 466 L 690 46 L 502 46"/>
+  <path class="s-head-ok" d="M 502 46 L 514 39 L 514 53 Z"/>
+  <text class="s-t2 s-lbl" x="690" y="250" text-anchor="middle" style="--kl-i:5">پاسخ</text>
+  <text class="s-tc s-lbl" x="690" y="270" text-anchor="middle" style="--kl-i:5">BookingResult</text>
+
+  <!-- پیکان‌های مسیر رفت -->
+  <path class="s-arr s-flow" d="M 320 66 L 320 92"/>
+  <path class="s-head" d="M 320 96 L 313 84 L 327 84 Z"/>
+  <text class="s-t2 s-lbl" x="430" y="86" text-anchor="middle" style="--kl-i:1">ارسال به بیرون</text>
+
+  <path class="s-arr s-flow" d="M 320 136 L 320 162"/>
+  <path class="s-head" d="M 320 166 L 313 154 L 327 154 Z"/>
+  <text class="s-tc s-lbl" x="430" y="156" text-anchor="middle" style="--kl-i:2">BookSeatCommand</text>
+
+  <path class="s-arr s-flow" d="M 320 206 L 320 232"/>
+  <path class="s-head" d="M 320 236 L 313 224 L 327 224 Z"/>
+  <text class="s-t2 s-lbl" x="430" y="226" text-anchor="middle" style="--kl-i:2">صدا زدن سناریو</text>
+
+  <path class="s-arr s-flow" d="M 320 276 L 320 302"/>
+  <path class="s-head" d="M 320 306 L 313 294 L 327 294 Z"/>
+  <text class="s-t2 s-lbl" x="430" y="296" text-anchor="middle" style="--kl-i:3">اعمال قوانین</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 320 346 L 320 372"/>
+  <path class="s-head-ok" d="M 320 376 L 313 364 L 327 364 Z"/>
+  <text class="s-t2 s-lbl" x="430" y="366" text-anchor="middle" style="--kl-i:4">ذخیره‌سازی</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 320 416 L 320 442"/>
+  <path class="s-head-ok" d="M 320 446 L 313 434 L 327 434 Z"/>
+  <text class="s-t2 s-lbl" x="430" y="436" text-anchor="middle" style="--kl-i:4">اجرای SQL</text>
+
+  <!-- گام ۱: کلاینت -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="140" y="26" width="360" height="40" rx="10"/>
+    <text class="s-t" x="320" y="43" text-anchor="middle">POST /bookings</text>
+    <text class="s-t2" x="320" y="58" text-anchor="middle">درخواست کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="112" cy="46" r="12"/><text class="s-tc" x="112" y="50" text-anchor="middle">۱</text></g>
+
+  <!-- گام ۲: آداپتور ورودی -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="140" y="96" width="360" height="40" rx="10"/>
+    <text class="s-t" x="320" y="113" text-anchor="middle">BookingController</text>
+    <text class="s-t2" x="320" y="128" text-anchor="middle">Driving Adapter</text>
+  </g>
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="112" cy="116" r="12"/><text class="s-tc" x="112" y="120" text-anchor="middle">۲</text></g>
+
+  <!-- گام ۳: درگاه ورودی -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="140" y="166" width="360" height="40" rx="10"/>
+    <text class="s-t" x="320" y="183" text-anchor="middle">BookSeatPort</text>
+    <text class="s-t2" x="320" y="198" text-anchor="middle">درگاه ورودی</text>
+  </g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="112" cy="186" r="12"/><text class="s-tc" x="112" y="190" text-anchor="middle">۳</text></g>
+
+  <!-- گام ۴: سناریوی هسته -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="140" y="236" width="360" height="40" rx="10"/>
+    <text class="s-t" x="320" y="253" text-anchor="middle">BookSeatUseCase</text>
+    <text class="s-t2" x="320" y="268" text-anchor="middle">قانون سقف روزانه</text>
+  </g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="112" cy="256" r="12"/><text class="s-tc" x="112" y="260" text-anchor="middle">۴</text></g>
+
+  <!-- گام ۵: درگاه خروجی -->
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-acc" x="140" y="306" width="360" height="40" rx="10"/>
+    <text class="s-t" x="320" y="323" text-anchor="middle">BookingRepository</text>
+    <text class="s-t2" x="320" y="338" text-anchor="middle">درگاه خروجی</text>
+  </g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="112" cy="326" r="12"/><text class="s-tc" x="112" y="330" text-anchor="middle">۵</text></g>
+
+  <!-- گام ۶: آداپتور خروجی -->
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c4" x="140" y="376" width="360" height="40" rx="10"/>
+    <text class="s-t" x="320" y="393" text-anchor="middle">JpaBookingAdapter</text>
+    <text class="s-t2" x="320" y="408" text-anchor="middle">Driven Adapter</text>
+  </g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="112" cy="396" r="12"/><text class="s-tc" x="112" y="400" text-anchor="middle">۶</text></g>
+
+  <!-- گام ۷: سیستم بیرونی -->
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-chip" x="140" y="446" width="360" height="40" rx="10"/>
+    <text class="s-tc" x="320" y="471" text-anchor="middle">Database</text>
+  </g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="112" cy="466" r="12"/><text class="s-tc" x="112" y="470" text-anchor="middle">۷</text></g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 320 66 L 320 92"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="4s" repeatCount="indefinite" path="M 502 466 L 690 466 L 690 46 L 502 46"/>
+  </circle>
+</svg>
+<figcaption><b>جریان یک درخواست:</b> درخواست از کلاینت به درگاه ورودی می‌رسد، سناریو قوانین را روی <code>Entity</code> اعمال می‌کند و از راه درگاه خروجی به آداپتور و پایگاه داده می‌رود. نکته‌ی مهم این است که هیچ‌کدام از این هفت گام، هسته را از پایگاه داده جدا نمی‌کند و نتیجه دقیقاً از همان مسیر برمی‌گردد؛ تنها گام‌های ۱ و ۷ به محیط بیرونی وابسته‌اند.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -512,7 +771,7 @@ public class BookingController {
 
 <div class="kl-box kl-ok">
 <span class="kl-h">نکته‌ی طراحی</span>
-همان سه قانون بالا در هسته‌اند → تستشان میلی‌ثانیه‌ای است؛
+همان سه قانون بالا در هسته‌اند → تستشان میلی‌ثانیه‌ای طول می‌کشد؛
 ایمیل و DB پشت Port جداگانه‌اند → در تست با Fake جایگزین می‌شوند.
 </div>
 </section>
@@ -643,7 +902,7 @@ public final class JpaBookingAdapter implements BookingRepository {
 
 <p>
 تحلیل: هسته فقط interface می‌شناسد؛ Controller و JPA Adapter هر دو به هسته وابسته‌اند؛
-اضافه کردن CLI فقط یک کلاس جدید می‌خواهد که <code>BookSeatPort</code> را صدا بزند — صفر تغییر در هسته.
+افزودن CLI فقط یک کلاس جدید می‌خواهد که <code>BookSeatPort</code> را صدا بزند — صفر تغییر در هسته.
 </p>
 </section>
 
@@ -684,12 +943,12 @@ public class BookingConfig {
   <tr><td>۲</td><td><strong>افزودن ورودی ارزان</strong></td><td>CLI یا صف پیام فقط یک Driving Adapter جدید</td></tr>
   <tr><td>۳</td><td><strong>تعویض خروجی آسان</strong></td><td>MongoDB به جای JPA با حفظ هسته</td></tr>
   <tr><td>۴</td><td><strong>تمرکز روی قانون تجاری</strong></td><td>هسته فقط Domain و سناریو می‌داند</td></tr>
-  <tr><td>۵</td><td><strong>Parallel کار کردن تیم</strong></td><td>تیم وب و تیم صف روی Adapterهای جدا هم‌زمان</td></tr>
-  <tr><td>۶</td><td><strong>Reuse هسته</strong></td><td>یک هسته برای Web، Mobile BFF و Job زمان‌بندی‌شده</td></tr>
-  <tr><td>۷</td><td><strong>Documenting خودکار مرزها</strong></td><td>لیست Portها = نقشه‌ی API داخلی سیستم</td></tr>
-  <tr><td>۸</td><td><strong>Strangler برای Legacy</strong></td><td>پیاده‌سازی قدیمی را پشت همان Port نگه می‌دارید و عوض می‌کنید</td></tr>
+  <tr><td>۵</td><td><strong>کار موازی تیم‌ها</strong></td><td>تیم وب و تیم صف روی Adapterهای جدا هم‌زمان</td></tr>
+  <tr><td>۶</td><td><strong>استفاده‌ی مجدد از هسته</strong></td><td>یک هسته برای Web، Mobile BFF و Job زمان‌بندی‌شده</td></tr>
+  <tr><td>۷</td><td><strong>مستندسازی خودکار مرزها</strong></td><td>لیست Portها = نقشه‌ی API داخلی سیستم</td></tr>
+  <tr><td>۸</td><td><strong>الگوی Strangler برای سیستم‌های قدیمی</strong></td><td>پیاده‌سازی قدیمی را پشت همان Port نگه می‌دارید و عوض می‌کنید</td></tr>
   <tr><td>۹</td><td><strong>آمادگی Microservice</strong></td><td>هر سرویس هسته‌ای مستقل با درگاه‌های روشن</td></tr>
-  <tr><td>۱۰</td><td><strong>کاهش Coupling</strong></td><td>تغییر HTTP به هیچ قانون دست نمی‌زند</td></tr>
+  <tr><td>۱۰</td><td><strong>کاهش جفت‌شدگی</strong></td><td>تغییر HTTP به هیچ قانون دست نمی‌زند</td></tr>
   <tr><td>۱۱</td><td><strong>هماهنگی با تست خودکار CI</strong></td><td>تست هسته در ثانیه‌ها، تست ادغام در دقیقه</td></tr>
 </table>
 </div>
@@ -705,12 +964,12 @@ public class BookingConfig {
   <tr><td>۱</td><td><strong>فایل و interface زیاد</strong></td><td>Port + Adapter + Mapper برای هر درگاه</td></tr>
   <tr><td>۲</td><td><strong>زمان اولیه‌ی بیشتر</strong></td><td>ساخت هسته و درگاه‌ها قبل از اولین Feature</td></tr>
   <tr><td>۳</td><td><strong>پیچیدگی نام‌گذاری</strong></td><td>درایور/درایو برای تازه‌واردها گیج‌کننده است</td></tr>
-  <tr><td>۴</td><td><strong>Mapping مکرر</strong></td><td>ترجمه‌ی DTO↔Command↔Entity Boilerplate تولید می‌کند</td></tr>
-  <tr><td>۵</td><td><strong>Overengineering</strong></td><td>برای CRUD ساده، ساخت دو طرف درگاه هدر منبع است</td></tr>
-  <tr><td>۶</td><td><strong>ریسک Portهای بیش از حد ریز</strong></td><td> Port غول یا Port بیش از حد کوچک، خوانایی را خراب می‌کند</td></tr>
+  <tr><td>۴</td><td><strong>نگاشت مکرر</strong></td><td>ترجمه‌ی مکرر میان <code>DTO</code>، <code>Command</code> و <code>Entity</code> کد تکراری تولید می‌کند</td></tr>
+  <tr><td>۵</td><td><strong>بیش‌ازحد مهندسی</strong></td><td>برای CRUD ساده، ساخت دو طرف درگاه، هدر دادن منابع است</td></tr>
+  <tr><td>۶</td><td><strong>ریسک Portهای بیش از حد ریز</strong></td><td>Port غول‌پیکر یا Port بیش از حد ریز، خوانایی را خراب می‌کند</td></tr>
   <tr><td>۷</td><td><strong>نیاز به تجربه</strong></td><td>مرز اشتباه، معماری را بدتر از MVC درست می‌کند</td></tr>
   <tr><td>۸</td><td><strong>هزینه‌ی نگهداری مرزها</strong></td><td>بازبینی وابستگی و تست معماری باید مداوم باشد</td></tr>
-  <tr><td>۹</td><td><strong>Debug چندپرش</strong></td><td>ردیابی از Adapter تا Entity چند پرش دارد</td></tr>
+  <tr><td>۹</td><td><strong>دیباگ چندپرشه</strong></td><td>ردیابی از Adapter تا Entity چند پرش دارد</td></tr>
 </table>
 </div>
 
@@ -730,7 +989,7 @@ public class BookingConfig {
   <li><strong>تعویض زیرساخت محتمل است</strong> — DB، صف پیام یا Provider ایمیل در برنامه‌ی تغییر است</li>
   <li><strong>تست خودکار اولویت دارد</strong> — هسته‌ی بدون I/O، تست سریع و پوشش بالا</li>
   <li><strong>پروژه بلندمدت و تیم بزرگ</strong> — مرزهای روشن، تداخل کاری را کم می‌کند</li>
-  <li><strong>مهاجرت تدریجی Legacy</strong> — الگوی Strangler پشت همان درگاه‌ها</li>
+  <li><strong>مهاجرت تدریجی سیستم قدیمی</strong> — الگوی Strangler پشت همان درگاه‌ها</li>
   <li><strong>سرویس‌های یکپارچه‌ی قدیمی</strong> — جداسازی هسته از ابزارهای قدیمی</li>
 </ul>
 
@@ -749,7 +1008,7 @@ public class BookingConfig {
 <table>
   <tr><th>سناریو</th><th>چرا نه؟</th></tr>
   <tr><td><strong>CRUD ساده با یک ورودی</strong></td><td>تعداد درگاه‌ها ۱ است؛ سربار Port/Adapter فایده ندارد</td></tr>
-  <tr><td><strong>Prototype / اسپایک</strong></td><td>اثبات ایده سریع‌تر با ساختار ساده</td></tr>
+  <tr><td><strong>نمونه‌ی اولیه / اسپایک</strong></td><td>اثبات ایده سریع‌تر با ساختار ساده</td></tr>
   <tr><td><strong>اسکریپت و ابزار یک‌بارمصرف</strong></td><td>هسته و محیط فرقی ندارند — عمر کوتاه</td></tr>
   <tr><td><strong>پنل ادمین کوچک داخلی</strong></td><td>تغییر کم، ارزش برگشت هزینه‌ی معماری ندارد</td></tr>
   <tr><td><strong>تیم کوچک بدون تجربه</strong></td><td>مرز اشتباه، بدتر از لایه‌بندی ساده‌ی درست است</td></tr>
@@ -760,7 +1019,7 @@ public class BookingConfig {
 <div class="kl-box kl-bad">
 <span class="kl-h">قانون عملی</span>
 شروع ساده کنید و درگاه را وقتی بکشید که ورودی/خروجی دوم واقعاً ظاهر شد (Emergent Design).
-معماری شش‌ضلعیِ زودهنگامِ اشتباه، بدهی فنی می‌ماند.
+معماری شش‌ضلعیِ زودهنگام و اشتباه، بدهی فنی به‌جا می‌ماند.
 </div>
 </section>
 
@@ -768,16 +1027,87 @@ public class BookingConfig {
 <section id="s16">
 <h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    subgraph Hex[Hexagonal]
-        H1[Core + Ports] --- H2[Adapters]
-    end
-    subgraph Clean[Clean]
-        C1[Entities] --- C2[Use Cases] --- C3[Adapters] --- C4[Frameworks]
-    end
-    subgraph Onion[Onion]
-        O1[Domain Model] --- O2[Services] --- O3[Infra]
-    end</code></pre>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="برش‌بندی هسته و محیط در سه معماری Hexagonal، Clean و Onion">
+  <!-- سربرگ ستون‌ها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-c4" x="540" y="14" width="220" height="36" rx="10"/>
+    <text class="s-t" x="650" y="38" text-anchor="middle">Hexagonal</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-c5" x="275" y="14" width="220" height="36" rx="10"/>
+    <text class="s-t" x="385" y="38" text-anchor="middle">Clean Architecture</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-c6" x="10" y="14" width="220" height="36" rx="10"/>
+    <text class="s-t" x="120" y="38" text-anchor="middle">Onion</text>
+  </g>
+
+  <!-- Hexagonal -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="540" y="74" width="220" height="40" rx="10"/>
+    <text class="s-t" x="650" y="99" text-anchor="middle">هسته + Portها</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c4" x="540" y="136" width="220" height="40" rx="10"/>
+    <text class="s-t" x="650" y="161" text-anchor="middle">Adapterها</text>
+  </g>
+  <path class="s-arr s-flow" d="M 650 114 L 650 132"/>
+  <path class="s-head" d="M 650 136 L 643 124 L 657 124 Z"/>
+
+  <!-- Clean Architecture -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c5" x="275" y="74" width="220" height="40" rx="10"/>
+    <text class="s-t" x="385" y="99" text-anchor="middle">Entities</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c5" x="275" y="136" width="220" height="40" rx="10"/>
+    <text class="s-t" x="385" y="161" text-anchor="middle">Use Cases</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c5" x="275" y="198" width="220" height="40" rx="10"/>
+    <text class="s-t" x="385" y="223" text-anchor="middle">Adapters</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c5" x="275" y="260" width="220" height="40" rx="10"/>
+    <text class="s-t" x="385" y="285" text-anchor="middle">Frameworks</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 114 L 385 132"/>
+  <path class="s-head" d="M 385 136 L 378 124 L 392 124 Z"/>
+  <path class="s-arr s-flow" d="M 385 176 L 385 194"/>
+  <path class="s-head" d="M 385 198 L 378 186 L 392 186 Z"/>
+  <path class="s-arr s-flow" d="M 385 238 L 385 256"/>
+  <path class="s-head" d="M 385 260 L 378 248 L 392 248 Z"/>
+
+  <!-- Onion -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c6" x="10" y="74" width="220" height="40" rx="10"/>
+    <text class="s-t" x="120" y="99" text-anchor="middle">Domain Model</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c6" x="10" y="136" width="220" height="40" rx="10"/>
+    <text class="s-t" x="120" y="161" text-anchor="middle">Services</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c6" x="10" y="198" width="220" height="40" rx="10"/>
+    <text class="s-t" x="120" y="223" text-anchor="middle">Infrastructure</text>
+  </g>
+  <path class="s-arr s-flow" d="M 120 114 L 120 132"/>
+  <path class="s-head" d="M 120 136 L 113 124 L 127 124 Z"/>
+  <path class="s-arr s-flow" d="M 120 176 L 120 194"/>
+  <path class="s-head" d="M 120 198 L 113 186 L 127 186 Z"/>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 385 114 L 385 132"/>
+  </circle>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-c4"></i>Hexagonal</span>
+  <span><i class="c-c5"></i>Clean Architecture</span>
+  <span><i class="c-dim"></i>Onion</span>
+</div>
+<figcaption><b>یک قاعده، سه برش‌بندی:</b> پیکان‌ها از هسته به سمت محیط حرکت می‌کنند و جهت وابستگی همیشه برعکس آن است. تفاوت سه معماری در برشی است که انتخاب می‌کنند: <code>Hexagonal</code> برش را روی <code>Port</code> می‌زند، <code>Clean</code> روی <code>Use Case</code> و <code>Onion</code> روی <code>Domain Model</code>؛ به همین دلیل پروژه‌های واقعی معمولاً ترکیبی از این سه‌اند.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -791,9 +1121,88 @@ public class BookingConfig {
 </table>
 </div>
 
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="امتیاز مقایسه‌ی Hexagonal، Clean، Onion و Layered در پنج معیار">
+  <!-- خطوط شبکه و محور -->
+  <path class="s-grid" d="M 528 4 L 528 300"/>
+  <path class="s-grid" d="M 446 4 L 446 300"/>
+  <path class="s-grid" d="M 364 4 L 364 300"/>
+  <path class="s-grid" d="M 282 4 L 282 300"/>
+  <path class="s-grid" d="M 200 4 L 200 300"/>
+  <path class="s-axis" d="M 610 4 L 610 300"/>
+  <text class="s-axlabel" x="528" y="313" text-anchor="middle">۱</text>
+  <text class="s-axlabel" x="446" y="313" text-anchor="middle">۲</text>
+  <text class="s-axlabel" x="364" y="313" text-anchor="middle">۳</text>
+  <text class="s-axlabel" x="282" y="313" text-anchor="middle">۴</text>
+  <text class="s-axlabel" x="200" y="313" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۱: صراحت درگاه‌ها -->
+  <text class="s-cat" x="698" y="36" text-anchor="middle">صراحت درگاه‌ها</text>
+  <rect class="s-acc s-hbar" x="200" y="16" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="24" text-anchor="middle" style="--kl-i:0">۵</text>
+  <rect class="s-ok s-hbar" x="282" y="27" width="328" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="266" y="35" text-anchor="middle" style="--kl-i:1">۴</text>
+  <rect class="s-warn s-hbar" x="282" y="38" width="328" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="266" y="46" text-anchor="middle" style="--kl-i:2">۴</text>
+  <rect class="s-c4 s-hbar" x="528" y="49" width="82" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="512" y="57" text-anchor="middle" style="--kl-i:3">۱</text>
+
+  <!-- ردیف ۲: جهت وابستگی تضمینی -->
+  <text class="s-cat" x="698" y="96" text-anchor="middle">جهت وابستگی تضمینی</text>
+  <rect class="s-acc s-hbar" x="200" y="76" width="410" height="8" rx="4" style="--kl-i:4"/>
+  <text class="s-val" x="184" y="84" text-anchor="middle" style="--kl-i:4">۵</text>
+  <rect class="s-ok s-hbar" x="200" y="87" width="410" height="8" rx="4" style="--kl-i:5"/>
+  <text class="s-val" x="184" y="95" text-anchor="middle" style="--kl-i:5">۵</text>
+  <rect class="s-warn s-hbar" x="200" y="98" width="410" height="8" rx="4" style="--kl-i:6"/>
+  <text class="s-val" x="184" y="106" text-anchor="middle" style="--kl-i:6">۵</text>
+  <rect class="s-c4 s-hbar" x="528" y="109" width="82" height="8" rx="4" style="--kl-i:7"/>
+  <text class="s-val" x="512" y="117" text-anchor="middle" style="--kl-i:7">۱</text>
+
+  <!-- ردیف ۳: ورودی‌های هم‌زمان -->
+  <text class="s-cat" x="698" y="156" text-anchor="middle">ورودی‌های هم‌زمان</text>
+  <rect class="s-acc s-hbar" x="200" y="136" width="410" height="8" rx="4" style="--kl-i:8"/>
+  <text class="s-val" x="184" y="144" text-anchor="middle" style="--kl-i:8">۵</text>
+  <rect class="s-ok s-hbar" x="282" y="147" width="328" height="8" rx="4" style="--kl-i:9"/>
+  <text class="s-val" x="266" y="155" text-anchor="middle" style="--kl-i:9">۴</text>
+  <rect class="s-warn s-hbar" x="282" y="158" width="328" height="8" rx="4" style="--kl-i:10"/>
+  <text class="s-val" x="266" y="166" text-anchor="middle" style="--kl-i:10">۴</text>
+  <rect class="s-c4 s-hbar" x="446" y="169" width="164" height="8" rx="4" style="--kl-i:11"/>
+  <text class="s-val" x="430" y="177" text-anchor="middle" style="--kl-i:11">۲</text>
+
+  <!-- ردیف ۴: تناسب دامنه‌ی غنی -->
+  <text class="s-cat" x="698" y="216" text-anchor="middle">تناسب دامنه‌ی غنی</text>
+  <rect class="s-acc s-hbar" x="282" y="196" width="328" height="8" rx="4" style="--kl-i:12"/>
+  <text class="s-val" x="266" y="204" text-anchor="middle" style="--kl-i:12">۴</text>
+  <rect class="s-ok s-hbar" x="200" y="207" width="410" height="8" rx="4" style="--kl-i:13"/>
+  <text class="s-val" x="184" y="215" text-anchor="middle" style="--kl-i:13">۵</text>
+  <rect class="s-warn s-hbar" x="200" y="218" width="410" height="8" rx="4" style="--kl-i:14"/>
+  <text class="s-val" x="184" y="226" text-anchor="middle" style="--kl-i:14">۵</text>
+  <rect class="s-c4 s-hbar" x="446" y="229" width="164" height="8" rx="4" style="--kl-i:15"/>
+  <text class="s-val" x="430" y="237" text-anchor="middle" style="--kl-i:15">۲</text>
+
+  <!-- ردیف ۵: سادگی پیاده‌سازی -->
+  <text class="s-cat" x="698" y="276" text-anchor="middle">سادگی پیاده‌سازی</text>
+  <rect class="s-acc s-hbar" x="446" y="256" width="164" height="8" rx="4" style="--kl-i:16"/>
+  <text class="s-val" x="430" y="264" text-anchor="middle" style="--kl-i:16">۲</text>
+  <rect class="s-ok s-hbar" x="446" y="267" width="164" height="8" rx="4" style="--kl-i:17"/>
+  <text class="s-val" x="430" y="275" text-anchor="middle" style="--kl-i:17">۲</text>
+  <rect class="s-warn s-hbar" x="364" y="278" width="246" height="8" rx="4" style="--kl-i:18"/>
+  <text class="s-val" x="348" y="286" text-anchor="middle" style="--kl-i:18">۳</text>
+  <rect class="s-c4 s-hbar" x="200" y="289" width="410" height="8" rx="4" style="--kl-i:19"/>
+  <text class="s-val" x="184" y="297" text-anchor="middle" style="--kl-i:19">۵</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>Hexagonal</span>
+  <span><i class="c-ok"></i>Clean</span>
+  <span><i class="c-warn"></i>Onion</span>
+  <span><i class="c-c4"></i>Layered</span>
+</div>
+<figcaption><b>امتیاز تفسیری از جدول بالا:</b> این اعداد اندازه‌گیری نیستند؛ هر خانه‌ی جدول به امتیازی از ۱ تا ۵ ترجمه شده است، به‌طوری‌که «بله» و «بهینه» امتیاز بالا و «خیر» و «ندارد» امتیاز پایین می‌گیرند. نتیجه روشن است: هر سه معماری پرهزینه جهت وابستگی را تضمین می‌کنند و تنها <code>Layered</code> است که در ازای سادگی، این تضمین را از دست می‌دهد.</figcaption>
+</figure>
+
 <p><strong>تفاوت کلیدی:</strong></p>
 <ul>
-  <li><strong>Hex vs Clean</strong>: Hex بر interfaceهای محیط (Port) تأکید دارد؛ Clean بر ساختار لایه‌ها و قاعده‌ی وابستگی.</li>
+  <li><strong>Hex vs Clean</strong>: Hex بر interfaceهای محیط (Port) تأکید دارد؛ Clean بر ساختار لایه‌ها و قاعده‌ی وابستگی. هر دو جهت وابستگی را به داخل می‌کشانند.</li>
   <li><strong>Hex vs Onion</strong>: Onion حلقه‌ها را بر اساس نوع مسئولیت می‌چیند؛ Hex هسته را از محیط با یک مرز جدا می‌کند.</li>
   <li><strong>Hex vs Layered</strong>: Layered جهت وابستگی را آزاد می‌گذارد؛ Hex با interfaceها آن را وارونه می‌کند.</li>
 </ul>
@@ -927,7 +1336,7 @@ final class FakeNotificationPort implements NotificationPort {
   <tr><td>۳</td><td>Portهای خیلی ریز یا خیلی درشت</td><td>یک Port برای یک سناریوی کامل ورودی یا خروجی</td></tr>
   <tr><td>۴</td><td>منطق تجاری در Adapter</td><td>قانون در Entity، سناریو در Use Case</td></tr>
   <tr><td>۵</td><td>نشت دانش پروتکل به هسته (DTO وب در Use Case)</td><td>Command داخلی در هسته، ترجمه در Adapter</td></tr>
-  <tr><td>۶</td><td>نادیده گرفتن Composition Root</td><td>سیم‌کشی فقط در config — نه در Adapterها</td></tr>
+  <tr><td>۶</td><td>نادیده‌گرفتن Composition Root</td><td>سیم‌کشی فقط در config — نه در Adapterها</td></tr>
   <tr><td>۷</td><td>Use Case غول‌پیکر چند سناریویی</td><td>تقسیم به BookSeat/CancelSeat/…</td></tr>
   <tr><td>۸</td><td>تست فقط در سطح Adapter</td><td>پوشش اصلی روی هسته با Fake Port</td></tr>
   <tr><td>۹</td><td>ابتدای پروژه، مهاجرت آبشاری همه‌چیز</td><td>مرز را تدریجی (Strangler) اعمال کنید</td></tr>
@@ -947,14 +1356,14 @@ adapter/in/web   # BookingController (REST)
 adapter/in/mq    # PaymentConsumer (صف)
 adapter/out/jpa  # JpaBookingAdapter
 adapter/out/smtp # SmtpNotificationAdapter</code></pre>
-<p>افزودن GraphQL فقط یک <code>GraphQLAdapter</code> جدید در <code>adapter/in</code> است؛ هسته صفر تغییر.</p>
+<p>افزودن GraphQL فقط یک <code>GraphQLAdapter</code> جدید در <code>adapter/in</code> است؛ هسته هیچ تغییری نمی‌کند.</p>
 
 <h3>۲) اندروید (Kotlin + Compose)</h3>
 <pre class="kl-code" data-lang="text"><code>core/            # قوانین سبد خرید + Portها
 adapter/local/   # Room Adapter (درایو)
 adapter/remote/  # Retrofit Adapter (درایو)
 adapter/ui/      # ViewModel/Compose (درایور)</code></pre>
-<p>تست UI با Fake Remote Adapter بدون شبکه اجرا می‌شود؛ دیتاست Versioned قابل شبیه‌سازی است.</p>
+<p>تست UI با Fake Remote Adapter بدون شبکه اجرا می‌شود؛ دیتاستِ نسخه‌بندی‌شده قابل شبیه‌سازی است.</p>
 
 <h3>۳) فرانت‌اند (TypeScript + NestJS)</h3>
 <pre class="kl-code" data-lang="text"><code>core/            # هسته‌ی رزرو + Portها
@@ -973,15 +1382,15 @@ adapter/out/typeorm / out/axios</code></pre>
 <section id="s22">
 <h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
 
-<p><strong>نه — Hexagonal Architecture خودِ Runtime را سریع‌تر نمی‌کند؛</strong> آنچه بهتر می‌شود کیفیت و سرعت تحویل است:</p>
+<p><strong>نه — Hexagonal Architecture به‌خودی‌خود Runtime را سریع‌تر نمی‌کند؛</strong> آنچه بهتر می‌شود، کیفیت و سرعت تحویل است:</p>
 
 <div class="kl-scroll">
 <table>
   <tr><th>بعد</th><th>تأثیر</th></tr>
   <tr><td>سرعت تست و پوشش</td><td>✅ بهبود چشمگیر (هسته بدون I/O)</td></tr>
   <tr><td>نرخ تغییر و تحویل</td><td>✅ بهبود (افزودن درگاه ارزان)</td></tr>
-  <tr><td>Scalability سازمانی</td><td>✅ بهبود</td></tr>
-  <tr><td>Throughput / Latency</td><td>⬜ بی‌تأثیر؛ هزینه‌ی یک فراخوانی interface ناچیز است</td></tr>
+  <tr><td>مقیاس‌پذیری سازمانی</td><td>✅ بهبود</td></tr>
+  <tr><td>توان عبور / تأخیر</td><td>⬜ بی‌تأثیر؛ هزینه‌ی یک فراخوانی interface ناچیز است</td></tr>
   <tr><td>مصرف حافظه</td><td>⬜ بی‌تأثیر عملی (تعداد شیءها کمی بیشتر)</td></tr>
 </table>
 </div>
@@ -1062,7 +1471,7 @@ Hex مرز هسته/محیط را با Port/Adapter مشخص می‌کند. در
 </div>
 
 <div class="kl-box"><span class="kl-h">سؤال ۱۴ — چند Port لازم است؟</span>
-به نیاز واقعی؛ هر سناریوی ورودی یک Driving Port و هر خروجی ضروری یک Driven Port. Port زیاد = پراکندگی، Port کم = لِزجی.
+به نیاز واقعی؛ هر سناریوی ورودی یک Driving Port و هر خروجی ضروری یک Driven Port. Port زیاد یعنی پراکندگی، Port کم یعنی چسبندگی زیاد.
 </div>
 
 <div class="kl-box"><span class="kl-h">سؤال ۱۵ — DTO در کدام سمت است؟</span>
@@ -1071,12 +1480,12 @@ Hex مرز هسته/محیط را با Port/Adapter مشخص می‌کند. در
 
 <h3>سطح Senior</h3>
 
-<div class="kl-box"><span class="kl-h">سؤال ۱۶ — Trade-offهای واقعی؟</span>
+<div class="kl-box"><span class="kl-h">سؤال ۱۶ — سازش‌های واقعی؟</span>
 فایل و Interface بیشتر، زمان اولیه‌ی بیشتر و ریسک مرز اشتباه — در برابر تست سریع،
 افزودن درگاه ارزان و تعویض زیرساخت امن. درستی تصمیم به تعداد درگاه‌ها و نرخ تغییر بستگی دارد.
 </div>
 
-<div class="kl-box"><span class="kl-h">سؤال ۱۷ — مهاجرت Legacy چطور؟</span>
+<div class="kl-box"><span class="kl-h">سؤال ۱۷ — مهاجرت از سیستم قدیمی چطور انجام می‌شود؟</span>
 الگوی Strangler: قابلیتی را انتخاب کنید، پشت همان Port بیاورید، پیاده‌سازی قدیمی را به‌تدریج با Adapter جدید جایگزین کنید؛ بدون پوشش تست، مهاجرت آبشاری شکست می‌خورد.
 </div>
 
@@ -1085,11 +1494,11 @@ Hex مرز هسته/محیط را با Port/Adapter مشخص می‌کند. در
 </div>
 
 <div class="kl-box"><span class="kl-h">سؤال ۱۹ — به مدیر چطور توجیه می‌کنید؟</span>
-با عدد: «الان افزودن کانال فروش ۳ روز کار دارد؛ با درگاه‌ها، یک روز و بدون دست‌زدن به هسته.» — ترجمه به ریسک کسب‌وکار.
+با عدد: «الان افزودن کانال فروش ۳ روز کار دارد؛ با درگاه‌ها، یک روز و بدون دست‌زدن به هسته.» — این را به ریسک کسب‌وکار ترجمه کنید.
 </div>
 
 <div class="kl-box"><span class="kl-h">سؤال ۲۰ — سنجه‌ی موفقیت؟</span>
-زمان تغییر، نرخ باگ پس از تغییر، زمان تست‌ها و هزینه‌ی onboarding؛ اگر بعد از مهاجرت بهتر نشود، معماری فقط شکل گرفته است.
+زمان تغییر، نرخ باگ پس از تغییر، زمان تست‌ها و هزینه‌ی آموزش نیروی تازه؛ اگر بعد از مهاجرت بهتر نشود، معماری فقط شکل گرفته است.
 </div>
 </section>
 
@@ -1098,7 +1507,7 @@ Hex مرز هسته/محیط را با Port/Adapter مشخص می‌کند. در
 <h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
 
 <div class="kl-box"><span class="kl-h">۱. مترادف‌های این معماری؟</span>
-Ports and Adapters (نام اصلی Cockburn)،Hexagonal، معماری شش‌ضلعی و گاه «Core and Adapters».
+Ports and Adapters (نام اصلی Cockburn)، Hexagonal، معماری شش‌ضلعی و گاه «Core and Adapters».
 </div>
 
 <div class="kl-box"><span class="kl-h">۲. حتماً باید ۶ ضلع داشت؟</span>
@@ -1154,7 +1563,7 @@ SOLID و Adapter/Repository، بعد یک پروژه‌ی کوچک را با د�
 </div>
 
 <div class="kl-box"><span class="kl-h">۱۵. سریع‌ترین راه اشتباه؟</span>
-کپی پوشه‌های <code>core/adapter</code> بدون فهم اینکه «کدام interface از بیرون فراخوانی می‌شود؟»
+کپی کردن پوشه‌های <code>core/adapter</code> بدون فهم اینکه «کدام interface از بیرون فراخوانی می‌شود؟» — نتیجه‌اش یک پوشه‌ی بی‌مصرف است.
 </div>
 </section>
 
@@ -1168,14 +1577,14 @@ SOLID و Adapter/Repository، بعد یک پروژه‌ی کوچک را با د�
   <tr><td><strong>هدف</strong></td><td>جداسازی هسته‌ی کاربردی از محیط با Port و Adapter</td></tr>
   <tr><td><strong>قاعده‌ی طلایی</strong></td><td>هسته interface می‌سازد، Adapter پیاده‌سازی می‌کند؛ وابستگی فقط به داخل</td></tr>
   <tr><td><strong>درگاه‌ها</strong></td><td>Driving (ورودی: Controller/CLI) و Driven (خروجی: Repository/Notification)</td></tr>
-  <tr><td><strong>مناسب برای</strong></td><td>درگاه‌های متعدد، تعویض زیرساخت، تست خودکار، مهاجرت Legacy</td></tr>
-  <tr><td><strong>مناسب نیست برای</strong></td><td>CRUD ساده، Prototype، اسکریپت، پنل کوچک</td></tr>
+  <tr><td><strong>مناسب برای</strong></td><td>درگاه‌های متعدد، تعویض زیرساخت، تست خودکار، مهاجرت سیستم قدیمی</td></tr>
+  <tr><td><strong>مناسب نیست برای</strong></td><td>CRUD ساده، نمونه‌ی اولیه، اسکریپت، پنل کوچک</td></tr>
   <tr><td><strong>مزیت اصلی</strong></td><td>افزودن ورودی/خروجی بدون تغییر هسته + تست سریع</td></tr>
-  <tr><td><strong>مشکل اصلی</strong></td><td>فایل/Boilerplate زیاد، ریسک مرز و Port اشتباه</td></tr>
+  <tr><td><strong>مشکل اصلی</strong></td><td>حجم فایل و کد تکراری زیاد، ریسک مرز و Port اشتباه</td></tr>
   <tr><td><strong>الگوهای کلیدی</strong></td><td>Adapter · Repository · DI · Facade · Strategy</td></tr>
   <tr><td><strong>ابزار تضمین مرز</strong></td><td>ArchUnit · جداسازی پکیج · بازبینی import</td></tr>
   <tr><td><strong>Frameworkهای معروف</strong></td><td>Spring Boot · Android · ASP.NET Core · NestJS · FastAPI</td></tr>
-  <tr><td><strong>چک‌لیست نهایی</strong></td><td>١) هسته خالص ٢) Port در هسته ٣) Adapter در بیرون ٤) سیم‌کشی در config ٥) تست هسته با Fake</td></tr>
+  <tr><td><strong>چک‌لیست نهایی</strong></td><td>۱) هسته‌ی خالص ۲) Port در هسته ۳) Adapter در بیرون ۴) سیم‌کشی در config ۵) تست هسته با Fake</td></tr>
 </table>
 </div>
 
@@ -1206,7 +1615,7 @@ DDD و System Design</code></pre>
   <tr><td>۲</td><td>Adapter/Repository/DI</td><td>یک Port ورودی + یک Port خروجی با Fake تست</td></tr>
   <tr><td>۳</td><td>درایور/درایو</td><td>سرویس رزرو با REST + CLI روی یک هسته</td></tr>
   <tr><td>۴</td><td>Clean و Onion</td><td>مقایسه‌ی عملی سه معماری روی یک دامنه</td></tr>
-  <tr><td>۵</td><td>DDD و System Design</td><td>مرزبندی سرویس‌ها و تصمیم Trade-off</td></tr>
+  <tr><td>۵</td><td>DDD و System Design</td><td>مرزبندی سرویس‌ها و سنجش هزینه و فایده</td></tr>
 </table>
 </div>
 
@@ -1220,7 +1629,7 @@ Hexagonal به شما می‌گوید مرز هسته و محیط کجاست و 
 <div class="kl-box kl-ok">
 <span class="kl-h">پیام نهایی</span>
 هدف، حفظ کردن نام‌ها نیست؛ هدف این است که برای مسئله‌ی واقعی، معماری مناسب انتخاب کنید.
-گاهی Hexagonal درست است، گاهی یک MVC ساده — معمار خوب Trade-off را می‌فهمد.
+گاهی Hexagonal درست است، گاهی یک MVC ساده — معمار خوب، سازش میان هزینه و فایده را می‌فهمد.
 </div>
 
 <h3>ادامه‌ی سری معماری نرم‌افزار</h3>

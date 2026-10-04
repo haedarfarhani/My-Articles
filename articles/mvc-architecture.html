@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -159,7 +161,7 @@
             <ul class="inline-toc-grid">
               <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی همه‌چیز در یک کلاس است</span></a></li>
               <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
-              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVC چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVC چیست؟ (تعریف دقیق)</span></a></li>
               <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
               <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: سه نقش مجزا</span></a></li>
               <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: اجزای MVC</span></a></li>
@@ -244,19 +246,19 @@
 <table>
   <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
   <tr><td>۱۹۷۹ — Smalltalk-80</td><td>Trygve Reenskaug الگوی MVC را معرفی کرد تا سیستم چندپنجره‌ای مدیریت شود</td></tr>
-  <tr><td>۱۹۸۰s — Smalltalk و Objective-C</td><td>MVC به پایه‌ی گرافیک‌های工作站 تبدیل شد</td></tr>
-  <tr><td>۱۹۹۰s — NeXT / NeXTSTEP</td><td>Apple از آن برای NeXTSTEP استفاده کرد؛ پایه‌ی AppKit</td></tr>
+  <tr><td>دهه‌ی ۱۹۸۰ — Smalltalk و Objective-C</td><td>MVC به پایه‌ی گرافیک‌های工作站 تبدیل شد</td></tr>
+  <tr><td>دهه‌ی ۱۹۹۰ — NeXT / NeXTSTEP</td><td>Apple از آن برای NeXTSTEP استفاده کرد؛ پایه‌ی AppKit</td></tr>
   <tr><td>۱۹۹۵ — NeXTSTEP نیز در iOS</td><td>UIKit و سپس SwiftUI بر همین زبان بصری ساخته شدند</td></tr>
   <tr><td>۱۹۹۴ — Struts</td><td>نخستین پیاده‌سازی گسترده‌ی MVC در وب</td></tr>
-  <tr><td>۲۰۰۰s — Spring MVC، Rails، ASP.NET MVC</td><td>MVC به استاندارد پیش‌فرض وب در سراسر صنعت تبدیل شد</td></tr>
-  <tr><td>۲۰۱۰s — MVVM در WPF و اندروید</td><td>برای پشتیبانی بهتر از داده‌های دوحالته و تست ViewModel</td></tr>
+  <tr><td>دهه‌ی ۲۰۰۰ — Spring MVC، Rails، ASP.NET MVC</td><td>MVC به استاندارد پیش‌فرض وب در سراسر صنعت تبدیل شد</td></tr>
+  <tr><td>دهه‌ی ۲۰۱۰ — MVVM در WPF و اندروید</td><td>برای پشتیبانی بهتر از داده‌های دوحالته و تست ViewModel</td></tr>
 </table>
 </div>
 
 <div class="kl-box kl-ok">
 <span class="kl-h">دلیل ایجاد</span>
 در دهه‌ی ۱۹۷۰ سیستم‌های گرافیکی با <strong>چند پنجره و کنترل هم‌زمان</strong> ساخته می‌شدند و
-مدیریت وضعیت آن‌ها وحشتناک بود. MVC ایده‌ی «مدیریت از طریق رویداد» را معرفی کرد:
+مدیریت وضعیت آن‌ها عملاً غیرممکن شده بود. MVC ایده‌ی «مدیریت از طریق رویداد» را معرفی کرد:
 کاربر رویدادی می‌زند، Controller تصمیم می‌گیرد، Model وضعیت را به‌روز می‌کند و View دوباره رسم می‌شود.
 </div>
 </section>
@@ -286,7 +288,7 @@
 <div class="kl-box kl-bad">
 <span class="kl-h">سوءتفاهم رایج</span>
 MVC یک <strong>الگو</strong> است، نه یک <strong>معماری کامل</strong>. MVC درباره‌ی «چگونه یک صفحه کار می‌کند»
-حرف می‌زند، نه درباره‌ی «چگونه کل سیستم به سرویس‌ها تقسیم می‌شود». یک سیستم بزرگ می‌تواند
+صحبت می‌کند، نه درباره‌ی «چگونه کل سیستم میان سرویس‌ها تقسیم می‌شود». یک سیستم بزرگ می‌تواند
 معماری میکروسرویسی داشته باشد و درون هر سرویس از MVC استفاده کند.
 </div>
 </section>
@@ -348,25 +350,84 @@ MVC یک <strong>الگو</strong> است، نه یک <strong>معماری کا�
 ۳) <strong>اشاره‌گر به داده</strong> — Model مستقیماً View را باخبر می‌کند و Controller در مسیر نیست.
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    U["کاربر"] -->|"کلیک / تایپ"| V["View"]
-    V -->|"رویداد: onAddToCart"| C["Controller"]
-    C -->|"cart.add(product)"| M["Model"]
-    M -->|"تغییر وضعیت + notify"| V
-    C -->|"redirect یا نام View"| V
-    M --> DB[("Database / Storage")]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 280" role="img" aria-label="جریان درخواست و پاسخ در معماری MVC">
+  <!-- مسیر درخواست: کاربر ← View ← Controller ← Model -->
+  <path class="s-arr s-flow" d="M 612 64 L 168 64"/>
+  <path class="s-head" d="M 162 64 L 174 57 L 174 71 Z"/>
 
-    style U fill:#78350f,stroke:#fbbf24,color:#fff
-    style V fill:#0f766e,stroke:#14b8a6,color:#fff
-    style C fill:#115e59,stroke:#2dd4bf,color:#fff
-    style M fill:#134e4a,stroke:#5eead4,color:#fff
-    style DB fill:#1c1917,stroke:#a8a29e,color:#fff</code></pre>
+  <path class="s-arr s-flow" d="M 420 64 L 364 64"/>
+  <path class="s-head" d="M 358 64 L 370 57 L 370 71 Z"/>
+
+  <path class="s-arr s-flow" d="M 224 64 L 168 64"/>
+  <path class="s-head" d="M 162 64 L 174 57 L 174 71 Z"/>
+
+  <text class="s-t2 s-lbl" x="588" y="90" text-anchor="middle" style="--kl-i:0">کلیک</text>
+  <text class="s-t2 s-lbl" x="392" y="90" text-anchor="middle" style="--kl-i:1">رویداد</text>
+  <text class="s-t2 s-lbl" x="196" y="90" text-anchor="middle" style="--kl-i:2">دستور</text>
+
+  <!-- مسیر پاسخ: Controller → View -->
+  <path class="s-arr-ok s-flow-ok" d="M 364 106 L 420 106"/>
+  <path class="s-head-ok" d="M 426 106 L 414 99 L 414 113 Z"/>
+  <text class="s-t2 s-lbl" x="392" y="136" text-anchor="middle" style="--kl-i:3">نام View یا Redirect</text>
+
+  <!-- Model → View : اعلام تغییر وضعیت -->
+  <path class="s-dash s-flow-soft" d="M 162 112 C 162 205, 490 205, 490 124"/>
+  <path class="s-head-dim" d="M 490 118 L 483 130 L 497 130 Z"/>
+  <text class="s-t2 s-lbl" x="400" y="200" text-anchor="middle" style="--kl-i:5">Model وضعیت جدید را اعلام می‌کند (notify)</text>
+
+  <!-- Model ↔ Database -->
+  <path class="s-arr-ok s-flow-soft" d="M 98 126 L 98 194"/>
+  <path class="s-head-ok" d="M 98 200 L 91 188 L 105 188 Z"/>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.6s" repeatCount="indefinite" path="M 606 64 L 172 64"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.6s" begin="1.8s" repeatCount="indefinite"
+                   path="M 162 112 C 162 205, 490 205, 490 124"/>
+  </circle>
+
+  <!-- نودها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="624" y="40" width="124" height="80" rx="12"/>
+    <text class="s-t" x="686" y="74" text-anchor="middle">کاربر</text>
+    <text class="s-t2" x="686" y="98" text-anchor="middle">انسان</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="428" y="40" width="124" height="80" rx="12"/>
+    <text class="s-t" x="490" y="74" text-anchor="middle">View</text>
+    <text class="s-t2" x="490" y="98" text-anchor="middle">نمایش</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="232" y="40" width="124" height="80" rx="12"/>
+    <text class="s-t" x="294" y="74" text-anchor="middle">Controller</text>
+    <text class="s-t2" x="294" y="98" text-anchor="middle">تصمیم</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="36" y="40" width="124" height="80" rx="12"/>
+    <text class="s-t" x="98" y="74" text-anchor="middle">Model</text>
+    <text class="s-t2" x="98" y="98" text-anchor="middle">داده و قواعد</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="48" y="200" width="100" height="52" rx="10"/>
+    <text class="s-tc" x="98" y="232" text-anchor="middle">Database</text>
+    <text class="s-t2 s-lbl" x="98" y="272" text-anchor="middle" style="--kl-i:6">خواندن / نوشتن</text>
+  </g>
+</svg>
+<figcaption><b>جریان MVC:</b> درخواست از <code>View</code> به <code>Controller</code> و سپس به <code>Model</code> می‌رود و پاسخ در مسیر برگشتی برمی‌گردد. نکته‌ی مهم این است که پیکان <code>notify</code> مستقیم از <code>Model</code> به <code>View</code> می‌رسد و <code>Controller</code> در آن دخالتی ندارد.</figcaption>
+</figure>
 
 <div class="kl-box kl-deep">
 <span class="kl-h">مهم‌ترین نکته‌ی MVC</span>
 پیکان <code>Model → View</code> یعنی Model، View را می‌شناسد و به آن اطلاع می‌دهد.
-در MVC کلاسیک (مثل Smalltalk و ASP.NET) این پیکان وجود دارد؛ در بسیاری از پیاده‌سازی‌های امروزی
-این پیکان حذف شده و به آن <strong>MVP</strong> یا <strong>MVVM</strong> می‌گویند.
+در MVC کلاسیک (مانند Smalltalk و ASP.NET) این پیکان وجود دارد؛ در بسیاری از پیاده‌سازی‌های امروزی
+این پیکان حذف شده است و به آن‌ها <strong>MVP</strong> یا <strong>MVVM</strong> می‌گویند.
 </div>
 </section>
 <!-- ==================== 6 ==================== -->
@@ -384,33 +445,78 @@ MVC یک <strong>الگو</strong> است، نه یک <strong>معماری کا�
 
 <p>سه نقش و دقیقاً کاری که هرکدام انجام می‌دهند:</p>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    subgraph CTRL["Controller — ورودی و تصمیم"]
-        C1["دریافت درخواست / رویداد"]
-        C2["اعتبارسنجی شکل داده"]
-        C3["انتخاب View یا Redirect"]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 332" role="img" aria-label="سه نقش MVC و مسئولیت هرکدام">
+  <!-- پوسته‌ی نقش‌ها -->
+  <rect class="s-group s-group-acc" x="5" y="30" width="210" height="234" rx="16"/>
+  <rect class="s-group" x="280" y="30" width="210" height="234" rx="16"/>
+  <rect class="s-group" x="555" y="30" width="210" height="234" rx="16"/>
 
-    subgraph MODEL["Model — داده و قوانین"]
-        M1["Entityها و وضعیت"]
-        M2["قواعد کسب‌وکار"]
-        M3["اعلان تغییر به Observerها"]
-    end
+  <text class="s-group-t" x="110" y="56" text-anchor="middle">Model — داده و قواعد</text>
+  <text class="s-group-t" x="385" y="56" text-anchor="middle">Controller — تصمیم</text>
+  <text class="s-group-t" x="660" y="56" text-anchor="middle">View — نمایش</text>
 
-    subgraph VIEW["View — نمایش"]
-        V1["قالب / Template"]
-        V2["خواندن وضعیت Model"]
-        V3["تولید رویداد به Controller"]
-    end
+  <!-- Model -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="17" y="74" width="186" height="40" rx="9"/>
+    <text class="s-t" x="110" y="99" text-anchor="middle">Entity و وضعیت</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="17" y="120" width="186" height="40" rx="9"/>
+    <text class="s-t" x="110" y="145" text-anchor="middle">قواعد کسب‌وکار</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="17" y="166" width="186" height="40" rx="9"/>
+    <text class="s-t" x="110" y="191" text-anchor="middle">اعلام تغییر وضعیت</text>
+  </g>
+  <text class="s-t2" x="110" y="238" text-anchor="middle">بدون وابستگی به UI</text>
 
-    C1 --> C2 --> C3
-    C3 --> MODEL
-    MODEL -->|notify| VIEW
-    VIEW -->|event| CTRL
+  <!-- Controller -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="292" y="74" width="186" height="40" rx="9"/>
+    <text class="s-t" x="385" y="99" text-anchor="middle">دریافت درخواست</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="292" y="120" width="186" height="40" rx="9"/>
+    <text class="s-t" x="385" y="145" text-anchor="middle">اعتبارسنجی ورودی</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="292" y="166" width="186" height="40" rx="9"/>
+    <text class="s-t" x="385" y="191" text-anchor="middle">انتخاب View</text>
+  </g>
+  <text class="s-t2" x="385" y="238" text-anchor="middle">بدون منطق کسب‌وکار</text>
 
-    style CTRL fill:#0f766e,stroke:#14b8a6,color:#fff
-    style MODEL fill:#134e4a,stroke:#5eead4,color:#fff
-    style VIEW fill:#115e59,stroke:#2dd4bf,color:#fff</code></pre>
+  <!-- View -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="567" y="74" width="186" height="40" rx="9"/>
+    <text class="s-t" x="660" y="99" text-anchor="middle">قالب و Template</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="567" y="120" width="186" height="40" rx="9"/>
+    <text class="s-t" x="660" y="145" text-anchor="middle">خواندن وضعیت Model</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="567" y="166" width="186" height="40" rx="9"/>
+    <text class="s-t" x="660" y="191" text-anchor="middle">تولید رویداد</text>
+  </g>
+  <text class="s-t2" x="660" y="238" text-anchor="middle">بدون دسترسی مستقیم به DB</text>
+
+  <!-- جریان رویداد: View ← Controller ← Model -->
+  <path class="s-arr s-flow" d="M 548 140 L 497 140"/>
+  <path class="s-head" d="M 491 140 L 503 133 L 503 147 Z"/>
+  <text class="s-t2 s-lbl" x="519" y="126" text-anchor="middle" style="--kl-i:4">رویداد</text>
+
+  <path class="s-arr s-flow" d="M 273 140 L 222 140"/>
+  <path class="s-head" d="M 216 140 L 228 133 L 228 147 Z"/>
+  <text class="s-t2 s-lbl" x="247" y="126" text-anchor="middle" style="--kl-i:4">دستور</text>
+
+  <!-- notify: Model → View -->
+  <path class="s-dash s-flow-soft" d="M 110 266 C 110 308, 660 308, 660 268"/>
+  <path class="s-head-dim" d="M 660 262 L 653 274 L 667 274 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="322" text-anchor="middle" style="--kl-i:6">Model وضعیت جدید را اعلام می‌کند</text>
+</svg>
+<figcaption><b>مرز مسئولیت‌ها:</b> هر ستون فقط یک دلیل برای تغییر دارد. <code>Model</code> قوانین را نگه می‌دارد، <code>Controller</code> تصمیم می‌گیرد و <code>View</code> فقط نمایش می‌دهد. اگر منطق کسب‌وکار در قالب بنویسید، مرزها شکسته‌اند.</figcaption>
+</figure>
 
 <div class="kl-box kl-warn">
 <span class="kl-h">مرز درست را نگه دارید</span>
@@ -423,23 +529,95 @@ View فقط باید <strong>نمایش</strong> بدهد. اگر داخل قا�
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    autonumber
-    actor U as کاربر
-    participant V as View
-    participant C as Controller
-    participant M as Model
-    participant D as دیتابیس
+<figure class="kl-fig">
+<svg viewBox="0 0 770 412" role="img" aria-label="دیاگرام توالی جریان افزودن کالا به سبد در MVC">
+  <!-- خطوط زندگی بازیگران -->
+  <path class="s-dash" d="M 686 54 L 686 400"/>
+  <path class="s-dash" d="M 556 54 L 556 400"/>
+  <path class="s-dash" d="M 424 54 L 424 400"/>
+  <path class="s-dash" d="M 288 54 L 288 400"/>
+  <path class="s-dash" d="M 140 54 L 140 400"/>
 
-    U->>V: کلیک «افزودن به سبد»
-    V->>C: رویداد addToCart(productId)
-    C->>C: اعتبارسنجی شناسه
-    C->>M: cart.add(productId)
-    M->>D: خواندن قیمت محصول
-    D-->>M: قیمت و موجودی
-    M->>M: به‌روزرسانی مجموع سبد
-    M-->>V: notify تغییر وضعیت
-    V-->>U: نمایش سبد جدید</code></pre>
+  <!-- ۱) کاربر → View -->
+  <path class="s-arr s-flow" d="M 686 80 L 562 80"/>
+  <path class="s-head" d="M 556 80 L 568 73 L 568 87 Z"/>
+  <text class="s-t2 s-lbl" x="621" y="70" text-anchor="middle" style="--kl-i:0">کلیک «افزودن به سبد»</text>
+
+  <!-- ۲) View → Controller -->
+  <path class="s-arr s-flow" d="M 556 116 L 430 116"/>
+  <path class="s-head" d="M 424 116 L 436 109 L 436 123 Z"/>
+  <text class="s-tc s-lbl" x="490" y="106" text-anchor="middle" style="--kl-i:1">onAddToCart(id)</text>
+
+  <!-- ۳) Controller: اعتبارسنجی -->
+  <path class="s-arr s-flow" d="M 424 156 C 456 156, 456 128, 426 128"/>
+  <path class="s-head" d="M 424 124 L 417 136 L 431 136 Z"/>
+  <text class="s-t2 s-lbl" x="508" y="145" text-anchor="middle" style="--kl-i:2">اعتبارسنجی شناسه</text>
+
+  <!-- ۴) Controller → Model -->
+  <path class="s-arr s-flow" d="M 424 188 L 294 188"/>
+  <path class="s-head" d="M 288 188 L 300 181 L 300 195 Z"/>
+  <text class="s-tc s-lbl" x="356" y="178" text-anchor="middle" style="--kl-i:3">cart.add(id)</text>
+
+  <!-- ۵) Model → Database -->
+  <path class="s-arr s-flow" d="M 288 224 L 146 224"/>
+  <path class="s-head" d="M 140 224 L 152 217 L 152 231 Z"/>
+  <text class="s-t2 s-lbl" x="214" y="214" text-anchor="middle" style="--kl-i:4">خواندن قیمت محصول</text>
+
+  <!-- ۶) Database → Model -->
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 140 260 L 282 260"/>
+  <path class="s-head-ok" d="M 288 260 L 276 253 L 276 267 Z"/>
+  <text class="s-t2 s-lbl" x="214" y="250" text-anchor="middle" style="--kl-i:5">قیمت و موجودی</text>
+
+  <!-- ۷) Model: محاسبه‌ی مجموع -->
+  <path class="s-arr s-flow" d="M 288 304 C 320 304, 320 276, 290 276"/>
+  <path class="s-head" d="M 288 272 L 281 284 L 295 284 Z"/>
+  <text class="s-t2 s-lbl" x="368" y="293" text-anchor="middle" style="--kl-i:6">محاسبه‌ی مجموع</text>
+
+  <!-- ۸) Model → View (notify) -->
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 288 340 L 550 340"/>
+  <path class="s-head-ok" d="M 556 340 L 544 333 L 544 347 Z"/>
+  <text class="s-t2 s-lbl" x="420" y="330" text-anchor="middle" style="--kl-i:7">notify تغییر وضعیت</text>
+
+  <!-- ۹) View → کاربر -->
+  <path class="s-arr-ok s-flow-ok" d="M 556 376 L 680 376"/>
+  <path class="s-head-ok" d="M 686 376 L 674 369 L 674 383 Z"/>
+  <text class="s-t2 s-lbl" x="621" y="366" text-anchor="middle" style="--kl-i:8">نمایش سبد جدید</text>
+
+  <!-- شماره‌ی گام‌ها -->
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="750" cy="80" r="12"/><text class="s-tc" x="750" y="84" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="750" cy="116" r="12"/><text class="s-tc" x="750" y="120" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="750" cy="152" r="12"/><text class="s-tc" x="750" y="156" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="750" cy="188" r="12"/><text class="s-tc" x="750" y="192" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="750" cy="224" r="12"/><text class="s-tc" x="750" y="228" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="750" cy="260" r="12"/><text class="s-tc" x="750" y="264" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="750" cy="296" r="12"/><text class="s-tc" x="750" y="300" text-anchor="middle">۷</text></g>
+  <g class="s-node" style="--kl-i:7"><circle class="s-chip" cx="750" cy="332" r="12"/><text class="s-tc" x="750" y="336" text-anchor="middle">۸</text></g>
+  <g class="s-node" style="--kl-i:8"><circle class="s-chip" cx="750" cy="368" r="12"/><text class="s-tc" x="750" y="372" text-anchor="middle">۹</text></g>
+
+  <!-- سرهای بازیگر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="627" y="14" width="118" height="40" rx="10"/>
+    <text class="s-t" x="686" y="40" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="497" y="14" width="118" height="40" rx="10"/>
+    <text class="s-t" x="556" y="40" text-anchor="middle">View</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="365" y="14" width="118" height="40" rx="10"/>
+    <text class="s-t" x="424" y="40" text-anchor="middle">Controller</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="229" y="14" width="118" height="40" rx="10"/>
+    <text class="s-t" x="288" y="40" text-anchor="middle">Model</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="81" y="14" width="118" height="40" rx="10"/>
+    <text class="s-tc" x="140" y="40" text-anchor="middle">Database</text>
+  </g>
+</svg>
+<figcaption><b>ترتیب یک درخواست:</b> در گام‌های ۱ تا ۴ درخواست از سمت کاربر به <code>Model</code> می‌رسد، در گام ۵ و ۶ داده خوانده و برگردانده می‌شود، در گام ۷ قواعد کسب‌وکار اعمال می‌شود و در گام ۸ و ۹ نتیجه بدون دخالت <code>Controller</code> به کاربر نمایش داده می‌شود.</figcaption>
+</figure>
 
 <pre class="kl-code" data-lang="text"><code>چرخه‌ی کامل یک درخواست در MVC:
 
@@ -492,9 +670,9 @@ View فقط باید <strong>نمایش</strong> بدهد. اگر داخل قا�
 <div class="kl-box kl-deep">
 <span class="kl-h">سه ساختار رایج پوشه‌بندی</span>
 <strong>۱) بر اساس نقش (MVC خالص)</strong>: <code>model/</code>، <code>view/</code>، <code>controller/</code> —
-دقیقاً همان چیزی که MVC می‌گوید.<br>
+دقیقاً همان چیزی است که MVC می‌گوید.<br>
 <strong>۲) بر اساس فیچر</strong>: <code>product/</code> و داخل آن <code>model/</code>، <code>view/</code>، <code>controller/</code> —
-برای تیم‌های بزرگ‌تر بهتر است.<br>
+برای تیم‌های بزرگ‌تر مناسب‌تر است.<br>
 <strong>۳) ترکیبی (پیشنهاد ما)</strong>: Feature-Based با پوشه‌های نقش درون هر فیچر.
 </div>
 </section>
@@ -765,10 +943,10 @@ public class CartRestController {
   <tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
   <tr><td>۱</td><td><strong>جداسازی واضح مسئولیت‌ها</strong></td><td>سه نقش با سه دلیل تغییر مشخص</td></tr>
   <tr><td>۲</td><td><strong>تست‌پذیری هر نقش</strong></td><td>Model بدون UI، View بدون منطق، Controller به‌تنهایی</td></tr>
-  <tr><td>۴</td><td><strong>پشتیبانی چند نمایش</strong></td><td>یک Model، چند View (وب، موبایل، PDF، ایمیل)</td></tr>
+  <tr><td>۳</td><td><strong>پشتیبانی چند نمایش</strong></td><td>یک Model، چند View (وب، موبایل، PDF، ایمیل)</td></tr>
   <tr><td>۴</td><td><strong>استفاده‌ی مؤثر از تیم‌ها</strong></td><td>تیم UI و تیم داده موازی کار می‌کنند</td></tr>
-  <tr><td>۵</td><td><strong>پشتیبانی از ابزارها</strong></td><td>تقریباً همه‌ی Framework وب MVC را دارند</td></tr>
-  <tr><td>۶</td><td><strong>استاندارد و زبان مشترک</strong></td><td>مفهومی که همه‌ی توسعه‌دهندگان می‌فهمند</td></tr>
+  <tr><td>۵</td><td><strong>پشتیبانی از ابزارها</strong></td><td>تقریباً همه‌ی فریم‌ورک‌های وب، پشتیبانی داخلی از MVC دارند</td></tr>
+  <tr><td>۶</td><td><strong>استاندارد و زبان مشترک</strong></td><td>مفهومی که همه‌ی توسعه‌دهندگان با آن آشنا هستند</td></tr>
   <tr><td>۷</td><td><strong>نگهداشت آسان‌تر</strong></td><td>پیدا کردن محل یک باگ ساده‌تر است</td></tr>
   <tr><td>۸</td><td><strong>کاهش باگ‌های امنیتی</strong></td><td>خروجی از یک نقطه کنترل می‌شود (escape و اعتبارسنجی)</td></tr>
   <tr><td>۹</td><td><strong>مهاجرت آسان بین پلتفرم‌ها</strong></td><td>انتقال منطق از وب به موبایل بدون بازنویسی</td></tr>
@@ -785,14 +963,14 @@ public class CartRestController {
 <div class="kl-scroll">
 <table>
   <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
-  <tr><td>۱</td><td><strong>Controller های حجیم</strong></td><td>به‌سرعت به دسته‌ای از متدهای مشابه تبدیل می‌شود</td></tr>
+  <tr><td>۱</td><td><strong>Controllerهای حجیم</strong></td><td>به‌سرعت به دسته‌ای از متدهای تکراری تبدیل می‌شود</td></tr>
   <tr><td>۲</td><td><strong>کوپل شدن Model به View</strong></td><td>Observer وابستگی دوطرفه ایجاد می‌کند</td></tr>
-  <tr><td>۳</td><td><strong>مشکل Testability در دنیای واقعی</strong></td><td>به‌خاطر وابستگی به View، تست Controller سخت است</td></tr>
+  <tr><td>۳</td><td><strong>مشکل تست‌پذیری در پروژه‌های واقعی</strong></td><td>به‌خاطر وابستگی به View، تست Controller سخت است</td></tr>
   <tr><td>۴</td><td><strong>دوره‌ی به‌روزرسانی طولانی</strong></td><td>هر تغییر در View به مسیر کامل نیاز دارد</td></tr>
-  <tr><td>۵</td><td><strong>Overkill برای صفحات ساده</strong></td><td>یک صفحه‌ی ساده ۳ کلاس و ۳ فایل لازم دارد</td></tr>
+  <tr><td>۵</td><td><strong>بیش‌ازحد سنگین برای صفحات ساده</strong></td><td>یک صفحه‌ی ساده به سه کلاس و سه فایل نیاز دارد</td></tr>
   <tr><td>۶</td><td><strong>پیچیدگی در صفحات با وضعیت پیچیده</strong></td><td>مدیریت هم‌زمان چند View سخت می‌شود</td></tr>
   <tr><td>۷</td><td><strong>مشکل Data Binding</strong></td><td>برای فرم‌های پیچیده نیاز به فریم‌ورک اضافه است</td></tr>
-  <tr><td>۸</td><td><strong>نه مناسب برای رویدادمحور</strong></td><td>جریان پس‌رو (View به Model) طبیعی نیست</td></tr>
+  <tr><td>۸</td><td><strong>نامناسب برای معماری‌های رویدادمحور</strong></td><td>جریان پس‌رو (View به Model) طبیعی نیست</td></tr>
   <tr><td>۹</td><td><strong>افزونگی در پروژه‌های کوچک</strong></td><td>بیشتر تیم‌ها ترجیح می‌دهند ساده‌تر بنویسند</td></tr>
 </table>
 </div>
@@ -863,20 +1041,126 @@ MVVM جایگزین آن شد. اگر اپلیکیشن شما state پیچیده
 <section id="s16">
 <h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    MVC["MVC — Model ←→ View، Controller وسط"]
-    MVP["MVP — Presenter ←→ View، Model غیرفعال"]
-    MVVM["MVVM — ViewModel ←→ View، Model غیرفعال"]
-    MVI["MVI — Intent → State → View"]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 392" role="img" aria-label="سیر تکامل الگوها از MVC تا MVI">
+  <!-- پیکان‌های مسیر تکامل -->
+  <path class="s-arr s-flow" d="M 90 78 L 90 104"/>
+  <path class="s-head" d="M 90 110 L 83 98 L 97 98 Z"/>
+  <text class="s-t2 s-lbl" x="400" y="96" text-anchor="middle" style="--kl-i:1">View مستقیم Model را می‌بیند</text>
 
-    MVC ---|"View مستقیم Model را می‌بیند"| MVP
-    MVP ---|"نمایش به ViewModel منتقل می‌شود"| MVVM
-    MVVM ---|"جریان رویداد یک‌طرفه"| MVI
+  <path class="s-arr s-flow" d="M 90 180 L 90 206"/>
+  <path class="s-head" d="M 90 212 L 83 200 L 97 200 Z"/>
+  <text class="s-t2 s-lbl" x="400" y="198" text-anchor="middle" style="--kl-i:2">نمایش به ViewModel منتقل می‌شود</text>
 
-    style MVC fill:#0f766e,stroke:#14b8a6,color:#fff
-    style MVP fill:#115e59,stroke:#2dd4bf,color:#fff
-    style MVVM fill:#134e4a,stroke:#5eead4,color:#fff
-    style MVI fill:#78350f,stroke:#fbbf24,color:#fff</code></pre>
+  <path class="s-arr s-flow" d="M 90 282 L 90 308"/>
+  <path class="s-head" d="M 90 314 L 83 302 L 97 302 Z"/>
+  <text class="s-t2 s-lbl" x="400" y="300" text-anchor="middle" style="--kl-i:3">جریان رویداد یک‌طرفه</text>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="200" y="4" width="560" height="72" rx="14"/>
+    <text class="s-t" x="480" y="34" text-anchor="middle">MVC</text>
+    <text class="s-t2" x="480" y="58" text-anchor="middle">View داده را مستقیم از Model می‌خواند</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="200" y="106" width="560" height="72" rx="14"/>
+    <text class="s-t" x="480" y="136" text-anchor="middle">MVP</text>
+    <text class="s-t2" x="480" y="160" text-anchor="middle">Presenter داده را آماده‌ی نمایش می‌کند</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="200" y="208" width="560" height="72" rx="14"/>
+    <text class="s-t" x="480" y="238" text-anchor="middle">MVVM</text>
+    <text class="s-t2" x="480" y="262" text-anchor="middle">ViewModel وضعیت نمایشی را نگه می‌دارد</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c4" x="200" y="310" width="560" height="72" rx="14"/>
+    <text class="s-c4-t" x="480" y="340" text-anchor="middle">MVI</text>
+    <text class="s-t2" x="480" y="364" text-anchor="middle">Intent به State؛ فقط یک مسیر به‌روزرسانی</text>
+  </g>
+</svg>
+<figcaption><b>سیر تکامل:</b> در هر گام، یک وابستگی ناخواسته حذف می‌شود. <code>MVC</code> به <code>Model</code> از داخل <code>View</code> دسترسی دارد؛ در <code>MVP</code> این دسترسی به <code>Presenter</code> منتقل می‌شود؛ در <code>MVVM</code> وضعیت نمایشی از مدل دامنه جدا می‌شود و در <code>MVI</code> تنها یک منبع حقیقت برای وضعیت باقی می‌ماند.</figcaption>
+</figure>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="امتیاز مقایسه‌ی MVC، MVP، MVVM و MVI در پنج معیار">
+  <!-- خطوط شبکه -->
+  <path class="s-grid" d="M 528 4 L 528 300"/>
+  <path class="s-grid" d="M 446 4 L 446 300"/>
+  <path class="s-grid" d="M 364 4 L 364 300"/>
+  <path class="s-grid" d="M 282 4 L 282 300"/>
+  <path class="s-grid" d="M 200 4 L 200 300"/>
+  <text class="s-axlabel" x="528" y="313" text-anchor="middle">۱</text>
+  <text class="s-axlabel" x="446" y="313" text-anchor="middle">۲</text>
+  <text class="s-axlabel" x="364" y="313" text-anchor="middle">۳</text>
+  <text class="s-axlabel" x="282" y="313" text-anchor="middle">۴</text>
+  <text class="s-axlabel" x="200" y="313" text-anchor="middle">۵</text>
+  <path class="s-axis" d="M 610 4 L 610 300"/>
+
+  <!-- ردیف ۱: تست‌پذیری View -->
+  <text class="s-cat" x="698" y="36" text-anchor="middle">تست‌پذیری View</text>
+  <rect class="s-acc s-hbar" x="446" y="16" width="164" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="430" y="24" text-anchor="middle">۲</text>
+  <rect class="s-ok s-hbar" x="200" y="27" width="410" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="184" y="35" text-anchor="middle">۵</text>
+  <rect class="s-warn s-hbar" x="200" y="38" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="46" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="49" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="57" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۲: وضعیت پیچیده -->
+  <text class="s-cat" x="698" y="96" text-anchor="middle">وضعیت پیچیده</text>
+  <rect class="s-acc s-hbar" x="446" y="76" width="164" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="430" y="84" text-anchor="middle">۲</text>
+  <rect class="s-ok s-hbar" x="364" y="87" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="95" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="200" y="98" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="106" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="109" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="117" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۳: مناسب وب -->
+  <text class="s-cat" x="698" y="156" text-anchor="middle">مناسب وب</text>
+  <rect class="s-acc s-hbar" x="200" y="136" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="144" text-anchor="middle">۵</text>
+  <rect class="s-ok s-hbar" x="364" y="147" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="155" text-anchor="middle">۳</text>
+  <rect class="s-warn s-hbar" x="364" y="158" width="246" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="348" y="166" text-anchor="middle">۳</text>
+  <rect class="s-c4 s-hbar" x="364" y="169" width="246" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="348" y="177" text-anchor="middle">۳</text>
+
+  <!-- ردیف ۴: مناسب موبایل -->
+  <text class="s-cat" x="698" y="216" text-anchor="middle">مناسب موبایل</text>
+  <rect class="s-acc s-hbar" x="446" y="196" width="164" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="430" y="204" text-anchor="middle">۲</text>
+  <rect class="s-ok s-hbar" x="282" y="207" width="328" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="266" y="215" text-anchor="middle">۴</text>
+  <rect class="s-warn s-hbar" x="200" y="218" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="226" text-anchor="middle">۵</text>
+  <rect class="s-c4 s-hbar" x="200" y="229" width="410" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="184" y="237" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۵: سادگی پیاده‌سازی -->
+  <text class="s-cat" x="698" y="276" text-anchor="middle">سادگی پیاده‌سازی</text>
+  <rect class="s-acc s-hbar" x="282" y="256" width="328" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="266" y="264" text-anchor="middle">۴</text>
+  <rect class="s-ok s-hbar" x="282" y="267" width="328" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="266" y="275" text-anchor="middle">۴</text>
+  <rect class="s-warn s-hbar" x="364" y="278" width="246" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="348" y="286" text-anchor="middle">۳</text>
+  <rect class="s-c4 s-hbar" x="446" y="289" width="164" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="430" y="297" text-anchor="middle">۲</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>MVC</span>
+  <span><i class="c-ok"></i>MVP</span>
+  <span><i class="c-warn"></i>MVVM</span>
+  <span><i class="c-c4"></i>MVI</span>
+</div>
+<figcaption><b>امتیاز نسبی (از ۵):</b> امتیازها بر پایه‌ی تجربه‌ی عملی و ویژگی‌های ذاتی هر الگو داده شده‌اند، نه بر پایه‌ی سرعت خام. <code>MVC</code> در وب همچنان قوی است اما در تست‌پذیری <code>View</code> و مدیریت وضعیت پیچیده ضعیف عمل می‌کند؛ <code>MVI</code> بیشترین کنترل را می‌دهد و بیشترین هزینه‌ی پیاده‌سازی را نیز.</figcaption>
+</figure>
 
 <div class="kl-scroll">
 <table>
@@ -919,7 +1203,7 @@ MVVM جایگزین آن شد. اگر اپلیکیشن شما state پیچیده
 <span class="kl-h">نکته‌ی مهم</span>
 MVC به‌صورت طبیعی <strong>SRP</strong> را تقویت می‌کند، اما <strong>ISP</strong> را ضعیف می‌کند:
 یک Controller معمولاً همه‌ی مسیرهای یک Resource را می‌گیرد (مثلاً همه‌ی متدهای Cart). برای
-رعایت بهتر ISP، Controllerها را به‌اندازه‌ی یک Use Case بشکنید.
+رعایت بهتر ISP، کنترلرها را به واحدهایی هم‌اندازه‌ی یک Use Case بشکنید.
 </div>
 </section>
 
@@ -943,7 +1227,7 @@ MVC به‌صورت طبیعی <strong>SRP</strong> را تقویت می‌کن�
 <div class="kl-box kl-warn">
 <span class="kl-h">الگوی واقعاً مرتبط</span>
 اگر قرار است MVC را در پروژه‌ای جدی پیاده کنید، <strong>Observer</strong> و
-<strong>Strategy</strong> واقعاً به کارتان می‌آیند. بقیه را فقط در صورت نیاز واقعی اضافه کنید.
+<strong>Strategy</strong> واقعاً به کارتان می‌آیند. بقیه را تنها در صورت نیاز واقعی به کار ببرید.
 </div>
 </section>
 
@@ -1028,7 +1312,7 @@ class CartTest {
 
 <div class="kl-scroll">
 <table>
-  <tr><th>نقش</th><th>روش تست</th><th>چه‌چیزی تست می‌شود</th></tr>
+  <tr><th>نقش</th><th>روش تست</th><th>چه چیزی تست می‌شود</th></tr>
   <tr><td><strong>Model</strong></td><td>Unit خالص با Fake Repository</td><td>تمام قوانین کسب‌وکار — سریع و قطعی</td></tr>
   <tr><td><strong>Controller</strong></td><td>Unit با Mock Model یا <code>@WebMvcTest</code></td><td>نگاشت درخواست به پاسخ</td></tr>
   <tr><td><strong>View</strong></td><td>Snapshot / رندر HTML</td><td>قالب خروجی نهایی</td></tr>
@@ -1037,7 +1321,7 @@ class CartTest {
 
 <div class="kl-box kl-ok">
 <span class="kl-h">مزیت عملی MVC</span>
-تست <code>CartTest</code> بالا <strong>هیچ Spring Context، هیچ دیتابیس و هیچ Mock</strong> لازم ندارد.
+تست <code>CartTest</code> بالا به <strong>هیچ Spring Context، هیچ دیتابیس و هیچ Mock</strong> نیاز ندارد.
 اجرای کل تست‌ها زیر یک ثانیه طول می‌کشد. این یکی از بزرگ‌ترین دستاوردهای جداسازی نقش‌هاست.
 </div>
 </section>
@@ -1054,7 +1338,7 @@ class CartTest {
   <tr><td>۳</td><td><strong>Model با setterهای عمومی</strong></td><td><code>setPrice()</code> بدون اعتبارسنجی</td><td>مقدار شیئی یا متدهای دامنه</td></tr>
   <tr><td>۴</td><td><strong>View مستقیم به دیتابیس</strong></td><td>Query در فایل قالب</td><td>فقط Model دسترسی داشته باشد</td></tr>
   <tr><td>۵</td><td><strong>دوره‌ی به‌روزرسانی طولانی</strong></td><td>Model، View و Controller همزمان تغییر می‌کنند</td><td>تغییر جداگانه‌ی هر نقش</td></tr>
-  <tr><td>۶</td><td><strong>انتخاب نادرست EL/ORM</strong></td><td>استفاده از ORM در View</td><td>ORM فقط در Model</td></tr>
+  <tr><td>۶</td><td><strong>انتخاب نادرست EL یا ORM</strong></td><td>استفاده از ORM در View</td><td>ORM فقط در Model</td></tr>
   <tr><td>۷</td><td><strong>استفاده از Session برای وضعیت</strong></td><td>داده کسب‌وکار در Session</td><td>فقط داده‌ی موقت UI</td></tr>
   <tr><td>۸</td><td><strong>اعتبارسنجی فقط سمت کلاینت</strong></td><td>کنترل فقط در View</td><td>اعتبارسنجی در Model/Controller</td></tr>
   <tr><td>۹</td><td><strong>تست E2E فقط</strong></td><td>همه‌ی تست‌ها از UI</td><td>تست واحد Model</td></tr>
@@ -1076,7 +1360,7 @@ class CartTest {
 
 <h3>۱) Spring Boot — سیستم مدیریت محتوا</h3>
 <p>
-رایج‌ترین کاربرد MVC در دنیای واقعی: وب‌اپلیکیشن‌های <strong>Spring MVC</strong>.
+رایج‌ترین کاربرد <strong>MVC</strong> در دنیای واقعی، وب‌اپلیکیشن‌های <strong>Spring MVC</strong> است.
 در این پروژه‌ها Model معمولاً ترکیبی از JPA Entity و Service است، View یک قالب Thymeleaf
 و Controller یک کلاس با <code>@RequestMapping</code>. نمونه‌های شناخته‌شده مثل
 پنل‌های مدیریتی داخلی، فروشگاه‌های اینترنتی و سیستم‌های رزرو آنلاین، همگی با همین
@@ -1087,7 +1371,7 @@ class CartTest {
 <p>
 در <strong>Django</strong>، مدل‌ها با ORM خود در فایل <code>models.py</code> تعریف می‌شوند،
 قالب‌ها در <code>templates/</code> و توابع نمایش (کنترلرها) در <code>views.py</code>.
-همین ساختار باعث شده تیم‌های کوچک بتوانند در چند هفته یک محصول کامل بسازند.
+همین ساختار به تیم‌های کوچک اجازه داده است در چند هفته محصولی کامل بسازند.
 <strong>Rails</strong> با قرارداد <code>Model-View-Controller</code> و <code>ActiveRecord</code>
 همین الگو را با کمترین کد ممکن پیاده کرده است.
 </p>
@@ -1104,7 +1388,7 @@ class CartTest {
 <p>
 در سال‌های اولیه‌ی اندروید، <code>Activity</code> نقش View و Controller را همزمان بر عهده
 می‌گرفت و منطق در آن کلاس‌ها بود. این سبک برای اپلیکیشن‌های ساده مشکلی نداشت، اما
-با رشد پروژه به <strong>مخلوط شدن نقش‌ها</strong> رسید و دلیل اصلی ظهور MVP و سپس MVVM شد.
+با رشد پروژه، به <strong>مخلوط‌شدن نقش‌ها</strong> رسید؛ همین مسئله دلیل اصلی ظهور MVP و سپس MVVM شد.
 درس مهم: <strong>MVC برای اپلیکیشن‌های کوچک اندروید کار می‌کند، اما به‌سرعت به مرز خود می‌رسد.</strong>
 </p>
 
@@ -1190,8 +1474,8 @@ MVC درباره‌ی <strong>مسئولیت‌های داخل یک برنامه
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۵ — تفاوت MVC و لایه‌بندی چیست؟</span>
-در لایه‌بندی، همه‌ی منطق در یک لایه (Service) است. در MVC، منطق داخل Model توزیع می‌شود و
-View و Controller نقش‌های جدا دارند.
+در لایه‌بندی، بیشتر منطق در یک لایه (Service) متمرکز است. در MVC، منطق درون <code>Model</code> و
+<code>Controller</code> توزیع می‌شود و <code>View</code> نقشی مستقل دارد.
 </div>
 
 <div class="kl-box">
@@ -1281,7 +1565,7 @@ MVVM برای پلتفرم‌هایی با <strong>دوحالته‌سازی د�
 
 <div class="kl-box">
 <span class="kl-h">سؤال ۱۹ — مهم‌ترین محدودیت نظری MVC چیست؟</span>
-چرخه‌ی <strong>Update</strong> در MVC مشکل‌ساز است: وقتی چند منبع داده با هم تغییر می‌کنند،
+چرخه‌ی <strong>Update</strong> در MVC همیشه دردسرساز است: وقتی چند منبع داده با هم تغییر می‌کنند،
 View نمی‌تواند بفهمد کدام تغییر باید رندر شود. این دلیل اصلی ظهور MVVM و MVI است.
 </div>
 
@@ -1320,8 +1604,8 @@ MVC در لایه‌ی <strong>داخلی هر سرویس</strong> قرار می
 
 <div class="kl-box">
 <span class="kl-h">۴) آیا می‌توان MVC و MVVM را ترکیب کرد؟</span>
-بله و این کار رایج است: در پروژه‌ی اندروید، لایه‌ی داده با Repository و لایه‌ی UI با
-MVVM و کنترلرهای Activity از اصول MVC الهام گرفته‌اند.
+بله، و این کار در پروژه‌های واقعی رایج است: لایه‌ی داده با <code>Repository</code> ساختار MVC دارد و
+لایه‌ی UI با <code>ViewModel</code> به سبک MVVM. در عمل این دو الگو کنار هم کار می‌کنند.
 </div>
 
 <div class="kl-box">
@@ -1351,19 +1635,19 @@ Entity فقط داده را نگه می‌دارد (Getter/Setter)، اما Mode
 <div class="kl-box">
 <span class="kl-h">۹) آیا MVC برای API هم مناسب است؟</span>
 بله، اما در API معمولاً Controller نقش View را هم بر عهده می‌گیرد (چون JSON خروجی است
-و قالب ثابتی وجود دارد). به همین دلیل بسیاری REST APIها عملاً از MVC استفاده نمی‌کنند
+و قالب ثابتی وجود دارد). به همین دلیل بسیاری از REST APIها عملاً از MVC استفاده نمی‌کنند
 و فقط از لایه‌بندی ساده بهره می‌گیرند.
 </div>
 
 <div class="kl-box">
 <span class="kl-h">۱۰) تفاوت MVC و Facade چیست؟</span>
 MVC یک الگوی ساختاری برای تقسیم مسئولیت‌ها در کل سیستم است؛ Facade یک الگوی ساختاری
-برای ساده کردن API یک زیرسیستم. Facade ممکن است داخل یک لایه‌ی MVC استفاده شود.
+برای ساده‌سازی API یک زیرسیستم. Facade ممکن است درون یک لایه‌ی MVC به کار رود.
 </div>
 
 <div class="kl-box">
 <span class="kl-h">۱۱) آیا باید برای هر صفحه یک Controller بسازم؟</span>
-نه. بهتر است Controller را به‌اندازه‌ی یک Resource یا Use Case بشکنید و متدهای آن را کوتاه نگه دارید.
+نه. بهتر است کنترلر را به واحدهایی هم‌اندازه‌ی یک Resource یا Use Case بشکنید و متدهای آن را کوتاه نگه دارید.
 </div>
 
 <div class="kl-box">
@@ -1375,7 +1659,7 @@ MVC یک الگوی ساختاری برای تقسیم مسئولیت‌ها د�
 <div class="kl-box">
 <span class="kl-h">۱۳) آیا تست View در MVC ارزش دارد؟</span>
 معمولاً نه، مگر اینکه قالب پیچیده باشد یا مشکل امنیتی داشته باشد. تست Model و Controller
-مهم‌تر است؛ تست View بیشتر ارزش نگهداری دارد تا ارزش تست.
+مهم‌تر است؛ تست <code>View</code> معمولاً هزینه‌ی نگهداری بیشتری از ارزش واقعی دارد.
 </div>
 
 <div class="kl-box">

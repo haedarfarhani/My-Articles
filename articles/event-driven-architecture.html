@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -115,7 +117,7 @@
           </div>
 
           <h1 class="post-title">
-            <span class="gradient-text">Event Driven Architecture</span>؛ سیستمی که با «اتفاق‌ها» حرف می‌زند
+            <span class="gradient-text">Event Driven Architecture</span>؛ سیستمی که با «اتفاق‌ها» صحبت می‌کند
           </h1>
 
           <p class="hero-lead">
@@ -282,11 +284,11 @@
 <tr><th>بازه</th><th>رویداد</th><th>تأثیر بر EDA</th></tr>
 </thead>
 <tbody>
-<tr><td>۱۹۷۰–۱۹۸۰</td><td>مقاله‌ی <em>Event Sourcing</em> ایوانز و مقالات اولیه‌ی Pub/Sub</td><td>معرفی ایده‌ی نگهداری رویداد به‌جای وضعیت</td></tr>
+<tr><td>۱۹۷۰–۱۹۸۰</td><td>مقاله‌ی <em>Event Sourcing</em> ایوانز و مقالات اولیه‌ی Pub/Sub</td><td>معرفی ایده‌ی نگه‌داشتن رویداد به‌جای وضعیت</td></tr>
 <tr><td>۱۹۸۰–۱۹۹۰</td><td>سیستم‌های CORBA و Tuxedo</td><td>تلاش برای یکپارچگی در مقیاس بزرگ (شکست خورد)</td></tr>
 <tr><td>۱۹۹۰–۲۰۰۰</td><td>ActiveMQ، JMS استاندارد می‌شود</td><td>زیرساخت قابل اتکا برای پیام‌رسانی فرایندی</td></tr>
-<tr><td>۲۰۰۷–۲۰۱۲</td><td>LinkedIn می‌کافکا، RabbitMQ، Amazon SQS</td><td><strong>زیرساخت ارزان و مقیاس‌پذیر</strong>؛ نقطه‌ی عطف واقعی</td></tr>
-<tr><td>۲۰۱۳–۲۰۱۸</td><td>موج میکروسرویس، Martin Fowler درباره‌ی Event Notification</td><td>EDA به الگوی پذیرفته‌شده در سازمان‌ها تبدیل می‌شود</td></tr>
+<tr><td>۲۰۰۷–۲۰۱۲</td><td>LinkedIn با Kafka، RabbitMQ و Amazon SQS</td><td><strong>زیرساخت ارزان و مقیاس‌پذیر</strong>؛ نقطه‌ی عطف واقعی</td></tr>
+<tr><td>۲۰۱۳–۲۰۱۸</td><td>گسترش میکروسرویس، مقاله‌ی Martin Fowler درباره‌ی Event Notification</td><td>EDA به الگوی پذیرفته‌شده در سازمان‌ها تبدیل می‌شود</td></tr>
 <tr><td>۲۰۱۹–اکنون</td><td>CloudEvents، AsyncAPI، Debezium</td><td>استانداردسازی پیام و پایش جریان رویداد</td></tr>
 </tbody>
 </table>
@@ -302,7 +304,8 @@
 <h3>موج دوم — Event Notification</h3>
 <p>
 هر مصرف‌کننده فقط <strong>اعلان</strong> می‌گیرد و اگر داده لازم داشت، خودش
-می‌پرسد. مزیت: پیام کوچک و مصرف‌کننده‌ها مستقل. عیب: یک round-trip اضافه و دو منبع حقیقت.
+می‌پرسد. مزیت آن، کوچک بودن پیام و استقلال مصرف‌کنندگان است. عیب: یک round-trip
+اضافه و دو منبع حقیقت.
 </p>
 
 <h3>موج سوم — Event Carrying State Transfer</h3>
@@ -324,7 +327,7 @@
 
 <div class="kl-check">
 <ul>
-<li><strong>زیرساخت ارزان</strong>: یک topicset مدیریت‌شده حالا هزینه‌ای معادل یک VPS است</li>
+<li><strong>زیرساخت ارزان</strong>: یک مجموعه‌ی topic مدیریت‌شده حالا هزینه‌ای معادل یک VPS است</li>
 <li><strong>تله‌تراشی</strong>: سرویس‌ها به هر تیم اجازه می‌دهند مستقل مستقر شوند</li>
 <li><strong>الگوی CQRS + Event Sourcing</strong> که بدون پیام‌رسان ممکن نبود</li>
 <li><strong>داده‌های حجم بالا و جریانی</strong>: لاگ، کلیک، IoT، معاملات</li>
@@ -345,7 +348,7 @@
 </div>
 
 <p>
-سه تعریف کلیدی که نباید اشتباه شوند:
+هفت اصطلاح کلیدی که نباید اشتباه شوند:
 </p>
 
 <table>
@@ -371,23 +374,85 @@
 <li><strong>استقلال زمانی</strong> — رویداد ممکن است دقیقه‌ها بعد پردازش شود</li>
 </ol>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph S["سیستم رویدادمحور"]
-        P["Producer<br/>سرویس سفارش"]
-        B["Broker<br/>Kafka Topic: orders"]
-        C1["Consumer<br/>انبار"]
-        C2["Consumer<br/>ارسال"]
-        C3["Consumer<br/>اعلان"]
-        C4["Consumer<br/>گزارش"]
-        P -->|"publish OrderPlaced"| B
-        B -->|"subscribe"| C1
-        B -->|"subscribe"| C2
-        B -->|"subscribe"| C3
-        B -->|"subscribe"| C4
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 366" role="img" aria-label="توپولوژی واسط پیام در معماری رویدادمحور: یک تولیدکننده که رویداد را منتشر می‌کند و چهار مصرف‌کننده که مستقل به آن گوش می‌دهند">
+  <!-- پوسته‌ی سیستم -->
+  <rect class="s-group" x="24" y="40" width="722" height="300" rx="16"/>
+  <text class="s-group-t" x="385" y="62" text-anchor="middle">سیستم رویدادمحور</text>
 
-    style P fill:#0f766e,color:#fff,stroke:#0f766e
-    style B fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <!-- مسیرها: تولیدکننده ← واسط پیام ← چهار مصرف‌کننده -->
+  <path class="s-arr s-flow" d="M 596 188 L 478 188"/>
+  <path class="s-head" d="M 478 188 L 490 181 L 490 195 Z"/>
+
+  <path class="s-arr s-flow" d="M 336 152 L 252 100"/>
+  <path class="s-head" d="M 252 100 L 264 93 L 264 107 Z"/>
+
+  <path class="s-arr s-flow" d="M 336 176 L 252 164"/>
+  <path class="s-head" d="M 252 164 L 264 157 L 264 171 Z"/>
+
+  <path class="s-arr s-flow" d="M 336 200 L 252 228"/>
+  <path class="s-head" d="M 252 228 L 264 221 L 264 235 Z"/>
+
+  <path class="s-arr s-flow" d="M 336 224 L 252 292"/>
+  <path class="s-head" d="M 252 292 L 264 285 L 264 299 Z"/>
+
+  <text class="s-t2 s-lbl" x="537" y="176" text-anchor="middle" style="--kl-i:0">publish OrderPlaced</text>
+  <text class="s-t2 s-lbl" x="537" y="208" text-anchor="middle" style="--kl-i:1">کلید = orderId</text>
+  <text class="s-t2 s-lbl" x="293" y="114" text-anchor="middle" style="--kl-i:2">subscribe</text>
+
+  <!-- ذره‌های متحرک روی هر شاخه -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 592 188 L 482 188"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" begin="0.3s" repeatCount="indefinite" path="M 334 152 L 256 100"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" begin="0.6s" repeatCount="indefinite" path="M 334 176 L 256 164"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" begin="0.9s" repeatCount="indefinite" path="M 334 200 L 256 228"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite" path="M 334 224 L 256 292"/>
+  </circle>
+
+  <!-- نودها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="596" y="150" width="150" height="76" rx="12"/>
+    <text class="s-t" x="671" y="180" text-anchor="middle">Producer</text>
+    <text class="s-t2" x="671" y="204" text-anchor="middle">سرویس سفارش</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-chip" x="336" y="130" width="140" height="116" rx="14"/>
+    <text class="s-tc" x="406" y="166" text-anchor="middle">Broker</text>
+    <text class="s-tc" x="406" y="194" text-anchor="middle">Kafka</text>
+    <text class="s-tc" x="406" y="222" text-anchor="middle">topic: orders</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="40" y="76" width="210" height="48" rx="10"/>
+    <text class="s-t" x="145" y="105" text-anchor="middle">سرویس انبار</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="40" y="140" width="210" height="48" rx="10"/>
+    <text class="s-t" x="145" y="169" text-anchor="middle">سرویس ارسال</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-ok" x="40" y="204" width="210" height="48" rx="10"/>
+    <text class="s-t" x="145" y="233" text-anchor="middle">سرویس اعلان</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-ok" x="40" y="268" width="210" height="48" rx="10"/>
+    <text class="s-t" x="145" y="297" text-anchor="middle">سرویس گزارش</text>
+  </g>
+</svg>
+<figcaption><b>توپولوژی واسط پیام:</b> تولیدکننده فقط یک‌بار منتشر می‌کند و هرگز نمی‌داند چه کسی گوش می‌دهد؛ واسط پیام پیام را نگه می‌دارد و هر مصرف‌کننده نسخه‌ی خودش را می‌گیرد. به همین دلیل افزودن یک مصرف‌کننده‌ی تازه فقط یک <code>subscribe</code> جدید است و هیچ تغییری در تولیدکننده لازم ندارد.</figcaption>
+</figure>
 
 <h3>EDA یعنی همه‌چیز رویداد است؟</h3>
 
@@ -491,24 +556,116 @@ COMMIT;</code></pre>
 
 <h3>مقایسه‌ی دو سبک</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph Push["سبک Push — فراخوانی مستقیم"]
-        A1["OrderService"] -->|"HTTP POST /reserve"| B1["Inventory"]
-        A1 -->|"HTTP POST /book"| B2["Shipping"]
-        A1 -->|"HTTP POST /send"| B3["Email"]
-        A1 -.->|"خرابی B3 همه را خراب می‌کند"| B3
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 494" role="img" aria-label="مقایسه‌ی سبک Push یعنی فراخوانی مستقیم با سبک Pull یعنی انتشار رویداد از راه واسط پیام">
+  <!-- نوار بالا: سبک Push -->
+  <rect class="s-group" x="24" y="30" width="722" height="162" rx="16"/>
+  <text class="s-group-t" x="385" y="52" text-anchor="middle">سبک Push — فراخوانی مستقیم</text>
 
-    subgraph Pull["سبک Pull — انتشار رویداد"]
-        A2["OrderService"] -->|"publish OrderPlaced"| Q[("Broker")]
-        Q --> C1["Inventory"]
-        Q --> C2["Shipping"]
-        Q --> C3["Email"]
-        C3 -.->|"خرابی: فقط ایمیل"| X["DLQ"]
-    end
+  <path class="s-arr s-flow" d="M 624 88 L 562 102"/>
+  <path class="s-head" d="M 562 102 L 574 95 L 574 109 Z"/>
+  <path class="s-arr s-flow" d="M 624 102 L 402 102"/>
+  <path class="s-head" d="M 402 102 L 414 95 L 414 109 Z"/>
+  <path class="s-arr s-flow" d="M 624 116 L 262 102"/>
+  <path class="s-head" d="M 262 102 L 274 95 L 274 109 Z"/>
 
-    style Push fill:#7f1d1d,color:#fff,stroke:#7f1d1d
-    style Q fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+  <text class="s-tc s-lbl" x="593" y="80" text-anchor="middle" style="--kl-i:0">/reserve</text>
+  <text class="s-tc s-lbl" x="513" y="90" text-anchor="middle" style="--kl-i:1">/book</text>
+  <text class="s-tc s-lbl" x="443" y="96" text-anchor="middle" style="--kl-i:2">/send</text>
+
+  <!-- خرابی زنجیره‌ای -->
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 200 128 L 200 158 L 686 158 L 686 134"/>
+  <path class="s-head-bad" d="M 686 130 L 679 142 L 693 142 Z"/>
+  <text class="s-t2 s-lbl" x="443" y="180" text-anchor="middle" style="--kl-i:5">خرابی یک سرویس، کل زنجیره را متوقف می‌کند</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 620 88 L 566 100"/>
+  </circle>
+  <circle class="s-runner s-runner-bad" r="4.5">
+    <animateMotion dur="3.4s" begin="0.8s" repeatCount="indefinite" path="M 200 130 L 200 156 L 682 156 L 682 138"/>
+  </circle>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="626" y="74" width="120" height="56" rx="12"/>
+    <text class="s-t" x="686" y="96" text-anchor="middle">سرویس سفارش</text>
+    <text class="s-t2" x="686" y="118" text-anchor="middle">OrderService</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="440" y="78" width="120" height="48" rx="10"/>
+    <text class="s-t" x="500" y="107" text-anchor="middle">انبار</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="280" y="78" width="120" height="48" rx="10"/>
+    <text class="s-t" x="340" y="107" text-anchor="middle">ارسال</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="140" y="78" width="120" height="48" rx="10"/>
+    <text class="s-t" x="200" y="107" text-anchor="middle">ایمیل</text>
+  </g>
+
+  <!-- نوار پایین: سبک Pull -->
+  <rect class="s-group s-group-acc" x="24" y="210" width="722" height="264" rx="16"/>
+  <text class="s-group-t" x="385" y="232" text-anchor="middle">سبک Pull — انتشار رویداد</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 624 282 L 542 282"/>
+  <path class="s-head-ok" d="M 542 282 L 554 275 L 554 289 Z"/>
+  <text class="s-t2 s-lbl" x="583" y="268" text-anchor="middle" style="--kl-i:3">publish</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 436 258 L 204 258"/>
+  <path class="s-head-ok" d="M 204 258 L 216 251 L 216 265 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 436 292 L 204 312"/>
+  <path class="s-head-ok" d="M 204 312 L 216 305 L 216 319 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 436 314 L 204 366"/>
+  <path class="s-head-ok" d="M 204 366 L 216 359 L 216 373 Z"/>
+  <text class="s-t2 s-lbl" x="320" y="246" text-anchor="middle" style="--kl-i:4">subscribe</text>
+
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 120 388 L 120 406"/>
+  <path class="s-head-bad" d="M 120 408 L 113 396 L 127 396 Z"/>
+  <text class="s-t2 s-lbl" x="258" y="402" text-anchor="middle" style="--kl-i:8">خرابی: فقط همان مصرف‌کننده</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 620 282 L 546 282"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" begin="0.3s" repeatCount="indefinite" path="M 434 258 L 208 258"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" begin="0.6s" repeatCount="indefinite" path="M 434 292 L 208 312"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.4s" begin="0.9s" repeatCount="indefinite" path="M 434 314 L 208 366"/>
+  </circle>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="626" y="254" width="120" height="56" rx="12"/>
+    <text class="s-t" x="686" y="276" text-anchor="middle">سرویس سفارش</text>
+    <text class="s-t2" x="686" y="298" text-anchor="middle">OrderService</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="440" y="250" width="100" height="64" rx="12"/>
+    <text class="s-tc" x="490" y="276" text-anchor="middle">Broker</text>
+    <text class="s-tc" x="490" y="300" text-anchor="middle">Kafka</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-ok" x="40" y="238" width="160" height="40" rx="10"/>
+    <text class="s-t" x="120" y="263" text-anchor="middle">انبار</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-ok" x="40" y="292" width="160" height="40" rx="10"/>
+    <text class="s-t" x="120" y="317" text-anchor="middle">ارسال</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-ok" x="40" y="346" width="160" height="40" rx="10"/>
+    <text class="s-t" x="120" y="371" text-anchor="middle">ایمیل</text>
+  </g>
+  <g class="s-node" style="--kl-i:8">
+    <rect class="s-bad" x="40" y="410" width="160" height="44" rx="10"/>
+    <text class="s-t" x="120" y="428" text-anchor="middle">DLQ</text>
+    <text class="s-t2" x="120" y="447" text-anchor="middle">صف مرده</text>
+  </g>
+</svg>
+<figcaption><b>فراخوانی در برابر انتشار:</b> در سبک <code>Push</code> تولیدکننده باید آدرس هر سه سرویس را بداند و تا پایان همه‌ی آن‌ها منتظر بماند، پس یک خطای کوچک کل زنجیره را متوقف می‌کند. در سبک <code>Pull</code> تولیدکننده فقط یک رویداد منتشر می‌کند و هر مصرف‌کننده مستقل آن را می‌گیرد؛ خرابی یکی از آن‌ها فقط به صف مرده می‌رود و بقیه سالم می‌مانند.</figcaption>
+</figure>
 
 <h3>سه سبک پیام و تفاوتشان</h3>
 
@@ -616,13 +773,13 @@ COMMIT;</code></pre>
 <tr><th>تغییر</th><th>سازگار است؟</th><th>توضیح</th></tr>
 </thead>
 <tbody>
-<tr><td>افزودن فیلد جدید</td><td>✅ بله</td><td>مصرف‌کننده‌های قدیمی فیلد را نمی‌بینند</td></tr>
+<tr><td>افزودن فیلد جدید</td><td>✅ بله</td><td>مصرف‌کنندگان قدیمی فیلد را نمی‌بینند</td></tr>
 <tr><td>حذف فیلد</td><td>❌ نه</td><td>مصرف‌کننده‌ی قدیمی می‌شکند</td></tr>
 <tr><td>تغییر نوع فیلد</td><td>❌ نه</td><td>شکست در deserialization</td></tr>
 <tr><td>تغییر معنای فیلد</td><td><strong>❌ هرگز</strong></td><td>بدترین حالت: بی‌صدا خراب می‌شود</td></tr>
 <tr><td>تغییر نام فیلد</td><td>❌ نه</td><td>معادل حذف + افزودن</td></tr>
 <tr><td>تغییر مقادیر مجاز enum</td><td>⚠️ با احتیاط</td><td>مقدار جدید = نسخه‌ی جدید</td></tr>
-<tr><td>افزودن رویداد جدید</td><td>✅ بله</td><td>مصرف‌کننده‌های قدیمی بی‌تفاوت‌اند</td></tr>
+<tr><td>افزودن رویداد جدید</td><td>✅ بله</td><td>مصرف‌کنندگان قدیمی بی‌تفاوت‌اند</td></tr>
 </tbody>
 </table>
 
@@ -686,7 +843,7 @@ class InventoryEventHandler {
 <div class="kl-box kl-hd">
 <span class="kl-h">چرا idempotency اجتناب‌ناپذیر است</span>
 هیچ پیام‌رسانی تحویل «دقیقاً یک‌بار» نمی‌دهد. کمینه‌ی واقعی «حداقل یک‌بار» است، پس
-مصرف‌کننده ممکن است هر پیام را دو بار ببیند. اگر مصرف‌کننده idem potent نباشد، موجودی
+مصرف‌کننده ممکن است هر پیام را دو بار ببیند. اگر مصرف‌کننده idempotent نباشد، موجودی
 انبار را دو بار کم می‌کند.
 </div>
 </section>
@@ -695,37 +852,126 @@ class InventoryEventHandler {
 <section id="s7">
 <h2><span class="kl-num">بخش ۷</span>ساختار معماری</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    subgraph Core["هسته‌ی سرویس — بدون پیام‌رسان"]
-        API["Controller"]
-        APP["Application Service"]
-        DOM["Domain Model"]
-        OUTBOX[("جدول outbox")]
-        API --> APP --> DOM
-        APP -->|"ثبت در"| OUTBOX
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 470" role="img" aria-label="ساختار معماری رویدادمحور: هسته‌ی سرویس و جدول outbox، سپس رله، واسط پیام، مصرف‌کنندگان و صف مرده">
+  <!-- هسته‌ی سرویس -->
+  <rect class="s-group" x="310" y="36" width="436" height="172" rx="16"/>
+  <text class="s-group-t" x="528" y="58" text-anchor="middle">هسته‌ی سرویس — بدون پیام‌رسان</text>
 
-    Relay["Relay / Poller<br/>خواندن outbox و انتشار"]
-    Broker[("Message Broker<br/>Kafka")]
+  <path class="s-arr s-flow" d="M 636 104 L 578 104"/>
+  <path class="s-head" d="M 578 104 L 590 97 L 590 111 Z"/>
+  <path class="s-arr s-flow" d="M 478 104 L 420 104"/>
+  <path class="s-head" d="M 420 104 L 432 97 L 432 111 Z"/>
+  <path class="s-arr s-flow" d="M 528 130 L 528 144"/>
+  <path class="s-head" d="M 528 144 L 521 132 L 535 132 Z"/>
 
-    subgraph Cons["مصرف‌کننده‌ها"]
-        C1["سرویس انبار"]
-        C2["سرویس ارسال"]
-        C3["سرویس اعلان"]
-    end
+  <text class="s-t2 s-lbl" x="607" y="92" text-anchor="middle" style="--kl-i:1">دستور</text>
+  <text class="s-t2 s-lbl" x="449" y="92" text-anchor="middle" style="--kl-i:2">اعتبارسنجی</text>
+  <text class="s-t2 s-lbl" x="612" y="140" text-anchor="middle" style="--kl-i:3">ثبت رویداد در outbox</text>
 
-    DLQ[("Dead Letter Queue")]
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 632 104 L 582 104"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.2s" begin="0.4s" repeatCount="indefinite" path="M 528 132 L 528 142"/>
+  </circle>
 
-    OUTBOX --> Relay --> Broker
-    Broker --> C1
-    Broker --> C2
-    Broker --> C3
-    C1 -.->|"خطای مکرر"| DLQ
-    C2 -.->|"خطای مکرر"| DLQ
-    C3 -.->|"خطای مکرر"| DLQ
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="638" y="80" width="96" height="48" rx="10"/>
+    <text class="s-t" x="686" y="101" text-anchor="middle">Controller</text>
+    <text class="s-t2" x="686" y="120" text-anchor="middle">ورودی HTTP</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="480" y="80" width="96" height="48" rx="10"/>
+    <text class="s-t" x="528" y="101" text-anchor="middle">App Service</text>
+    <text class="s-t2" x="528" y="120" text-anchor="middle">هماهنگی</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="322" y="80" width="96" height="48" rx="10"/>
+    <text class="s-t" x="370" y="101" text-anchor="middle">Domain Model</text>
+    <text class="s-t2" x="370" y="120" text-anchor="middle">قواعد</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="480" y="146" width="96" height="46" rx="10"/>
+    <text class="s-tc" x="528" y="166" text-anchor="middle">Outbox</text>
+    <text class="s-tc" x="528" y="184" text-anchor="middle">جدول رویداد</text>
+  </g>
 
-    style OUTBOX fill:#0f766e,color:#fff,stroke:#0f766e
-    style Broker fill:#334155,color:#fff,stroke:#334155</code></pre>
+  <!-- رله و واسط پیام -->
+  <path class="s-arr s-flow" d="M 528 194 L 528 224 L 500 224 L 500 246"/>
+  <path class="s-head" d="M 500 248 L 493 236 L 507 236 Z"/>
+  <text class="s-t2 s-lbl" x="624" y="218" text-anchor="middle" style="--kl-i:4">خواندن و انتشار</text>
+
+  <path class="s-arr s-flow" d="M 438 276 L 372 276"/>
+  <path class="s-head" d="M 372 276 L 384 269 L 384 283 Z"/>
+  <text class="s-t2 s-lbl" x="405" y="262" text-anchor="middle" style="--kl-i:5">publish</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 526 196 L 526 222 L 500 222 L 500 244"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.2s" begin="0.7s" repeatCount="indefinite" path="M 434 276 L 376 276"/>
+  </circle>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-warn" x="440" y="250" width="120" height="52" rx="10"/>
+    <text class="s-t" x="500" y="272" text-anchor="middle">Relay</text>
+    <text class="s-t2" x="500" y="292" text-anchor="middle">خواندن و انتشار</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-chip" x="250" y="248" width="120" height="56" rx="12"/>
+    <text class="s-tc" x="310" y="274" text-anchor="middle">Broker</text>
+    <text class="s-tc" x="310" y="296" text-anchor="middle">Kafka</text>
+  </g>
+
+  <!-- مصرف‌کنندگان -->
+  <rect class="s-group" x="24" y="208" width="200" height="176" rx="16"/>
+  <text class="s-group-t" x="124" y="228" text-anchor="middle">مصرف‌کنندگان</text>
+
+  <path class="s-arr-ok s-flow-ok" d="M 248 262 L 218 254"/>
+  <path class="s-head-ok" d="M 218 254 L 230 247 L 230 261 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 248 282 L 218 302"/>
+  <path class="s-head-ok" d="M 218 302 L 230 295 L 230 309 Z"/>
+  <path class="s-arr-ok s-flow-ok" d="M 248 302 L 218 350"/>
+  <path class="s-head-ok" d="M 218 350 L 230 343 L 230 357 Z"/>
+  <text class="s-t2 s-lbl" x="233" y="244" text-anchor="middle" style="--kl-i:6">subscribe</text>
+
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 246 262 L 222 254"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" begin="0.4s" repeatCount="indefinite" path="M 246 282 L 222 302"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="2.2s" begin="0.8s" repeatCount="indefinite" path="M 246 302 L 222 350"/>
+  </circle>
+
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-ok" x="36" y="234" width="176" height="40" rx="10"/>
+    <text class="s-t" x="124" y="259" text-anchor="middle">سرویس انبار</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-ok" x="36" y="282" width="176" height="40" rx="10"/>
+    <text class="s-t" x="124" y="307" text-anchor="middle">سرویس ارسال</text>
+  </g>
+  <g class="s-node" style="--kl-i:8">
+    <rect class="s-ok" x="36" y="330" width="176" height="40" rx="10"/>
+    <text class="s-t" x="124" y="355" text-anchor="middle">سرویس اعلان</text>
+  </g>
+
+  <!-- صف مرده -->
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 90 372 L 90 404"/>
+  <path class="s-head-bad" d="M 90 408 L 83 396 L 97 396 Z"/>
+  <text class="s-t2 s-lbl" x="162" y="396" text-anchor="middle" style="--kl-i:9">خطای مکرر</text>
+
+  <g class="s-node" style="--kl-i:9">
+    <rect class="s-bad" x="36" y="410" width="176" height="48" rx="10"/>
+    <text class="s-t" x="124" y="430" text-anchor="middle">DLQ</text>
+    <text class="s-t2" x="124" y="450" text-anchor="middle">صف مرده</text>
+  </g>
+</svg>
+<figcaption><b>مرز پیام‌رسان:</b> هسته‌ی سرویس هیچ اتصالی به <code>Broker</code> ندارد و فقط رویداد را در جدول <code>outbox</code> کنار داده‌ی کسب‌وکار خودش ثبت می‌کند. کاری که <code>Relay</code> انجام می‌دهد فقط انتقال پیام‌های منتشرنشده است، پس اگر خودش بمیرد چیزی از دست نمی‌رود و پیام‌های مصرف‌کننده‌ای که چند بار شکست بخورند به <code>DLQ</code> می‌روند.</figcaption>
+</figure>
 
 <h3>اجزای سیستم رویدادمحور</h3>
 
@@ -780,67 +1026,189 @@ class InventoryEventHandler {
 
 <h3>جریان کامل ثبت سفارش</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant U as کاربر
-    participant OS as OrderService
-    participant DB as دیتابیس
-    participant R as OutboxRelay
-    participant K as Kafka
-    participant INV as InventoryService
-    participant SH as ShippingService
-    participant NL as NotificationService
+<figure class="kl-fig">
+<svg viewBox="0 0 770 470" role="img" aria-label="دیاگرام توالی ثبت سفارش و انتشار رویداد از راه outbox و واسط پیام">
+  <!-- خطوط زندگی -->
+  <path class="s-dash" d="M 690 54 L 690 424"/>
+  <path class="s-dash" d="M 580 54 L 580 424"/>
+  <path class="s-dash" d="M 470 54 L 470 424"/>
+  <path class="s-dash" d="M 360 54 L 360 424"/>
+  <path class="s-dash" d="M 250 54 L 250 424"/>
+  <path class="s-dash" d="M 140 54 L 140 424"/>
 
-    U->>OS: POST /orders
-    OS->>DB: BEGIN
-    OS->>DB: INSERT INTO orders
-    OS->>DB: INSERT INTO outbox_events (OrderPlaced)
-    OS->>DB: COMMIT
-    OS-->>U: 201 Created (۱۵ms)
+  <!-- ۱) کاربر ← سرویس سفارش -->
+  <path class="s-arr s-flow" d="M 690 88 L 582 88"/>
+  <path class="s-head" d="M 582 88 L 594 81 L 594 95 Z"/>
+  <text class="s-tc s-lbl" x="635" y="76" text-anchor="middle" style="--kl-i:0">POST /orders</text>
 
-    Note over R,K: بعداً، ناهمگام
-    R->>DB: SELECT * FROM outbox_events WHERE published=false
-    R->>K: publish OrderPlaced (key=orderId)
-    R->>DB: UPDATE published=true
+  <!-- ۲) نوشتن در همان تراکنش -->
+  <path class="s-arr s-flow" d="M 580 124 L 472 124"/>
+  <path class="s-head" d="M 472 124 L 484 117 L 484 131 Z"/>
+  <text class="s-t2 s-lbl" x="525" y="112" text-anchor="middle" style="--kl-i:1">ثبت سفارش و outbox</text>
 
-    par سه مصرف‌کننده‌ی مستقل
-        K->>INV: OrderPlaced
-        INV->>INV: کم کردن موجودی
-        INV-->>K: ack
-    and
-        K->>SH: OrderPlaced
-        SH->>SH: رزرو ارسال
-        SH-->>K: ack
-    and
-        K->>NL: OrderPlaced
-        NL->>NL: ارسال ایمیل
-        NL-->>K: ack
-    end
+  <!-- ۳) commit -->
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 470 160 L 578 160"/>
+  <path class="s-head-ok" d="M 578 160 L 566 153 L 566 167 Z"/>
+  <text class="s-t2 s-lbl" x="525" y="148" text-anchor="middle" style="--kl-i:2">COMMIT</text>
 
-    Note over INV,K: اگر INV خطا دهد → retry → DLQ</code></pre>
+  <!-- ۴) پاسخ سریع به کاربر -->
+  <path class="s-arr-ok s-flow-ok" d="M 580 196 L 688 196"/>
+  <path class="s-head-ok" d="M 688 196 L 676 189 L 676 203 Z"/>
+  <text class="s-t2 s-lbl" x="635" y="184" text-anchor="middle" style="--kl-i:3">۲۰۱ Created</text>
+
+  <text class="s-t2 s-lbl" x="385" y="228" text-anchor="middle" style="--kl-i:4">بعداً، ناهمگام و مستقل از درخواست</text>
+
+  <!-- ۵) رله، پیام‌های منتشرنشده را می‌خواند -->
+  <path class="s-arr s-flow" d="M 360 262 L 468 262"/>
+  <path class="s-head" d="M 468 262 L 456 255 L 456 269 Z"/>
+  <text class="s-t2 s-lbl" x="415" y="250" text-anchor="middle" style="--kl-i:5">خواندن outbox</text>
+
+  <!-- ۶) انتشار با کلید پارتیشن -->
+  <path class="s-arr s-flow" d="M 360 298 L 252 298"/>
+  <path class="s-head" d="M 252 298 L 264 291 L 264 305 Z"/>
+  <text class="s-tc s-lbl" x="305" y="286" text-anchor="middle" style="--kl-i:6">publish OrderPlaced</text>
+
+  <!-- ۷) علامت‌زدن به‌عنوان منتشرشده -->
+  <path class="s-arr s-flow" d="M 360 334 L 468 334"/>
+  <path class="s-head" d="M 468 334 L 456 327 L 456 341 Z"/>
+  <text class="s-t2 s-lbl" x="415" y="322" text-anchor="middle" style="--kl-i:7">UPDATE published</text>
+
+  <!-- ۸) تحویل به مصرف‌کننده -->
+  <path class="s-arr-ok s-flow-ok" d="M 250 372 L 142 372"/>
+  <path class="s-head-ok" d="M 142 372 L 154 365 L 154 379 Z"/>
+  <text class="s-t2 s-lbl" x="195" y="360" text-anchor="middle" style="--kl-i:8">OrderPlaced</text>
+
+  <!-- ۹) تأیید -->
+  <path class="s-dash s-arr-ok s-flow-ok" d="M 140 406 L 248 406"/>
+  <path class="s-head-ok" d="M 248 406 L 236 399 L 236 413 Z"/>
+  <text class="s-t2 s-lbl" x="195" y="394" text-anchor="middle" style="--kl-i:9">ack</text>
+
+  <text class="s-t2 s-lbl" x="385" y="446" text-anchor="middle" style="--kl-i:10">خطای یک مصرف‌کننده: تلاش مجدد و سپس صف مرده — بقیه سالم می‌مانند</text>
+
+  <!-- شماره‌ی گام‌ها -->
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="754" cy="88" r="11"/><text class="s-tc" x="754" y="92" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="754" cy="124" r="11"/><text class="s-tc" x="754" y="128" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="754" cy="160" r="11"/><text class="s-tc" x="754" y="164" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="754" cy="196" r="11"/><text class="s-tc" x="754" y="200" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="754" cy="262" r="11"/><text class="s-tc" x="754" y="266" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="754" cy="298" r="11"/><text class="s-tc" x="754" y="302" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:7"><circle class="s-chip" cx="754" cy="334" r="11"/><text class="s-tc" x="754" y="338" text-anchor="middle">۷</text></g>
+  <g class="s-node" style="--kl-i:8"><circle class="s-chip" cx="754" cy="372" r="11"/><text class="s-tc" x="754" y="376" text-anchor="middle">۸</text></g>
+  <g class="s-node" style="--kl-i:9"><circle class="s-chip" cx="754" cy="406" r="11"/><text class="s-tc" x="754" y="410" text-anchor="middle">۹</text></g>
+
+  <!-- سرهای بازیگر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-box" x="640" y="14" width="100" height="40" rx="10"/>
+    <text class="s-t" x="690" y="40" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="530" y="14" width="100" height="40" rx="10"/>
+    <text class="s-t" x="580" y="40" text-anchor="middle">OrderService</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-chip" x="420" y="14" width="100" height="40" rx="10"/>
+    <text class="s-tc" x="470" y="40" text-anchor="middle">دیتابیس</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="310" y="14" width="100" height="40" rx="10"/>
+    <text class="s-t" x="360" y="40" text-anchor="middle">OutboxRelay</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="200" y="14" width="100" height="40" rx="10"/>
+    <text class="s-tc" x="250" y="40" text-anchor="middle">Broker</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-ok" x="90" y="14" width="100" height="40" rx="10"/>
+    <text class="s-t" x="140" y="40" text-anchor="middle">مصرف‌کننده</text>
+  </g>
+</svg>
+<figcaption><b>دو نیمه‌ی ناهمگام:</b> کاربر در گام ۴ پاسخ می‌گیرد، در حالی که سه گام بعدی بیرون از مسیر درخواست و با تأخیر انجام می‌شود. همین فاصله‌ی میان <code>COMMIT</code> و <code>ack</code> است که کلید صفرنبودن همه‌چیز در سیستم رویدادمحور است: تا وقتی تأییدیه نرسیده، پیام در Broker می‌ماند و دوباره تحویل داده می‌شود.</figcaption>
+</figure>
 
 <h3>جریان خطا و تلاش مجدد</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant K as Kafka
-    participant C as Consumer
-    participant D as DLQ
+<figure class="kl-fig">
+<svg viewBox="0 0 770 420" role="img" aria-label="جریان خطا و تلاش مجدد: سه تلاش ناموفق و سپس انتقال پیام به صف مرده">
+  <!-- خطوط زندگی -->
+  <path class="s-dash" d="M 580 54 L 580 376"/>
+  <path class="s-dash" d="M 380 54 L 380 376"/>
+  <path class="s-dash" d="M 170 54 L 170 376"/>
 
-    K->>C: پیام
-    C->>C: پردازش
-    C--xK: خطا (تلاش ۱)
-    K->>C: پیام دوباره (تلاش ۲)
-    C--xK: خطا (تلاش ۲)
-    K->>C: پیام دوباره (تلاش ۳)
-    C--xK: خطا (تلاش ۳)
-    K->>D: انتقال به صف مرده
-    Note over D: نیاز به بررسی انسانی</code></pre>
+  <!-- ۱) تحویل پیام -->
+  <path class="s-arr s-flow" d="M 580 92 L 382 92"/>
+  <path class="s-head" d="M 382 92 L 394 85 L 394 99 Z"/>
+  <text class="s-t2 s-lbl" x="480" y="80" text-anchor="middle" style="--kl-i:0">پیام</text>
+
+  <!-- ۲) پردازش در مصرف‌کننده -->
+  <path class="s-arr s-flow" d="M 380 134 C 414 134, 414 112, 384 112"/>
+  <path class="s-head" d="M 380 108 L 373 120 L 387 120 Z"/>
+  <text class="s-t2 s-lbl" x="442" y="130" text-anchor="middle" style="--kl-i:1">پردازش</text>
+
+  <!-- ۳) خطای تلاش ۱ -->
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 380 168 L 578 168"/>
+  <path class="s-head-bad" d="M 578 168 L 566 161 L 566 175 Z"/>
+  <text class="s-t2 s-lbl" x="480" y="156" text-anchor="middle" style="--kl-i:2">خطا — تلاش ۱</text>
+
+  <!-- ۴) تلاش ۲ -->
+  <path class="s-arr s-flow" d="M 580 204 L 382 204"/>
+  <path class="s-head" d="M 382 204 L 394 197 L 394 211 Z"/>
+  <text class="s-t2 s-lbl" x="480" y="192" text-anchor="middle" style="--kl-i:3">پیام دوباره</text>
+
+  <!-- ۵) خطای تلاش ۲ -->
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 380 240 L 578 240"/>
+  <path class="s-head-bad" d="M 578 240 L 566 233 L 566 247 Z"/>
+  <text class="s-t2 s-lbl" x="480" y="228" text-anchor="middle" style="--kl-i:4">خطا — تلاش ۲</text>
+
+  <!-- ۶) تلاش ۳ -->
+  <path class="s-arr s-flow" d="M 580 276 L 382 276"/>
+  <path class="s-head" d="M 382 276 L 394 269 L 394 283 Z"/>
+  <text class="s-t2 s-lbl" x="480" y="264" text-anchor="middle" style="--kl-i:5">پیام دوباره</text>
+
+  <!-- ۷) خطای تلاش ۳ -->
+  <path class="s-dash s-arr-bad s-flow-bad" d="M 380 312 L 578 312"/>
+  <path class="s-head-bad" d="M 578 312 L 566 305 L 566 319 Z"/>
+  <text class="s-t2 s-lbl" x="480" y="300" text-anchor="middle" style="--kl-i:6">خطا — تلاش ۳</text>
+
+  <!-- ۸) سقف تلاش و رفتن به صف مرده -->
+  <path class="s-arr-bad s-flow-bad" d="M 580 352 L 172 352"/>
+  <path class="s-head-bad" d="M 172 352 L 184 345 L 184 359 Z"/>
+  <text class="s-t2 s-lbl" x="376" y="340" text-anchor="middle" style="--kl-i:7">انتقال به صف مرده</text>
+
+  <text class="s-t2 s-lbl" x="375" y="406" text-anchor="middle" style="--kl-i:8">پیام صف مرده از صف اصلی خارج می‌شود و به بررسی انسانی نیاز دارد</text>
+
+  <!-- شماره‌ی گام‌ها -->
+  <g class="s-node" style="--kl-i:0"><circle class="s-chip" cx="754" cy="92" r="11"/><text class="s-tc" x="754" y="96" text-anchor="middle">۱</text></g>
+  <g class="s-node" style="--kl-i:1"><circle class="s-chip" cx="754" cy="134" r="11"/><text class="s-tc" x="754" y="138" text-anchor="middle">۲</text></g>
+  <g class="s-node" style="--kl-i:2"><circle class="s-chip" cx="754" cy="168" r="11"/><text class="s-tc" x="754" y="172" text-anchor="middle">۳</text></g>
+  <g class="s-node" style="--kl-i:3"><circle class="s-chip" cx="754" cy="204" r="11"/><text class="s-tc" x="754" y="208" text-anchor="middle">۴</text></g>
+  <g class="s-node" style="--kl-i:4"><circle class="s-chip" cx="754" cy="240" r="11"/><text class="s-tc" x="754" y="244" text-anchor="middle">۵</text></g>
+  <g class="s-node" style="--kl-i:5"><circle class="s-chip" cx="754" cy="276" r="11"/><text class="s-tc" x="754" y="280" text-anchor="middle">۶</text></g>
+  <g class="s-node" style="--kl-i:6"><circle class="s-chip" cx="754" cy="312" r="11"/><text class="s-tc" x="754" y="316" text-anchor="middle">۷</text></g>
+  <g class="s-node" style="--kl-i:7"><circle class="s-chip" cx="754" cy="352" r="11"/><text class="s-tc" x="754" y="356" text-anchor="middle">۸</text></g>
+
+  <!-- سرهای بازیگر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-chip" x="525" y="14" width="110" height="40" rx="10"/>
+    <text class="s-tc" x="580" y="40" text-anchor="middle">Broker</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="325" y="14" width="110" height="40" rx="10"/>
+    <text class="s-t" x="380" y="40" text-anchor="middle">مصرف‌کننده</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-bad" x="115" y="14" width="110" height="40" rx="10"/>
+    <text class="s-t" x="170" y="40" text-anchor="middle">DLQ</text>
+  </g>
+</svg>
+<figcaption><b>سقف تلاش:</b> بازگشت بی‌پایان پیام هم منابع صف را می‌بلعد و هم خطا را پنهان نگه می‌دارد. سقف تلاش، پیام را از صف اصلی بیرون می‌برد و به صف مرده می‌فرستد؛ هشدار روی همین صف مهم‌تر از خود صف است، چون تنها جایی است که یک شکست واقعی دیده می‌شود.</figcaption>
+</figure>
 
 <h3>قواعد جریان داده</h3>
 
 <div class="kl-check">
 <ul>
 <li><strong>تولید رویداد در همان تراکنش</strong> کسب‌وکار، نه قبل یا بعد از آن</li>
-<li><strong>هر مصرف‌کننده idem potent است</strong>، چون تحویل حداقل یک‌بار است</li>
+<li><strong>هر مصرف‌کننده idempotent است</strong>، چون تحویل حداقل یک‌بار است</li>
 <li><strong>پیام‌های شکست‌خورده به DLQ می‌روند</strong>، نه اینکه بی‌نهایت retry شوند</li>
 <li><strong>ترتیب فقط به‌ازای کلید</strong> تضمین می‌شود (مثلاً <code>orderId</code>)</li>
 <li><strong>هیچ مصرف‌کننده‌ای نباید پیام را بین دو سرویس پاس بدهد</strong> مگر با دلیل روشن</li>
@@ -1667,6 +2035,54 @@ public class InventoryKafkaConfig {
 </tbody>
 </table>
 
+<figure class="kl-fig">
+<svg viewBox="0 0 770 280" role="img" aria-label="سه سطح تضمین تحویل پیام: حداکثر یک‌بار، حداقل یک‌بار و دقیقاً یک‌بار">
+  <!-- جعبه‌ها: از راست به چپ، تضمین قوی‌تر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-chip" x="576" y="34" width="120" height="26" rx="8"/>
+    <text class="s-tc" x="636" y="52" text-anchor="middle">خطر گم شدن داده</text>
+    <rect class="s-warn" x="526" y="72" width="220" height="140" rx="14"/>
+    <text class="s-t" x="636" y="106" text-anchor="middle">At-most-once</text>
+    <text class="s-t2" x="636" y="132" text-anchor="middle">حداکثر یک‌بار</text>
+    <text class="s-t2" x="636" y="164" text-anchor="middle">پیام حداکثر یک‌بار می‌رسد</text>
+    <text class="s-t2" x="636" y="186" text-anchor="middle">سریع‌تر، ولی داده گم می‌شود</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-chip" x="326" y="34" width="120" height="26" rx="8"/>
+    <text class="s-tc" x="386" y="52" text-anchor="middle">استاندارد صنعت</text>
+    <rect class="s-ok" x="276" y="72" width="220" height="140" rx="14"/>
+    <text class="s-t" x="386" y="106" text-anchor="middle">At-least-once</text>
+    <text class="s-t2" x="386" y="132" text-anchor="middle">حداقل یک‌بار</text>
+    <text class="s-t2" x="386" y="164" text-anchor="middle">پیام حتماً می‌رسد، ولی تکرار می‌شود</text>
+    <text class="s-t2" x="386" y="186" text-anchor="middle">مصرف‌کننده باید idempotent باشد</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-chip" x="76" y="34" width="120" height="26" rx="8"/>
+    <text class="s-tc" x="136" y="52" text-anchor="middle">محدود به یک سیستم</text>
+    <rect class="s-bad" x="26" y="72" width="220" height="140" rx="14"/>
+    <text class="s-t" x="136" y="106" text-anchor="middle">Exactly-once</text>
+    <text class="s-t2" x="136" y="132" text-anchor="middle">دقیقاً یک‌بار</text>
+    <text class="s-t2" x="136" y="164" text-anchor="middle">در سطح شبکه ناممکن است</text>
+    <text class="s-t2" x="136" y="186" text-anchor="middle">فقط یک پایگاه داده یا یک سرویس</text>
+  </g>
+
+  <!-- جهت افزایش تضمین -->
+  <path class="s-dash s-arr s-flow-soft" d="M 524 142 L 500 142"/>
+  <path class="s-head-dim" d="M 498 142 L 510 135 L 510 149 Z"/>
+  <path class="s-dash s-arr s-flow-soft" d="M 274 142 L 250 142"/>
+  <path class="s-head-dim" d="M 248 142 L 260 135 L 260 149 Z"/>
+
+  <circle class="s-runner s-runner-dim" r="4.5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 522 142 L 502 142"/>
+  </circle>
+
+  <text class="s-t2 s-lbl" x="385" y="250" text-anchor="middle" style="--kl-i:4">هرچه از راست به چپ تضمین قوی‌تر می‌شود، پیاده‌سازی دشوارتر می‌شود</text>
+</svg>
+<figcaption><b>سه تضمین قابل پیاده‌سازی:</b> تنها سطحی که در عمل به آن می‌رسید <code>At-least-once</code> است، چون نتیجه‌ی تأیید هیچ‌وقت به تولیدکننده برنمی‌گردد و پیام یا دوباره می‌رسد یا اصلاً نمی‌رسد. <code>Exactly-once</code> فقط در محدوده‌ی یک سرویس یا یک پایگاه داده معنا دارد و قرار دادنش به‌عنوان تضمین شبکه، یک سوءتفاهم خطرناک است.</figcaption>
+</figure>
+
 <div class="kl-box kl-hd">
 <span class="kl-h">توضیح دقیق</span>
 <strong>Exactly-once</strong> در سطح شبکه در واقع ناممکن است چون نتیجه‌ی ack هنوز به تولیدکننده
@@ -1782,7 +2198,7 @@ public class OutboxCleaner {
 <tr><td>۴</td><td><strong>تأخیر پنهان</strong></td><td>رویداد ۵ ثانیه دیرتر می‌رسد و کاربر می‌پرسد چرا؟</td></tr>
 <tr><td>۵</td><td><strong>دشواری تست یکپارچه</strong></td><td>تست کردن یک جریان چندمرحله‌ای نیازمند زیرساخت کامل است</td></tr>
 <tr><td>۶</td><td><strong>نیاز به زیرساخت Broker</strong></td><td>راه‌اندازی و نگه‌داری Kafka یک کار جدی است</td></tr>
-<tr><td>۷</td><td><strong>پیام تکراری</strong></td><td>تحویل حداقل یک‌بار یعنی کد مصرف‌کننده باید idem potent باشد</td></tr>
+<tr><td>۷</td><td><strong>پیام تکراری</strong></td><td>تحویل حداقل یک‌بار یعنی کد مصرف‌کننده باید idempotent باشد</td></tr>
 <tr><td>۸</td><td><strong>پیام از دست رفته در DLQ</strong></td><td>اگر DLQ را پایش نکنید، هیچ‌کس نمی‌فهمد چه چیزی شکست خورده</td></tr>
 <tr><td>۹</td><td><strong>سازگاری رویداد دشوار</strong></td><td>قرارداد شکننده است و تغییرش تیم‌های دیگر را می‌شکند</td></tr>
 <tr><td>۱۰</td><td><strong>سختی عیب‌یابی</strong></td><td>خطا می‌تواند در هر ۱۰ سرویس باشد؛ یافتنش زمان‌بر است</td></tr>
@@ -1791,7 +2207,7 @@ public class OutboxCleaner {
 </tbody>
 </table>
 
-<h3>سربسته‌ی « eventual consistency »</h3>
+<h3>سربسته‌ی «سازگاری نهایی»</h3>
 
 <pre class="kl-code" data-lang="text"><code>یعنی چه؟
   نوشتن در تک‌میلی‌ثانیه دیده نمی‌شود.
@@ -1833,7 +2249,7 @@ public class OutboxCleaner {
 <li><strong>لاگ ممیزی</strong> لازم دارید</li>
 <li><strong>تیم‌های مستقل</strong> باید روی قابلیت‌های موازی کار کنند</li>
 <li><strong>مسیر مهاجرت به Microservices</strong> را می‌خواهید باز کنید</li>
-<li><strong>مصرف‌کننده‌های مختلفی</strong> برای یک رویداد دارید (مانیتورینگ، تحلیل، انبار داده)</li>
+<li><strong>مصرف‌کنندگان مختلفی</strong> برای یک رویداد دارید (مانیتورینگ، تحلیل، انبار داده)</li>
 <li><strong>عملیات طولانی</strong> نباید کاربر را منتظر نگه دارد</li>
 </ul>
 </div>
@@ -2000,14 +2416,14 @@ public class OutboxEventRecorder implements EventRecorder {
 <tr><td><strong>Observer</strong></td><td><strong>الگوی اصلی</strong> — انتشار و گوش دادن</td><td>Producer و Consumer</td></tr>
 <tr><td><strong>Publish/Subscribe</strong></td><td>الگوی بنیادی معماری</td><td>رویداد در Broker بدون آدرس‌دهی</td></tr>
 <tr><td><strong>Mediator</strong></td><td>جدا کردن تولیدکننده از مصرف‌کننده</td><td>Broker به‌عنوان واسط</td></tr>
-<tr><td><strong>Event Sourcing</strong></td><td>نگهداری رویدادها به‌جای وضعیت</td><td>Event Store</td></tr>
+<tr><td><strong>Event Sourcing</strong></td><td>نگه‌داشتن رویدادها به‌جای وضعیت</td><td>Event Store</td></tr>
 <tr><td><strong>Transactional Outbox</strong></td><td><strong>الگوی حیاتی</strong> — تضمین اتمیک بودن</td><td><code>EventRecorder</code> + <code>OutboxRelay</code></td></tr>
 <tr><td><strong>Saga</strong></td><td>مدیریت تراکنش توزیع‌شده</td><td>جبران به‌جای Rollback</td></tr>
 <tr><td><strong>Anti-Corruption Layer</strong></td><td>محافظت از مدل در برابر قرارداد بیرونی</td><td>تبدیل قرارداد به مدل داخلی در مصرف‌کننده</td></tr>
 <tr><td><strong>Idempotent Consumer</strong></td><td>تحمل پیام تکراری</td><td><code>ProcessedEventStore</code></td></tr>
 <tr><td><strong>Dead Letter Queue</strong></td><td>نگه‌داری پیام‌های شکست‌خورده</td><td><code>DeadLetterPublishingRecoverer</code></td></tr>
 <tr><td><strong>Circuit Breaker</strong></td><td>توقف موقت فراخوانی شکسته</td><td>در کنار RPC، نه در خود EDA</td></tr>
-<tr><td><strong>Repository</strong></td><td>نگهداری وضعیت از رویدادها</td><td>EventStore به‌عنوان منبع حقیقت</td></tr>
+<tr><td><strong>Repository</strong></td><td>نگه‌داشتن وضعیت از رویدادها</td><td>EventStore به‌عنوان منبع حقیقت</td></tr>
 <tr><td><strong>Retry + Backoff</strong></td><td>تلاش مجدد با فاصله‌ی فزاینده</td><td><code>FixedBackOff</code></td></tr>
 </tbody>
 </table>
@@ -2410,7 +2826,7 @@ class OrderToInventoryFlowTest {
 <tr><td>۴</td><td>قرارداد شکننده</td><td>هر تغییر، همه‌ی تیم‌ها را می‌شکند</td><td>فیلد اضافه کن، حذف نکن</td></tr>
 <tr><td>۵</td><td>نداشتن DLQ یا پایش نکردن آن</td><td>خطاها بی‌صدا گم می‌شوند</td><td>DLQ + هشدار خودکار</td></tr>
 <tr><td>۶</td><td>استفاده از رویداد برای کاری که کاربر منتظرش است</td><td>UX خراب و مبهم</td><td>RPC همگام</td></tr>
-<tr><td>۷</td><td>یک قرارداد بزرگ برای همه‌ی مصرف‌کننده‌ها</td><td>همه به همه وابسته می‌شوند</td><td>رویدادهای کوچک و دقیق</td></tr>
+<tr><td>۷</td><td>یک قرارداد بزرگ برای همه‌ی مصرف‌کنندگان</td><td>همه به همه وابسته می‌شوند</td><td>رویدادهای کوچک و دقیق</td></tr>
 <tr><td>۸</td><td>نداشتن correlationId</td><td>ردیابی یک درخواست غیرممکن می‌شود</td><td>از ابتدا در پیام</td></tr>
 <tr><td>۹</td><td>پاک نکردن جدول outbox</td><td>بزرگ شدن جدول و کندی relay</td><td>پاکسازی زمان‌بندی‌شده</td></tr>
 <tr><td>۱۰</td><td>بی‌نهایت retry بدون سقف</td><td>پیام هرگز از صف خارج نمی‌شود</td><td>سقف تلاش + DLQ</td></tr>
@@ -2549,6 +2965,59 @@ EDA در <em>تأخیر</em> هزینه دارد و در <em>کارایی</em> �
 </tbody>
 </table>
 
+<figure class="kl-fig">
+<svg viewBox="0 0 770 268" role="img" aria-label="مقایسه‌ی تأخیر معمول و تأخیر در اوج برای چهار مسیر معماری رویدادمحور">
+  <!-- خطوط شبکه و محور -->
+  <path class="s-grid" d="M 528 4 L 528 236"/>
+  <path class="s-grid" d="M 446 4 L 446 236"/>
+  <path class="s-grid" d="M 364 4 L 364 236"/>
+  <path class="s-grid" d="M 282 4 L 282 236"/>
+  <path class="s-grid" d="M 200 4 L 200 236"/>
+  <path class="s-grid" d="M 569 4 L 569 236"/>
+  <text class="s-axlabel" x="569" y="250" text-anchor="middle">۵۰۰</text>
+  <text class="s-axlabel" x="528" y="250" text-anchor="middle">۱۰۰۰</text>
+  <text class="s-axlabel" x="446" y="250" text-anchor="middle">۲۰۰۰</text>
+  <text class="s-axlabel" x="364" y="250" text-anchor="middle">۳۰۰۰</text>
+  <text class="s-axlabel" x="282" y="250" text-anchor="middle">۴۰۰۰</text>
+  <text class="s-axlabel" x="200" y="250" text-anchor="middle">۵۰۰۰</text>
+  <text class="s-axlabel" x="355" y="266" text-anchor="middle">میلی‌ثانیه (سقف بازه)</text>
+  <path class="s-axis" d="M 610 4 L 610 236"/>
+
+  <!-- ردیف ۱: فراخوانی همگام -->
+  <text class="s-cat" x="698" y="36" text-anchor="middle">فراخوانی همگام</text>
+  <rect class="s-acc s-hbar" x="569" y="16" width="41" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="553" y="24" text-anchor="middle">۵۰۰ms</text>
+  <rect class="s-warn s-hbar" x="200" y="27" width="410" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="184" y="35" text-anchor="middle">۵۰۰۰ms</text>
+
+  <!-- ردیف ۲: ثبت در outbox -->
+  <text class="s-cat" x="698" y="96" text-anchor="middle">ثبت در outbox</text>
+  <rect class="s-acc s-hbar" x="605" y="76" width="5" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="589" y="84" text-anchor="middle">۱۰ms</text>
+  <rect class="s-warn s-hbar" x="605" y="87" width="5" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="589" y="95" text-anchor="middle">۲۰ms</text>
+
+  <!-- ردیف ۳: انتشار توسط relay -->
+  <text class="s-cat" x="698" y="156" text-anchor="middle">انتشار relay</text>
+  <rect class="s-acc s-hbar" x="528" y="136" width="82" height="8" rx="4" style="--kl-i:4"/>
+  <text class="s-val" x="512" y="144" text-anchor="middle">۱۰۰۰ms</text>
+  <rect class="s-warn s-hbar" x="200" y="147" width="410" height="8" rx="4" style="--kl-i:5"/>
+  <text class="s-val" x="184" y="155" text-anchor="middle">۵۰۰۰ms</text>
+
+  <!-- ردیف ۴: تحویل به مصرف‌کننده -->
+  <text class="s-cat" x="698" y="216" text-anchor="middle">تحویل به مصرف‌کننده</text>
+  <rect class="s-acc s-hbar" x="602" y="196" width="8" height="8" rx="4" style="--kl-i:6"/>
+  <text class="s-val" x="586" y="204" text-anchor="middle">۱۰۰ms</text>
+  <rect class="s-warn s-hbar" x="446" y="207" width="164" height="8" rx="4" style="--kl-i:7"/>
+  <text class="s-val" x="430" y="215" text-anchor="middle">۲۰۰۰ms</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>تأخیر معمول</span>
+  <span><i class="c-warn"></i>تأخیر در اوج</span>
+</div>
+<figcaption><b>کجای زنجیره هزینه می‌شود:</b> ارقام، سقفِ بازه‌های جدول بالا بر حسب میلی‌ثانیه‌اند و نشان می‌دهند کدام بخش از مسیر گران است. پاسخ‌دهی کاربر فقط به <code>outbox</code> وابسته است و همیشه زیر ۲۰ میلی‌ثانیه می‌ماند؛ تأخیر سنگین از <code>relay</code> به بعد و در اوج شروع می‌شود، یعنی دقیقاً جایی که کاربر منتظرش نیست. میله‌های کوتاه‌تر از ۵ پیکسل با کفِ ۵ پیکسل کشیده شده‌اند و عدد دقیق کنار هر میله آمده است.</figcaption>
+</figure>
+
 <h3>هزینه‌های واقعی</h3>
 
 <table>
@@ -2669,7 +3138,7 @@ Producer (تولیدکننده‌ی رویداد)، Broker (واسط ذخیره 
 <div class="kl-box kl-h">
 <span class="kl-h">سؤال ۹ — Topic چیست؟</span>
 کانال دسته‌بندی رویدادهای هم‌نوع. مثلاً topic به نام <code>orders</code> که همه‌ی
-رویدادهای سفارش به آن می‌روند. مصرف‌کننده‌ها به topic مربوطه subscribe می‌شوند.
+رویدادهای سفارش به آن می‌روند. مصرف‌کنندگان به topic مربوطه subscribe می‌شوند.
 </div>
 
 <div class="kl-box kl-h">
@@ -2735,7 +3204,7 @@ Dead Letter Queue، صفی برای پیام‌هایی که پس از چند ت
 <span class="kl-h">سؤال ۱۸ — Saga چیست و چه جایگزینی برای تراکنش توزیع‌شده؟</span>
 الگویی برای هماهنگی عملیات در چند سرویس که به‌جای Rollback، از عملیات جبرانی استفاده
 می‌کند. دو نوع دارد: Choreography (هر سرویس به رویداد بعدی گوش می‌دهد) و
-Orchestration (یک سرویس مرکزی ترتیب می‌دهد). جایگزین کم‌کاربردی برای 2PC است.
+Orchestration (یک سرویس مرکزی ترتیب می‌دهد). جایگزین عملی برای 2PC است.
 </div>
 
 <div class="kl-box kl-h">
@@ -2750,8 +3219,8 @@ Orchestration (یک سرویس مرکزی ترتیب می‌دهد). جایگز�
 <span class="kl-h">سؤال ۲۰ — چگونه در یک سازمان بزرگ EDA را معرفی می‌کنید؟</span>
 تدریجی و با یک جریان مشخص شروع می‌کنید (مثلاً اعلان سفارش). اول Outbox را بدون Broker
 به کار می‌برید تا سازگاری به دست آید، سپس یک مصرف‌کننده را جدا می‌کنید، و وقتی تیم
-مسلط شد زیرساخت را جدی می‌کنید. مهم: ابزار پایش (lag و DLQ) را از روز اول بسازید وگرنه
-دیده‌اید شدید.
+مسلط شد زیرساخت را جدی می‌کنید. نکته‌ی مهم: ابزار پایش (lag و DLQ) را از روز اول
+بسازید، وگرنه دیر می‌فهمید که پیام‌ها گم شده‌اند.
 </div>
 </section>
 
@@ -2802,7 +3271,7 @@ Azure Service Bus هم هستند. انتخاب بین آن‌ها بیشتر ب
 
 <div class="kl-box kl-h">
 <span class="kl-h">مصرف‌کننده‌ی کند چه مشکلی ایجاد می‌کند؟</span>
-اگر پارتیشن اشغال شود، مصرف‌کننده‌های پشت آن صف می‌کنند و lag بالا می‌رود. راه‌حل:
+اگر پارتیشن اشغال شود، مصرف‌کنندگان پشت آن صف می‌کنند و lag بالا می‌رود. راه‌حل:
 افزایش concurrency مصرف‌کننده، یا کاهش بار آن با تقسیم کار.
 </div>
 
@@ -2815,7 +3284,7 @@ Azure Service Bus هم هستند. انتخاب بین آن‌ها بیشتر ب
 <div class="kl-box kl-h">
 <span class="kl-h">چطور رویدادهای قدیمی را دوباره پردازش کنم؟</span>
 در Kafka با تغییر offset گروه به نقطه‌ی قبلی. اما حواستان باشد که این کار همه‌ی
-مصرف‌کننده‌های آن گروه را تحت تأثیر قرار می‌دهد؛ معمولاً یک گروه موقت با شناسه‌ی دیگر
+مصرف‌کنندگان آن گروه را تحت تأثیر قرار می‌دهد؛ معمولاً یک گروه موقت با شناسه‌ی دیگر
 می‌سازید و پیام‌ها را به یک topic دیگر هدایت می‌کنید.
 </div>
 
@@ -2863,7 +3332,7 @@ DLQ و ردیابی توزیع‌شده بخشی از معماری است، نه
 
 <div class="kl-box kl-h">
 <span class="kl-h">چه زمانی باید از EDA دست بکشیم؟</span>
-وقتی پیچیدگی‌ای که اضافه کرده‌اید از مشکلی که حل کرده بیشتر شده و تیم نتواند جریان
+وقتی پیچیدگی‌ای که اضافه کرده‌اید از مشکلی که حل کرده بیشتر شده است و تیم نتواند جریان
 را در ذهن نگه دارد. یا وقتی کاربر نتیجه را «همین الان» لازم دارد و سازگاری نهایی
 قابل قبول نیست.
 </div>

@@ -31,12 +31,14 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -347,15 +349,99 @@ DDD یعنی «کسب‌وکار را مدل کن، مدل را داخل کد ب
 
 <h3>ساختار کلان مفاهیم</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    A[Ubiquitous Language<br/>زبان مشترک] --> B[Bounded Context<br/>زمینه‌ی محدود]
-    B --> C[Subdomain<br/>زیرسیستم]
-    C --> D[Module<br/>ماژول داخلی]
-    D --> E[Entity &amp; Value Object]
-    E --> F[Aggregate Root<br/>ریشه‌ی تجمیع]
-    F --> G[Repository]
-    F --> H[Domain Service]
-    F --> I[Domain Event]</code></pre>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 456" role="img" aria-label="ساختار کلان مفاهیم DDD در سه طبقه، از زبان مشترک تا رویداد دامنه">
+  <!-- پوسته‌ی سه طبقه -->
+  <rect class="s-group s-group-acc" x="30" y="16" width="710" height="112" rx="16"/>
+  <rect class="s-group" x="30" y="172" width="710" height="112" rx="16"/>
+  <rect class="s-group" x="30" y="328" width="710" height="112" rx="16"/>
+
+  <text class="s-group-t" x="385" y="42" text-anchor="middle">طبقه‌ی راهبردی — مرزها</text>
+  <text class="s-group-t" x="385" y="198" text-anchor="middle">طبقه‌ی تاکتیکی — مدل داخل زمینه</text>
+  <text class="s-group-t" x="385" y="354" text-anchor="middle">ابزارهای کار با مدل</text>
+
+  <!-- پیکان‌های عمودی طبقه‌ها -->
+  <path class="s-arr s-flow" d="M 385 128 L 385 160"/>
+  <path class="s-head" d="M 385 166 L 378 154 L 392 154 Z"/>
+  <text class="s-t2 s-lbl" x="482" y="150" text-anchor="middle" style="--kl-i:1">مرزبندی</text>
+
+  <path class="s-arr s-flow" d="M 385 284 L 385 316"/>
+  <path class="s-head" d="M 385 322 L 378 310 L 392 310 Z"/>
+  <text class="s-t2 s-lbl" x="482" y="306" text-anchor="middle" style="--kl-i:2">پیاده‌سازی</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 385 128 L 385 160"/>
+  </circle>
+
+  <!-- پیکان‌های افقی درون هر طبقه -->
+  <path class="s-arr s-flow" d="M 540 86 L 483 86"/>
+  <path class="s-head" d="M 477 86 L 489 79 L 489 93 Z"/>
+  <path class="s-arr s-flow" d="M 289 86 L 232 86"/>
+  <path class="s-head" d="M 226 86 L 238 79 L 238 93 Z"/>
+
+  <path class="s-arr s-flow" d="M 540 242 L 483 242"/>
+  <path class="s-head" d="M 477 242 L 489 235 L 489 249 Z"/>
+  <path class="s-arr s-flow" d="M 289 242 L 232 242"/>
+  <path class="s-head" d="M 226 242 L 238 235 L 238 249 Z"/>
+
+  <path class="s-arr s-flow" d="M 540 398 L 483 398"/>
+  <path class="s-head" d="M 477 398 L 489 391 L 489 405 Z"/>
+  <path class="s-arr s-flow" d="M 289 398 L 232 398"/>
+  <path class="s-head" d="M 226 398 L 238 391 L 238 405 Z"/>
+
+  <!-- طبقه‌ی راهبردی -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="546" y="60" width="180" height="52" rx="10"/>
+    <text class="s-t" x="636" y="80" text-anchor="middle">Ubiquitous Language</text>
+    <text class="s-t2" x="636" y="102" text-anchor="middle">زبان مشترک</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="295" y="60" width="180" height="52" rx="10"/>
+    <text class="s-t" x="385" y="80" text-anchor="middle">Bounded Context</text>
+    <text class="s-t2" x="385" y="102" text-anchor="middle">زمینه‌ی محدود</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="44" y="60" width="180" height="52" rx="10"/>
+    <text class="s-t" x="134" y="80" text-anchor="middle">Subdomain</text>
+    <text class="s-t2" x="134" y="102" text-anchor="middle">زیرسیستم</text>
+  </g>
+
+  <!-- طبقه‌ی تاکتیکی -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok" x="546" y="216" width="180" height="52" rx="10"/>
+    <text class="s-t" x="636" y="236" text-anchor="middle">Module</text>
+    <text class="s-t2" x="636" y="258" text-anchor="middle">ماژول داخلی</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-ok" x="295" y="216" width="180" height="52" rx="10"/>
+    <text class="s-t" x="385" y="236" text-anchor="middle">Entity و Value Object</text>
+    <text class="s-t2" x="385" y="258" text-anchor="middle">دو نوع مدل پایه</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-ok" x="44" y="216" width="180" height="52" rx="10"/>
+    <text class="s-t" x="134" y="236" text-anchor="middle">Aggregate Root</text>
+    <text class="s-t2" x="134" y="258" text-anchor="middle">ریشه‌ی تجمیع</text>
+  </g>
+
+  <!-- ابزارهای مدل -->
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-warn" x="546" y="372" width="180" height="52" rx="10"/>
+    <text class="s-t" x="636" y="392" text-anchor="middle">Repository</text>
+    <text class="s-t2" x="636" y="414" text-anchor="middle">دسترسی به تجمیع</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-warn" x="295" y="372" width="180" height="52" rx="10"/>
+    <text class="s-t" x="385" y="392" text-anchor="middle">Domain Service</text>
+    <text class="s-t2" x="385" y="414" text-anchor="middle">قاعده‌ی بین‌تجمیعی</text>
+  </g>
+  <g class="s-node" style="--kl-i:8">
+    <rect class="s-warn" x="44" y="372" width="180" height="52" rx="10"/>
+    <text class="s-t" x="134" y="392" text-anchor="middle">Domain Event</text>
+    <text class="s-t2" x="134" y="414" text-anchor="middle">رویداد دامنه</text>
+  </g>
+</svg>
+<figcaption><b>ساختار کلان مفاهیم:</b> مفاهیم DDD سه طبقه‌اند. زبان مشترک، زمینه‌ی محدود و زیرسیستم مرزهای کار را می‌سازند؛ ماژول، Entity و Value Object و Aggregate Root مدل داخل هر زمینه را می‌سازند؛ و Repository، Domain Service و Domain Event ابزارهای کار با همین مدل‌اند. هرچه از طبقه‌ی اول پایین‌تر برویم، واژه‌ها دقیق‌تر و وابستگی‌ها کمتر می‌شوند.</figcaption>
+</figure>
 </section>
 
 <!-- ==================== 4 ==================== -->
@@ -590,25 +676,80 @@ Value Object است؛ دو تا از آن با مبلغ یکسان <strong>بر�
 می‌شوند، نه شیء.»
 </div>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TB
-    subgraph AggA["Aggregate: Order ✅ مرز تراکنش"]
-        OR["Order<br/>Aggregate Root"]
-        OL1["OrderLine<br/>Entity"]
-        OL2["OrderLine<br/>Entity"]
-        DL["DeliveryAddress<br/>Value Object"]
-        OR -->|"داخل"| OL1
-        OR -->|"داخل"| OL2
-        OR -->|"داخل"| DL
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 408" role="img" aria-label="ساختار Aggregate سفارش، ارتباط آن با Aggregate مشتری و مرز تراکنش">
+  <!-- پوسته‌ی Aggregate سفارش -->
+  <rect class="s-group s-group-acc" x="40" y="16" width="710" height="232" rx="16"/>
+  <text class="s-group-t" x="395" y="42" text-anchor="middle">Aggregate: Order — مرز تراکنش</text>
 
-    subgraph AggB["Aggregate: Customer"]
-        CR["Customer<br/>Aggregate Root"]
-    end
+  <!-- انشعاب ریشه به اعضا -->
+  <path class="s-arr s-flow" d="M 590 96 L 520 96"/>
+  <path class="s-line s-flow" d="M 520 86 L 520 206"/>
+  <path class="s-arr s-flow" d="M 516 86 L 278 86"/>
+  <path class="s-head" d="M 272 86 L 284 79 L 284 93 Z"/>
+  <path class="s-arr s-flow" d="M 516 146 L 278 146"/>
+  <path class="s-head" d="M 272 146 L 284 139 L 284 153 Z"/>
+  <path class="s-arr s-flow" d="M 516 206 L 278 206"/>
+  <path class="s-head" d="M 272 206 L 284 199 L 284 213 Z"/>
 
-    OR -->|"فقط CustomerId<br/>نه شیء Customer"| CR
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 516 146 L 278 146"/>
+  </circle>
 
-    AggA --> DB1[("یک تراکنش<br/>واحد کار")]
-    AggB -.->|"تراکنش جدا"| DB1</code></pre>
+  <!-- ریشه‌ی تجمیع -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok s-pulse" x="596" y="60" width="140" height="72" rx="12"/>
+    <text class="s-t" x="666" y="90" text-anchor="middle">Order</text>
+    <text class="s-t2" x="666" y="114" text-anchor="middle">Aggregate Root</text>
+  </g>
+
+  <!-- اعضای داخل مرز -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="60" y="60" width="206" height="52" rx="10"/>
+    <text class="s-t" x="163" y="80" text-anchor="middle">OrderLine</text>
+    <text class="s-t2" x="163" y="102" text-anchor="middle">Entity</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="60" y="120" width="206" height="52" rx="10"/>
+    <text class="s-t" x="163" y="140" text-anchor="middle">OrderLine</text>
+    <text class="s-t2" x="163" y="162" text-anchor="middle">Entity</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="60" y="180" width="206" height="52" rx="10"/>
+    <text class="s-t" x="163" y="200" text-anchor="middle">DeliveryAddress</text>
+    <text class="s-t2" x="163" y="222" text-anchor="middle">Value Object</text>
+  </g>
+
+  <!-- ارجاع به Aggregate دیگر: فقط شناسه -->
+  <path class="s-dash s-flow-soft" d="M 200 250 L 200 280"/>
+  <path class="s-head-dim" d="M 200 286 L 193 274 L 207 274 Z"/>
+  <text class="s-t2 s-lbl" x="330" y="274" text-anchor="middle" style="--kl-i:4">فقط CustomerId، نه شیء Customer</text>
+
+  <!-- مرز تراکنش -->
+  <path class="s-arr s-flow" d="M 600 250 L 600 280"/>
+  <path class="s-head" d="M 600 286 L 593 274 L 607 274 Z"/>
+  <text class="s-t2 s-lbl" x="672" y="274" text-anchor="middle" style="--kl-i:5">تراکنش ۱</text>
+
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-group" x="40" y="288" width="330" height="104" rx="14"/>
+    <text class="s-group-t" x="205" y="314" text-anchor="middle">Aggregate: Customer</text>
+    <rect class="s-ok" x="56" y="322" width="298" height="56" rx="10"/>
+    <text class="s-t" x="205" y="344" text-anchor="middle">Customer</text>
+    <text class="s-t2" x="205" y="366" text-anchor="middle">Aggregate Root</text>
+  </g>
+
+  <path class="s-dash s-flow-soft" d="M 370 350 L 428 350"/>
+  <path class="s-head-dim" d="M 434 350 L 422 343 L 422 357 Z"/>
+  <text class="s-t2 s-lbl" x="402" y="338" text-anchor="middle" style="--kl-i:7">تراکنش جدا</text>
+
+  <g class="s-node" style="--kl-i:8">
+    <rect class="s-chip" x="440" y="288" width="290" height="104" rx="14"/>
+    <text class="s-tc" x="585" y="332" text-anchor="middle">یک تراکنش</text>
+    <text class="s-t2" x="585" y="356" text-anchor="middle">واحد کار</text>
+  </g>
+</svg>
+<figcaption><b>مرز تراکنش:</b> هر چیزی که داخل کادر خط‌چین Aggregate سفارش است، در یک تراکنش با هم تغییر می‌کند و <code>Order</code> تنها راه ورود به آن است. اشاره به مشتری فقط با <code>CustomerId</code> انجام می‌شود؛ به همین دلیل تغییر کیف پول مشتری، تراکنش جداگانه‌ای با تراکنش سفارش خواهد بود.</figcaption>
+</figure>
 
 <div class="kl-box kl-warn">
 <span class="kl-h">چرا این قاعده انقدر مهم است؟</span>
@@ -762,19 +903,61 @@ OrderRepository.save(order)                     ← نوشتن یک Aggregate
 پیکان‌ها همیشه به داخل می‌روند.
 </p>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph TD
-    IN["لایه‌ی رابط کاربری<br/>Interface / Presentation<br/>Controller، REST، UI"]
-    APP["لایه‌ی Application<br/>Use Case ها<br/>جریان تراکنش، مرز تراکنش"]
-    DOM["لایه‌ی Domain<br/>مدل دامنه<br/>Entity، VO، Aggregate، Domain Service"]
-    INF["لایه‌ی Infrastructure<br/>پیاده‌سازی‌های فنی<br/>JPA، HTTP، Kafka، فایل"]
+<figure class="kl-fig">
+<svg viewBox="0 0 770 536" role="img" aria-label="چهار لایه‌ی DDD و جهت وابستگی رو به داخل">
+  <!-- پیکان‌های وابستگی رو به پایین -->
+  <path class="s-arr s-flow" d="M 495 96 L 495 156"/>
+  <path class="s-head" d="M 495 162 L 488 150 L 502 150 Z"/>
+  <text class="s-t2 s-lbl" x="610" y="132" text-anchor="middle" style="--kl-i:0">وابسته به</text>
 
-    IN -->|"وابسته به"| APP
-    APP -->|"وابسته به"| DOM
-    INF -.->|"پیاده‌سازی Interface های"| DOM
-    APP -.->|"پیاده‌سازی Port های"| INF
+  <path class="s-arr s-flow" d="M 495 232 L 495 292"/>
+  <path class="s-head" d="M 495 298 L 488 286 L 502 286 Z"/>
+  <text class="s-t2 s-lbl" x="610" y="268" text-anchor="middle" style="--kl-i:1">وابسته به</text>
 
-    style DOM fill:#0f766e,color:#fff,stroke:#0f766e
-    style INF fill:#475569,color:#fff,stroke:#475569</code></pre>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.8s" repeatCount="indefinite" path="M 495 232 L 495 292"/>
+  </circle>
+
+  <!-- پیکان‌های پیاده‌سازی: زیرساخت به بالا -->
+  <path class="s-dash s-flow-soft" d="M 350 444 L 350 384"/>
+  <path class="s-head-dim" d="M 350 378 L 343 390 L 357 390 Z"/>
+  <text class="s-t2 s-lbl" x="222" y="418" text-anchor="middle" style="--kl-i:2">پیاده‌سازی Interfaceهای</text>
+
+  <path class="s-dash s-flow-soft" d="M 290 194 L 150 194 L 150 500 L 284 500"/>
+  <path class="s-head-dim" d="M 290 500 L 278 493 L 278 507 Z"/>
+  <text class="s-t2 s-lbl" x="222" y="478" text-anchor="middle" style="--kl-i:3">پیاده‌سازی Portهای</text>
+
+  <!-- لایه‌ها -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="290" y="20" width="410" height="76" rx="14"/>
+    <text class="s-t" x="495" y="44" text-anchor="middle">لایه‌ی رابط کاربری — Interface / Presentation</text>
+    <text class="s-t2" x="495" y="66" text-anchor="middle">کنترلر، REST، UI</text>
+    <text class="s-t2" x="495" y="86" text-anchor="middle">فقط ترجمه‌ی درخواست به Command</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="290" y="156" width="410" height="76" rx="14"/>
+    <text class="s-t" x="495" y="180" text-anchor="middle">لایه‌ی Application</text>
+    <text class="s-t2" x="495" y="202" text-anchor="middle">Use Caseها و هماهنگی</text>
+    <text class="s-t2" x="495" y="222" text-anchor="middle">جریان تراکنش، مرز تراکنش</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="290" y="292" width="410" height="92" rx="14"/>
+    <text class="s-t" x="495" y="316" text-anchor="middle">لایه‌ی Domain — قلب سیستم</text>
+    <text class="s-t2" x="495" y="340" text-anchor="middle">مدل دامنه</text>
+    <text class="s-t2" x="495" y="364" text-anchor="middle">Entity، VO، Aggregate، Domain Service</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c6" x="290" y="444" width="410" height="76" rx="14"/>
+    <text class="s-t" x="495" y="468" text-anchor="middle">لایه‌ی Infrastructure</text>
+    <text class="s-t2" x="495" y="490" text-anchor="middle">پیاده‌سازی‌های فنی</text>
+    <text class="s-t2" x="495" y="510" text-anchor="middle">JPA، HTTP، Kafka، فایل</text>
+  </g>
+</svg>
+<figcaption><b>جهت وابستگی:</b> پیکان‌های پیوسته همیشه به پایین می‌روند؛ یعنی لایه‌ی بالا به لایه‌ی پایین وابسته است، نه برعکس. پیکان‌های خط‌چین جهت مخالف را نشان می‌دهند: Infrastructure، <code>Interface</code> و <code>Port</code> تعریف‌شده در لایه‌های بالا را <em>پیاده‌سازی</em> می‌کند و دامنه از هیچ‌کدام از آن‌ها چیزی نمی‌داند.</figcaption>
+</figure>
 
 <h3>لایه‌ی Domain — قلب سیستم</h3>
 
@@ -858,28 +1041,210 @@ public class OrderApplicationService {
 جریان خواندن در یک DDD سالم همیشه یک مسیر مشخص دارد. هر گام جداست و می‌توان آن را تست کرد:
 </p>
 
-<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
-    participant C as کاربر
-    participant CT as OrderController
-    participant AS as OrderApplicationService
-    participant R as OrderRepository (Port)
-    participant PR as JpaOrderRepository (Adapter)
-    participant DB as دیتابیس
+<figure class="kl-fig">
+<svg viewBox="0 0 770 590" role="img" aria-label="دیاگرام توالی ثبت سفارش از کنترلر تا دیتابیس و بازگشت نتیجه">
+  <!-- خطوط زندگی بازیگران -->
+  <path class="s-dash" d="M 120 62 L 120 572"/>
+  <path class="s-dash" d="M 232 62 L 232 572"/>
+  <path class="s-dash" d="M 344 62 L 344 572"/>
+  <path class="s-dash" d="M 456 62 L 456 572"/>
+  <path class="s-dash" d="M 568 62 L 568 572"/>
+  <path class="s-dash" d="M 680 62 L 680 572"/>
 
-    C->>CT: POST /orders (PlaceOrderRequest)
-    CT->>CT: اعتبارسنجی فرم و تبدیل به Command
-    CT->>AS: placeOrder(command)
-    AS->>R: findById(orderId)
-    R->>PR: (تنها کسی که JPA می‌شناسد)
-    PR->>DB: SELECT * FROM orders
-    DB-->>PR: ردیف‌ها
-    PR-->>AS: Order (موجودیت، نه ردیف دیتابیس)
-    AS->>AS: قوانین دامنه اجرا می‌شود
-    AS->>R: save(order)
-    R->>PR: save
-    PR->>DB: INSERT / UPDATE
-    AS-->>CT: OrderId
-    CT-->>C: 201 Created + Location</code></pre>
+  <!-- سرهای بازیگر -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="68" y="10" width="104" height="48" rx="10"/>
+    <text class="s-t" x="120" y="40" text-anchor="middle">کاربر</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="180" y="10" width="104" height="48" rx="10"/>
+    <text class="s-t" x="232" y="30" text-anchor="middle">Order</text>
+    <text class="s-t2" x="232" y="48" text-anchor="middle">Controller</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-warn" x="292" y="10" width="104" height="48" rx="10"/>
+    <text class="s-t" x="344" y="30" text-anchor="middle">OrderApplication</text>
+    <text class="s-t2" x="344" y="48" text-anchor="middle">Service</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-ok" x="404" y="10" width="104" height="48" rx="10"/>
+    <text class="s-t" x="456" y="30" text-anchor="middle">OrderRepository</text>
+    <text class="s-t2" x="456" y="48" text-anchor="middle">Port</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-c6" x="516" y="10" width="104" height="48" rx="10"/>
+    <text class="s-t" x="568" y="30" text-anchor="middle">JpaOrderRepository</text>
+    <text class="s-t2" x="568" y="48" text-anchor="middle">Adapter</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-chip" x="628" y="10" width="104" height="48" rx="10"/>
+    <text class="s-tc" x="680" y="40" text-anchor="middle">دیتابیس</text>
+  </g>
+
+  <!-- ۱) کاربر ← Controller : درخواست -->
+  <g style="--kl-i:1">
+    <path class="s-arr s-flow" d="M 226 100 L 132 100"/>
+    <path class="s-head" d="M 126 100 L 138 93 L 138 107 Z"/>
+    <text class="s-t2 s-lbl" x="179" y="86" text-anchor="middle">POST /orders (PlaceOrderRequest)</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <circle class="s-chip" cx="746" cy="100" r="12"/>
+    <text class="s-tc" x="746" y="104" text-anchor="middle">۱</text>
+  </g>
+
+  <!-- ۲) Controller : اعتبارسنجی و تبدیل به Command -->
+  <g style="--kl-i:2">
+    <path class="s-arr-ok s-flow-ok" d="M 232 134 L 274 134 L 274 118 L 242 118"/>
+    <path class="s-head-ok" d="M 236 118 L 248 111 L 248 125 Z"/>
+    <text class="s-t2 s-lbl" x="292" y="112" text-anchor="middle">اعتبارسنجی فرم و تبدیل به Command</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <circle class="s-chip" cx="746" cy="134" r="12"/>
+    <text class="s-tc" x="746" y="138" text-anchor="middle">۲</text>
+  </g>
+
+  <!-- ۳) Controller ← Application : placeOrder -->
+  <g style="--kl-i:3">
+    <path class="s-arr s-flow" d="M 238 168 L 344 168"/>
+    <path class="s-head" d="M 350 168 L 338 161 L 338 175 Z"/>
+    <text class="s-t2 s-lbl" x="291" y="154" text-anchor="middle">placeOrder(command)</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <circle class="s-chip" cx="746" cy="168" r="12"/>
+    <text class="s-tc" x="746" y="172" text-anchor="middle">۳</text>
+  </g>
+
+  <!-- ۴) Application ← Repository : خواندن تجمیع -->
+  <g style="--kl-i:4">
+    <path class="s-arr s-flow" d="M 350 202 L 462 202"/>
+    <path class="s-head" d="M 468 202 L 456 195 L 456 209 Z"/>
+    <text class="s-t2 s-lbl" x="409" y="188" text-anchor="middle">findById(orderId)</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <circle class="s-chip" cx="746" cy="202" r="12"/>
+    <text class="s-tc" x="746" y="206" text-anchor="middle">۴</text>
+  </g>
+
+  <!-- ۵) Repository ← Adapter : تنها نقطه‌ی آشنایی با JPA -->
+  <g style="--kl-i:5">
+    <path class="s-arr s-flow" d="M 462 236 L 562 236"/>
+    <path class="s-head" d="M 568 236 L 556 229 L 556 243 Z"/>
+    <text class="s-t2 s-lbl" x="515" y="222" text-anchor="middle">تنها کسی که JPA می‌شناسد</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <circle class="s-chip" cx="746" cy="236" r="12"/>
+    <text class="s-tc" x="746" y="240" text-anchor="middle">۵</text>
+  </g>
+
+  <!-- ۶) Adapter ← دیتابیس : خواندن -->
+  <g style="--kl-i:6">
+    <path class="s-arr s-flow" d="M 574 270 L 674 270"/>
+    <path class="s-head" d="M 680 270 L 668 263 L 668 277 Z"/>
+    <text class="s-t2 s-lbl" x="627" y="256" text-anchor="middle">SELECT * FROM orders</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <circle class="s-chip" cx="746" cy="270" r="12"/>
+    <text class="s-tc" x="746" y="274" text-anchor="middle">۶</text>
+  </g>
+
+  <!-- ۷) دیتابیس → Adapter : ردیف‌ها -->
+  <g style="--kl-i:7">
+    <path class="s-dash s-arr-ok s-flow-soft" d="M 674 304 L 580 304"/>
+    <path class="s-head-ok" d="M 574 304 L 586 297 L 586 311 Z"/>
+    <text class="s-t2 s-lbl" x="627" y="290" text-anchor="middle">ردیف‌ها</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <circle class="s-chip" cx="746" cy="304" r="12"/>
+    <text class="s-tc" x="746" y="308" text-anchor="middle">۷</text>
+  </g>
+
+  <!-- ۸) Adapter → Application : موجودیت، نه ردیف دیتابیس -->
+  <g style="--kl-i:8">
+    <path class="s-dash s-arr-ok s-flow-soft" d="M 562 338 L 356 338"/>
+    <path class="s-head-ok" d="M 350 338 L 362 331 L 362 345 Z"/>
+    <text class="s-t2 s-lbl" x="456" y="324" text-anchor="middle">Order (موجودیت، نه ردیف دیتابیس)</text>
+  </g>
+  <g class="s-node" style="--kl-i:8">
+    <circle class="s-chip" cx="746" cy="338" r="12"/>
+    <text class="s-tc" x="746" y="342" text-anchor="middle">۸</text>
+  </g>
+
+  <!-- ۹) Application : اجرای قوانین دامنه -->
+  <g style="--kl-i:9">
+    <path class="s-arr-ok s-flow-ok" d="M 344 372 L 386 372 L 386 356 L 354 356"/>
+    <path class="s-head-ok" d="M 348 356 L 360 349 L 360 363 Z"/>
+    <text class="s-t2 s-lbl" x="404" y="350" text-anchor="middle">قوانین دامنه اجرا می‌شود</text>
+  </g>
+  <g class="s-node" style="--kl-i:9">
+    <circle class="s-chip" cx="746" cy="372" r="12"/>
+    <text class="s-tc" x="746" y="376" text-anchor="middle">۹</text>
+  </g>
+
+  <!-- ۱۰) Application ← Repository : ذخیره -->
+  <g style="--kl-i:10">
+    <path class="s-arr s-flow" d="M 350 406 L 462 406"/>
+    <path class="s-head" d="M 468 406 L 456 399 L 456 413 Z"/>
+    <text class="s-t2 s-lbl" x="409" y="392" text-anchor="middle">save(order)</text>
+  </g>
+  <g class="s-node" style="--kl-i:10">
+    <circle class="s-chip" cx="746" cy="406" r="12"/>
+    <text class="s-tc" x="746" y="410" text-anchor="middle">۱۰</text>
+  </g>
+
+  <!-- ۱۱) Repository ← Adapter -->
+  <g style="--kl-i:11">
+    <path class="s-arr s-flow" d="M 462 440 L 562 440"/>
+    <path class="s-head" d="M 568 440 L 556 433 L 556 447 Z"/>
+    <text class="s-t2 s-lbl" x="515" y="426" text-anchor="middle">save</text>
+  </g>
+  <g class="s-node" style="--kl-i:11">
+    <circle class="s-chip" cx="746" cy="440" r="12"/>
+    <text class="s-tc" x="746" y="444" text-anchor="middle">۱۱</text>
+  </g>
+
+  <!-- ۱۲) Adapter ← دیتابیس : نوشتن -->
+  <g style="--kl-i:12">
+    <path class="s-arr s-flow" d="M 574 474 L 674 474"/>
+    <path class="s-head" d="M 680 474 L 668 467 L 668 481 Z"/>
+    <text class="s-t2 s-lbl" x="627" y="460" text-anchor="middle">INSERT / UPDATE</text>
+  </g>
+  <g class="s-node" style="--kl-i:12">
+    <circle class="s-chip" cx="746" cy="474" r="12"/>
+    <text class="s-tc" x="746" y="478" text-anchor="middle">۱۲</text>
+  </g>
+
+  <!-- ۱۳) Application → Controller : شناسه -->
+  <g style="--kl-i:13">
+    <path class="s-dash s-arr-ok s-flow-soft" d="M 338 508 L 246 508"/>
+    <path class="s-head-ok" d="M 240 508 L 252 501 L 252 515 Z"/>
+    <text class="s-t2 s-lbl" x="289" y="494" text-anchor="middle">OrderId</text>
+  </g>
+  <g class="s-node" style="--kl-i:13">
+    <circle class="s-chip" cx="746" cy="508" r="12"/>
+    <text class="s-tc" x="746" y="512" text-anchor="middle">۱۳</text>
+  </g>
+
+  <!-- ۱۴) Controller → کاربر : پاسخ -->
+  <g style="--kl-i:14">
+    <path class="s-dash s-arr-ok s-flow-soft" d="M 226 542 L 132 542"/>
+    <path class="s-head-ok" d="M 126 542 L 138 535 L 138 549 Z"/>
+    <text class="s-t2 s-lbl" x="179" y="528" text-anchor="middle">201 Created + Location</text>
+  </g>
+  <g class="s-node" style="--kl-i:14">
+    <circle class="s-chip" cx="746" cy="542" r="12"/>
+    <text class="s-tc" x="746" y="546" text-anchor="middle">۱۴</text>
+  </g>
+
+  <!-- ذره‌های متحرک -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.6s" repeatCount="indefinite" path="M 226 100 L 132 100"/>
+  </circle>
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3.6s" begin="1.8s" repeatCount="indefinite" path="M 574 270 L 674 270"/>
+  </circle>
+</svg>
+<figcaption><b>جریان ثبت سفارش:</b> جریان همیشه از راست به چپ است؛ یعنی لایه‌ی بالا داده را به پایین می‌دهد و پاسخ از همان مسیر برمی‌گردد. کنترلر فقط درخواست را به <code>Command</code> تبدیل می‌کند و از آن به بعد هیچ چیز درباره‌ی دیتابیس نمی‌داند؛ تنها <code>JpaOrderRepository</code> است که <code>JPA</code> را می‌شناسد و آنچه به لایه‌ی بالا می‌دهد یک <code>Order</code> است، نه یک ردیف دیتابیس.</figcaption>
+</figure>
 
 <h3>قواعد جریان داده</h3>
 
@@ -899,8 +1264,8 @@ public class OrderApplicationService {
 
 <pre class="kl-code" data-lang="text"><code>در یک تراکنش، این‌ها ذخیره می‌شوند:
   ✅ Order (Aggregate 1)  → جدول orders
-  ✅ OrderLine های آن     → جدول order_lines
-  ✅ OutboxEvent های آن   → جدول outbox_events
+  ✅ OrderLineهای آن     → جدول order_lines
+  ✅ OutboxEventهای آن   → جدول outbox_events
 
 در این تراکنش، این‌ها ذخیره نمی‌شوند (فقط ID خوانده می‌شوند):
   ⛔ Customer             → فقط customer_id خوانده می‌شود
@@ -1497,29 +1862,124 @@ class DomainExceptionHandler {
 <section id="s12">
 <h2><span class="kl-num">بخش ۱۲</span>مقایسه با معماری‌های دیگر</h2>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    subgraph Layered["معماری لایه‌ای"]
-        L1[Controller] --> L2[Service] --> L3[DAO]
-        L3 --> L4[(DB)]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 490" role="img" aria-label="سه زنجیره‌ی معماری لایه‌ای، شش‌ضلعی و DDD تاکتیکی از رابط کاربری تا دیتابیس">
+  <!-- پوسته‌ی سه ستون -->
+  <rect class="s-group" x="510" y="16" width="234" height="458" rx="16"/>
+  <rect class="s-group s-group-acc" x="268" y="16" width="234" height="458" rx="16"/>
+  <rect class="s-group" x="26" y="16" width="234" height="458" rx="16"/>
 
-    subgraph Hex["معماری شش‌ضلعی"]
-        H1[Adapter ورودی] --> H2[Use Case]
-        H2 --> H3[Port]
-        H3 --> H4[Adapter خروجی]
-        H4 --> H5[(DB)]
-    end
+  <text class="s-group-t" x="627" y="42" text-anchor="middle">معماری لایه‌ای</text>
+  <text class="s-group-t" x="385" y="42" text-anchor="middle">معماری شش‌ضلعی</text>
+  <text class="s-group-t" x="143" y="42" text-anchor="middle">DDD تاکتیکی</text>
 
-    subgraph DDDx["DDD تاکتیکی"]
-        D1[UI] --> D2[Application]
-        D2 --> D3[Domain Model]
-        D3 --> D4[Repository Port]
-        D4 --> D5[Adapter]
-        D5 --> D6[(DB)]
-    end
+  <!-- ستون لایه‌ای -->
+  <path class="s-arr s-flow" d="M 627 108 L 627 130" style="--kl-i:0"/>
+  <path class="s-head" d="M 627 136 L 620 124 L 634 124 Z"/>
+  <path class="s-arr s-flow" d="M 627 178 L 627 200" style="--kl-i:1"/>
+  <path class="s-head" d="M 627 206 L 620 194 L 634 194 Z"/>
+  <path class="s-arr s-flow" d="M 627 248 L 627 270" style="--kl-i:2"/>
+  <path class="s-head" d="M 627 276 L 620 264 L 634 264 Z"/>
 
-    style D3 fill:#0f766e,color:#fff
-    style H2 fill:#334155,color:#fff</code></pre>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="520" y="60" width="214" height="48" rx="10"/>
+    <text class="s-t" x="627" y="90" text-anchor="middle">Controller</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="520" y="130" width="214" height="48" rx="10"/>
+    <text class="s-t" x="627" y="160" text-anchor="middle">Service</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="520" y="200" width="214" height="48" rx="10"/>
+    <text class="s-t" x="627" y="230" text-anchor="middle">DAO</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-chip" x="520" y="270" width="214" height="48" rx="10"/>
+    <text class="s-tc" x="627" y="300" text-anchor="middle">DB</text>
+  </g>
+  <text class="s-t2 s-lbl" x="627" y="352" text-anchor="middle" style="--kl-i:4">۴ مرحله تا دیتابیس</text>
+
+  <!-- ستون شش‌ضلعی -->
+  <path class="s-arr s-flow" d="M 385 108 L 385 130" style="--kl-i:0"/>
+  <path class="s-head" d="M 385 136 L 378 124 L 392 124 Z"/>
+  <path class="s-arr s-flow" d="M 385 178 L 385 200" style="--kl-i:1"/>
+  <path class="s-head" d="M 385 206 L 378 194 L 392 194 Z"/>
+  <path class="s-arr s-flow" d="M 385 248 L 385 270" style="--kl-i:2"/>
+  <path class="s-head" d="M 385 276 L 378 264 L 392 264 Z"/>
+  <path class="s-arr s-flow" d="M 385 318 L 385 340" style="--kl-i:3"/>
+  <path class="s-head" d="M 385 346 L 378 334 L 392 334 Z"/>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="278" y="60" width="214" height="48" rx="10"/>
+    <text class="s-t" x="385" y="90" text-anchor="middle">Adapter ورودی</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-chip" x="278" y="130" width="214" height="48" rx="10"/>
+    <text class="s-tc" x="385" y="160" text-anchor="middle">Use Case</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok" x="278" y="200" width="214" height="48" rx="10"/>
+    <text class="s-t" x="385" y="230" text-anchor="middle">Port</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c6" x="278" y="270" width="214" height="48" rx="10"/>
+    <text class="s-t" x="385" y="300" text-anchor="middle">Adapter خروجی</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-chip" x="278" y="340" width="214" height="48" rx="10"/>
+    <text class="s-tc" x="385" y="370" text-anchor="middle">DB</text>
+  </g>
+  <text class="s-t2 s-lbl" x="385" y="422" text-anchor="middle" style="--kl-i:5">۵ مرحله تا دیتابیس</text>
+
+  <!-- ستون DDD -->
+  <path class="s-arr s-flow" d="M 143 108 L 143 130" style="--kl-i:0"/>
+  <path class="s-head" d="M 143 136 L 136 124 L 150 124 Z"/>
+  <path class="s-arr s-flow" d="M 143 178 L 143 200" style="--kl-i:1"/>
+  <path class="s-head" d="M 143 206 L 136 194 L 150 194 Z"/>
+  <path class="s-arr s-flow" d="M 143 248 L 143 270" style="--kl-i:2"/>
+  <path class="s-head" d="M 143 276 L 136 264 L 150 264 Z"/>
+  <path class="s-arr s-flow" d="M 143 318 L 143 340" style="--kl-i:3"/>
+  <path class="s-head" d="M 143 346 L 136 334 L 150 334 Z"/>
+  <path class="s-arr s-flow" d="M 143 388 L 143 410" style="--kl-i:4"/>
+  <path class="s-head" d="M 143 416 L 136 404 L 150 404 Z"/>
+
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="36" y="60" width="214" height="48" rx="10"/>
+    <text class="s-t" x="143" y="90" text-anchor="middle">UI</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="36" y="130" width="214" height="48" rx="10"/>
+    <text class="s-t" x="143" y="160" text-anchor="middle">Application</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-ok s-pulse" x="36" y="200" width="214" height="48" rx="10"/>
+    <text class="s-t" x="143" y="230" text-anchor="middle">Domain Model</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-box" x="36" y="270" width="214" height="48" rx="10"/>
+    <text class="s-t" x="143" y="300" text-anchor="middle">Repository Port</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-c6" x="36" y="340" width="214" height="48" rx="10"/>
+    <text class="s-t" x="143" y="370" text-anchor="middle">Adapter</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-chip" x="36" y="410" width="214" height="48" rx="10"/>
+    <text class="s-tc" x="143" y="440" text-anchor="middle">DB</text>
+  </g>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 143 248 L 143 270"/>
+  </circle>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>رابط کاربری / Adapter ورودی</span>
+  <span><i class="c-warn"></i>لایه‌ی هماهنگی و تراکنش</span>
+  <span><i class="c-ok"></i>هسته‌ی دامنه</span>
+  <span><i class="c-dim"></i>پورت و DAO</span>
+</div>
+<figcaption><b>سه زنجیره، سه فلسفه:</b> در زنجیره‌ی لایه‌ای، منطق در <code>Service</code> است و داده از راه <code>DAO</code> خوانده می‌شود؛ در زنجیره‌ی شش‌ضلعی، نقطه‌ی تصمیم <code>Use Case</code> است و داده از راه یک <code>Port</code> می‌آید؛ در زنجیره‌ی DDD، مدل دامنه خودش یک مرحله از زنجیره است و <code>Repository</code> فقط خواندن و نوشتن همان مدل را انجام می‌دهد. عمق بیشتر زنجیره‌ی DDD بهای صراحت بیشتر آن است.</figcaption>
+</figure>
 
 <h3>مقایسه‌ی DDD با معماری شش‌ضلعی و لایه‌ای</h3>
 
@@ -1536,6 +1996,74 @@ class DomainExceptionHandler {
 <tr><td>مناسب برای</td><td>CRUD ساده</td><td>زیرساخت‌های متنوع</td><td><strong>منطق پیچیده</strong></td></tr>
 </tbody>
 </table>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 316" role="img" aria-label="امتیاز نسبی معماری لایه‌ای، شش‌ضلعی و DDD در پنج معیار">
+  <!-- خطوط شبکه و محور -->
+  <path class="s-grid" d="M 528 4 L 528 300"/>
+  <path class="s-grid" d="M 446 4 L 446 300"/>
+  <path class="s-grid" d="M 364 4 L 364 300"/>
+  <path class="s-grid" d="M 282 4 L 282 300"/>
+  <path class="s-grid" d="M 200 4 L 200 300"/>
+  <path class="s-axis" d="M 610 4 L 610 300"/>
+  <text class="s-axlabel" x="528" y="313" text-anchor="middle">۱</text>
+  <text class="s-axlabel" x="446" y="313" text-anchor="middle">۲</text>
+  <text class="s-axlabel" x="364" y="313" text-anchor="middle">۳</text>
+  <text class="s-axlabel" x="282" y="313" text-anchor="middle">۴</text>
+  <text class="s-axlabel" x="200" y="313" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۱: صراحت محور -->
+  <text class="s-cat" x="698" y="36" text-anchor="middle">صراحت محور</text>
+  <rect class="s-acc s-hbar" x="528" y="16" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="24" text-anchor="middle">۱</text>
+  <rect class="s-warn s-hbar" x="446" y="27" width="164" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="430" y="35" text-anchor="middle">۲</text>
+  <rect class="s-ok s-hbar" x="200" y="38" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="46" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۲: استحکام مرز تراکنش -->
+  <text class="s-cat" x="698" y="96" text-anchor="middle">استحکام مرز تراکنش</text>
+  <rect class="s-acc s-hbar" x="446" y="76" width="164" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="430" y="84" text-anchor="middle">۲</text>
+  <rect class="s-warn s-hbar" x="364" y="87" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="95" text-anchor="middle">۳</text>
+  <rect class="s-ok s-hbar" x="200" y="98" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="106" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۳: پشتیبانی از Domain Event -->
+  <text class="s-cat" x="698" y="156" text-anchor="middle">پشتیبانی از رویداد دامنه</text>
+  <rect class="s-acc s-hbar" x="528" y="136" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="144" text-anchor="middle">۱</text>
+  <rect class="s-warn s-hbar" x="364" y="147" width="246" height="8" rx="4" style="--kl-i:3"/>
+  <text class="s-val" x="348" y="155" text-anchor="middle">۳</text>
+  <rect class="s-ok s-hbar" x="200" y="158" width="410" height="8" rx="4" style="--kl-i:4"/>
+  <text class="s-val" x="184" y="166" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۴: تناسب با منطق پیچیده -->
+  <text class="s-cat" x="698" y="216" text-anchor="middle">تناسب با منطق پیچیده</text>
+  <rect class="s-acc s-hbar" x="528" y="196" width="82" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="512" y="204" text-anchor="middle">۱</text>
+  <rect class="s-warn s-hbar" x="364" y="207" width="246" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="348" y="215" text-anchor="middle">۳</text>
+  <rect class="s-ok s-hbar" x="200" y="218" width="410" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="184" y="226" text-anchor="middle">۵</text>
+
+  <!-- ردیف ۵: سادگی راه‌اندازی -->
+  <text class="s-cat" x="698" y="276" text-anchor="middle">سادگی راه‌اندازی</text>
+  <rect class="s-acc s-hbar" x="200" y="256" width="410" height="8" rx="4" style="--kl-i:0"/>
+  <text class="s-val" x="184" y="264" text-anchor="middle">۵</text>
+  <rect class="s-warn s-hbar" x="282" y="267" width="328" height="8" rx="4" style="--kl-i:1"/>
+  <text class="s-val" x="266" y="275" text-anchor="middle">۴</text>
+  <rect class="s-ok s-hbar" x="446" y="278" width="164" height="8" rx="4" style="--kl-i:2"/>
+  <text class="s-val" x="430" y="286" text-anchor="middle">۲</text>
+</svg>
+<div class="kl-legend">
+  <span><i class="c-acc"></i>لایه‌ای</span>
+  <span><i class="c-warn"></i>شش‌ضلعی</span>
+  <span><i class="c-ok"></i>DDD</span>
+</div>
+<figcaption><b>امتیاز نسبی (از ۵):</b> این امتیازها عددِ اندازه‌گیری‌شده نیستند، بلکه خلاصه‌ی عددیِ همان جدول بالا هستند؛ «لایه‌ها» امتیاز صراحت ۱ و «مدل دامنه» امتیاز ۵ می‌گیرد. تنها ردیفی که جهت برنده عوض می‌شود، سادگی راه‌اندازی است: لایه‌ای ساده‌ترین شروع است و DDD پرهزینه‌ترین، دقیقاً به همان دلیلی که در بخش‌های ۱۴ و ۱۶ گفته شد.</figcaption>
+</figure>
 
 <div class="kl-box kl-hd">
 <span class="kl-h">رابطه‌ی DDD و شش‌ضلعی</span>
@@ -1731,18 +2259,67 @@ DDD تقریباً به‌طور کامل بر پایه‌ی اصل‌های SOL
 
 <h3>DIP — قلب DDD</h3>
 
-<pre class="kl-code" data-lang="mermaid"><code>graph LR
-    subgraph Wrong["❌ وابستگی اشتباه (لایه‌ای سنتی)"]
-        A1["Service"] --> B1["JpaRepository<br/>کلاس JPA"]
-    end
+<figure class="kl-fig">
+<svg viewBox="0 0 770 422" role="img" aria-label="مقایسه‌ی وابستگی اشتباه لایه‌ای با وابستگی درست دامنه به رابط Repository">
+  <!-- وابستگی اشتباه -->
+  <rect class="s-group" x="20" y="16" width="730" height="140" rx="16"/>
+  <text class="s-group-t" x="385" y="42" text-anchor="middle">❌ وابستگی اشتباه — لایه‌ای سنتی</text>
 
-    subgraph Right["❗ وابستگی درست (DDD)"]
-        A2["OrderApplicationService"] --> B2["OrderRepository<br/>Interface دامنه"]
-        C2["JpaOrderRepository"] -.->|"implements"| B2
-    end
+  <g style="--kl-i:0">
+    <path class="s-arr-bad s-flow-bad" d="M 554 96 L 496 96"/>
+    <path class="s-head-bad" d="M 490 96 L 502 89 L 502 103 Z"/>
+    <text class="s-t2 s-lbl" x="525" y="82" text-anchor="middle">وابسته به کلاس JPA</text>
+  </g>
+  <circle class="s-runner-bad" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 554 96 L 496 96"/>
+  </circle>
 
-    style Right fill:#0f766e,color:#fff
-    style Wrong fill:#7f1d1d,color:#fff</code></pre>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="560" y="64" width="170" height="64" rx="12"/>
+    <text class="s-t" x="645" y="102" text-anchor="middle">Service</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-bad" x="330" y="64" width="170" height="64" rx="12"/>
+    <text class="s-t" x="415" y="92" text-anchor="middle">JpaRepository</text>
+    <text class="s-t2" x="415" y="114" text-anchor="middle">کلاس JPA</text>
+  </g>
+
+  <!-- وابستگی درست -->
+  <rect class="s-group s-group-acc" x="20" y="180" width="730" height="226" rx="16"/>
+  <text class="s-group-t" x="385" y="206" text-anchor="middle">❗ وابستگی درست — DDD</text>
+
+  <g style="--kl-i:2">
+    <path class="s-arr s-flow" d="M 554 260 L 496 260"/>
+    <path class="s-head" d="M 490 260 L 502 253 L 502 267 Z"/>
+    <text class="s-t2 s-lbl" x="525" y="246" text-anchor="middle">فراخوانی</text>
+  </g>
+
+  <g style="--kl-i:3">
+    <path class="s-dash s-arr-ok s-flow-soft" d="M 415 326 L 415 292"/>
+    <path class="s-head-ok" d="M 415 292 L 408 304 L 422 304 Z"/>
+    <text class="s-t2 s-lbl" x="415" y="318" text-anchor="middle">implements</text>
+  </g>
+
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 554 260 L 496 260"/>
+  </circle>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="560" y="228" width="170" height="64" rx="12"/>
+    <text class="s-t" x="645" y="266" text-anchor="middle">OrderApplicationService</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-ok s-pulse" x="330" y="228" width="170" height="64" rx="12"/>
+    <text class="s-t" x="415" y="256" text-anchor="middle">OrderRepository</text>
+    <text class="s-t2" x="415" y="278" text-anchor="middle">Interface دامنه</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-c6" x="330" y="326" width="170" height="64" rx="12"/>
+    <text class="s-t" x="415" y="364" text-anchor="middle">JpaOrderRepository</text>
+  </g>
+</svg>
+<figcaption><b>مالکیت Interface:</b> در نیمه‌ی بالا، سرویس مستقیم به یک کلاس JPA وابسته است و با هر تغییر آن کتابخانه، سرویس هم تغییر می‌کند. در نیمه‌ی پایین، پیکان خط‌چین جهت را برعکس کرد: پیاده‌سازی به رابط اشاره می‌کند، نه رابط به پیاده‌سازی. چون کم‌تغییرترین بخش (<code>Interface</code>) مالک رابطه است، کد پایدارتر و ارزان‌تر تغییر می‌کند.</figcaption>
+</figure>
 
 <div class="kl-box kl-hd">
 <span class="kl-h">تفاوت کلیدی</span>
