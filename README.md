@@ -21,6 +21,7 @@
 | ۹ | Java Collections Framework: آموزش کامل Collectionهای جاوا | [`articles/java-collections-framework.html`](articles/java-collections-framework.html) | ~۷۰ دقیقه |
 | ۱۰ | Clean Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/clean-architecture.html`](articles/clean-architecture.html) | ~۶۵ دقیقه |
 | ۱۱ | Onion Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/onion-architecture.html`](articles/onion-architecture.html) | ~۵۵ دقیقه |
+| ۱۲ | Hexagonal Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/hexagonal-architecture.html`](articles/hexagonal-architecture.html) | ~۵۵ دقیقه |
 
 ## فهرست پروژه‌ها
 
@@ -43,8 +44,9 @@ my-articales/
 ├── .nojekyll                     # جلوگیری از پردازش Jekyll در GitHub Pages
 ├── README.md
 │
-├── articles/                     # فهرست مقالات + ۱۱ مقاله
+├── articles/                     # فهرست مقالات + ۱۲ مقاله
 │   ├── index.html                # جستجو + فیلتر تگ + حالت خالی
+│   ├── hexagonal-architecture.html
 │   ├── onion-architecture.html
 │   ├── clean-architecture.html
 │   ├── java-collections-framework.html
@@ -208,6 +210,11 @@ python -m http.server 8080     # یا: npx serve .
 
 ### مهر ۱۴۰۵
 
+- **مقالهٔ Hexagonal Architecture** — بخش سوم سری معماری؛ راهنمای ۲۶ بخشی Ports and Adapters از
+  تاریخچه‌ی Cockburn و تفکیک درایور/درایو تا جریان داده، ساختار پروژه، پیاده‌سازی کامل Java 21
+  (Entity، Portهای in/out، UseCase، Controller و JPA Adapter)، مقایسه با Clean/Onion/Layered،
+  SOLID، تست با Fake Port در JUnit 5، ۱۱ اشتباه رایج، ۳ مثال واقعی، Performance،
+  ۲۰ سؤال مصاحبه، ۱۵ FAQ، Cheat Sheet و Roadmap.
 - **مقالهٔ Onion Architecture** — بخش دوم سری معماری؛ راهنمای ۲۶ بخشی از حلقه‌های متحدالمرکز و Domain
   در مرکز تا قواعد سه‌گانه، جریان داده، ساختار پروژه، پیاده‌سازی کامل Java 21 (Entity، UseCase، Repository)،
   زبان‌ها و Frameworkها، ۱۱ مزیت و ۹ عیب، مقایسه با Clean/Hexagonal/Layered، SOLID، تست با JUnit 5،

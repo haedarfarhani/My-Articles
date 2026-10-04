@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hexagonal Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله Hexagonal Architecture (Ports and Adapters) را بررسی می‌کنیم، از مفهوم و ساختار تا مزایا، معایب، مثال عملی، کاربرد در Java، Kotlin، C# و TypeScript.">
+  <meta name="keywords" content="Hexagonal Architecture, Ports and Adapters, معماری شش‌ضلعی, Clean Architecture, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, Design Architecture Pattern, Alistair Cockburn">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Hexagonal Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله Hexagonal Architecture (Ports and Adapters) را بررسی می‌کنیم، از مفهوم و ساختار تا مزایا، معایب، مثال عملی، کاربرد در Java، Kotlin، C# و TypeScript.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/hexagonal-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/hexagonal-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Hexagonal Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hexagonal Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="Ports و Adapters با مثال Java، مقایسه با Clean و Onion و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Hexagonal Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه",
+    "description": "در این مقاله Hexagonal Architecture (Ports and Adapters) را بررسی می‌کنیم، از مفهوم و ساختار تا مزایا، معایب، مثال عملی، کاربرد در Java، Kotlin، C# و TypeScript.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/hexagonal-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/hexagonal-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Hexagonal Architecture, Ports and Adapters, Driven Port, Driving Adapter, Application Core, Java",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Hexagonal Architecture", "item": "https://haedarfarhani.github.io/My-Articles/articles/hexagonal-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Hexagonal Architecture</span>؛ Ports و Adapters در عمل
+          </h1>
+
+          <p class="hero-lead">
+            معماری شش‌ضلعی می‌گوید: <strong>هسته‌ی برنامه را پشت Portها پنهان کن و هر چیز بیرونی (DB، وب، صف پیام)
+            را با Adapter وصل کن.</strong> در این راهنما درایور/درایو، پیاده‌سازی کامل <code>Java 21</code>،
+            مقایسه با Clean و Onion، تست با <code>JUnit 5</code> و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط تا پیشرفته (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Hexagonal_Architecture</span>
+            <span class="post-tag">#Ports_and_Adapters</span>
+            <span class="post-tag">#SOLID</span>
+            <span class="post-tag">#Dependency_Inversion</span>
+            <span class="post-tag">#Java</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی درگاه‌ها زیاد می‌شوند</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Hexagonal Architecture چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: Ports و Adapters</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: سرویس رزرو</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>ارتباط با زبان‌ها و Frameworkها</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ================= BODY:START ================= -->
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی درگاه‌ها زیاد می‌شوند</h2>
+
+<p>
+یک سرویس رزرو بلیت را تصور کنید که فقط یک ورودی REST دارد. شش ماه بعد باید به <strong>GraphQL</strong>،
+یک <strong>CLI</strong> برای ادمین، <strong> صف پیام</strong> برای پرداخت و <strong>وب‌هوک</strong> پاسخ دهد؛ و ذخیره‌سازی هم
+از PostgreSQL به <strong>MongoDB</strong> تغییر کرده. در معماری معمولی، این تغییرات یعنی دست‌زدن به هسته‌ی برنامه:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>بدون مرز — همه‌چیز به همه‌چیز وصل:
+
+@RestController ──→ BookingService ──→ JpaRepository
+      │                  │
+      └── DTOهای وب       └── SQL و JPA در هسته‌ی منطق نشت کرده
+
+افزودن CLI/ صف پیام = کپی دوباره‌ی منطق یا تغییر هسته</code></pre>
+
+<ul>
+  <li><strong>وابستگی به پروتکل</strong>: منطق رزرو می‌داند HTTP چیست.</li>
+  <li><strong>تست دشوار</strong>: برای تست رزرو باید سرور وب بالا بیاید.</li>
+  <li><strong>ورودی دوم گران</strong>: افزودن CLI یعنی بازنویسی یا کپی سناریو.</li>
+  <li><strong>تعویض DB پرریسک</strong>: JPA در سراسر کد پراکنده است.</li>
+</ul>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ریشه‌ی مشکل</span>
+هسته‌ی برنامه با <strong>جزئیات محیط</strong> (وب، DB، صف) گره خورده است. <strong>Hexagonal Architecture</strong>
+با یک ایده آمد: هسته را پشت <strong>درگاه (Port)</strong> پنهان کن؛ هرچه بیرون است با <strong>مبدل (Adapter)</strong> وصل شود.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+<strong>Hexagonal Architecture</strong> (معماری شش‌ضلعی) را <strong>Alistair Cockburn</strong> در سال <strong>۲۰۰۵</strong>
+معرفی کرد؛ او خودش آن را ابتدا «Ports and Adapters» نامید. انگیزه، دیدن همان الگوی تکراری در پروژه‌های متعدد بود:
+هسته‌ی منطق با ابزارهای محیط قاطی شده و تست‌ها کند شده‌اند.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بستر</th><th>چه شد؟</th></tr>
+  <tr><td>۲۰۰۵ — مقاله‌ی اصلی Cockburn</td><td>الگوی Ports &amp; Adapters با شکل شش‌ضلعی برای تفکیک درایور/درایو معرفی شد</td></tr>
+  <tr><td>۲۰۰۸ — Onion (Palermo)</td><td>ایده‌ی مشابه را با حلقه‌های متحدالمرکز بازنویسی کرد</td></tr>
+  <tr><td>۲۰۱۲ — Clean (Martin)</td><td>چهار لایه و Dependency Rule را تثبیت کرد</td></tr>
+  <tr><td>۲۰۱۰‌ها — موج Microservices</td><td>سرویس‌های با چند ورودی/خروجی، Hexagonal را به انتخاب پیش‌فرض بسیاری تبدیل کرد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">چرا شش‌ضلعی؟</span>
+Cockburn گفت شکل فقط «یک جای نقاشی» است — هر ضلع یک <strong>درگاه</strong> را نشان می‌دهد؛
+مهم تعداد ضلع‌ها نیست، مهم مرز بین <strong>هسته</strong> و <strong>محیط</strong> است.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Hexagonal Architecture چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>Hexagonal Architecture</strong> روشی است که در آن برنامه به یک <strong>هسته‌ی کاربردی (Application Core)</strong>
+با <strong>درگاه‌ها (Ports)</strong> — یعنی interfaceهای مورد نیاز هسته — و <strong>مبدل‌ها (Adapters)</strong>
+ — یعنی پیاده‌سازی‌های متصل به محیط — تقسیم می‌شود؛ به‌طوری که هسته هیچ وابستگی به محیط ندارد و با هر وب/CLI/DB قابل اجراست.
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>✅ هست…</th><th>❌ نیست…</th></tr>
+  <tr><td>یک <strong>مرز بین هسته و محیط</strong> با interface صریح</td><td>یک <strong>Framework</strong> یا پکیج</td></tr>
+  <tr><td>الگوی <strong>Ports &amp; Adapters</strong> در مقیاس کل سیستم</td><td>یک <strong>Design Pattern</strong> محلی مثل Adapter کلاسیک GoF</td></tr>
+  <tr><td>ترجمه‌ی عملیِ <strong>DIP</strong> + <strong>Adapter Pattern</strong></td><td>قانونِ «حتماً ۶ ضلع داشته باشید»</td></tr>
+  <tr><td>همه‌پوشش برای چند ورودی/خروجی هم‌زمان</td><td>معادل دقیق Clean یا Onion (همپوشانی دارند اما یکی نیستند)</td></tr>
+</table>
+</div>
+
+<p><strong>دو نوع Port:</strong></p>
+<ul>
+  <li><strong>Driving Port (درایور/ورودی)</strong>: برنامه را <em>راه‌اندازی می‌کند</em> — مثل REST Controller، CLI، صف پیام ورودی.</li>
+  <li><strong>Driven Port (درایو/خروجی)</strong>: برنامه <em>به بیرون نیاز دارد</em> — مثل Repository، سرویس ایمیل، درگاه پرداخت.</li>
+</ul>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<pre class="kl-code" data-lang="java"><code>// همه‌چیز در یک کلاس — هسته و محیط قاطی
+@RestController
+public class BookingController {
+
+    private final JdbcTemplate db = new JdbcTemplate("jdbc:...");
+
+    @PostMapping("/bookings")
+    public Map&lt;String, Object&gt; book(@RequestBody BookingDto dto) {
+        // قانون تجاری: سقف رزرو روزانه ۵ بلیت
+        int count = db.queryForObject(
+                "SELECT COUNT(*) FROM bookings WHERE day = ?", Integer.class, dto.day());
+        if (count &gt;= 5) return Map.of("error", "limit reached");
+
+        db.update("INSERT INTO bookings(...) VALUES(...)", dto.seat());
+        return Map.of("ok", true);
+    }
+}
+</code></pre>
+
+<ul>
+  <li><strong>قانون تجاری داخل Controller</strong>: افزودن CLI یعنی کپی همان if.</li>
+  <li><strong>SQL و HTTP در یک جا</strong>: تست بدون DB و سرور ممکن نیست.</li>
+  <li><strong>تعویض پیام‌رسان</strong>: تغییر JdbcTemplate، کل کنترلر را می‌لرزاند.</li>
+</ul>
+
+<pre class="kl-code" data-lang="text"><code>در Hexagonal:
+
+[REST Adapter] → [BookSeatPort] → هسته (قانون سقف روزانه) → [InventoryPort]
+[CLI Adapter]  ↗                      ↑
+                                      [JPA Adapter] → DB
+
+قانون یک‌بار نوشته می‌شود؛ هر ورودی همان را صدا می‌زند.</code></pre>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: Ports و Adapters</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">قاعده‌ی مرکزی</span>
+<strong>هسته، درگاه‌ها را تعریف می‌کند (interface) و Adapterها آن‌ها را پیاده‌سازی می‌کنند.</strong>
+جهت وابستگی: Adapter ← Port ← هسته. هرگز برعکس.
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph Driving[Driving side — ورودی]
+        W[REST Adapter]
+        C[CLI Adapter]
+        Q[Queue Consumer]
+    end
+    subgraph Core[Application Core]
+        P1[BookingPort]
+        USECASE[Booking Use Case]
+        ENTITY[Domain Entity]
+        P2[Inventory Port]
+    end
+    subgraph Driven[Driven side — خروجی]
+        A1[JPA Adapter]
+        A2[Email Adapter]
+        A3[Payment Adapter]
+    end
+
+    W --&gt; P1
+    C --&gt; P1
+    Q --&gt; P1
+    P1 --&gt; USECASE
+    USECASE --&gt; ENTITY
+    USECASE --&gt; P2
+    P2 --&gt; A1
+    P2 --&gt; A2
+    P2 --&gt; A3</code></pre>
+
+<p>سه پیامدِ این قاعده:</p>
+<ul>
+  <li><strong>افزودن ورودی جدید</strong> فقط یک Adapter جدید است؛ هسته دست‌نخورده می‌ماند.</li>
+  <li><strong>تعویض خروجی</strong> (DB، صف، ایمیل) فقط پیاده‌سازی جدید پشت همان Port.</li>
+  <li><strong>تست هسته</strong> بدون هیچ Adapterی ممکن است — Port را با Fake پر می‌کنید.</li>
+</ul>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نکته‌ی ظریف</span>
+درایورها هسته را صدا می‌زنند (فراخوانی)، اما <strong>وابستگی کامپایلی</strong> همیشه به سمت داخل است؛
+چون Adapter به interface موجود در هسته وابسته است. این تقارن کل Hexagonal است.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>ساختار معماری</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph Hex[Application Core — وسط شش‌ضلعی]
+        E[Entities] --- U[Use Cases] --- P[Ports]
+    end
+    AD1[REST / GraphQL Adapter] --- P
+    AD2[CLI / Scheduler Adapter] --- P
+    P --- AD3[JPA / Mongo Adapter]
+    P --- AD4[SMTP / Stripe Adapter]
+
+    classDef inner fill:#0F766E,color:#fff
+    classDef outer fill:#14B8A6,color:#fff
+    class E,U inner
+    class AD1,AD2,AD3,AD4 outer</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بخش</th><th>مسئولیت</th><th>داخل آن</th><th>ممنوع</th></tr>
+  <tr><td><strong>Entities</strong></td><td>مدل دامنه و قواعد پایدار</td><td>Booking، Seat، قوانین</td><td>هر import محیط</td></tr>
+  <tr><td><strong>Use Cases</strong></td><td>سناریوهای کاربردی</td><td>BookSeat، CancelSeat</td><td>دانستن HTTP/SQL</td></tr>
+  <tr><td><strong>Ports</strong></td><td>قرارداد بین هسته و محیط</td><td>interface ورودی/خروجی</td><td>پیاده‌سازی جزئی</td></tr>
+  <tr><td><strong>Driving Adapters</strong></td><td>تبدیل ورودی محیط به فراخوانی Port</td><td>Controller، CLI، Consumer</td><td>منطق تجاری</td></tr>
+  <tr><td><strong>Driven Adapters</strong></td><td>پیاده‌سازی خروجی‌های مورد نیاز هسته</td><td>JPA، SMTP، Stripe</td><td>قانون تجاری</td></tr>
+</table>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">چرا شش‌ضلعی؟</span>
+تعداد ضلع‌ها دلخواه است: برنامه‌ای با ۲ ورودی و ۲ خروجی، ۴ ضلع عملی دارد.
+شکل هندسی فقط کمک می‌کند مرز را به یاد بسپارید — قاعده، مرز هسته/محیط است.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    A[POST /bookings] --&gt; B[BookingController — Driving Adapter]
+    B --&gt; C[BookSeatPort]
+    C --&gt; D[BookSeatUseCase]
+    D --&gt; E[Booking Entity — قوانین]
+    E --&gt; F[BookingRepository Port]
+    F --&gt; G[JpaBookingAdapter — Driven Adapter]
+    G --&gt; H[(Database)]
+    H --&gt; F
+    F --&gt; D
+    D --&gt; I[BookingResult]
+    I --&gt; B
+    B --&gt; J[HTTP Response]</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>چه می‌شود؟</th><th>ممنوع</th></tr>
+  <tr><td>۱. Driving Adapter</td><td>HTTP را به Command ترجمه می‌کند</td><td>منطق تجاری</td></tr>
+  <tr><td>۲. Port</td><td>قرارداد ورودی به هسته</td><td>جزئیات پروتکل</td></tr>
+  <tr><td>۳. Use Case</td><td>سناریو را اجرا و Entity را هماهنگ می‌کند</td><td>دانستن نوع Adapter</td></tr>
+  <tr><td>۴. Entity</td><td>قوانین رزرو/اعتبار را اعمال می‌کند</td><td>هر وابستگی بیرونی</td></tr>
+  <tr><td>۵. Driven Adapter</td><td>نتیجه را ذخیره/ارسال می‌کند</td><td>تغییر قانون</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی</span>
+یک هسته، <strong>چند Driving Adapter هم‌زمان</strong> (REST + CLI + صف) و <strong>چند Driven Adapter</strong>
+(DB + فایل + Mock) دارد؛ بدون اینکه خطی از هسته تغییر کند — اصل OCP در مقیاس معماری.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>src/
+├── core/                          # هسته — بدون وابستگی به محیط
+│   ├── domain/
+│   │   ├── Booking.java
+│   │   └── Seat.java
+│   ├── usecase/
+│   │   ├── BookSeatUseCase.java
+│   │   └── CancelSeatUseCase.java
+│   └── port/
+│       ├── in/                    # Driving Portها
+│       │   └── BookSeatPort.java
+│       └── out/                   # Driven Portها
+│           ├── BookingRepository.java
+│           └── NotificationPort.java
+│
+├── adapter/
+│   ├── in/                        # Driving Adapters
+│   │   ├── web/BookingController.java
+│   │   ├── cli/BookingCli.java
+│   │   └── mq/BookingConsumer.java
+│   └── out/                       # Driven Adapters
+│       ├── persistence/JpaBookingAdapter.java
+│       └── mail/SmtpNotificationAdapter.java
+│
+├── config/                        # سیم‌کشی (Composition Root)
+│   └── AppConfig.java
+│
+└── test/
+    ├── core/                      # تست سریع هسته با Fake Port
+    └── adapter/                   # تست ادغام Adapterها</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>پوشه</th><th>وابستگی مجاز</th></tr>
+  <tr><td><code>core</code></td><td>هیچ (فقط کتابخانه‌ی استاندارد زبان)</td></tr>
+  <tr><td><code>adapter.in</code></td><td>فقط <code>core</code></td></tr>
+  <tr><td><code>adapter.out</code></td><td>فقط <code>core</code> + کتابخانه‌ی فنی مربوطه (JPA، JavaMail)</td></tr>
+  <tr><td><code>config</code></td><td>همه (تنها جای مجازِ دانستن همه‌ی طرف‌ها)</td></tr>
+</table>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">پکیج in/out</span>
+تفکیک <code>port.in</code> و <code>port.out</code> دقیقاً همان تمایز Driving/Driven است؛
+در بعضی تیم‌ها با نام <code>primary</code>/<code>secondary</code> هم دیده می‌شود. نام مهم نیست، تمایز مهم است.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>مثال عملی کامل: سرویس رزرو</h2>
+
+<p>دامنه و قواعد:</p>
+<pre class="kl-code" data-lang="text"><code>Domain
+├── Booking    (رزرو: صندلی، روز، وضعیت)
+├── Seat       (صندلی: شماره، ردیف)
+└── Rules
+    ├── هر صندلی فقط یک‌بار در هر روز رزرو می‌شود
+    ├── سقف رزرو روزانه هر کاربر: ۵ بلیت
+    └── رزرو فقط تا ۲۴ ساعت قبل از پرواز مجاز است</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>Workflow (BookSeat):
+1. POST /bookings → BookingController (Driving Adapter)
+2. ترجمه به BookSeatCommand → BookSeatPort
+3. BookSeatUseCase قوانین را روی Booking اعمال می‌کند
+4. BookingRepository (Driven Port) ذخیره می‌کند
+5. NotificationPort ایمیل تأیید می‌فرستد
+6. BookingResult به Controller و پاسخ برمی‌گردد</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی طراحی</span>
+همان سه قانون بالا در هسته‌اند → تستشان میلی‌ثانیه‌ای است؛
+ایمیل و DB پشت Port جداگانه‌اند → در تست با Fake جایگزین می‌شوند.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>هسته: Entity و قوانین</h3>
+<pre class="kl-code" data-lang="java"><code>import java.time.LocalDateTime;
+
+public final class Booking {
+    private static final int DAILY_LIMIT = 5;
+
+    private final String id;
+    private final String seat;
+    private final LocalDateTime flightAt;
+    private final BookingStatus status;
+
+    public Booking(String id, String seat, LocalDateTime flightAt, BookingStatus status) {
+        this.id = id;
+        this.seat = seat;
+        this.flightAt = flightAt;
+        this.status = status;
+    }
+
+    public static Booking create(String id, String seat, LocalDateTime flightAt) {
+        if (flightAt.isBefore(LocalDateTime.now().plusHours(24)))
+            throw new TooLateToBook(flightAt);
+        return new Booking(id, seat, flightAt, BookingStatus.CONFIRMED);
+    }
+
+    public boolean isForSeat(String otherSeat) { return seat.equals(otherSeat); }
+    public String seat() { return seat; }
+    public static int dailyLimit() { return DAILY_LIMIT; }
+    public String id() { return id; }
+    public BookingStatus status() { return status; }
+}
+</code></pre>
+
+<h3>درگاه‌ها: Portهای ورودی و خروجی</h3>
+<pre class="kl-code" data-lang="java"><code>// Driving Port — ورودی به هسته
+public interface BookSeatPort {
+    BookingResult book(BookSeatCommand command);
+}
+
+// Driven Portها — خروجی‌های مورد نیاز هسته
+public interface BookingRepository {
+    void save(Booking booking);
+    long countByUserOnDay(String userId, LocalDate day);
+    boolean existsSeatOnDay(String seat, LocalDate day);
+}
+
+public interface NotificationPort {
+    void sendBookingConfirmed(String email, String bookingId);
+}
+</code></pre>
+
+<h3>Use Case (هسته)</h3>
+<pre class="kl-code" data-lang="java"><code>public final class BookSeatUseCase implements BookSeatPort {
+
+    private final BookingRepository bookings;
+    private final NotificationPort notifications;
+    private final IdGenerator ids;
+
+    public BookSeatUseCase(BookingRepository bookings,
+                           NotificationPort notifications,
+                           IdGenerator ids) {
+        this.bookings = bookings;
+        this.notifications = notifications;
+        this.ids = ids;
+    }
+
+    @Override
+    public BookingResult book(BookSeatCommand cmd) {
+        // Act — اعمال قوانین هسته
+        if (bookings.existsSeatOnDay(cmd.seat(), cmd.day()))
+            throw new SeatAlreadyBooked(cmd.seat());
+
+        if (bookings.countByUserOnDay(cmd.userId(), cmd.day()) &gt;= Booking.dailyLimit())
+            throw new DailyLimitReached(cmd.userId());
+
+        Booking booking = Booking.create(ids.nextId(), cmd.seat(), cmd.flightAt());
+        bookings.save(booking);
+        notifications.sendBookingConfirmed(cmd.email(), booking.id());
+
+        return new BookingResult(booking.id(), booking.seat(), booking.status());
+    }
+}
+</code></pre>
+
+<h3>Adapterها (محیط)</h3>
+<pre class="kl-code" data-lang="java"><code>// Driving Adapter — REST
+@RestController
+@RequestMapping("/api/bookings")
+public final class BookingController {
+    private final BookSeatPort bookSeat;
+
+    public BookingController(BookSeatPort bookSeat) { this.bookSeat = bookSeat; }
+
+    @PostMapping
+    public ResponseEntity&lt;BookingResponse&gt; create(@RequestBody BookingRequest req) {
+        BookingResult result = bookSeat.book(BookingRequestMapper.toCommand(req));
+        return ResponseEntity.ok(BookingResponse.from(result));
+    }
+}
+
+// Driven Adapter — JPA
+public final class JpaBookingAdapter implements BookingRepository {
+    private final BookingJpaDao dao;
+
+    public JpaBookingAdapter(BookingJpaDao dao) { this.dao = dao; }
+
+    @Override
+    public void save(Booking booking) { dao.save(BookingJpaEntity.from(booking)); }
+
+    @Override
+    public long countByUserOnDay(String userId, LocalDate day) {
+        return dao.countByUserAndDay(userId, day);
+    }
+
+    @Override
+    public boolean existsSeatOnDay(String seat, LocalDate day) {
+        return dao.existsBySeatAndDay(seat, day);
+    }
+}
+</code></pre>
+
+<p>
+تحلیل: هسته فقط interface می‌شناسد؛ Controller و JPA Adapter هر دو به هسته وابسته‌اند؛
+اضافه کردن CLI فقط یک کلاس جدید می‌خواهد که <code>BookSeatPort</code> را صدا بزند — صفر تغییر در هسته.
+</p>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>ارتباط با زبان‌ها و Frameworkها</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>زبان</th><th>ابزار رایج</th><th>نمونه‌ی واقعی</th></tr>
+  <tr><td><strong>Java</strong></td><td>Spring Boot، JPA</td><td>Portها در پکیج <code>core.port</code> و Adapterها در <code>adapter</code> با <code>@Configuration</code></td></tr>
+  <tr><td><strong>Kotlin</strong></td><td>Android + Hilt، Ktor</td><td>ورودی‌های Compose و Ktor هر دو یک Use Case مشترک صدا می‌زنند</td></tr>
+  <tr><td><strong>C#</strong></td><td>ASP.NET Core + EF</td><td><code>IBookingRepository</code> در Core و پیاده‌سازی Ef در Infrastructure</td></tr>
+  <tr><td><strong>TypeScript</strong></td><td>NestJS، Angular</td><td>کنترلور و Consumer هر دو به همان سرویس هسته وصل‌اند</td></tr>
+  <tr><td><strong>Python</strong></td><td>FastAPI + SQLAlchemy</td><td>Endpoint و Worker جدا، هر دو پشت یک Protocol مشترک</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>// سیم‌کشی در Composition Root — تنها جایی که همه‌چیز را می‌شناسد
+@Configuration
+public class BookingConfig {
+    @Bean
+    BookSeatPort bookSeatPort(BookingRepository repo, NotificationPort notify) {
+        return new BookSeatUseCase(repo, notify, new UuidIdGenerator());
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مزایای Hexagonal Architecture</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>مزیت</th><th>مثال</th></tr>
+  <tr><td>۱</td><td><strong>تست‌پذیری هسته</strong></td><td>تست BookSeatUseCase با Fake Port، بدون DB و سرور</td></tr>
+  <tr><td>۲</td><td><strong>افزودن ورودی ارزان</strong></td><td>CLI یا صف پیام فقط یک Driving Adapter جدید</td></tr>
+  <tr><td>۳</td><td><strong>تعویض خروجی آسان</strong></td><td>MongoDB به جای JPA با حفظ هسته</td></tr>
+  <tr><td>۴</td><td><strong>تمرکز روی قانون تجاری</strong></td><td>هسته فقط Domain و سناریو می‌داند</td></tr>
+  <tr><td>۵</td><td><strong>Parallel کار کردن تیم</strong></td><td>تیم وب و تیم صف روی Adapterهای جدا هم‌زمان</td></tr>
+  <tr><td>۶</td><td><strong>Reuse هسته</strong></td><td>یک هسته برای Web، Mobile BFF و Job زمان‌بندی‌شده</td></tr>
+  <tr><td>۷</td><td><strong>Documenting خودکار مرزها</strong></td><td>لیست Portها = نقشه‌ی API داخلی سیستم</td></tr>
+  <tr><td>۸</td><td><strong>Strangler برای Legacy</strong></td><td>پیاده‌سازی قدیمی را پشت همان Port نگه می‌دارید و عوض می‌کنید</td></tr>
+  <tr><td>۹</td><td><strong>آمادگی Microservice</strong></td><td>هر سرویس هسته‌ای مستقل با درگاه‌های روشن</td></tr>
+  <tr><td>۱۰</td><td><strong>کاهش Coupling</strong></td><td>تغییر HTTP به هیچ قانون دست نمی‌زند</td></tr>
+  <tr><td>۱۱</td><td><strong>هماهنگی با تست خودکار CI</strong></td><td>تست هسته در ثانیه‌ها، تست ادغام در دقیقه</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>معایب Hexagonal Architecture</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>فایل و interface زیاد</strong></td><td>Port + Adapter + Mapper برای هر درگاه</td></tr>
+  <tr><td>۲</td><td><strong>زمان اولیه‌ی بیشتر</strong></td><td>ساخت هسته و درگاه‌ها قبل از اولین Feature</td></tr>
+  <tr><td>۳</td><td><strong>پیچیدگی نام‌گذاری</strong></td><td>درایور/درایو برای تازه‌واردها گیج‌کننده است</td></tr>
+  <tr><td>۴</td><td><strong>Mapping مکرر</strong></td><td>ترجمه‌ی DTO↔Command↔Entity Boilerplate تولید می‌کند</td></tr>
+  <tr><td>۵</td><td><strong>Overengineering</strong></td><td>برای CRUD ساده، ساخت دو طرف درگاه هدر منبع است</td></tr>
+  <tr><td>۶</td><td><strong>ریسک Portهای بیش از حد ریز</strong></td><td> Port غول یا Port بیش از حد کوچک، خوانایی را خراب می‌کند</td></tr>
+  <tr><td>۷</td><td><strong>نیاز به تجربه</strong></td><td>مرز اشتباه، معماری را بدتر از MVC درست می‌کند</td></tr>
+  <tr><td>۸</td><td><strong>هزینه‌ی نگهداری مرزها</strong></td><td>بازبینی وابستگی و تست معماری باید مداوم باشد</td></tr>
+  <tr><td>۹</td><td><strong>Debug چندپرش</strong></td><td>ردیابی از Adapter تا Entity چند پرش دارد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">واقع‌بین باشید</span>
+این‌ها هزینه‌های معقول‌اند؛ سؤال درست این است: «آیا تعداد ورودی/خروجی‌ها و نرخ تغییر پروژه
+به اندازه‌ای هست که این هزینه برگردد؟» — در CRUD ساده، نه.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>چه زمانی استفاده کنیم؟</h2>
+
+<ul>
+  <li><strong>چند ورودی/خروجی هم‌زمان</strong> — REST + CLI + صف + وب‌هوک با یک هسته</li>
+  <li><strong>تعویض زیرساخت محتمل است</strong> — DB، صف پیام یا Provider ایمیل در برنامه‌ی تغییر است</li>
+  <li><strong>تست خودکار اولویت دارد</strong> — هسته‌ی بدون I/O، تست سریع و پوشش بالا</li>
+  <li><strong>پروژه بلندمدت و تیم بزرگ</strong> — مرزهای روشن، تداخل کاری را کم می‌کند</li>
+  <li><strong>مهاجرت تدریجی Legacy</strong> — الگوی Strangler پشت همان درگاه‌ها</li>
+  <li><strong>سرویس‌های یکپارچه‌ی قدیمی</strong> — جداسازی هسته از ابزارهای قدیمی</li>
+</ul>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نشانه‌ی طلایی</span>
+اگر در جلسه‌ی طراحی گفتید «این سیستم باید هم API بدهد، هم صف بخواند، هم از چند DB پشتیبانی کند»،
+دقیقاً حالتی است که Hexagonal می‌درخشد.
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>سناریو</th><th>چرا نه؟</th></tr>
+  <tr><td><strong>CRUD ساده با یک ورودی</strong></td><td>تعداد درگاه‌ها ۱ است؛ سربار Port/Adapter فایده ندارد</td></tr>
+  <tr><td><strong>Prototype / اسپایک</strong></td><td>اثبات ایده سریع‌تر با ساختار ساده</td></tr>
+  <tr><td><strong>اسکریپت و ابزار یک‌بارمصرف</strong></td><td>هسته و محیط فرقی ندارند — عمر کوتاه</td></tr>
+  <tr><td><strong>پنل ادمین کوچک داخلی</strong></td><td>تغییر کم، ارزش برگشت هزینه‌ی معماری ندارد</td></tr>
+  <tr><td><strong>تیم کوچک بدون تجربه</strong></td><td>مرز اشتباه، بدتر از لایه‌بندی ساده‌ی درست است</td></tr>
+  <tr><td><strong>پروژه‌ی کوتاه‌عمر (کمتر از ۳ ماه)</strong></td><td>زمان بازگشت سرمایه‌ی معماری را ندارد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">قانون عملی</span>
+شروع ساده کنید و درگاه را وقتی بکشید که ورودی/خروجی دوم واقعاً ظاهر شد (Emergent Design).
+معماری شش‌ضلعیِ زودهنگامِ اشتباه، بدهی فنی می‌ماند.
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    subgraph Hex[Hexagonal]
+        H1[Core + Ports] --- H2[Adapters]
+    end
+    subgraph Clean[Clean]
+        C1[Entities] --- C2[Use Cases] --- C3[Adapters] --- C4[Frameworks]
+    end
+    subgraph Onion[Onion]
+        O1[Domain Model] --- O2[Services] --- O3[Infra]
+    end</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>Hexagonal</th><th>Clean</th><th>Onion</th><th>Layered</th></tr>
+  <tr><td>مرکز ثقل</td><td>Ports محور</td><td>Use Case محور</td><td>Domain محور</td><td>لایه‌بندی</td></tr>
+  <tr><td>اصول کلیدی</td><td>Ports &amp; Adapters</td><td>Dependency Rule</td><td>حلقه‌های متحدالمرکز</td><td>تفکیک وظیفه</td></tr>
+  <tr><td>تقسیم درایور/درایو</td><td>✅ صریح</td><td>غیرمستقیم</td><td>غیرمستقیم</td><td>ندارد</td></tr>
+  <tr><td>تعداد ورودی هم‌زمان</td><td>بهینه (هر ورودی یک Adapter)</td><td>خوب</td><td>خوب</td><td>ضعیف</td></tr>
+  <tr><td>جهت وابستگی تضمینی</td><td>بله</td><td>بله</td><td>بله</td><td>خیر</td></tr>
+  <tr><td>بهترین حوزه</td><td>درگاه‌های متعدد</td><td>سناریوهای زیاد</td><td>دامنه‌ی غنی</td><td>اپ ساده</td></tr>
+</table>
+</div>
+
+<p><strong>تفاوت کلیدی:</strong></p>
+<ul>
+  <li><strong>Hex vs Clean</strong>: Hex بر interfaceهای محیط (Port) تأکید دارد؛ Clean بر ساختار لایه‌ها و قاعده‌ی وابستگی.</li>
+  <li><strong>Hex vs Onion</strong>: Onion حلقه‌ها را بر اساس نوع مسئولیت می‌چیند؛ Hex هسته را از محیط با یک مرز جدا می‌کند.</li>
+  <li><strong>Hex vs Layered</strong>: Layered جهت وابستگی را آزاد می‌گذارد؛ Hex با interfaceها آن را وارونه می‌کند.</li>
+</ul>
+
+<div class="kl-box">
+<span class="kl-h">مرتبط در همین سایت</span>
+مقایسه‌ی عمیق در مقاله‌ی Clean Architecture از همین سری آمده است.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<ul>
+  <li><strong>SRP</strong>: هر Adapter یک پروتکل را می‌داند؛ هر Use Case یک سناریو را.</li>
+  <li><strong>OCP</strong>: افزودن ورودی/خروجی جدید = کلاس جدید، بدون تغییر هسته.</li>
+  <li><strong>LSP</strong>: Adapterهای جایگزین باید قرارداد Port را حفظ کنند (مثلاً خطای ذخیره استثنا بدهد).</li>
+  <li><strong>ISP</strong>: Portهای کوچک و متمرکز: <code>BookSeatPort</code> بهتر از <code>BookingPort</code> غول.</li>
+  <li><strong>DIP</strong>: جان این معماری — هسته interface می‌سازد، Adapter پیاده‌سازی می‌کند.</li>
+</ul>
+
+<pre class="kl-code" data-lang="java"><code>// ✓ DIP در عمل — هسته به abstraction وابسته است
+public final class BookSeatUseCase implements BookSeatPort {
+    private final BookingRepository bookings;   // Driven Port — interface
+    private final NotificationPort notifications;
+    // ...
+}
+</code></pre>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Pattern</th><th>نقش در Hexagonal</th></tr>
+  <tr><td><strong>Adapter (GoF)</strong></td><td>پایه‌ی نام‌گذاری: تطبیق پروتکل بیرونی با Port هسته</td></tr>
+  <tr><td><strong>Facade</strong></td><td>Use Case به‌عنوان دروازه‌ی ساده‌ی هسته</td></tr>
+  <tr><td><strong>Repository</strong></td><td>معمولی‌ترین الگوی Driven Port برای داده</td></tr>
+  <tr><td><strong>Dependency Injection</strong></td><td>سیم‌کشی Adapterها به Portها در Composition Root</td></tr>
+  <tr><td><strong>Strategy</strong></td><td>انتخاب Adapter در زمان اجرا (مثلاً DB اصلی و فرعی)</td></tr>
+  <tr><td><strong>Publisher-Subscriber</strong></td><td>خروجی‌های رویدادی پشت NotificationPort</td></tr>
+  <tr><td><strong>Abstract Factory</strong></td><td>ساخت خانواده‌ی Adapterهای هم‌خانواده (تست/پرداخت)</td></tr>
+</table>
+</div>
+
+<p>
+<strong>Adapter اینجا با Adapter کلاسیک GoF فرق دارد:</strong> آنجا یک کلاس برای سازگاری دو شیء بود؛
+اینجا یک <em>معماری کل</em> است که کل محیط برنامه را پشت interface پنهان می‌کند.
+</p>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<pre class="kl-code" data-lang="text"><code>تست هسته (Use Case/Entity)   → با Fake Port — بدون I/O — سریع
+تست Driving Adapter          → ارسال درخواست به Controller (بدون DB)
+تست Driven Adapter (ادغام)   → DB واقعی / Testcontainers</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class BookSeatUseCaseTest {
+
+    @Test
+    @DisplayName("رزرو تکراری همان صندلی باید خطا بدهد")
+    void shouldRejectDuplicateSeat() {
+        // Arrange
+        FakeBookingRepository repo = new FakeBookingRepository();
+        repo.reserveSeat("12A", LocalDateTime.now().plusDays(3));
+        BookSeatUseCase useCase = new BookSeatUseCase(
+                repo, new FakeNotificationPort(), new UuidIdGenerator());
+
+        // Act & Assert
+        assertThrows(SeatAlreadyBooked.class,
+                () -&gt; useCase.book(commandFor("12A")));
+    }
+
+    @Test
+    @DisplayName("رزرو موفق، ایمیل تأیید می‌فرستد")
+    void shouldNotifyOnSuccess() {
+        // Arrange
+        FakeNotificationPort mail = new FakeNotificationPort();
+        BookSeatUseCase useCase = new BookSeatUseCase(
+                new FakeBookingRepository(), mail, new UuidIdGenerator());
+
+        // Act
+        BookingResult result = useCase.book(commandFor("7C"));
+
+        // Assert
+        assertEquals(BookingStatus.CONFIRMED, result.status());
+        assertTrue(mail.contains(result.id()));
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>// Fake Port — ساده‌تر از Mock و خوانا‌تر
+final class FakeNotificationPort implements NotificationPort {
+    private final List&lt;String&gt; sent = new ArrayList&lt;&gt;();
+
+    @Override
+    public void sendBookingConfirmed(String email, String bookingId) {
+        sent.add(bookingId);
+    }
+
+    boolean contains(String bookingId) { return sent.contains(bookingId); }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نتیجه</span>
+۸۰٪ تست‌ها روی هسته بدون I/O اجرا می‌شوند؛ فقط تست‌های ادغام Adapterها به زیرساخت نیاز دارند —
+دقیقاً همان بازگشت سرمایه‌ای که Hexagonal وعده می‌دهد.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>اشتباه</th><th>راه درست</th></tr>
+  <tr><td>۱</td><td>استفاده بدون نیاز برای CRUD ساده</td><td>مرز را با ظاهر شدن درگاه دوم بکشید</td></tr>
+  <tr><td>۲</td><td>کپی ساختار بدون فهم درایور/درایو</td><td>ابتدا مشخص کنید Port ورودی است یا خروجی</td></tr>
+  <tr><td>۳</td><td>Portهای خیلی ریز یا خیلی درشت</td><td>یک Port برای یک سناریوی کامل ورودی یا خروجی</td></tr>
+  <tr><td>۴</td><td>منطق تجاری در Adapter</td><td>قانون در Entity، سناریو در Use Case</td></tr>
+  <tr><td>۵</td><td>نشت دانش پروتکل به هسته (DTO وب در Use Case)</td><td>Command داخلی در هسته، ترجمه در Adapter</td></tr>
+  <tr><td>۶</td><td>نادیده گرفتن Composition Root</td><td>سیم‌کشی فقط در config — نه در Adapterها</td></tr>
+  <tr><td>۷</td><td>Use Case غول‌پیکر چند سناریویی</td><td>تقسیم به BookSeat/CancelSeat/…</td></tr>
+  <tr><td>۸</td><td>تست فقط در سطح Adapter</td><td>پوشش اصلی روی هسته با Fake Port</td></tr>
+  <tr><td>۹</td><td>ابتدای پروژه، مهاجرت آبشاری همه‌چیز</td><td>مرز را تدریجی (Strangler) اعمال کنید</td></tr>
+  <tr><td>۱۰</td><td>عدم مستندسازی درگاه‌ها</td><td>فهرست Portها را در README نگه دارید</td></tr>
+  <tr><td>۱۱</td><td>وابستگی مستقیم Adapter به Adapter</td><td>ارتباط فقط از راه هسته — هرگز Adapter به Adapter</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱) بک‌اند (Java + Spring Boot)</h3>
+<pre class="kl-code" data-lang="text"><code>core/            # BookSeatUseCase + Portها
+adapter/in/web   # BookingController (REST)
+adapter/in/mq    # PaymentConsumer (صف)
+adapter/out/jpa  # JpaBookingAdapter
+adapter/out/smtp # SmtpNotificationAdapter</code></pre>
+<p>افزودن GraphQL فقط یک <code>GraphQLAdapter</code> جدید در <code>adapter/in</code> است؛ هسته صفر تغییر.</p>
+
+<h3>۲) اندروید (Kotlin + Compose)</h3>
+<pre class="kl-code" data-lang="text"><code>core/            # قوانین سبد خرید + Portها
+adapter/local/   # Room Adapter (درایو)
+adapter/remote/  # Retrofit Adapter (درایو)
+adapter/ui/      # ViewModel/Compose (درایور)</code></pre>
+<p>تست UI با Fake Remote Adapter بدون شبکه اجرا می‌شود؛ دیتاست Versioned قابل شبیه‌سازی است.</p>
+
+<h3>۳) فرانت‌اند (TypeScript + NestJS)</h3>
+<pre class="kl-code" data-lang="text"><code>core/            # هسته‌ی رزرو + Portها
+adapter/in/http  # Controller
+adapter/in/cli   # اسکریپت ادمین
+adapter/out/typeorm / out/axios</code></pre>
+<p>یک هسته بین API و Worker زمان‌بندی‌شده مشترک است؛ قانون سقف روزانه دوباره نوشته نمی‌شود.</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">الگوی مشترک</span>
+<strong>هسته در وسط، Portها روی مرز، Adapterها در بیرون، سیم‌کشی فقط در config.</strong>
+</div>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<p><strong>نه — Hexagonal Architecture خودِ Runtime را سریع‌تر نمی‌کند؛</strong> آنچه بهتر می‌شود کیفیت و سرعت تحویل است:</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بعد</th><th>تأثیر</th></tr>
+  <tr><td>سرعت تست و پوشش</td><td>✅ بهبود چشمگیر (هسته بدون I/O)</td></tr>
+  <tr><td>نرخ تغییر و تحویل</td><td>✅ بهبود (افزودن درگاه ارزان)</td></tr>
+  <tr><td>Scalability سازمانی</td><td>✅ بهبود</td></tr>
+  <tr><td>Throughput / Latency</td><td>⬜ بی‌تأثیر؛ هزینه‌ی یک فراخوانی interface ناچیز است</td></tr>
+  <tr><td>مصرف حافظه</td><td>⬜ بی‌تأثیر عملی (تعداد شیءها کمی بیشتر)</td></tr>
+</table>
+</div>
+
+<p>
+تنها هزینه‌ی واقعی، <strong>ترجمه‌ی داده بین Adapter و هسته</strong> است؛ در مسیرهای بسیار داغ
+می‌توان Mapper را بهینه کرد یا از کپی غیرضروری جلوگیری نمود — بدون شکستن مرز.
+</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">کی نگران شویم؟</span>
+در پردازش هزاران پیام در ثانیه، اول پروفایل کنید؛ بهینه‌سازی باید محلی و داخل Adapter باشد، نه باز کردن هسته.
+</div>
+</section>
+
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه شغلی</h2>
+
+<h3>سطح Junior</h3>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱ — Hexagonal Architecture چیست؟</span>
+معماری‌ای است که برنامه را به هسته‌ی کاربردی، درگاه‌ها (interface) و مبدل‌ها (پیاده‌سازی متصل به محیط) تقسیم می‌کند؛
+هسته به محیط وابسته نیست و هر وب/CLI/DB پشت همان درگاه قابل اتصال است.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۲ — Port و Adapter یعنی چه؟</span>
+Port قراردادی است که هسته تعریف می‌کند (interface)؛ Adapter پیاده‌سازی آن قرارداد با جزئیات محیط است (JPA، REST، SMTP).
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۳ — Driving و Driven فرقشان؟</span>
+Driving (درایور) ورودی‌هایی‌ست که برنامه را راه می‌اندازد (Controller، CLI)؛
+Driven (درایو) خروجی‌هایی‌ست که برنامه به آن نیاز دارد (Repository، ایمیل، پرداخت).
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۴ — چرا شکل شش‌ضلعی؟</span>
+صرفاً یک ترسیم بصری برای مرز هسته/محیط است؛ تعداد ضلع‌ها دلخواه و مهم نیست — قاعده، مرز است نه هندسه.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۵ — اگر ورودی دوم (CLI) اضافه شود چه می‌شود؟</span>
+فقط یک Adapter جدید که همان Driving Port را صدا بزند؛ هیچ خطی از هسته تغییر نمی‌کند (OCP).
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۶ — اگر Database عوض شود؟</span>
+فقط پیاده‌سازی Driven Port (مثلاً JpaBookingAdapter) عوض می‌شود؛ Use Case و Entity دست‌نخورده می‌مانند.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۷ — جهت وابستگی کجاست؟</span>
+Adapter ← Port ← هسته. یعنی Adapter به interface هسته وابسته است، نه برعکس؛ هرگز Adapter به Adapter وصل نمی‌شود.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۸ — تست قوانین رزرو چطور است؟</span>
+مستقیماً روی Entity/Use Case با Fake Port — بدون DB و بدون سرور، در میلی‌ثانیه.
+</div>
+
+<h3>سطح Mid</h3>
+
+<div class="kl-box"><span class="kl-h">سؤال ۹ — تفاوت با Clean Architecture؟</span>
+Clean چهار لایه با Dependency Rule را توصیف می‌کند و بر Use Case تأکید دارد؛
+Hex بر interfaceهای محیط (Portها) و تفکیک درایور/درایو تأکید می‌کند. هر دو جهت وابستگی را به داخل می‌کشند.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۰ — تفاوت با Onion؟</span>
+Onion حلقه‌های متحدالمرکز بر اساس نوع مسئولیت می‌چیند و مرکزش Domain است؛
+Hex مرز هسته/محیط را با Port/Adapter مشخص می‌کند. در عمل اغلب ترکیبی‌اند.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۱ — Adapter کلاسیک GoF با اینجا یکی است؟</span>
+نه. آنجا الگویی برای سازگاری دو شیء است؛ اینجا نام یک معماری کل است که کل محیط را پشت interface پنهان می‌کند — الهام گرفته اما متفاوت.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۲ — کجا Composition Root است؟</span>
+تنها جایی که Adapterها به Portها وصل می‌شوند (config). در اپ Java معمولاً یک <code>@Configuration</code> یا main.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۳ — اگر Use Case منطق تجاری پیدا نکرد و Adapter منطق گرفت؟</span>
+نشانه‌ی نشت مرز است: قانون باید به Entity/Use Case منتقل و Adapter به ترجمه محدود شود.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۴ — چند Port لازم است؟</span>
+به نیاز واقعی؛ هر سناریوی ورودی یک Driving Port و هر خروجی ضروری یک Driven Port. Port زیاد = پراکندگی، Port کم = لِزجی.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۵ — DTO در کدام سمت است؟</span>
+در Adapter. DTO پروتکل وب/CLI را می‌شناسد و قبل از رسیدن به هسته به Command داخلی ترجمه می‌شود.
+</div>
+
+<h3>سطح Senior</h3>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۶ — Trade-offهای واقعی؟</span>
+فایل و Interface بیشتر، زمان اولیه‌ی بیشتر و ریسک مرز اشتباه — در برابر تست سریع،
+افزودن درگاه ارزان و تعویض زیرساخت امن. درستی تصمیم به تعداد درگاه‌ها و نرخ تغییر بستگی دارد.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۷ — مهاجرت Legacy چطور؟</span>
+الگوی Strangler: قابلیتی را انتخاب کنید، پشت همان Port بیاورید، پیاده‌سازی قدیمی را به‌تدریج با Adapter جدید جایگزین کنید؛ بدون پوشش تست، مهاجرت آبشاری شکست می‌خورد.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۸ — چطور مرز را تضمین می‌کنید؟</span>
+جداسازی پکیج/ماژول (وابستگی خلاف جهت = خطای کامپایل)، تست معماری (ArchUnit) در CI و بازبینی import در Review.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۱۹ — به مدیر چطور توجیه می‌کنید؟</span>
+با عدد: «الان افزودن کانال فروش ۳ روز کار دارد؛ با درگاه‌ها، یک روز و بدون دست‌زدن به هسته.» — ترجمه به ریسک کسب‌وکار.
+</div>
+
+<div class="kl-box"><span class="kl-h">سؤال ۲۰ — سنجه‌ی موفقیت؟</span>
+زمان تغییر، نرخ باگ پس از تغییر، زمان تست‌ها و هزینه‌ی onboarding؛ اگر بعد از مهاجرت بهتر نشود، معماری فقط شکل گرفته است.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box"><span class="kl-h">۱. مترادف‌های این معماری؟</span>
+Ports and Adapters (نام اصلی Cockburn)،Hexagonal، معماری شش‌ضلعی و گاه «Core and Adapters».
+</div>
+
+<div class="kl-box"><span class="kl-h">۲. حتماً باید ۶ ضلع داشت؟</span>
+خیر — شکل نقاشی است؛ ۲ ورودی + ۲ خروجی یعنی ۴ ضلع عملی. قاعده، مرز هسته/محیط است.
+</div>
+
+<div class="kl-box"><span class="kl-h">۳. Driving Port همان interface معمولی است؟</span>
+بله، با یک قرارداد معنایی: این interface از بیرون فراخوانی می‌شود و نباید جزئیات پروتکل داشته باشد.
+</div>
+
+<div class="kl-box"><span class="kl-h">۴. برای چه زبانی مناسب است؟</span>
+هر زبان شیءگرا با Interface: Java، Kotlin، C#، TypeScript، Python. پیش‌نیاز DI و مرزبندی پکیج است.
+</div>
+
+<div class="kl-box"><span class="kl-h">۵. تفاوت Port و Repository؟</span>
+Repository یک نوع Driven Port است (دسترسی به داده)؛ Driven Portها انواع دیگر هم دارند: Notification، Payment، Clock.
+</div>
+
+<div class="kl-box"><span class="kl-h">۶. هسته از چه چیزی می‌تواند استفاده کند؟</span>
+فقط کتابخانه‌ی استاندارد زبان و کتابخانه‌های خالص دامنه (مثل Date/Time)؛ نه ORM، نه Web Framework.
+</div>
+
+<div class="kl-box"><span class="kl-h">۷. سیم‌کشی کجاست؟</span>
+در Composition Root (config): تنها جایی که Adapterها به Portها وصل می‌شوند — معمولاً با DI فریم‌ورک.
+</div>
+
+<div class="kl-box"><span class="kl-h">۸. با Microservices رابطه‌اش چیست؟</span>
+هر سرویس می‌تواند داخل خودش Hexagonal باشد؛ مرز بین سرویس‌ها مسئله‌ی جدا (DDD Bounded Context) است.
+</div>
+
+<div class="kl-box"><span class="kl-h">۹. CQRS هم می‌شود؟</span>
+بله — جداسازی مسیر خواندن/نوشتن معمولاً با دو مجموعه Port/Adapter مجزا اعمال می‌شود.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۰. اگر Port زیاد شود چه؟</span>
+نشانه‌ی پراکندگی است؛ Portها را بر اساس سناریوی کاربردی ادغام کنید نه بر اساس تکنیک.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۱. تست درایور چگونه است؟</span>
+Driving Adapter با ساخت درخواست خام (JSON/CommandLine) تست می‌شود و Port را با Fake جایگزین می‌کنید.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۲. معروف‌ترین ابزار تضمین مرز؟</span>
+ArchUnit (JVM)، لینتر import، جدا بودن پکیج/ماژول و بررسی CI.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۳. تفاوت با MVC چیست؟</span>
+MVC الگوی UI است (Model-View-Controller)؛ Hex معماری کل سیستم با مرز هسته/محیط. می‌توانند هم‌زمان باشند.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۴. از کجا شروع کنیم؟</span>
+SOLID و Adapter/Repository، بعد یک پروژه‌ی کوچک را با دو درگاه ورودی/خروجی پیاده کنید، سپس مقاله‌ی اصلی Cockburn.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۵. سریع‌ترین راه اشتباه؟</span>
+کپی پوشه‌های <code>core/adapter</code> بدون فهم اینکه «کدام interface از بیرون فراخوانی می‌شود؟»
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>موضوع</th><th>توضیح</th></tr>
+  <tr><td><strong>هدف</strong></td><td>جداسازی هسته‌ی کاربردی از محیط با Port و Adapter</td></tr>
+  <tr><td><strong>قاعده‌ی طلایی</strong></td><td>هسته interface می‌سازد، Adapter پیاده‌سازی می‌کند؛ وابستگی فقط به داخل</td></tr>
+  <tr><td><strong>درگاه‌ها</strong></td><td>Driving (ورودی: Controller/CLI) و Driven (خروجی: Repository/Notification)</td></tr>
+  <tr><td><strong>مناسب برای</strong></td><td>درگاه‌های متعدد، تعویض زیرساخت، تست خودکار، مهاجرت Legacy</td></tr>
+  <tr><td><strong>مناسب نیست برای</strong></td><td>CRUD ساده، Prototype، اسکریپت، پنل کوچک</td></tr>
+  <tr><td><strong>مزیت اصلی</strong></td><td>افزودن ورودی/خروجی بدون تغییر هسته + تست سریع</td></tr>
+  <tr><td><strong>مشکل اصلی</strong></td><td>فایل/Boilerplate زیاد، ریسک مرز و Port اشتباه</td></tr>
+  <tr><td><strong>الگوهای کلیدی</strong></td><td>Adapter · Repository · DI · Facade · Strategy</td></tr>
+  <tr><td><strong>ابزار تضمین مرز</strong></td><td>ArchUnit · جداسازی پکیج · بازبینی import</td></tr>
+  <tr><td><strong>Frameworkهای معروف</strong></td><td>Spring Boot · Android · ASP.NET Core · NestJS · FastAPI</td></tr>
+  <tr><td><strong>چک‌لیست نهایی</strong></td><td>١) هسته خالص ٢) Port در هسته ٣) Adapter در بیرون ٤) سیم‌کشی در config ٥) تست هسته با Fake</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله‌ی حفظی</span>
+<strong>Hexagonal یعنی: هسته در وسط، درگاه‌ها روی مرز، Adapterها در بیرون — و فلش‌ها فقط به داخل.</strong>
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<pre class="kl-code" data-lang="text"><code>Programming (OOP)
+   ↓
+SOLID + Adapter/Repository/DI
+   ↓
+معماری لایه‌ای و MVC
+   ↓
+Clean / Onion / Hexagonal
+   ↓
+DDD و System Design</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>یادگیری</th><th>خروجی عملی</th></tr>
+  <tr><td>۱</td><td>OOP و Interface</td><td>پکیج هسته بدون import محیط</td></tr>
+  <tr><td>۲</td><td>Adapter/Repository/DI</td><td>یک Port ورودی + یک Port خروجی با Fake تست</td></tr>
+  <tr><td>۳</td><td>درایور/درایو</td><td>سرویس رزرو با REST + CLI روی یک هسته</td></tr>
+  <tr><td>۴</td><td>Clean و Onion</td><td>مقایسه‌ی عملی سه معماری روی یک دامنه</td></tr>
+  <tr><td>۵</td><td>DDD و System Design</td><td>مرزبندی سرویس‌ها و تصمیم Trade-off</td></tr>
+</table>
+</div>
+
+<h3>جمع‌بندی نهایی</h3>
+<p>
+مسیر طلایی این مقاله: <strong>Problem → Why Created → Concept → Structure → Data Flow →
+Implementation → Real Project → Advantages → Disadvantages → When To/NOT To → Comparison → Interview</strong>.
+Hexagonal به شما می‌گوید مرز هسته و محیط کجاست و درگاه‌ها را چگونه بکشید.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">پیام نهایی</span>
+هدف، حفظ کردن نام‌ها نیست؛ هدف این است که برای مسئله‌ی واقعی، معماری مناسب انتخاب کنید.
+گاهی Hexagonal درست است، گاهی یک MVC ساده — معمار خوب Trade-off را می‌فهمد.
+</div>
+
+<h3>ادامه‌ی سری معماری نرم‌افزار</h3>
+<p>
+این مقاله بخش سوم سری ۱۴ مقاله‌ای معماری نرم‌افزار است؛ مقالات بعدی:
+Layered · MVC · MVP · MVVM · MVI · Repository Pattern · DDD · Feature Based ·
+Event Driven · CQRS · Microservices.
+</p>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی درگاه‌ها زیاد می‌شوند</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Hexagonal Architecture چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: Ports و Adapters</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سرویس رزرو</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ارتباط با زبان‌ها و Frameworkها</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی درگاه‌ها زیاد می‌شوند</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Hexagonal Architecture چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: Ports و Adapters</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سرویس رزرو</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ارتباط با زبان‌ها و Frameworkها</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>
