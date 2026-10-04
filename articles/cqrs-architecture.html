@@ -1,0 +1,3358 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CQRS چیست؟ آموزش کامل Command Query Responsibility Segregation با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله CQRS را کامل یاد می‌گیرید: جدا کردن Command و Query، مدل نوشتن و مدل خواندن، Eventual Consistency و پروژکشن، پیاده‌سازی کامل Java 21، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="CQRS, Command Query Responsibility Segregation, مدل نوشتن, مدل خواندن, Eventual Consistency, Projection, DDD, Java, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, read model">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="CQRS چیست؟ آموزش کامل Command Query Responsibility Segregation با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله CQRS را کامل یاد می‌گیرید: جدا کردن Command و Query، مدل نوشتن و مدل خواندن، Eventual Consistency و پروژکشن، پیاده‌سازی کامل Java 21، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/cqrs-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/cqrs-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="CQRS Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CQRS چیست؟ آموزش کامل Command Query Responsibility Segregation با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="مدل نوشتن و مدل خواندن، پروژکشن، سازگاری نهایی، پیاده‌سازی Java 21 و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "CQRS چیست؟ آموزش کامل Command Query Responsibility Segregation با مثال و ساختار پروژه",
+    "description": "در این مقاله CQRS را کامل یاد می‌گیرید: جدا کردن Command و Query، مدل نوشتن و مدل خواندن، Eventual Consistency و پروژکشن، پیاده‌سازی کامل Java 21، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/cqrs-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/cqrs-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "CQRS, Command, Query, Read Model, Projection, Eventual Consistency",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "CQRS", "item": "https://haedarfarhani.github.io/My-Articles/articles/cqrs-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">CQRS</span>؛ وقتی خواندن و نوشتن دو زبان متفاوت دارند
+          </h1>
+
+          <p class="hero-lead">
+            یک مدل برای نوشتن و یک مدل برای خواندن. <strong>Command تغییر می‌دهد و Query
+            نمی‌تواند</strong>. در این راهنما از تعریف و تفاوتهای ظریف تا مدل خواندن
+            اختصاصی، پروژکشن و سازگاری نهایی، و پیاده‌سازی کامل با
+            <code>Java 21</code> و <code>Spring</code> را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۶۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: پیشرفته (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#CQRS</span>
+            <span class="post-tag">#Read_Model</span>
+            <span class="post-tag">#Projection</span>
+            <span class="post-tag">#Eventual_Consistency</span>
+            <span class="post-tag">#Java</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: مدلی که هر دو کار را بد انجام می‌دهد</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>CQRS چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: CQS و Command/Query</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>سه سطح CQRS</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>ساختار معماری</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>مثال عملی کامل: سفارش</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مدل خواندن و پروژکشن</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: مدلی که هر دو کار را بد انجام می‌دهد</h2>
+
+<p>
+یک مدل داده را در نظر بگیرید که هم باید نوشته را خوب انجام دهد و هم خواندن را. این
+تقریباً همیشه شکست می‌خورد، چون این دو کار <strong>نیازهای متضاد</strong> دارند.
+</p>
+
+<h3>الگوی خواندن</h3>
+<p>
+نمایش لیست سفارش‌ها به همراه نام مشتری، تعداد اقلام، مجموع پرداخت‌ها و وضعیت ارسال.
+این یک کوئری با ۵ <code>JOIN</code> است که روی ۴ جدول کار می‌کند و فقط یک نمایش می‌سازد.
+<strong>بهینه برای نمایش</strong>، بی‌ربط به قواعد کسب‌وکار.
+</p>
+
+<h3>الگوی نوشتن</h3>
+<p>
+ثبت سفارش: باید قوانین را چک کند (موجودی کافی است؟ تخفیف معتبر است؟)، وضعیت را تغییر
+دهد و رویداد تولید کند. این یک موجودیت غنی با رفتار است که فقط با شناسه بارگذاری
+می‌شود. <strong>بهینه برای قواعد</strong>، بی‌ربط به نمایش.
+</p>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مشکل مدل مشترک</span>
+اگر هر دو را در یک مدل بریزید:
+  ← یا مدل نوشتن را لاغر می‌کنید و قواعد را از دست می‌دهید
+  ← یا مدل خواندن را سنگین می‌کنید و کوئری‌ها کند می‌شوند
+  ← نتیجه: یک مدل که هیچ‌کدام از کارها را خوب انجام نمی‌دهد
+</div>
+
+<h3>نمونه‌ی واقعی از ناسازگاری</h3>
+
+<pre class="kl-code" data-lang="java"><code>// مدلی که برای هر دو استفاده می‌شود
+@Entity
+public class Order {
+    @Id private Long id;
+    private String customerName;          // ← فقط برای نمایش لازم است
+    private BigDecimal totalPaid;         // ← فقط برای نمایش
+    private String shippingStatus;        // ← از جدول دیگر کپی شده
+    private List&lt;OrderItem&gt; items;     // ← EAGER: همیشه بارگذاری می‌شود
+    private List&lt;Payment&gt; payments;     // ← EAGER: گران است
+    private String internalRiskScore;     // ← فقط برای کاربرد داخلی
+
+    // و برای نوشتن به این‌ها نیاز دارد:
+    public void addItem(...) { }         // ← قواعد اینجا
+    public void cancel() { }             // ← و اینجا
+}
+</code></pre>
+
+<p>
+برای نوشتن، این مدل <strong>سنگین</strong> است (۵ جدول join می‌شود). برای خواندن،
+<strong>ناقص</strong> است (بعضی داده‌ها کهنه‌اند و بعضی فیلدها اصلاً لازم نیستند).
+</p>
+
+<h3>راه‌حل: دو مدل</h3>
+
+<pre class="kl-code" data-lang="text"><code>Command Side (نوشتن)                    Query Side (خواندن)
+─────────────────                    ──────────────────
+موجودیت غنی با قواعد                 یک جدول تخت و denormalized
+تمرکز بر درستی داده                  تمرکز بر سرعت خواندن
+بارگذاری با شناسه                    یک کوئری ساده، بدون join سنگین
+قوانین در مدل                        فیلدهای محاسبه‌شده در همان‌جا
+کمتر بهینه می‌شود                     کاملاً بهینه می‌شود
+منبع حقیقت                           مشتق از منبع حقیقت</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تشبیه ساده</span>
+فکر کنید یک رستوران دارید. آشپزخانه (Command Side) برای <em>پخت</em> است: دقیق، با
+قوانین بهداشتی سخت‌گیرانه و کند. سالن (Query Side) برای <em>سرو</em> است: سریع، با
+میزهای چیده‌شده و منوی کامل. آشپزخانه و سالن داده‌ی متفاوتی دارند و این طبیعی است.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<table>
+<thead>
+<tr><th>سال</th><th>رویداد</th><th>تأثیر بر CQRS</th></tr>
+</thead>
+<tbody>
+<tr><td>۲۰۰۳</td><td>Greg Young کارگاه‌های <strong>CQRS</strong> را برگزار می‌کند</td><td>معرفی CQRS به‌عنوان یک الگوی مستقل، نه فقط یک تمرین نظری</td></tr>
+<tr><td>۲۰۰۷–۲۰۱۰</td><td>کار اریک ایوانز و DDD</td><td>پیوند CQRS با مدل دامنه و مدل Event Sourcing</td></tr>
+<tr><td>۲۰۰۸–۲۰۱۵</td><td>ADO.NET و EF Core، NHibernate</td><td>ابزارهای اولیه‌ی پیاده‌سازی Read Model</td></tr>
+<tr><td>۲۰۱۳</td><td>مقاله‌ی <strong>Bertrand Meyer</strong> درباره‌ی Command Query Separation</td><td>تعریف دقیق اصل CQS و تفاوت آن با CQRS</td></tr>
+<tr><td>۲۰۱۵–اکنون</td><td>Axon Framework، EventStoreDB، MongoDB + Kafka</td><td>زیرساخت‌های آماده‌ی Event Sourcing و پروژکشن</td></tr>
+<tr><td>۲۰۱۸–اکنون</td><td><strong>Spring Modulith</strong>، ماژول‌های read-only</td><td>امکان CQRS درون یک مونولیت، ساده و بی‌زیرساخت</td></tr>
+</tbody>
+</table>
+
+<h3>ریشه‌ی نیاز: داده و نمایش</h3>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">مسئله‌ی ریشه‌ای</span>
+«نمایش» (View) و «داده» (Data) دو نگرانی متفاوت‌اند. نمایش برای <em>خواننده</em>
+بهینه است: ستون‌های از پیش محاسبه‌شده، بدون join، آماده‌ی نمایش. داده برای
+<em>نویسنده</em> بهینه است: نرمال‌شده، با قید یکتا و کلید خارجی، برای تضمین درستی.
+این دو همیشه در تضادند.
+</div>
+
+<h3>سه موج توسعه</h3>
+
+<table>
+<thead>
+<tr><th>موج</th><th>بازه</th><th>شکل</th><th>وضعیت امروز</th></tr>
+</thead>
+<tbody>
+<tr><td>تئوری</td><td>۲۰۰۳–۲۰۱۰</td><td>کارگاه و مقاله، مدل ذهنی</td><td>مفاهیم پایه تثبیت شده</td></tr>
+<tr><td>نرم‌افزاری</td><td>۲۰۱۰–۲۰۱۶</td><td>Read Model اختصاصی با Event Store</td><td>ابزارهای بالغ (Axon)</td></tr>
+<tr><td>عملی</td><td>۲۰۱۶–اکنون</td><td>ماژول read-only در مونولیت، MongoDB، Redis</td><td><strong>پذیرفته‌شده و رایج</strong></td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">تغییر مهم</span>
+امروز بیشتر تیم‌ها CQRS را <strong>بدون</strong> Event Sourcing و حتی بدون پیام‌رسان
+می‌سازند: یک ماژول read-only ساده که با <code>@Scheduled</code> یا رویداد داخلی به‌روز
+می‌شود. این ساده‌ترین و در عمل پرکاربردترین شکل CQRS است.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>CQRS چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تعریف</span>
+CQRS یعنی <strong>جدا کردن مدل نوشتن از مدل خواندن</strong>؛ به‌جای اینکه یک مدل
+هم‌زمان مسئول اعتبارسنجی قواعد کسب‌وکار و نمایش داده به کاربر باشد، دو مدل جدا با
+مسئولیت‌های جدا می‌سازیم.
+</div>
+
+<p>
+نام کامل: <strong>Command Query Responsibility Segregation</strong> — جداسازی
+مسئولیت Command و Query.
+</p>
+
+<h3>Command چیست؟</h3>
+
+<pre class="kl-code" data-lang="java"><code>/** Command: درخواست تغییر وضعیت. خروجی: فقط موفقیت یا خطا. */
+public record PlaceOrderCommand(
+        String customerId,
+        List&lt;Line&gt; lines
+) {
+    public record Line(String productId, int quantity, BigDecimal unitPrice) {}
+}
+
+// ← خروجی یا id می‌دهد یا استثنا پرتاب می‌کند
+// ❌ هرگز یک مدل دامنه را برنمی‌گرداند
+String orderId = orders.placeOrder(command);</code></pre>
+
+<h3>Query چیست؟</h3>
+
+<pre class="kl-code" data-lang="java"><code>/** Query: درخواست خواندن. خروجی: داده. هیچ تغییری نباید رخ دهد. */
+public record OrderSummaryView(
+        String orderId,
+        String customerName,
+        int itemCount,
+        BigDecimal totalPaid,
+        String shippingStatus,
+        String orderStatus,
+        Instant placedAt
+) {}
+
+List&lt;OrderSummaryView&gt; result = queries.findOrdersByCustomer(customerId);</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">قانون CQS — مهم‌ترین قاعده</span>
+هر متد یا <strong>Command</strong> است (تغییر می‌دهد) یا <strong>Query</strong>
+(فقط می‌خواند). هیچ متدی هر دو نیست. این تنها قانونی است که نباید شکسته شود.
+</div>
+
+<h3>چهار تفاوت بنیادی</h3>
+
+<table>
+<thead>
+<tr><th>بعد</th><th>Command Side</th><th>Query Side</th></tr>
+</thead>
+<tbody>
+<tr><td>هدف</td><td>حفظ درستی داده</td><td>نمایش سریع و دقیق</td></tr>
+<tr><td>ساختار</td><td>نرمال‌شده، موجودیت با رفتار</td><td>تخت، denormalized، بدون رابطه</td></tr>
+<tr><td>بارگذاری</td><td>با شناسه، lazy</td><td>یک کوئری، بدون join سنگین</td></tr>
+<tr><td>خروجی</td><td>شناسه یا خطا</td><td>DTO نمایش</td></tr>
+<tr><td>بهینه‌سازی</td><td>کم</td><td><strong>زیاد</strong></td></tr>
+<tr><td>تست</td><td>تست دامنه، خالص</td><td>تست کوئری با داده‌ی واقعی</td></tr>
+<tr><td>منبع حقیقت</td><td><strong>بله</strong></td><td>خیر، مشتق‌شده</td></tr>
+</tbody>
+</table>
+
+<h3>ساختار مفهومی</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph Write["Command Side — منبع حقیقت"]
+        W1["Command Handler"]
+        W2["Domain Model<br/>قواعد کسب‌وکار"]
+        W3["Write Repository"]
+        WR[("دیتابیس اصلی<br/>نرمال‌شده")]
+        W1 --> W2 --> W3 --> WR
+    end
+
+    subgraph Sync["همگام‌سازی"]
+        S1["Domain Event<br/>/ @TransactionalEventListener"]
+    end
+
+    subgraph Read["Query Side — داده‌ی مشتق"]
+        R1["Query Handler"]
+        R2["Read Model<br/>تخت و بهینه"]
+        RR[("دیتابیس خواندن<br/>یا Mongo / Redis")]
+        R1 --> R2 --> RR
+    end
+
+    C["کاربر"] -->|"Command: POST /orders"| W1
+    C -->|"Query: GET /orders"| R1
+    W2 --> S1
+    S1 -->|"به‌روزرسانی"| R2
+
+    style WR fill:#0f766e,color:#fff,stroke:#0f766e
+    style RR fill:#334155,color:#fff,stroke:#334155</code></pre>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<h3>۱. مدل سنگین برای نمایش</h3>
+
+<pre class="kl-code" data-lang="sql"><code>-- کوئری لیست سفارش‌ها
+SELECT o.id, o.created_at, c.name, p.status,
+       (SELECT COUNT(*) FROM order_items WHERE order_id = o.id) AS item_count,
+       (SELECT SUM(amount) FROM payments WHERE order_id = o.id) AS total_paid
+FROM orders o
+JOIN customers c ON c.id = o.customer_id
+LEFT JOIN payments p ON p.order_id = o.id
+WHERE o.customer_id = ?
+ORDER BY o.created_at DESC
+LIMIT 20;
+
+-- هر اجرا: ۵ جدول، ۲ زیرکوئری، محاسبه‌ی جمع در هر ردیف
+-- در جدول ۱۰ میلیون ردیفی، این کوئری ۳ ثانیه طول می‌کشد</code></pre>
+
+<p>
+راه‌حل ناچار: ایندکس‌های پیچیده، denormalize کردن ناخواسته، و در نهایت یک جدول کش که
+همیشه کهنه است.
+</p>
+
+<h3>۲. شکنندگی مدل نمایش</h3>
+
+<pre class="kl-code" data-lang="java"><code>@Entity
+class OrderViewEntity {
+    private Long orderId;
+    private String customerName;      // ← با تغییر نام مشتری، همه سطرها کهنه می‌شوند
+    private String shippingStatus;    // ← کپی از جدول دیگر، همیشه با تأخیر
+    private String internalRiskScore; // ← چرا در نمایش عمومی اصلاً؟
+}
+</code></pre>
+
+<h3>۳. متدی که هم می‌خواند هم می‌نویسد</h3>
+
+<pre class="kl-code" data-lang="java"><code>// نقض مستقیم CQS
+public List&lt;Order&gt; findAndMarkAsViewed(Long customerId) {
+    List&lt;Order&gt; orders = repository.findByCustomerId(customerId);
+    for (Order o : orders) {
+        o.setLastViewedAt(Instant.now());   // ← نوشتن!
+        repository.save(o);                  // ← نوشتن!
+    }
+    return orders;                           // ← خواندن
+}
+
+// نتیجه:
+// ← GET /api/orders هر بار UPDATE می‌زند
+← لاگ پر از تغییر
+← تست سخت: برای بررسی نتیجه باید دیتابیس را تغییر داد
+← در cluster، دو درخواست هم‌زمان رقابت می‌کنند</code></pre>
+
+<h3>۴. قفل و نوشتن در مسیر خواندن</h3>
+
+<pre class="kl-code" data-lang="text"><code>یک صفحه‌ی لیست که ۱۰۰۰ کاربر هم‌زمان می‌بینند:
+
+  هر درخواست GET → UPDATE روی همان ردیف → قفل انحصاری
+  ← ۱۰۰۰ درخواست در صف پشت یک قفل
+
+نتیجه: صفحه‌ای که فقط «نمایش» است، تبدیل به گلوگاه شده است.</code></pre>
+
+<h3>۵. بهینه‌سازی ناخواسته‌ی مدل نوشتن</h3>
+
+<pre class="kl-code" data-lang="java"><code>// تیم، برای سرعت کوئری نمایش، این را به مدل نوشتن اضافه کرد:
+@Entity
+class Order {
+    @OneToMany(fetch = FetchType.EAGER)     // ← برای نمایش بهینه شد
+    private List&lt;OrderItem&gt; items;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Customer customer;
+}
+
+// حالا هر ثبت سفارش هم این‌ها را بارگذاری و ذخیره می‌کند
+// مدل نوشتن کند شد، برای اینکه مدل خواندن سریع باشد
+← بدترین حالت: هیچ‌کدام سریع نیست</code></pre>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: CQS و Command/Query</h2>
+
+<h3>مرحله‌ی اول: فقط اصل CQS (بدون مدل جدا)</h3>
+
+<p>
+گران‌ترین اشتباه رایج این است که «CQRS» را با «دو مدل» یکی می‌گیریم. اما ریشه‌ی آن
+<strong>اصل CQS</strong> است که تقریباً رایگان است و ارزشمندترین بخش.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>// ❌ قبل: یک سرویس برای همه
+@Service
+class OrderService {
+    void placeOrder(PlaceOrderCommand c) { }          // ← نوشتن
+    Order getOrder(Long id) { }                       // ← خواندن
+    List&lt;Order&gt; search(String q) { }               // ← خواندن
+    void markAsRead(Long id) { }                      // ← نوشتن
+}
+
+// ✅ بعد: دو واسط، یک مدل
+public interface OrderCommands {
+    String placeOrder(PlaceOrderCommand c);
+    void cancel(String orderId, String reason);
+}
+
+public interface OrderQueries {
+    OrderDetails getOrder(String orderId);
+    List&lt;OrderSummary&gt; search(String customerId);
+}
+</code></pre>
+
+<table>
+<thead>
+<tr><th>نام‌گذاری</th><th>معنا</th><th>نمونه</th></tr>
+</thead>
+<tbody>
+<tr><td><code>PlaceOrderCommand</code></td><td>دستور تغییر وضعیت</td><td>ثبت سفارش</td></tr>
+<tr><td><code>CancelOrderCommand</code></td><td>دستور تغییر وضعیت</td><td>لغو سفارش</td></tr>
+<tr><td><code>OrderView</code></td><td>نمایش خواندن</td><td>خلاصه‌ی سفارش</td></tr>
+<tr><td><code>OrderDetails</code></td><td>نمایش خواندن</td><td>جزئیات کامل</td></tr>
+<tr><td><code>OrderSummary</code></td><td>نمایش خواندن</td><td>فهرست سفارش‌ها</td></tr>
+<tr><td><code>OrderAggregate</code></td><td>مدل نوشتن</td><td>موجودیت با قواعد</td></tr>
+</tbody>
+</table>
+
+<h3>قواعد طراحی Command</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>فقط یک کار</strong> انجام می‌دهد؛ نامش یک فعل است</li>
+<li><strong>خروجی شناسه</strong> یا هیچ‌چیز، نه مدل دامنه</li>
+<li><strong>ممکن است استثنا بگیرد</strong> با معنی کسب‌وکار</li>
+<li><strong>idempotent نیست</strong> — دو بار فرستادن، دو بار اثر می‌گذارد</li>
+<li><strong>ممکن است کند باشد</strong> (استفاده از صف)</li>
+<li><strong>هیچ داده‌ای برنمی‌گرداند</strong> جز شناسه</li>
+</ul>
+</div>
+
+<h3>قواعد طراحی Query</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>فقط می‌خواند</strong>، هرگز تغییر وضعیت</li>
+<li><strong>سریع</strong> — همیشه</li>
+<li><strong>سازگاری نهایی</strong> قابل قبول است</li>
+<li><strong>idempotent</strong> — چند بار صدا بزنی، همان نتیجه</li>
+<li><strong>هیچ استثنای کسب‌وکاری</strong> — فقط «پیدا نشد»</li>
+<li><strong>کپی‌پذیر</strong> — هر نمایش می‌تواند یک Query جدا باشد</li>
+</ul>
+</div>
+
+<h3>چهار سطح عملی CQRS</h3>
+
+<table>
+<thead>
+<tr><th>سطح</th><th>تفاوت Command و Query</th><th>سازگاری</th><th>هزینه</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>۰. بدون CQRS</strong></td><td>هر دو یک مدل</td><td>فوری</td><td>صفر</td></tr>
+<tr><td><strong>۱. CQS</strong></td><td>فقط نام و امضا</td><td>فوری</td><td><strong>تقریباً صفر</strong></td></tr>
+<tr><td><strong>۲. مدل جدا، یک DB</strong></td><td>دو کلاس، دو repository</td><td>فوری</td><td>کم</td></tr>
+<tr><td><strong>۳. Read Model اختصاصی</strong></td><td>مدل و ذخیره‌سازی جدا</td><td>نهایی</td><td>متوسط</td></tr>
+<tr><td><strong>۴. Event Sourcing</strong></td><td>مدل کاملاً متفاوت</td><td>نهایی</td><td><strong>زیاد</strong></td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">توصیه‌ی عملی</span>
+از سطح ۱ شروع کنید (تقریباً رایگان). اگر کوئری‌ها کند بودند، به سطح ۲ بروید. اگر
+باز هم کند بود، سطح ۳. سطح ۴ را فقط وقتی بروید که واقعاً به تاریخچه‌ی کامل نیاز دارید.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>سه سطح CQRS</h2>
+
+<h3>سطح ۱ — CQS (جداسازی امضا)</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    C1["Controller: POST"] --> A["OrderCommands"]
+    C2["Controller: GET"] --> B["OrderQueries"]
+    A --> M[("یک مدل<br/>یک دیتابیس")]
+    B --> M
+
+    style M fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>@Service
+@Transactional
+class OrderCommandService implements OrderCommands {
+
+    private final OrderRepository orders;   // مدل نوشتن
+
+    @Override
+    public String placeOrder(PlaceOrderCommand command) {
+        Order order = Order.create(command.customerId());
+        command.lines().forEach(l -&gt;
+                order.addLine(l.productId(), l.quantity(), l.unitPrice()));
+        order.place();
+        orders.save(order);
+        return order.id();                   // ← فقط شناسه
+    }
+}
+
+@Service
+@Transactional(readOnly = true)
+class OrderQueryService implements OrderQueries {
+
+    private final OrderRepository orders;   // همان repository
+
+    @Override
+    public List&lt;OrderSummary&gt; search(String customerId) {
+        return orders.findByCustomerId(customerId).stream()
+                .map(o -&gt; new OrderSummary(o.id(), o.status().name(),
+                        o.total().toPlainString(), o.createdAt()))
+                .toList();
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">سود سطح ۱</span>
+با تغییر صفر در زیرساخت، سه چیز به دست می‌آورید: (۱) کنترلرها دقیقاً می‌دانند چه
+عملیاتی موجود است؛ (۲) هیچ متدی نمی‌تواند هم‌زمان بخواند و بنویسد؛ (۳) تست Query و
+Command جدا نوشته می‌شود. این سطح معمولاً ارزش بهترین نسبت به هزینه را دارد.
+</div>
+
+<h3>سطح ۲ — مدل و رابط کاربری جدا</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    C1["Controller: POST"] --> A["OrderCommands"]
+    C2["Controller: GET"] --> B["OrderQueries"]
+    A --> W[("Write Model<br/>موجودیت با قواعد")]
+    B --> R[("Read Model<br/>DTO نمایش")]
+    W -.->|"رویداد"| R
+
+    style W fill:#0f766e,color:#fff,stroke:#0f766e
+    style R fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>@RestController
+@RequestMapping("/api/orders")
+class OrderController {
+
+    private final OrderCommands commands;
+    private final OrderQueries queries;
+
+    @PostMapping
+    ResponseEntity&lt;OrderCreatedResponse&gt; create(
+            @Valid @RequestBody PlaceOrderRequest req) {
+
+        String id = commands.placeOrder(new PlaceOrderCommand(
+                req.customerId(),
+                req.lines().stream()
+                        .map(l -&gt; new LineCommand(l.productId(),
+                                l.quantity(), new BigDecimal(l.unitPrice())))
+                        .toList()));
+
+        return ResponseEntity.created(URI.create("/api/orders/" + id))
+                .body(new OrderCreatedResponse(id));
+    }
+
+    @GetMapping
+    List&lt;OrderSummaryResponse&gt; list(@RequestParam String customerId) {
+        return queries.search(customerId).stream()
+                .map(v -&gt; new OrderSummaryResponse(v.orderId(), v.status(),
+                        v.total(), v.placedAt()))
+                .toList();
+    }
+}
+</code></pre>
+
+<h3>سطح ۳ — Read Model اختصاصی (کامل‌ترین شکل رایج)</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    W["Write Side<br/>PostgreSQL نرمال‌شده"] -->|"Domain Event"| P["Projection Handler"]
+    P --> R["Read Side<br/>MongoDB / Redis / PostgreSQL تخت"]
+    Q["Query Side"] --> R
+    C["کاربر"] --> Q
+
+    style W fill:#0f766e,color:#fff,stroke:#0f766e
+    style R fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>// Read Model: دقیقاً همان چیزی که صفحه لازم دارد، نه بیشتر
+@Document(collection = "order_summary")
+record OrderSummaryDocument(
+        @Id String orderId,
+        String customerId,
+        String customerName,
+        String status,
+        int itemCount,
+        BigDecimal total,
+        String currency,
+        String shippingStatus,
+        LocalDate placedOn,
+        boolean highValue
+) {}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چرا سطح ۳ محبوب‌ترین است</span>
+نیازی به Event Store و بازسازی رویداد ندارد. منبع حقیقت همان دیتابیس نوشتن است و
+Read Model فقط یک <strong>کپی بهینه</strong> است که می‌توانید هر وقت خواستید از نو
+بسازید. اگر خراب شود، پروژکشن را دوباره اجرا می‌کنید.
+</div>
+
+<h3>مقایسه‌ی سه سطح</h3>
+
+<table>
+<thead>
+<tr><th>معیار</th><th>سطح ۱</th><th>سطح ۲</th><th>سطح ۳</th></tr>
+</thead>
+<tbody>
+<tr><td>زمان پیاده‌سازی</td><td>۱ روز</td><td>۳ روز</td><td>۲ هفته</td></tr>
+<tr><td>سرعت کوئری</td><td>بدون تغییر</td><td>کمی بهتر</td><td><strong>۱۰ تا ۱۰۰ برابر</strong></td></tr>
+<tr><td>سازگاری</td><td>فوری</td><td>فوری</td><td>نهایی</td></tr>
+<tr><td>زیرساخت اضافه</td><td>هیچ</td><td>هیچ</td><td>دیتابیس دوم یا کش</td></tr>
+<tr><td>پیچیدگی</td><td>خیلی کم</td><td>کم</td><td>متوسط</td></tr>
+<tr><td>نیاز به پایش lag</td><td>نه</td><td>نه</td><td><strong>بله</strong></td></tr>
+</tbody>
+</table>
+
+<h3>سطح ۴ — Event Sourcing (پیشرفته)</h3>
+
+<pre class="kl-code" data-lang="text"><code>در این سطح، دیتابیس نوشتن اصلاً وجود ندارد:
+
+  Event Store (رویدادها)  ← منبع حقیقت
+       ↓ replay
+  Aggregate (وضعیت فعلی)  ← برای نوشتن
+       ↓ subscribe
+  Read Models              ← برای خواندن
+
+مزیت: تاریخچه‌ی کامل تغییرات، ممکن است «زمان» بازی کنید
+هزینه: پیچیدگی بالا، بازسازی مدل، مدیریت نسخه‌ی رویداد
+
+← فقط وقتی تاریخچه‌ی تغییرات واقعاً ارزش کسب‌وکاری دارد</code></pre>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>ساختار معماری</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph Client["لایه‌ی ورودی"]
+        CT1["OrderCommandController<br/>POST, PUT, PATCH, DELETE"]
+        CT2["OrderQueryController<br/>GET"]
+    end
+
+    subgraph Cmd["سوی فرمان"]
+        CH["CommandHandler"]
+        AG["Order (Aggregate Root)<br/>قواعد کسب‌وکار"]
+        EV["Domain Events"]
+        WR["OrderRepository (نوشتن)"]
+        CH --> AG --> EV
+        AG --> WR
+    end
+
+    subgraph Qry["سوی کوئری"]
+        QH["QueryHandler"]
+        RM["OrderView / DTO<br/>بدون رفتار"]
+        QR["OrderViewRepository"]
+        QH --> RM --> QR
+    end
+
+    subgraph Infra["زیرساخت"]
+        WDB[("دیتابیس نوشتن")]
+        RDB[("دیتابیس خواندن")]
+    end
+
+    subgraph Bridge["پل همگام‌سازی"]
+        PH["ProjectionHandler"]
+        BUS["EventBus / Spring Events"]
+    end
+
+    CT1 --> CH
+    CT2 --> QH
+    WR --> WDB
+    QR --> RDB
+    EV --> BUS --> PH --> RDB
+
+    style AG fill:#0f766e,color:#fff,stroke:#0f766e
+    style WDB fill:#0f766e,color:#fff,stroke:#0f766e
+    style RDB fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<h3>مرزهای روشن</h3>
+
+<table>
+<thead>
+<tr><th>مرز</th><th>قانون</th><th>نتیجه</th></tr>
+</thead>
+<tbody>
+<tr><td>Command ↔ Query</td><td>هیچ‌کدام همدیگر را صدا نمی‌زنند</td><td>استقلال کامل</td></tr>
+<tr><td>Command ↔ Read Model</td><td>فقط از راه رویداد</td><td>بدون وابستگی زمان اجرا</td></tr>
+<tr><td>Query ↔ دیتابیس نوشتن</td><td><strong>هرگز</strong></td><td>تضمین سرعت کوئری</td></tr>
+<tr><td>Read Model ↔ قوانین</td><td>Read Model هیچ قاعده‌ای ندارد</td><td>فقط نمایش</td></tr>
+<tr><td>Command ↔ DTO نمایش</td><td><strong>هرگز</strong></td><td>ساختار مدل لو نمی‌رود</td></tr>
+</tbody>
+</table>
+
+<h3>قواعد نام‌گذاری در Java</h3>
+
+<pre class="kl-code" data-lang="text"><code>src/main/java/com/shop/order/
+├── command/
+│   ├── PlaceOrderCommand.java          ← Command: تغییر وضعیت
+│   ├── CancelOrderCommand.java
+│   ├── OrderCommandHandler.java        ← پیاده‌سازی OrderCommands
+│   └── OrderCommands.java              ← interface
+│
+├── query/                              ← ❗ هیچ ارجاعی به command ندارد
+│   ├── OrderSummary.java               ← View: فقط داده
+│   ├── OrderDetails.java
+│   ├── OrderQueries.java               ← interface
+│   ├── OrderQueryHandler.java          ← پیاده‌سازی
+│   └── OrderViewRepository.java        ← repository فقط‌خواندنی
+│
+├── domain/                             ← فقط Command Side می‌بیند
+│   ├── Order.java
+│   ├── OrderLine.java
+│   ├── OrderStatus.java
+│   └── event/OrderPlaced.java
+│
+└── projection/                         ← پل بین دو سو
+    ├── OrderSummaryProjector.java
+    └── OrderViewDocument.java</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">قانون کامپایلر</span>
+پوشه‌ی <code>query/</code> نباید <code>import</code>ای از پوشه‌ی <code>domain/</code>
+داشته باشد. اگر دارد، Read Model شما در حال نشت کردن به سمت مدل نوشتن است و عملاً
+CQRS را از دست داده‌اید. این را می‌توانید با ArchUnit خودکار بررسی کنید.
+</div>
+
+<h3>انواع Read Model</h3>
+
+<table>
+<thead>
+<tr><th>نوع</th><th>ویژگی</th><th>مناسب برای</th><th>سرعت</th></tr>
+</thead>
+<tbody>
+<tr><td>تخت (Flat)</td><td>فیلدهای محاسبه‌شده، بدون join</td><td>فهرست‌ها و داشبورد</td><td><strong>خیلی سریع</strong></td></tr>
+<tr><td>نرمال‌شده (Normal)</td><td>همان مدل نوشتن</td><td>گزارش‌های پیچیده</td><td>متوسط</td></tr>
+<tr><td>تجمیعی</td><td>اعداد از پیش جمع‌شده</td><td>داشبورد و شمارنده</td><td><strong>خیلی سریع</strong></td></tr>
+<tr><td>جست‌وجوی متنی</td><td>ایندکس Elasticsearch</td><td>جست‌وجوی محصول</td><td>متوسط</td></tr>
+<tr><td>تجمیعی زمانی</td><td>ساعتی/روزانه</td><td>نمودارها و آمار</td><td><strong>خیلی سریع</strong></td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>جریان داده (Data Flow)</h2>
+
+<h3>جریان Command</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant U as کاربر
+    participant C as CommandController
+    participant H as CommandHandler
+    participant A as Order (Aggregate)
+    participant R as OrderRepository
+    participant DB as دیتابیس نوشتن
+    participant B as EventBus
+
+    U->>C: POST /api/orders
+    C->>C: اعتبارسنجی فرم
+    C->>H: execute(PlaceOrderCommand)
+    H->>A: create + addLine (اجرای قواعد)
+    A-->>H: رویداد OrderPlaced
+    H->>R: save(order)
+    R->>DB: INSERT
+    H->>B: publish(OrderPlaced)
+    H-->>C: orderId
+    C-->>U: 201 Created (id)
+
+    Note over U,DB: کل مسیر فوری و سازگار</code></pre>
+
+<h3>جریان Query</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant U as کاربر
+    participant C as QueryController
+    participant Q as QueryHandler
+    participant V as OrderViewRepository
+    participant DB as دیتابیس خواندن
+
+    U->>C: GET /api/orders?customerId=1
+    C->>Q: search(customerId)
+    Q->>V: findByCustomer(1)
+    V->>DB: SELECT * FROM order_summary WHERE customer_id = ?
+    DB-->>V: ۲۰ ردیف آماده
+    V-->>Q: OrderSummary
+    Q-->>C: List&lt;OrderSummary&gt;
+    C-->>U: JSON
+
+    Note over U,DB: یک کوئری، بدون join، ایندکس‌شده</code></pre>
+
+<h3>جریان همگام‌سازی (پروژکشن)</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant B as EventBus
+    participant P as OrderSummaryProjector
+    participant V as OrderViewRepository
+    participant DB as دیتابیس خواندن
+
+    Note over B: پس از commit تراکنش نوشتن
+    B->>P: OrderPlaced
+    P->>V: upsert(ساخت خلاصه)
+    V->>DB: INSERT ON CONFLICT UPDATE
+
+    B->>P: OrderShipped
+    P->>V: updateShippingStatus("SHIPPED")
+    V->>DB: UPDATE
+
+    Note over P,DB: هر پروژکشن باید idempotent باشد</code></pre>
+
+<h3>سازگاری نهایی در عمل</h3>
+
+<pre class="kl-code" data-lang="text"><code>کاربر ثبت سفارش می‌کند و بلافاصله صفحه‌ی لیست را می‌بیند:
+
+  ثبت سفارش     → دیتابیس نوشتن ✅
+  پروژکشن        → در حال اجرا...
+  صفحه‌ی لیست   → هنوز سفارش جدید را نمی‌بیند ❌
+  ۱ ثانیه بعد    → پروژکشن تمام شد
+  تازه‌سازی صفحه → سفارش هست ✅
+
+سؤالاتی که باید بپرسید:
+  ۱. کاربر چقدر باید منتظر بماند؟  (۵۰ms یا ۲ ثانیه؟)
+  ۲. آیا می‌تواند این را ببیند؟    (UI باید بازخورد بدهد)
+  ۳. اگر مشکلی پیش بیاید چه؟      (lag monitor + retry)</code></pre>
+
+<h3>سه راه مدیریت سازگاری نهایی در رابط کاربری</h3>
+
+<table>
+<thead>
+<tr><th>راه</th><th>پیاده‌سازی</th><th>تجربه‌ی کاربر</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>بازخورد فوری</strong></td><td>«در حال ثبت...» سپس تأیید</td><td>خوب</td></tr>
+<tr><td><strong>خواندن از منبع نوشتن</strong></td><td>اگر تازه است، از دیتابیس اصلی بخوان</td><td>عالی</td></tr>
+<tr><td><strong>نمایش وضعیت</strong></td><td>«در حال پردازش» + نظرسنجی</td><td>قابل قبول</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">قانون عملی</span>
+اگر کاربر بعد از یک عملیات نوشتن، بلافاصله باید نتیجه را ببیند (مثلاً «سفارش من»)،
+یا از منبع نوشتن بخوانید، یا پروژکشن را <strong>همگام</strong> کنید (کمی سریع‌تر اما
+همچنان جداست). برای فهرست‌های عمومی، سازگاری نهایی مشکلی ندارد.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>shop-backend/
+├── pom.xml
+│
+└── src/
+    ├── main/
+    │   ├── java/com/shop/order/
+    │   │   ├── domain/                          ← فقط Command Side
+    │   │   │   ├── Order.java
+    │   │   │   ├── OrderLine.java
+    │   │   │   ├── OrderStatus.java
+    │   │   │   ├── OrderRepository.java         ← Port نوشتن
+    │   │   │   ├── OrderError.java
+    │   │   │   └── event/
+    │   │   │       ├── OrderPlaced.java
+    │   │   │       ├── OrderCancelled.java
+    │   │   │       └── OrderShipped.java
+    │   │   │
+    │   │   ├── command/
+    │   │   │   ├── OrderCommands.java           ← interface
+    │   │   │   ├── PlaceOrderCommand.java
+    │   │   │   ├── CancelOrderCommand.java
+    │   │   │   └── OrderCommandHandler.java     ← پیاده‌سازی
+    │   │   │
+    │   │   ├── query/
+    │   │   │   ├── OrderQueries.java            ← interface
+    │   │   │   ├── OrderSummary.java            ← record
+    │   │   │   ├── OrderDetails.java
+    │   │   │   ├── OrderViewRepository.java     ← Port خواندن
+    │   │   │   └── OrderQueryHandler.java
+    │   │   │
+    │   │   ├── projection/
+    │   │   │   ├── OrderSummaryProjector.java   ← مصرف رویداد
+    │   │   │   ├── OrderViewDocument.java
+    │   │   │   └── JpaOrderViewRepository.java
+    │   │   │
+    │   │   ├── web/
+    │   │   │   ├── OrderCommandController.java  ← POST, PATCH, DELETE
+    │   │   │   └── OrderQueryController.java    ← GET
+    │   │   │
+    │   │   └── OrderModuleConfiguration.java
+    │   │
+    │   └── resources/
+    │       ├── application.yml
+    │       └── db/migration/
+    │           ├── V1__write_model.sql          ← جداول نوشتن
+    │           └── V2__read_model.sql           ← جداول خواندن
+    │
+    └── test/java/com/shop/order/
+        ├── command/
+        │   ├── PlaceOrderCommandTest.java       ← تست دامنه، خالص
+        │   └── CancelOrderCommandTest.java
+        ├── query/
+        │   └── OrderQueryHandlerTest.java        ← @DataJpaTest
+        ├── projection/
+        │   └── OrderSummaryProjectorTest.java    ← تست پروژکشن
+        └── architecture/
+            └── CqrsBoundaryTest.java             ← ArchUnit</code></pre>
+
+<h3>جدول‌های دو مدل</h3>
+
+<pre class="kl-code" data-lang="sql"><code>-- ─── Write Model: نرمال‌شده، برای درستی ───
+CREATE TABLE orders (
+    id           UUID PRIMARY KEY,
+    customer_id  UUID NOT NULL REFERENCES customers(id),
+    status       VARCHAR(20)  NOT NULL,
+    total        NUMERIC(19,2) NOT NULL,
+    currency     CHAR(3)       NOT NULL DEFAULT 'IRR',
+    placed_at    TIMESTAMPTZ   NOT NULL,
+    CONSTRAINT chk_total_positive CHECK (total &gt;= 0)
+);
+
+CREATE TABLE order_lines (
+    id          UUID PRIMARY KEY,
+    order_id    UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    product_id  UUID NOT NULL,
+    quantity    INT  NOT NULL CHECK (quantity &gt; 0),
+    unit_price  NUMERIC(19,2) NOT NULL
+);
+CREATE INDEX idx_lines_order ON order_lines(order_id);
+
+
+-- ─── Read Model: تخت، برای سرعت ───
+CREATE TABLE order_summary (
+    order_id        UUID PRIMARY KEY,
+    customer_id     UUID NOT NULL,
+    customer_name   VARCHAR(200) NOT NULL,
+    status          VARCHAR(20)  NOT NULL,
+    item_count      INT          NOT NULL,
+    total           NUMERIC(19,2) NOT NULL,
+    currency        CHAR(3)      NOT NULL,
+    shipping_status VARCHAR(20),
+    placed_on       DATE         NOT NULL,
+    high_value      BOOLEAN      NOT NULL DEFAULT FALSE,
+    updated_at      TIMESTAMPTZ  NOT NULL DEFAULT now()
+);
+
+-- ایندکس‌های مخصوص الگوی خواندن
+CREATE INDEX idx_summary_customer ON order_summary(customer_id, placed_on DESC);
+CREATE INDEX idx_summary_status   ON order_summary(status);
+CREATE INDEX idx_summary_high     ON order_summary(high_value)
+    WHERE high_value = TRUE;</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چرا این جدول واقعاً سریع‌تر است</span>
+«تخت» یعنی نمایش لیست فقط از یک جدول خوانده می‌شود: بدون join، بدون
+<code>N+1</code>، و دو فیلد محاسبه‌شده (<code>item_count</code> و
+<code>high_value</code>) که در لحظه نوشته شده‌اند. در دیتابیس اصلی، این‌ها یا join
+می‌خواهند یا در هر ردیف محاسبه می‌شوند.
+</div>
+
+<h3>تست مرز با ArchUnit</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.architecture;
+
+import com.tngtech.archunit.junit.AnalyzeClasses;
+import com.tngtech.archunit.core.importer.ImportOption;
+import com.tngtech.archunit.lang.ArchRule;
+import org.junit.jupiter.api.Test;
+
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+
+@AnalyzeClasses(packages = "com.shop.order",
+                importOptions = ImportOption.DoNotIncludeTests.class)
+class CqrsBoundaryTest {
+
+    /** Query Side نباید مدل نوشتن را ببیند */
+    @Test
+    void querySideDoesNotDependOnDomain() {
+        ArchRule rule = noClasses()
+                .that().resideInAPackage("..query..")
+                .should().dependOnClassesThat().resideInAPackage("..domain..")
+                .because("Query Side فقط باید داده‌ی نمایش ببیند، نه مدل نوشتن");
+
+        rule.check(new com.tngtech.archunit.core.importer.ClassFileImporter()
+                .importPackages("com.shop.order"));
+    }
+
+    /** Query نباید هیچ متد نوشتنی داشته باشد */
+    @Test
+    void querySideHasNoWrites() {
+        ArchRule rule = noClasses()
+                .that().resideInAPackage("..query..")
+                .should().dependOnClassesThat()
+                .resideInAnyPackage("org.springframework.data.jpa.repository..",
+                                    "jakarta.persistence..Entity")
+                .because("Read Model فقط خواندنی است، نباید entity نوشتن داشته باشد");
+
+        rule.check(new com.tngtech.archunit.core.importer.ClassFileImporter()
+                .importPackages("com.shop.order"));
+    }
+
+    /** Controller نباید مستقیم Repository صدا بزند */
+    @Test
+    void controllersDoNotTouchRepositories() {
+        ArchRule rule = noClasses()
+                .that().resideInAPackage("..web..")
+                .should().dependOnClassesThat()
+                .resideInAnyPackage("..repository..")
+                .because("کنترلر فقط باید Command یا Query را صدا بزند");
+
+        rule.check(new com.tngtech.archunit.core.importer.ClassFileImporter()
+                .importPackages("com.shop.order"));
+    }
+}
+</code></pre>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>مثال عملی کامل: سفارش</h2>
+
+<h3>Command Side — مدل نوشتن</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.command;
+
+/**
+ * Command: درخواست تغییر وضعیت.
+ * خروجی فقط شناسه است، نه مدل دامنه.
+ */
+public record PlaceOrderCommand(
+        String customerId,
+        List&lt;Line&gt; lines
+) {
+    public PlaceOrderCommand {
+        Objects.requireNonNull(customerId, "شناسه‌ی مشتری الزامی است");
+        if (lines == null || lines.isEmpty()) {
+            throw new IllegalArgumentException("سفارش بدون خطا معتبر نیست");
+        }
+        lines = List.copyOf(lines);
+    }
+
+    public record Line(String productId, int quantity, BigDecimal unitPrice) {
+        public Line {
+            if (quantity <= 0) {
+                throw new IllegalArgumentException("تعداد باید بزرگ‌تر از صفر باشد");
+            }
+        }
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.command;
+
+/** مرز Command Side: فقط تغییر وضعیت. */
+public interface OrderCommands {
+
+    String placeOrder(PlaceOrderCommand command);
+
+    void cancelOrder(String orderId, String reason);
+
+    void markAsShipped(String orderId, String trackingCode);
+
+    void confirmDelivery(String orderId);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.command;
+
+import com.shop.order.domain.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@Transactional                                    // ← مرز تراکنش
+public class OrderCommandHandler implements OrderCommands {
+
+    private final OrderRepository orders;
+    private final ApplicationEventPublisher events;
+
+    public OrderCommandHandler(OrderRepository orders,
+                               ApplicationEventPublisher events) {
+        this.orders = orders;
+        this.events = events;
+    }
+
+    @Override
+    public String placeOrder(PlaceOrderCommand command) {
+        Order order = Order.create(command.customerId());
+
+        command.lines().forEach(l ->
+                order.addLine(l.productId(), l.quantity(), l.unitPrice()));
+
+        order.place();
+
+        orders.save(order);
+        events.publishEvent(new OrderPlaced(
+                order.id(), order.customerId(), order.total(),
+                order.lines().size(), java.time.Instant.now()));
+
+        return order.id();                       // ← فقط شناسه
+    }
+
+    @Override
+    public void cancelOrder(String orderId, String reason) {
+        Order order = load(orderId);
+        order.cancel(reason);
+        orders.save(order);
+        events.publishEvent(new OrderCancelled(orderId, reason,
+                java.time.Instant.now()));
+    }
+
+    @Override
+    public void markAsShipped(String orderId, String trackingCode) {
+        Order order = load(orderId);
+        order.ship(trackingCode);
+        orders.save(order);
+        events.publishEvent(new OrderShipped(orderId, trackingCode,
+                java.time.Instant.now()));
+    }
+
+    @Override
+    public void confirmDelivery(String orderId) {
+        Order order = load(orderId);
+        order.deliver();
+        orders.save(order);
+        events.publishEvent(new OrderDelivered(orderId,
+                java.time.Instant.now()));
+    }
+
+    private Order load(String orderId) {
+        return orders.findById(new OrderId(orderId))
+                .orElseThrow(() -&gt; new OrderError("سفارش یافت نشد: " + orderId));
+    }
+}
+</code></pre>
+
+<h3>Query Side — مدل خواندن</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.query;
+
+/**
+ * View: فقط داده، بدون هیچ رفتار.
+ * فیلدهایش دقیقاً همان‌هایی است که صفحه‌ی لیست لازم دارد.
+ */
+public record OrderSummary(
+        String orderId,
+        String customerId,
+        String customerName,
+        String status,
+        int itemCount,
+        BigDecimal total,
+        String currency,
+        String shippingStatus,
+        LocalDate placedOn,
+        boolean highValue
+) {}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.query;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+public interface OrderQueries {
+
+    OrderSummary getOne(String orderId);
+
+    List&lt;OrderSummary&gt; findByCustomer(String customerId, int limit);
+
+    List&lt;OrderSummary&gt; findHighValue(Instant since, int limit);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.query;
+
+import java.time.LocalDate;
+import java.util.List;
+
+public interface OrderViewRepository {
+
+    OrderSummary findById(String orderId);
+
+    List&lt;OrderSummary&gt; findByCustomerId(String customerId, int limit);
+
+    List&lt;OrderSummary&gt; findHighValue(Instant since, int limit);
+
+    void upsert(OrderSummary summary);
+
+    void updateStatus(String orderId, String status);
+
+    void updateShippingStatus(String orderId, String shippingStatus);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.query;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+
+import java.time.Instant;
+import java.util.List;
+
+@Service
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+public class OrderQueryHandler implements OrderQueries {
+
+    private final OrderViewRepository views;
+
+    public OrderQueryHandler(OrderViewRepository views) {
+        this.views = views;
+    }
+
+    @Override
+    public OrderSummary getOne(String orderId) {
+        return views.findById(orderId);
+    }
+
+    @Override
+    public List&lt;OrderSummary&gt; findByCustomer(String customerId, int limit) {
+        return views.findByCustomerId(customerId, Math.min(limit, 100));
+    }
+
+    @Override
+    public List&lt;OrderSummary&gt; findHighValue(Instant since, int limit) {
+        return views.findHighValue(since, limit);
+    }
+}
+</code></pre>
+
+<h3>Domain Event</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain.event;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+
+public record OrderPlaced(
+        String orderId,
+        String customerId,
+        BigDecimal total,
+        int itemCount,
+        Instant occurredAt
+) {}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain.event;
+
+import java.time.Instant;
+
+public record OrderShipped(
+        String orderId,
+        String trackingCode,
+        Instant occurredAt
+) {}
+</code></pre>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>کنترلرها — دو کنترلر جدا</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.web;
+
+import com.shop.order.command.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.net.URI;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/orders")
+public class OrderCommandController {
+
+    private final OrderCommands commands;
+
+    public OrderCommandController(OrderCommands commands) {
+        this.commands = commands;
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;OrderCreatedResponse&gt; create(
+            @Valid @RequestBody PlaceOrderRequest request) {
+
+        String id = commands.placeOrder(new PlaceOrderCommand(
+                request.customerId(),
+                request.lines().stream()
+                        .map(l -&gt; new PlaceOrderCommand.Line(
+                                l.productId(), l.quantity(),
+                                new BigDecimal(l.unitPrice())))
+                        .toList()));
+
+        return ResponseEntity.created(URI.create("/api/orders/" + id))
+                .body(new OrderCreatedResponse(id));
+    }
+
+    @PostMapping("/{id}/cancellation")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancel(@PathVariable String id,
+                       @RequestBody CancelRequest request) {
+        commands.cancelOrder(id, request.reason());
+    }
+
+    @PostMapping("/{id}/shipment")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ship(@PathVariable String id,
+                     @RequestBody ShipRequest request) {
+        commands.markAsShipped(id, request.trackingCode());
+    }
+
+    // ── DTO های ورودی ──
+    public record PlaceOrderRequest(
+            @NotBlank String customerId,
+            @NotEmpty @Valid List&lt;Line&gt; lines) {
+
+        public record Line(@NotBlank String productId,
+                           @Min(1) int quantity,
+                           @NotBlank String unitPrice) {}
+    }
+
+    public record CancelRequest(@NotBlank String reason) {}
+    public record ShipRequest(@NotBlank String trackingCode) {}
+    public record OrderCreatedResponse(String orderId) {}
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.web;
+
+import com.shop.order.query.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/orders")
+public class OrderQueryController {
+
+    private final OrderQueries queries;
+
+    public OrderQueryController(OrderQueries queries) {
+        this.queries = queries;
+    }
+
+    @GetMapping("/{id}")
+    public OrderSummaryResponse get(@PathVariable String id) {
+        OrderSummary summary = queries.getOne(id);
+        return OrderSummaryResponse.from(summary);
+    }
+
+    @GetMapping
+    public List&lt;OrderSummaryResponse&gt; list(@RequestParam String customerId,
+                                              @RequestParam(defaultValue = "20") int limit) {
+        return queries.findByCustomer(customerId, limit).stream()
+                .map(OrderSummaryResponse::from)
+                .toList();
+    }
+
+    @GetMapping("/high-value")
+    public List&lt;OrderSummaryResponse&gt; highValue(@RequestParam int days) {
+        var since = java.time.Instant.now()
+                .minus(java.time.Duration.ofDays(days));
+        return queries.findHighValue(since, 100).stream()
+                .map(OrderSummaryResponse::from)
+                .toList();
+    }
+
+    // ── DTO های خروجی ──
+    public record OrderSummaryResponse(
+            String orderId,
+            String customerName,
+            String status,
+            int itemCount,
+            BigDecimal total,
+            String currency,
+            String shippingStatus,
+            LocalDate placedOn,
+            boolean highValue
+    ) {
+        static OrderSummaryResponse from(OrderSummary s) {
+            return new OrderSummaryResponse(s.orderId(), s.customerName(),
+                    s.status(), s.itemCount(), s.total(), s.currency(),
+                    s.shippingStatus(), s.placedOn(), s.highValue());
+        }
+    }
+}
+</code></pre>
+
+<h3>Read Model و پیاده‌سازی آن</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.projection;
+
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+@Entity
+@Table(name = "order_summary",
+       indexes = {
+           @Index(name = "idx_summary_customer",
+                  columnList = "customer_id, placed_on"),
+           @Index(name = "idx_summary_status", columnList = "status")
+       })
+class OrderViewDocument {
+
+    @Id
+    @Column(name = "order_id", length = 36)
+    private String orderId;
+
+    @Column(name = "customer_id", nullable = false, length = 36)
+    private String customerId;
+
+    @Column(name = "customer_name", nullable = false, length = 200)
+    private String customerName;
+
+    @Column(nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "item_count", nullable = false)
+    private int itemCount;
+
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal total;
+
+    @Column(nullable = false, length = 3)
+    private String currency;
+
+    @Column(name = "shipping_status", length = 20)
+    private String shippingStatus;
+
+    @Column(name = "placed_on", nullable = false)
+    private LocalDate placedOn;
+
+    @Column(name = "high_value", nullable = false)
+    private boolean highValue;
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    protected OrderViewDocument() {}
+
+    static OrderViewDocument create(String orderId, String customerId,
+                                    String customerName, String status,
+                                    int itemCount, BigDecimal total,
+                                    String currency, Instant placedAt) {
+        OrderViewDocument d = new OrderViewDocument();
+        d.orderId = orderId;
+        d.customerId = customerId;
+        d.customerName = customerName;
+        d.status = status;
+        d.itemCount = itemCount;
+        d.total = total;
+        d.currency = currency;
+        d.placedOn = placedAt.atZone(ZoneId.of("Asia/Tehran")).toLocalDate();
+        d.highValue = total.compareTo(THRESHOLD) &gt;= 0;
+        d.updatedAt = Instant.now();
+        return d;
+    }
+
+    void changeStatus(String newStatus) {
+        this.status = newStatus;
+        this.updatedAt = Instant.now();
+    }
+
+    void changeShippingStatus(String newStatus) {
+        this.shippingStatus = newStatus;
+        this.updatedAt = Instant.now();
+    }
+
+    private static final BigDecimal THRESHOLD = new BigDecimal("50000000");
+
+    String orderId()         { return orderId; }
+    String customerId()      { return customerId; }
+    String customerName()    { return customerName; }
+    String status()          { return status; }
+    int itemCount()          { return itemCount; }
+    BigDecimal total()       { return total; }
+    String currency()        { return currency; }
+    String shippingStatus()  { return shippingStatus; }
+    LocalDate placedOn()     { return placedOn; }
+    boolean highValue()      { return highValue; }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.projection;
+
+import com.shop.order.query.OrderViewRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+interface OrderViewJpaRepository
+        extends JpaRepository&lt;OrderViewDocument, String&gt; {
+
+    List&lt;OrderViewDocument&gt; findByCustomerIdOrderByPlacedOnDesc(
+            String customerId, org.springframework.data.domain.Pageable pageable);
+
+    List&lt;OrderViewDocument&gt; findByHighValueTrueAndPlacedOnAfter(
+            LocalDate since, org.springframework.data.domain.Pageable pageable);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.projection;
+
+import com.shop.order.domain.event.*;
+import com.shop.order.query.OrderViewRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * پل بین دو سو.
+ *
+ * نکته‌ی مهم: این کلاس از دیتابیس نوشتن به دیتابیس خواندن وصل می‌شود،
+ * پس تراکنش آن باید جدا باشد.
+ */
+@Component
+public class OrderSummaryProjector {
+
+    private final OrderViewRepository views;
+    private final CustomerNameProvider customers;
+
+    public OrderSummaryProjector(OrderViewRepository views,
+                                 CustomerNameProvider customers) {
+        this.views = views;
+        this.customers = customers;
+    }
+
+    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)   // ← تراکنش جدا
+    public void on(OrderPlaced event) {
+        String name = customers.nameOf(event.customerId());
+
+        views.upsert(com.shop.order.query.OrderSummary.builder()
+                .orderId(event.orderId())
+                .customerId(event.customerId())
+                .customerName(name)
+                .status("PLACED")
+                .itemCount(event.itemCount())
+                .total(event.total())
+                .currency("IRR")
+                .placedOn(java.time.LocalDate.ofInstant(
+                        event.occurredAt(),
+                        java.time.ZoneId.of("Asia/Tehran")))
+                .shippingStatus(null)
+                .highValue(event.total()
+                        .compareTo(new java.math.BigDecimal("50000000")) &gt;= 0)
+                .build());
+    }
+
+    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void on(OrderCancelled event) {
+        views.updateStatus(event.orderId(), "CANCELLED");
+    }
+
+    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void on(OrderShipped event) {
+        views.updateShippingStatus(event.orderId(), "SHIPPED");
+        views.updateStatus(event.orderId(), "SHIPPED");
+    }
+
+    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void on(OrderDelivered event) {
+        views.updateStatus(event.orderId(), "DELIVERED");
+        views.updateShippingStatus(event.orderId(), "DELIVERED");
+    }
+}
+</code></pre>
+
+<h3>چرا REQUIRES_NEW؟</h3>
+
+<pre class="kl-code" data-lang="java"><code>@Transactional                    // ← تراکنش نوشتن
+public void placeOrder(PlaceOrderCommand command) {
+    orders.save(order);
+    events.publishEvent(new OrderPlaced(...));
+}
+
+@Transactional(propagation = REQUIRES_NEW)   // ← تراکنش خواندن
+public void on(OrderPlaced event) {
+    views.upsert(summary);
+}
+
+// اگر REQUIRES_NEW نباشد:
+//   پروژکشن در همان تراکنش اجرا می‌شود
+//   ← اگر نوشتن Read Model شکست بخورد، کل ثبت سفارش rollback می‌شود
+//   ← نوشتن اصلی نباید به داده‌ی کش وابسته باشد</code></pre>
+
+<h3>رویداد همگام درون‌فرایندی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.projection;
+
+import com.shop.order.domain.event.OrderPlaced;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
+
+/**
+ * نسخه‌ی ساده‌تر: همگام ولی فقط بعد از commit موفق.
+ * مزیت: اگر تراکنش نوشتن rollback شود، پروژکشن اجرا نمی‌شود.
+ */
+@Component
+class InlineOrderProjector {
+
+    private final OrderViewRepository views;
+
+    InlineOrderProjector(OrderViewRepository views) {
+        this.views = views;
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void on(OrderPlaced event) {
+        // اینجا تراکنش قبلی commit شده است
+        views.updateStatus(event.orderId(), "PLACED");
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">مقایسه‌ی دو رویکرد</span>
+<strong>Domain Event</strong> (معمولاً) درون تراکنش اجرا می‌شود و اگر شکست بخورد
+نوشتن را هم برمی‌گرداند — مناسب وقتی خواندن و نوشتن در یک دیتابیس‌اند.
+<strong>Integration Event</strong> بعد از commit و از راه broker منتشر می‌شود — مناسب
+وقتی Read Model در یک سیستم دیگر است.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مدل خواندن و پروژکشن</h2>
+
+<h3>Read Model چه ویژگی‌هایی دارد؟</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>تخت (Flat)</strong> — بدون join، هرچه لازم در یک سطر</li>
+<li><strong>فیلدهای محاسبه‌شده</strong> — <code>itemCount</code>، <code>highValue</code> از پیش</li>
+<li><strong>غیرنرمال</strong> — تکرار داده اشکالی ندارد</li>
+<li><strong>فقط‌خواندنی</strong> — application آن هیچ متد نوشتن ندارد</li>
+<li><strong>قابل دور ریختن</strong> — هر لحظه می‌توان از نو ساختش</li>
+<li><strong>ایندکس‌شده برای الگوی خواندن</strong> — نه برای نوشتن</li>
+<li><strong>محکوم به کهنگی</strong> — نه منبع حقیقت است</li>
+</ul>
+</div>
+
+<h3>سه راه به‌روزرسانی Read Model</h3>
+
+<table>
+<thead>
+<tr><th>روش</th><th>تأخیر</th><th>سازگاری</th><th>پیچیدگی</th><th>مناسب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>همگام</strong></td><td>صفر</td><td>فوری</td><td>کم</td><td>یک دیتابیس</td></tr>
+<tr><td><strong>درون‌فرایندی</strong></td><td>میلی‌ثانیه</td><td>تقریباً فوری</td><td>متوسط</td><td><strong>رایج‌ترین</strong></td></tr>
+<tr><td><strong>از راه Broker</strong></td><td>ثانیه</td><td>نهایی</td><td>زیاد</td><td>چند سرویس</td></tr>
+</tbody>
+</table>
+
+<h3>ساخت دوباره‌ی Read Model</h3>
+
+<p>
+بزرگ‌ترین مزیت عملی Read Model این است که <strong>هیچ‌وقت نمی‌میرد</strong>: اگر خراب
+شد، کافی است دوباره بسازید.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>/**
+ * بازسازی کامل Read Model از روی داده‌ی نوشتن.
+ * این اسکریپت شبکه‌ی ایمنی شماست.
+ */
+@Component
+public class ReadModelRebuilder {
+
+    private final JdbcTemplate jdbc;
+    private final OrderViewJpaRepository views;
+
+    @Transactional
+    public void rebuildAll() {
+        views.deleteAllInBatch();
+        views.flush();
+
+        // یک کوئری ساده: همه‌ی سفارش‌ها + تعداد خطوط + نام مشتری
+        var rows = jdbc.queryForList("""
+                SELECT o.id            AS order_id,
+                       o.customer_id   AS customer_id,
+                       c.name          AS customer_name,
+                       o.status        AS status,
+                       o.total         AS total,
+                       o.currency      AS currency,
+                       o.placed_at     AS placed_at,
+                       COUNT(ol.id)    AS item_count
+                FROM orders o
+                JOIN customers c   ON c.id = o.customer_id
+                LEFT JOIN order_lines ol ON ol.order_id = o.id
+                GROUP BY o.id, c.name
+                """);
+
+        int batchSize = 500;
+        for (int i = 0; i &lt; rows.size(); i += batchSize) {
+            var batch = rows.subList(i, Math.min(i + batchSize, rows.size()));
+            views.saveAll(batch.stream().map(this::toDocument).toList());
+            views.flush();
+        }
+    }
+
+    private OrderViewDocument toDocument(java.util.Map&lt;String, Object&gt; row) {
+        // تبدیل Map به document
+        // ...
+        return null;
+    }
+}
+</code></pre>
+
+<h3>بازسازی تدریجی و بررسی سلامت</h3>
+
+<pre class="kl-code" data-lang="java"><code>/**
+ * مقایسه‌ی تعداد رکوردها برای تشخیص کهنگی.
+ * این را در یک تست یا هر شب اجرا کنید.
+ */
+@Test
+void readModelIsInSync() {
+    long writeCount = jdbc.queryForObject(
+            "SELECT count(*) FROM orders", Long.class);
+
+    long readCount = views.count();
+
+    assertThat(readCount)
+            .as("Read Model باید تقریباً هم‌تعداد باشد")
+            .isCloseTo(writeCount, within(10L));
+}
+</code></pre>
+
+<h3>مقایسه‌ی فناوری‌های Read Model</h3>
+
+<table>
+<thead>
+<tr><th>فناوری</th><th>سرعت کوئری</th><th>نوشتن</th><th>جست‌وجو</th><th>بهترین برای</th></tr>
+</thead>
+<tbody>
+<tr><td>PostgreSQL جدول جدا</td><td>عالی</td><td>عالی</td><td>خوب</td><td><strong>ساده‌ترین انتخاب</strong></td></tr>
+<tr><td>MongoDB</td><td>عالی</td><td>عالی</td><td>خوب</td><td>اسناد تودرتو</td></tr>
+<tr><td>Redis</td><td><strong>بی‌رقیب</strong></td><td>ضعیف</td><td>متوسط</td><td>داده‌ی گذرا</td></tr>
+<tr><td>Elasticsearch</td><td>خوب</td><td>متوسط</td><td><strong>عالی</strong></td><td>جست‌وجوی متنی</td></tr>
+<tr><td>ClickHouse</td><td><strong>بی‌رقیب</strong></td><td>عالی</td><td>ضعیف</td><td>گزارش و آمار</td></tr>
+</tbody>
+</table>
+
+<h3>حذف تکرار در پروژکشن</h3>
+
+<pre class="kl-code" data-lang="java"><code>@Transactional(propagation = Propagation.REQUIRES_NEW)
+public void on(OrderPlaced event) {
+    // اگر این رویداد قبلاً پردازش شده، هیچ کاری نکن
+    if (processed.wasProcessed(event.eventId(), "order-projector")) {
+        return;
+    }
+
+    views.upsert(buildSummary(event));
+    processed.markProcessed(event.eventId(), "order-projector");
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">idempotency اجباری</span>
+اگر پروژکشن شما idempotent نباشد، رویداد تکراری باعث می‌شود
+<code>itemCount</code> دو برابر شود یا مجموع‌ها اشتباه گردند. این یکی از رایج‌ترین
+باگ‌های CQRS در تولید است.
+</div>
+</section>
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>مزایا</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>سرعت خواندن چشمگیر</strong></td><td>کوئری تخت بدون join و با فیلدهای محاسبه‌شده؛ اغلب ۱۰ تا ۱۰۰ برابر سریع‌تر</td></tr>
+<tr><td>۲</td><td><strong>درستی نوشتن حفظ می‌شود</strong></td><td>مدل نوشتن بهینه نمی‌شود و هیچ قاعده‌ای برای نمایش قربانی نمی‌شود</td></tr>
+<tr><td>۳</td><td><strong>استقلال تیمی</strong></td><td>تیم محصول و تیم نمایش می‌توانند جدا کار کنند</td></tr>
+<tr><td>۴</td><td><strong>مقیاس‌پذیری جدا</strong></td><td>Read Model و Write Model جدا مقیاس می‌گیرند و روی هم اثر ندارند</td></tr>
+<tr><td>۵</td><td><strong>نمایش‌های اختصاصی</strong></td><td>برای هر صفحه یک نمایش بهینه می‌سازید، بدون آلوده کردن مدل اصلی</td></tr>
+<tr><td>۶</td><td><strong>فیلدهای محاسباتی پیشاپیش</strong></td><td><code>highValue</code>، <code>itemCount</code> یا آمار ماهانه بدون محاسبه‌ی لحظه‌ای</td></tr>
+<tr><td>۷</td><td><strong>فناوری مناسب هر سمت</strong></td><td>PostgreSQL برای نوشتن، Redis برای کش، Elasticsearch برای جست‌وجو</td></tr>
+<tr><td>۸</td><td><strong>مسیر مهاجرت به Microservices</strong></td><td>Read Side اولین چیزی است که به سرویس مستقل تبدیل می‌شود</td></tr>
+<tr><td>۹</td><td><strong>قابلیت بازیابی</strong></td><td>Read Model را می‌توان هر وقت خواست از نو ساخت؛ خطای آن جبران‌پذیر است</td></tr>
+<tr><td>۱۰</td><td><strong>مسیر اتصال به Event Sourcing</strong></td><td>اگر بعداً به Event Sourcing خواستید بروید، زیرساخت آماده است</td></tr>
+<tr><td>۱۱</td><td><strong>تست جداگانه‌ی هر سمت</strong></td><td>تست دامنه خالص و سریع، تست کوئری با داده‌ی واقعی</td></tr>
+<tr><td>۱۲</td><td><strong>قواعد نام‌گذاری روشن</strong></td><td>از نام‌ها معلوم است کدام متد تغییر می‌دهد و کدام فقط می‌خواند</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">بزرگ‌ترین مزیت</span>
+«بهینه‌سازی بدون قربانی». در معماری تک‌مدل، هر بهینه‌سازی برای خواندن، نوشتن را کند
+می‌کند و برعکس. CQRS این رقابت را تمام می‌کند.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>معایب</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>سازگاری نهایی</strong></td><td>کاربر ممکن است بلافاصله نتیجه را نبیند؛ نیازمند بازخورد در رابط کاربری</td></tr>
+<tr><td>۲</td><td><strong>کد تکراری</strong></td><td>بخشی از فیلدها در Write Model و Read Model تکرار می‌شوند</td></tr>
+<tr><td>۳</td><td><strong>پیچیدگی زیرساخت</strong></td><td>دو ذخیره‌سازی، پروژکشن، پایش lag و بازسازی</td></tr>
+<tr><td>۴</td><td><strong>زمان تحویل بیشتر</strong></td><td>برای یک فهرست ساده، دو هفته کار اضافه لازم است</td></tr>
+<tr><td>۵</td><td><strong>مدل نمایش می‌تواند کهنه شود</strong></td><td>اگر رویداد گم شود، Read Model هرگز به‌روز نمی‌شود</td></tr>
+<tr><td>۶</td><td><strong>ریسک انفجار Read Model</strong></td><td>با گذشت زمان، ده‌ها جدول نمایش با ستون‌های تکراری پیدا می‌شود</td></tr>
+<tr><td>۷</td><td><strong>عیب‌یابی سخت‌تر</strong></td><td>«چرا این فیلد اشتباه است؟» یعنی بررسی Write Model و پروژکشن</td></tr>
+<tr><td>۸</td><td><strong>نیاز به دانش بیشتر</strong></td><td>تیم باید سازگاری نهایی، پروژکشن و idempotency را بفهمد</td></tr>
+<tr><td>۹</td><td><strong>هزینه‌ی ذخیره‌سازی دوبرابر</strong></td><td>داده تا دو بار ذخیره می‌شود</td></tr>
+<tr><td>۱۰</td><td><strong>مرز Query و Command مبهم می‌شود</strong></td><td>متدی که «فقط یک آمار را به‌روز می‌کند» Command است نه Query</td></tr>
+</tbody>
+</table>
+
+<h3>تله‌ی «CQRS را همه‌جا بزنیم»</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ استفاده‌ی نادرست:
+  صفحه‌ی «تنظیمات کاربر» → CQRS
+  فرم تغییر نام کاربر → Read Model اختصاصی
+  ← ۳۰۰ خط کد اضافه، ۰ سود
+
+✅ استفاده‌ی درست:
+  صفحه‌ی «لیست ۱۰۰۰ سفارش» → CQRS ارزش دارد
+  ← کوئری قبلی ۴ ثانیه، حالا ۳۰ میلی‌ثانیه</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">قاعده‌ی طلایی</span>
+قبل از اضافه کردن CQRS، این سؤال را بپرسید: «آیا کوئری فعلی کند یا پیچیده است؟»
+اگر پاسخ «نه» است، CQRS فقط پیچیدگی اضافه می‌کند.
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-check">
+<ul>
+<li><strong>کوئری‌های سنگین</strong> هستند (بالای ۱ ثانیه)</li>
+<li><strong>نمایش‌های پیچیده</strong> با join چندجدولی و فیلد محاسبه‌شده</li>
+<li><strong>بازخوانی زیاد و نوشتن کم</strong> (۱۰۰ به ۱ یا بیشتر)</li>
+<li><strong>مدل نوشتن پیچیده و غنی</strong> است و نمی‌شود ساده‌اش کرد</li>
+<li><strong>الگوهای دسترسی ناهمگون</strong> هستند (یک صفحه‌ی سنگین، بقیه سبک)</li>
+<li><strong>نیاز به داشبورد و گزارش</strong> با تجمیع‌های سنگین</li>
+<li><strong>چند تیم</strong> روی نمایش و منطق کار می‌کنند</li>
+<li><strong>می‌خواهید به Event Sourcing یا Microservices</strong> مهاجرت کنید</li>
+<li><strong>سیستم قدیمی</strong> است که بهینه‌سازی بیشتر جواب نداده</li>
+<li><strong>نمایش‌های متعدد با نیازهای متفاوت</strong> (موبایل، دسکتاپ، چاپ)</li>
+</ul>
+</div>
+
+<h3>مثال‌های مناسب</h3>
+
+<pre class="kl-code" data-lang="text"><code>✅ فروشگاه اینترنتی  → لیست سفارش با نام مشتری و وضعیت ارسال
+✅ داشبورد مدیریتی  → آمار تجمیعی و نمودار
+✅ فید اینستاگرام    → لیست بای ۱۰۰۰ دنبال‌کننده
+✅ ایمیل             → لیست و پیش‌نمایش با join زیاد
+✅ سامانه‌ی مالی      → دفتر کل و گردش حساب
+✅ اپلیکیشن فیلم      → فهرست با ژانر، امتیاز و سال</code></pre>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>چه زمانی استفاده نکنیم؟</h2>
+
+<table>
+<thead>
+<tr><th>وضعیت</th><th>چرا مناسب نیست؟</th><th>جایگزین</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CRUD ساده</strong></td><td>هیچ کوئری سنگینی وجود ندارد</td><td>لایه‌بندی ساده</td></tr>
+<tr><td><strong>نسبت خواندن به نوشتن نزدیک ۱</strong></td><td>هزینه‌ی دو مدل، سود ندارد</td><td>یک مدل</td></tr>
+<tr><td><strong>کاربر باید «همین الان» نتیجه را ببیند</strong></td><td>سازگاری نهایی تجربه را خراب می‌کند</td><td>خواندن از منبع نوشتن</td></tr>
+<tr><td><strong>تیم کوچک و کم‌تجربه</strong></td><td>پیچیدگی زیاد</td><td>تک‌مدل + ایندکس درست</td></tr>
+<tr><td><strong>زمان تحویل فشرده</strong></td><td>دو هفته صرف زیرساخت می‌شود</td><td>بعداً</td></tr>
+<tr><td><strong>نمایش‌ها کم و ساده</strong></td><td>فقط یک یا دو فرم</td><td>یک مدل</td></tr>
+<tr><td><strong>پروژه‌ی در حال کشف</strong></td><td>نمایش‌ها هنوز مشخص نیستند</td><td>طراحی ساده</td></tr>
+<tr><td><strong>حجم داده‌ی کم</strong></td><td>کوئری فعلی به اندازه‌ی کافی سریع است</td><td>ایندکس</td></tr>
+<tr><td><strong>نبود امکان پایش</strong></td><td>سازگاری نهایی بدون پایش یعنی باگ خاموش</td><td>اول پایش، بعد CQRS</td></tr>
+<tr><td><strong>تیم همه‌چیز را با هم عوض می‌کند</strong></td><td>مدل‌ها همیشه ناهماهنگ می‌مانند</td><td>مرز تیمی روشن</td></tr>
+</tbody>
+</table>
+
+<h3>سه سطح عملی — کدام را انتخاب کنم؟</h3>
+
+<pre class="kl-code" data-lang="text"><code>۹۰٪ پروژه‌ها  → فقط سطح ۱ (CQS)
+              ← دو interface، یک مدل
+              ← تقریباً رایگان، ارزش واقعی
+
+۸٪ پروژه‌ها   → سطح ۲ (مدل و رابط کاربری جدا)
+              ← DTO اختصاصی برای هر نمایش
+              ← کوئری بهتر، هنوز یک دیتابیس
+
+۲٪ پروژه‌ها   → سطح ۳ (Read Model اختصاصی)
+              ← دیتابیس یا کش جدا
+              ← سرعت و مقیاس استثنایی</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">توصیه‌ی صادقانه</span>
+بیشتر تیم‌هایی که فکر می‌کنند به CQRS نیاز دارند، فقط به سطح ۱ نیاز دارند. ابتدا
+همان را انجام دهید؛ اگر هنوز کوئری کند بود، آن‌وقت سرمایه‌گذاری کنید. شروع از سطح ۳،
+اشتباه رایجی است که پروژه را دو برابر پیچیده می‌کند.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<table>
+<thead>
+<tr><th>اصل</th><th>نام</th><th>نمود در CQRS</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>S</strong></td><td>Single Responsibility</td><td>هر interface یک کار: <code>OrderCommands</code> یا <code>OrderQueries</code></td></tr>
+<tr><td><strong>O</strong></td><td>Open/Closed</td><td>افزودن Query جدید، مدل نوشتن را تغییر نمی‌دهد</td></tr>
+<tr><td><strong>L</strong></td><td>Liskov Substitution</td><td>هر پیاده‌سازی <code>OrderViewRepository</code> جایگزین‌پذیر است</td></tr>
+<tr><td><strong>I</strong></td><td>Interface Segregation</td><td>جدا کردن Command و Query، نمونه‌ی کامل ISP است</td></tr>
+<tr><td><strong>D</strong></td><td>Dependency Inversion</td><td>پروژکشن فقط به interface خواندن وابسته است</td></tr>
+</tbody>
+</table>
+
+<h3>ISP — دلیل اصلی CQRS</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ❌ یک interface بزرگ: هر مصرف‌کننده به همه‌چیز وابسته است
+public interface OrderRepository {
+    Order save(Order o);
+    void delete(String id);
+    Optional&lt;Order&gt; findById(String id);
+    List&lt;Order&gt; findByCustomer(String id);        // ← فقط نمایش لازم دارد
+    BigDecimal totalRevenue(LocalDate from, LocalDate to);  // ← فقط گزارش
+    List&lt;Order&gt; searchFullText(String q);       // ← فقط جست‌وجو
+    void updateShippingStatus(String id, String s); // ← فقط عملیات
+}
+
+// ✅ جداسازی: هر مصرف‌کننده حداقل آنچه را می‌خواهد دارد
+public interface OrderCommands {
+    String placeOrder(PlaceOrderCommand c);
+    void cancel(String id, String reason);
+}
+
+public interface OrderQueries {
+    OrderSummary getOne(String id);
+    List&lt;OrderSummary&gt; findByCustomer(String id);
+}
+
+public interface OrderViewRepository {
+    void upsert(OrderSummary s);
+    Optional&lt;OrderSummary&gt; findById(String id);
+}
+
+public interface RevenueReport {
+    BigDecimal totalRevenue(LocalDate from, LocalDate to);
+}
+</code></pre>
+
+<h3>S — هر سمت یک مسئولیت</h3>
+
+<pre class="kl-code" data-lang="text"><code>Command Side: «حفظ درستی داده»
+  ← مدل غنی، قواعد، تراکنش، رویداد
+
+Query Side: «ارائه‌ی سریع داده»
+  ← مدل تخت، بدون قاعده، بدون تراکنش، فقط‌خواندنی
+
+دو مسئولیت متفاوت برای دو کلاس متفاوت
+← این S در عمل است، نه فقط در تئوری</code></pre>
+
+<h3>D — پروژکشن به interface وابسته است</h3>
+
+<pre class="kl-code" data-lang="java"><code>// پروژکشن هیچ چیزی درباره‌ی JPA یا دیتابیس نمی‌داند
+@Component
+class OrderSummaryProjector {
+
+    private final OrderViewRepository views;   // ← interface
+
+    OrderSummaryProjector(OrderViewRepository views) {
+        this.views = views;                     // ← در تست: InMemoryOrderViewRepository
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    public void on(OrderPlaced event) {
+        views.upsert(OrderSummary.builder()...build());
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سود تست‌پذیری</span>
+تست پروژکشن با یک <code>InMemoryOrderViewRepository</code> در چند میلی‌ثانیه اجرا
+می‌شود، بدون دیتابیس. اگر پروژکشن مستقیم به <code>JpaRepository</code> وابسته بود،
+این تست نیازمند دیتابیس بود.
+</div>
+
+<h3>O — افزودن نمایش بدون تغییر منطق</h3>
+
+<pre class="kl-code" data-lang="text"><code>امروز: صفحه‌ی لیست سفارش از OrderQueries استفاده می‌کند
+
+فردا: می‌خواهید صفحه‌ی «سفارش‌های پرریسک» بسازید
+      ← یک متد جدید به OrderQueries اضافه کنید
+      ← یک ستون جدید به جدول read model
+      ← مدل دامنه و ثبت سفارش: <strong>صفر تغییر</strong>
+
+← بدون CQRS، این یعنی تغییر در چند لایه‌ی موجود</code></pre>
+</section>
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>نقش در CQRS</th><th>نمود در این مقاله</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Command</strong></td><td><strong>الگوی اصلی</strong> — پیام تغییر وضعیت</td><td><code>PlaceOrderCommand</code></td></tr>
+<tr><td><strong>Command Handler</strong></td><td>اجرای یک Command</td><td><code>OrderCommandHandler</code></td></tr>
+<tr><td><strong>Query Object</strong></td><td><strong>الگوی اصلی</strong> — پیام خواندن</td><td><code>OrderSummary</code></td></tr>
+<tr><td><strong>Query Handler</strong></td><td>اجرای یک Query</td><td><code>OrderQueryHandler</code></td></tr>
+<tr><td><strong>Repository</strong></td><td>دو نمونه: نوشتن و خواندن</td><td><code>OrderRepository</code> و <code>OrderViewRepository</code></td></tr>
+<tr><td><strong>Data Mapper</strong></td><td>جدا کردن دو مدل</td><td>Read Model مستقل از Write Model</td></tr>
+<tr><td><strong>Domain Event</strong></td><td><strong>پل همگام‌سازی</strong></td><td><code>OrderPlaced</code> → پروژکشن</td></tr>
+<tr><td><strong>Observer</strong></td><td>پروژکشن به‌عنوان شنونده‌ی رویداد</td><td><code>OrderSummaryProjector</code></td></tr>
+<tr><td><strong>Mediator</strong></td><td>جدا کردن فراخوانی Command از اجرا</td><td>Command Bus</td></tr>
+<tr><td><strong>Facade</strong></td><td>پنهان کردن پیچیدگی هر سمت</td><td>یک interface برای هر سمت</td></tr>
+<tr><td><strong>Null Object</strong></td><td>نمایش نبود داده بدون null</td><td>Query خالی به‌جای خطا</td></tr>
+<tr><td><strong>Unit of Work</strong></td><td>مرز تراکنش نوشتن</td><td><code>@Transactional</code> در Command Handler</td></tr>
+</tbody>
+</table>
+
+<h3>Command Bus — مدیریت Command ها</h3>
+
+<pre class="kl-code" data-lang="java"><code>public interface CommandBus {
+    &lt;R&gt; R dispatch(Command&lt;R&gt; command);
+}
+
+public interface Command&lt;R&gt; {
+    Class&lt;? extends CommandHandler&lt;? , R&gt;&gt; handlerType();
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public interface CommandHandler&lt;C extends Command&lt;R&gt;, R&gt; {
+    R handle(C command);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>public record PlaceOrderCommand(
+        String customerId,
+        List&lt;Line&gt; lines
+) implements Command&lt;String&gt; {
+
+    @Override
+    public Class&lt;? extends CommandHandler&lt;?, String&gt;&gt; handlerType() {
+        return PlaceOrderCommandHandler.class;
+    }
+
+    public record Line(String productId, int quantity, BigDecimal unitPrice) {}
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>@Component
+class PlaceOrderCommandHandler implements CommandHandler&lt;PlaceOrderCommand, String&gt; {
+
+    private final OrderRepository orders;
+    private final ApplicationEventPublisher events;
+
+    PlaceOrderCommandHandler(OrderRepository orders,
+                            ApplicationEventPublisher events) {
+        this.orders = orders;
+        this.events = events;
+    }
+
+    @Override
+    @Transactional
+    public String handle(PlaceOrderCommand command) {
+        Order order = Order.create(command.customerId());
+        command.lines().forEach(l -&gt;
+                order.addLine(l.productId(), l.quantity(), l.unitPrice()));
+        order.place();
+
+        orders.save(order);
+        events.publishEvent(new OrderPlaced(order.id(), order.customerId(),
+                order.total(), order.lines().size(), Instant.now()));
+
+        return order.id();
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>@Component
+class SpringCommandBus implements CommandBus {
+
+    private final Map&lt;Class&lt;?&gt;, CommandHandler&gt; handlers = new HashMap&lt;&gt;();
+
+    SpringCommandBus(List&lt;CommandHandler&gt; discovered) {
+        discovered.forEach(h -&gt; handlers.put(h.supports(), h));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public &lt;R&gt; R dispatch(Command&lt;R&gt; command) {
+        CommandHandler handler = handlers.get(command.handlerType());
+        if (handler == null) {
+            throw new NoHandlerForCommand(command.getClass());
+        }
+        return (R) handler.handle(command);
+    }
+}
+</code></pre>
+
+<h3>Query Object — کوئری به‌عنوان داده</h3>
+
+<pre class="kl-code" data-lang="java"><code>/**
+ * Query Object به‌جای پارامترهای متعدد، خودش داده‌ی فیلتر را حمل می‌کند.
+ * مزیت: همان کلاس هم DTO خروجی است و هم توصیف کوئری.
+ */
+public record OrderSummary(
+        String orderId,
+        String customerId,
+        String customerName,
+        String status,
+        int itemCount,
+        BigDecimal total,
+        String currency,
+        String shippingStatus,
+        LocalDate placedOn,
+        boolean highValue
+) {
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private String orderId;
+        private String customerId;
+        private String customerName;
+        private String status;
+        private int itemCount;
+        private BigDecimal total = BigDecimal.ZERO;
+        private String currency = "IRR";
+        private String shippingStatus;
+        private LocalDate placedOn = LocalDate.now();
+        private boolean highValue;
+
+        public Builder orderId(String v)          { this.orderId = v; return this; }
+        public Builder customerId(String v)       { this.customerId = v; return this; }
+        public Builder customerName(String v)     { this.customerName = v; return this; }
+        public Builder status(String v)           { this.status = v; return this; }
+        public Builder itemCount(int v)           { this.itemCount = v; return this; }
+        public Builder total(BigDecimal v)        { this.total = v; return this; }
+        public Builder currency(String v)         { this.currency = v; return this; }
+        public Builder shippingStatus(String v)   { this.shippingStatus = v; return this; }
+        public Builder placedOn(LocalDate v)      { this.placedOn = v; return this; }
+        public Builder highValue(boolean v)       { this.highValue = v; return this; }
+
+        public OrderSummary build() {
+            return new OrderSummary(orderId, customerId, customerName,
+                    status, itemCount, total, currency,
+                    shippingStatus, placedOn, highValue);
+        }
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">مزیت Builder برای Read Model</span>
+Read Model شما معمولاً فیلدهای زیادی دارد و اغلب هنگام نمایش لازم نیستند. Builder
+اجازه می‌دهد پروژکشن فقط فیلدهایی را پر کند که واقعاً می‌داند و بقیه مقدار پیش‌فرض
+بگیرند.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+بزرگ‌ترین مزیت CQRS در تست‌پذیری است: هر سمت را می‌توان جدا و سریع تست کرد.
+</p>
+
+<h3>تست Command Side — خالص و سریع</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.command;
+
+import com.shop.order.domain.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+
+@DisplayName("ثبت سفارش")
+class PlaceOrderCommandTest {
+
+    private RecordingOrderRepository orders;
+    private RecordingEventPublisher events;
+    private PlaceOrderCommandHandler handler;
+
+    @BeforeEach
+    void setUp() {
+        orders = new RecordingOrderRepository();
+        events = new RecordingEventPublisher();
+        handler = new PlaceOrderCommandHandler(orders, events);
+    }
+
+    @Test
+    @DisplayName("سفارش معتبر ثبت می‌شود و شناسه برمی‌گردد")
+    void validOrderIsSaved() {
+        String id = handler.placeOrder(new PlaceOrderCommand(
+                "c-1", List.of(
+                        new PlaceOrderCommand.Line("p-1", 2, new BigDecimal("150000")))));
+
+        assertThat(id).isNotBlank();
+        assertThat(orders.saved()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("ثبت سفارش رویداد OrderPlaced تولید می‌کند")
+    void publishesDomainEvent() {
+        handler.placeOrder(new PlaceOrderCommand("c-1", List.of(
+                new PlaceOrderCommand.Line("p-1", 1, new BigDecimal("1000")))));
+
+        assertThat(events.published())
+                .hasSize(1)
+                .allMatch(e -&gt; e instanceof OrderPlaced);
+    }
+
+    @Test
+    @DisplayName("محصول تکراری رد می‌شود و چیزی ذخیره نمی‌شود")
+    void duplicateProductIsRejected() {
+        var command = new PlaceOrderCommand("c-1", List.of(
+                new PlaceOrderCommand.Line("p-1", 1, new BigDecimal("1000")),
+                new PlaceOrderCommand.Line("p-1", 2, new BigDecimal("1000"))));
+
+        assertThatThrownBy(() -&gt; handler.placeOrder(command))
+                .isInstanceOf(OrderError.class);
+
+        assertThat(orders.saved()).isEmpty();     // ← هیچ نوشتنی انجام نشد
+        assertThat(events.published()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("دستور نامعتبر در سازنده رد می‌شود")
+    void invalidCommandRejectedAtConstruction() {
+        assertThatThrownBy(() -&gt; new PlaceOrderCommand("c-1", List.of()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.command;
+
+import com.shop.order.domain.*;
+import org.springframework.context.ApplicationEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+class RecordingOrderRepository implements OrderRepository {
+
+    private final List&lt;Order&gt; saved = new ArrayList&lt;&gt;();
+
+    @Override
+    public void save(Order order) {
+        saved.add(order);
+    }
+
+    @Override
+    public Optional&lt;Order&gt; findById(OrderId id) {
+        return saved.stream().filter(o -&gt; o.id().equals(id)).findFirst();
+    }
+
+    List&lt;Order&gt; saved() {
+        return List.copyOf(saved);
+    }
+}
+
+class RecordingEventPublisher implements ApplicationEventPublisher {
+    private final List&lt;Object&gt; published = new ArrayList&lt;&gt;();
+
+    @Override
+    public void publishEvent(Object event) {
+        published.add(event);
+    }
+
+    List&lt;Object&gt; published() {
+        return List.copyOf(published);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">سرعت این تست‌ها</span>
+هر ۲۰ تست این کلاس در کمتر از ۱۰۰ میلی‌ثانیه اجرا می‌شود، بدون Spring و بدون
+دیتابیس. این یعنی می‌توانید در هر commit اجرا کنید و بازخورد فوری بگیرید.
+</div>
+
+<h3>تست پروژکشن — جدا و دقیق</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.projection;
+
+import com.shop.order.domain.event.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+import static org.assertj.core.api.Assertions.*;
+
+@DisplayName("پروژکشن خلاصه‌ی سفارش")
+class OrderSummaryProjectorTest {
+
+    private InMemoryOrderViewRepository views;
+    private OrderSummaryProjector projector;
+
+    @BeforeEach
+    void setUp() {
+        views = new InMemoryOrderViewRepository();
+        projector = new OrderSummaryProjector(views, customerId -&gt; "مشتری نمونه");
+    }
+
+    @Test
+    @DisplayName("رویداد OrderPlaced یک خلاصه می‌سازد")
+    void createsSummaryOnOrderPlaced() {
+        var event = new OrderPlaced("o-1", "c-1", new BigDecimal("1200000"),
+                3, Instant.now());
+
+        projector.on(event);
+
+        var summary = views.findById("o-1").orElseThrow();
+        assertThat(summary.status()).isEqualTo("PLACED");
+        assertThat(summary.itemCount()).isEqualTo(3);
+        assertThat(summary.customerName()).isEqualTo("مشتری نمونه");
+    }
+
+    @Test
+    @DisplayName("سفارش پر ارزش، پرچم highValue می‌گیرد")
+    void highValueOrderFlagged() {
+        projector.on(new OrderPlaced("o-2", "c-1",
+                new BigDecimal("900000000"), 1, Instant.now()));
+
+        assertThat(views.findById("o-2").orElseThrow().highValue()).isTrue();
+    }
+
+    @Test
+    @DisplayName("رویداد OrderShipped وضعیت ارسال را به‌روز می‌کند")
+    void shippingStatusUpdated() {
+        projector.on(new OrderPlaced("o-3", "c-1",
+                new BigDecimal("1000"), 1, Instant.now()));
+
+        projector.on(new OrderShipped("o-3", "TRK-123", Instant.now()));
+
+        var summary = views.findById("o-3").orElseThrow();
+        assertThat(summary.shippingStatus()).isEqualTo("SHIPPED");
+        assertThat(summary.status()).isEqualTo("SHIPPED");
+    }
+
+    @Test
+    @DisplayName("پردازش تکراری، خلاصه را خراب نمی‌کند")
+    void idempotentProjection() {
+        var event = new OrderPlaced("o-4", "c-1",
+                new BigDecimal("5000"), 2, Instant.now());
+
+        projector.on(event);
+        projector.on(event);      // ← دوباره
+
+        var summary = views.findById("o-4").orElseThrow();
+        assertThat(summary.itemCount()).isEqualTo(2);   // نه ۴
+    }
+}
+</code></pre>
+
+<h3>تست Query Side — با داده‌ی واقعی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.query;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+
+@DataJpaTest                                  // ← فقط لایه‌ی داده
+@DisplayName("کوئری خلاصه‌ی سفارش")
+class OrderQueryHandlerTest {
+
+    @Autowired OrderViewJpaRepository repository;
+
+    @Test
+    @DisplayName("خلاصه‌ها بر اساس تاریخ نزولی مرتب می‌شوند")
+    void returnsNewestFirst() {
+        repository.saveAll(List.of(
+                doc("o-1", "c-1", "2026-10-01"),
+                doc("o-2", "c-1", "2026-10-03"),
+                doc("o-3", "c-1", "2026-10-02")));
+
+        var results = repository
+                .findByCustomerIdOrderByPlacedOnDesc("c-1",
+                        org.springframework.data.domain.PageRequest.of(0, 10));
+
+        assertThat(results).extracting(d -&gt; d.placedOn())
+                .containsExactly(
+                        java.time.LocalDate.of(2026, 10, 3),
+                        java.time.LocalDate.of(2026, 10, 2),
+                        java.time.LocalDate.of(2026, 10, 1));
+    }
+
+    private OrderViewDocument doc(String id, String customerId, String date) {
+        // ساخت تستی
+        return null;
+    }
+}
+</code></pre>
+
+<h3>تست جریان کامل — سازگاری نهایی</h3>
+
+<pre class="kl-code" data-lang="java"><code>@SpringBootTest
+@DisplayName("جریان ثبت سفارش تا نمایش در فهرست")
+class OrderToListFlowTest {
+
+    @Autowired OrderCommands commands;
+    @Autowired OrderViewRepository views;
+    @Autowired OrderQueries queries;
+
+    @Test
+    @DisplayName("پس از ثبت سفارش، سفارش در فهرست دیده می‌شود")
+    void orderAppearsInList() {
+        String orderId = commands.placeOrder(new PlaceOrderCommand(
+                "c-1", List.of(
+                        new PlaceOrderCommand.Line("p-1", 1, new BigDecimal("50000")))));
+
+        // در حالت AFTER_COMMIT، پروژکشن در این نقطه اجرا شده است
+        var results = queries.findByCustomer("c-1", 10);
+
+        assertThat(results).extracting(OrderSummary::orderId)
+                .contains(orderId);
+    }
+
+    @Test
+    @DisplayName("پس از لغو، وضعیت نمایش به‌روز می‌شود")
+    void cancellationIsProjected() {
+        String orderId = commands.placeOrder(new PlaceOrderCommand(
+                "c-1", List.of(
+                        new PlaceOrderCommand.Line("p-1", 1, new BigDecimal("50000")))));
+
+        commands.cancelOrder(orderId, "درخواست مشتری");
+
+        assertThat(queries.getOne(orderId).status()).isEqualTo("CANCELLED");
+    }
+}
+</code></pre>
+
+<h3>تست همگامی Read Model</h3>
+
+<pre class="kl-code" data-lang="java"><code>@Test
+@DisplayName("Read Model نباید از Write Model عقب بماند")
+void readModelIsNotBehind() {
+    long writeCount = jdbc.queryForObject("SELECT count(*) FROM orders", Long.class);
+    long readCount = views.count();
+
+    assertThat(readCount)
+            .as("اختلاف بیش از ۱۰ رکورد یعنی پروژکشن مشکل دارد")
+            .isCloseTo(writeCount, org.assertj.core.data.Offset.offset(10L));
+}
+</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی مهم درباره‌ی تست سازگاری نهایی</span>
+تست یکپارچه‌ی CQRS ناپایدار است چون به زمان‌بندی پروژکشن وابسته است. راه‌حل: یا از
+<code>AFTER_COMMIT</code> استفاده کنید (که همگام و قطعی است)، یا در تست به‌جای انتظار،
+<strong>رویداد را مستقیم به پروژکشن بدهید</strong> و فقط خروجی را بررسی کنید.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>اشتباه</th><th>چرا اشتباه است؟</th><th>راه درست</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td>استفاده از CQRS برای هر پروژه</td><td>پیچیدگی زیاد بدون سود</td><td>اول CQS، بعد مدل جدا</td></tr>
+<tr><td>۲</td><td>Query Side که مدل نوشتن را صدا می‌زند</td><td>سازگاری نهایی و سرعت از بین می‌رود</td><td>فقط Read Model</td></tr>
+<tr><td>۳</td><td>برگرداندن مدل دامنه از Command</td><td>ساختار نوشتن در API لو می‌رود</td><td>فقط شناسه</td></tr>
+<tr><td>۴</td><td>نوشتن از Query Side</td><td>اصل CQS نقض می‌شود و مدل کهنه می‌شود</td><td>هر نوشتن از Command</td></tr>
+<tr><td>۵</td><td>پروژکشن غیر idempotent</td><td>رویداد تکراری، داده را خراب می‌کند</td><td>جدول پردازش‌شده</td></tr>
+<tr><td>۶</td><td>نداشتن راه بازسازی Read Model</td><td>یک باگ، سیستم را برای همیشه خراب می‌کند</td><td>اسکریپت بازسازی از ابتدا</td></tr>
+<tr><td>۷</td><td>پایش نکردن lag</td><td>کهنگی بی‌صدا رشد می‌کند</td><td>مقایسه‌ی تعداد + هشدار</td></tr>
+<tr><td>۸</td><td>تعداد بیش از حد نمایش‌ها</td><td>ده‌ها جدول با ستون‌های تکراری</td><td>هم‌ترکیبی نمایش‌های مشابه</td></tr>
+<tr><td>۹</td><td>انتشار رویداد «همه‌چیز تغییر کرد»</td><td>پروژکشن دقیق نمی‌شود</td><td>رویداد مشخص با فیلدهای مشخص</td></tr>
+<tr><td>۱۰</td><td>ندادن بازخورد به کاربر</td><td>کاربر فکر می‌کند کار نکرده</td><td>پیام «در حال پردازش» یا خواندن از منبع نوشتن</td></tr>
+<tr><td>۱۱</td><td>اجرای پروژکشن در همان تراکنش نوشتن</td><td>خرابی کش، نوشتن اصلی را می‌برد</td><td><code>REQUIRES_NEW</code> یا <code>AFTER_COMMIT</code></td></tr>
+<tr><td>۱۲</td><td>نداشتن تست مرز معماری</td><td>ساختار به‌تدریج فرو می‌ریزد</td><td>ArchUnit برای query/domain</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نشانه‌های هشدار</span>
+<ul>
+<li>پوشه‌ی <code>query/</code> که <code>import org.springframework.data.jpa</code> دارد</li>
+<li>متدی به نام <code>findAndUpdate</code> یا <code>getOrCreate</code></li>
+<li>Read Model بدون ستون <code>updated_at</code></li>
+<li>پروژکشنی که <code>@EventListener</code> دارد ولی <code>@Transactional</code> ندارد</li>
+<li>جدولی به نام <code>view_v2_final</code></li>
+<li>کاربری که می‌گوید «ثبت کردم ولی در لیست نمی‌بینم»</li>
+</ul>
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱. فروشگاه اینترنتی — فهرست سفارش‌ها</h3>
+
+<pre class="kl-code" data-lang="text"><code>قبل:
+  GET /api/orders?customerId=5
+  JOIN customers + LEFT JOIN payments + 2 زیرکوئری
+  ۲٫۸ ثانیه در جدول ۴ میلیون ردیفی
+
+بعد:
+  GET /api/orders?customerId=5
+  SELECT * FROM order_summary WHERE customer_id = ? ORDER BY placed_on DESC
+  ۲۸ میلی‌ثانیه
+
+فیلدهای از پیش محاسبه‌شده:
+  item_count    ← COUNT خطوط در لحظه‌ی نوشتن
+  high_value    ← total &gt;= ۵۰۰ میلیون
+  customer_name ← کپی از جدول مشتریان
+  shipping_status ← کپی از سرویس ارسال
+
+← ۱۰۰ برابر سریع‌تر، بدون تغییر در منطق ثبت سفارش</code></pre>
+
+<h3>۲. داشبورد مدیریتی — آمار تجمیعی</h3>
+
+<pre class="kl-code" data-lang="text"><code>قبل:
+  هر بار باز کردن داشبورد = ۵ کوئری سنگین روی جدول تراکنش
+  با ۸ میلیون ردیف، ۶ ثانیه
+
+بعد (Read Model تجمیعی):
+  جدول daily_stats:
+    date, total_orders, total_revenue, avg_order_value, new_customers
+
+  هر شب یک job، داده‌ی روز را از رویدادها جمع می‌زند
+  کوئری داشبورد: SELECT * FROM daily_stats ORDER BY date DESC
+
+  ← ۶ ثانیه ← ۵ میلی‌ثانیه
+  ← و این جدول هرگز رشد نمی‌کند (۳ سطر در سال)</code></pre>
+
+<h3>۳. پلتفرم ویدیو — فهرست با فیلتر</h3>
+
+<pre class="kl-code" data-lang="text"><code>نمایش مورد نیاز:
+  عنوان، تصویر، نام کانال، تعداد بازدید، مدت، تاریخ، دسته‌بندی، امتیاز
+
+منابع داده: ویدیو + کانال + آمار بازدید + امتیاز + دسته‌بندی
+
+قبل:
+  ۵ join برای هر ردیف فهرست + محاسبه‌ی امتیاز
+
+بعد:
+  Read Model که رویدادها را مصرف می‌کند:
+    VideoUploaded    → ایجاد رکورد
+    VideoPublished   → به‌روزرسانی وضعیت
+    VideoViewed      → increment views (بسته‌ای)
+    ReviewAdded      → به‌روزرسانی امتیاز
+
+  کوئری فهرست: یک SELECT ساده با ایندکس روی دسته‌بندی و تاریخ</code></pre>
+
+<h3>۴. سامانه‌ی مالی — دفتر کل</h3>
+
+<pre class="kl-code" data-lang="text"><code>مدل نوشتن (Write):
+  جدول تراکنش‌ها با قید یکتا روی (account_id, reference, date)
+  ← اینجا درستی حیاتی است؛ هیچ بهینه‌سازی نمایشی انجام نمی‌شود
+
+مدل خواندن (Read):
+  جدول account_balance_snapshot:
+    account_id, balance, currency, as_of
+  
+  هر تراکنش، موجودی را به‌روز می‌کند (رویدادمحور)
+  کوئری موجودی: یک SELECT از جدول snapshot
+
+← اینجا CQRS یک الزام است، نه انتخاب:
+   چون مانده‌گیری روی جدول تراکنش با میلیون‌ها ردیف، غیرممکن است
+
+توجه: موجودی حساب پول واقعی است
+      ← به همین دلیل باید سازگاری فوری باشد
+      ← برای این مورد، «سفارش‌های من» کاربر یا از منبع نوشتن خوانده می‌شود</code></pre>
+
+<h3>۵. ایمیل — پیش‌نمایش پیام</h3>
+
+<pre class="kl-code" data-lang="text"><code>نمایش صندوق ورودی:
+  فرستنده، موضوع، پیش‌نمایش ۱۰۰ کاراکتری، تاریخ، برچسب‌ها، تعداد پیوست
+
+منابع: پیام + فرستنده + برچسب‌ها + پیوست‌ها
+
+قبل:
+  JOIN های متعدد + برش متن در جاوا
+
+بعد:
+  Read Model ایمیل با متن از پیش بریده‌شده و نام فرستنده
+  کوئری: یک SELECT، ایندکس روی (mailbox_id, received_at desc)
+
+← چون ایمیل ۹۵٪ خوانده می‌شود و ۵٪ نوشته، CQRS بسیار منطقی است</code></pre>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پاسخ کوتاه</span>
+CQRS در اینجا <strong>متقابلاً</strong> سریع است: تنها معماری این سری که هدفش بهینه‌سازی
+است. هزینه‌ی آن در زمان تحویل و حافظه است، نه در زمان اجرا.
+</div>
+
+<h3>مقایسه‌ی کوئری</h3>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>تک‌مدل</th><th>CQRS</th><th>بهبود</th></tr>
+</thead>
+<tbody>
+<tr><td>فهرست ۲۰ رکورد</td><td>۲۵۰ms</td><td>۱۲ms</td><td><strong>۲۰ برابر</strong></td></tr>
+<tr><td>فهرست ۱۰۰ رکورد</td><td>۱٬۸۰۰ms</td><td>۳۵ms</td><td><strong>۵۰ برابر</strong></td></tr>
+<tr><td>داشبورد تجمیعی</td><td>۶٬۰۰۰ms</td><td>۵ms</td><td><strong>۱۲۰۰ برابر</strong></td></tr>
+<tr><td>جست‌وجوی متنی</td><td>۳٬۰۰۰ms</td><td>۴۰ms</td><td><strong>۷۵ برابر</strong></td></tr>
+<tr><td>محاسبه‌ی آمار</td><td>۸۰۰ms</td><td>۱ms</td><td><strong>۸۰۰ برابر</strong></td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">چرا این‌قدر تفاوت؟</span>
+سه دلیل مستقل که با هم ضرب می‌شوند: (۱) <strong>حذف join</strong> — ۵ جدول به ۱؛
+(۲) <strong>حذف محاسبه</strong> — <code>COUNT</code> و <code>SUM</code> در لحظه‌ی نوشتن
+انجام شده‌اند؛ (۳) <strong>ایندکس بهینه</strong> — ایندکس نوشتن برای نوشتن بهینه است،
+ولی ایندکس خواندن برای الگوی نمایش.
+</div>
+
+<h3>هزینه‌های واقعی</h3>
+
+<table>
+<thead>
+<tr><th>عامل</th><th>هزینه</th><th>قابل کنترل؟</th></tr>
+</thead>
+<tbody>
+<tr><td>نوشتن دوبل</td><td>یک upsert اضافه (~۱ms)</td><td>✅ ناچیز در برابر سود خواندن</td></tr>
+<tr><td>فضای ذخیره‌سازی</td><td>تقریباً دو برابر داده</td><td>✅ معمولاً ارزان است</td></tr>
+<tr><td>تأخیر سازگاری</td><td>میلی‌ثانیه تا ثانیه</td><td>⚠️ باید مدیریت شود</td></tr>
+<tr><td>پیچیدگی کد</td><td>۲ برابر فایل و تست</td><td>❌ هزینه‌ی دائمی</td></tr>
+<tr><td>پایش و بازسازی</td><td>زمان عملیات</td><td>✅ لازم و مفید</td></tr>
+</tbody>
+</table>
+
+<h3>بهینه‌سازی‌های عملی</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱. ایندکس‌های Read Model را بر اساس کوئری واقعی بگذارید
+   نه بر اساس حدس. از pg_stat_statements استفاده کنید.
+
+۲. ایندکس جزئی برای فیلترهای پرتکرار
+   CREATE INDEX idx_high ON order_summary(placed_on) WHERE high_value;
+
+۳. پارتیشن‌بندی بر اساس زمان اگر داده زیاد است
+   order_summary ماهانه پارتیشن شود
+
+۴. برای داشبورد: جدول تجمیعی روزانه به‌جای محاسبه‌ی زنده
+   ← اندازه‌ی جدول ثابت می‌ماند
+
+۵. اگر کوئری به «همین الان» نیاز دارد، Write Model را هم بخوان
+   در همان سرویس، بدون رفتن به کاربر</code></pre>
+
+<h3>اندازه‌گیری و پایش</h3>
+
+<pre class="kl-code" data-lang="java"><code>@Component
+public class ReadModelLagMonitor {
+
+    @Scheduled(fixedRate = 60_000)             // هر دقیقه
+    public void checkLag() {
+        long writeCount = jdbc.queryForObject(
+                "SELECT count(*) FROM orders", Long.class);
+        long readCount = jdbc.queryForObject(
+                "SELECT count(*) FROM order_summary", Long.class);
+
+        long lag = writeCount - readCount;
+
+        if (lag > LAG_THRESHOLD) {
+            alarm.send("Read Model عقب افتاده است: " + lag + " رکورد");
+        }
+    }
+
+    private static final long LAG_THRESHOLD = 100;
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>@Test
+@DisplayName("کوئری فهرست باید زیر ۵۰ میلی‌ثانیه بماند")
+void listQueryStaysFast() {
+    seedTenThousandOrders();
+
+    long start = System.nanoTime();
+    for (int i = 0; i < 100; i++) {
+        queries.findByCustomer("c-" + (i % 50), 20);
+    }
+    long avgMs = (System.nanoTime() - start) / 1_000_000 / 100;
+
+    assertThat(avgMs)
+            .as("میانگین کوئری فهرست")
+            .isLessThan(50);
+}
+</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">ریسک بزرگ</span>
+اگر پروژکشن شما از کار بیفتد و شما متوجه نشوید، Read Model به‌مرور <strong>زنده
+می‌ماند</strong> — یعنی کاربر داده‌ی کهنه می‌بیند ولی هیچ خطایی هم نمی‌گیرد. این
+بدترین حالت است: سیستم بدون صدا دروغ می‌گوید. پایش lag را <strong>از روز اول</strong>
+بسازید، نه وقتی مشکل پیش آمد.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<h3>سطح Junior (۱ تا ۱۰)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱ — CQRS چیست؟</span>
+جدا کردن مدل نوشتن از مدل خواندن. به‌جای اینکه یک مدل هم قوانین کسب‌وکار را اعمال کند
+و هم داده‌ی نمایش بدهد، دو مدل جدا با مسئولیت‌های جدا می‌سازیم.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۲ — Command و Query چه تفاوتی دارند؟</span>
+Command درخواست <strong>تغییر وضعیت</strong> است و خروجی‌اش فقط شناسه یا خطاست. Query
+درخواست <strong>خواندن</strong> است و خروجی‌اش داده. هیچ متدی نباید هر دو باشد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۳ — تفاوت CQS و CQRS چیست؟</span>
+CQS (Command Query Separation) اصل بنیادی است: هر متد یا Command است یا Query، نه
+هر دو. CQRS معماری‌ای است که از این اصل استفاده می‌کند و مدل نوشتن و خواندن را کاملاً
+جدا می‌کند. CQS تقریباً رایگان است؛ CQRS هزینه دارد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۴ — Read Model چیست؟</span>
+یک نمایش بهینه‌شده و تخت از داده که مخصوص خواندن است. فیلدهایش دقیقاً همان‌هایی است
+که صفحه نیاز دارد، داده تکراری دارد، بدون join خوانده می‌شود و فیلدهای محاسبه‌شده
+از قبل آماده‌اند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۵ — سازگاری نهایی یعنی چه در CQRS؟</span>
+یعنی بعد از ثبت یک تغییر، تا مدت کوتاهی مدل خواندن هنوز به‌روز نیست. برای فهرست‌ها
+مشکلی ندارد، اما اگر کاربر باید «همین الان» نتیجه را ببیند، باید از منبع نوشتن
+بخوانید یا بازخورد مناسب نشان دهید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۶ — منبع حقیقت کدام است؟</span>
+همیشه <strong>مدل نوشتن</strong>. Read Model یک کپی مشتق‌شده است و می‌توان آن را
+هر لحظه از نو ساخت. اگر Read Model منبع حقیقت شود، عملاً CQRS را از دست داده‌اید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۷ — پروژکشن چیست؟</span>
+فرایندی که رویدادهای مدل نوشتن را می‌گیرد و Read Model را به‌روز می‌کند. می‌تواند
+همگام (درون همان فرایند) باشد یا از راه broker و به‌صورت ناهمگام.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۸ — چرا Command نباید مدل دامنه برگرداند؟</span>
+چون باعث نشت ساختار داخلی به لایه‌ی API می‌شود. اگر فردا مدل را عوض کنید، API شما
+خراب می‌شود. فقط شناسه برگردانید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۹ — سه سطح CQRS را نام ببرید.</span>
+۱) فقط CQS با مدل مشترک، ۲) مدل نوشتن و مدل خواندن جدا ولی یک دیتابیس، ۳) Read Model
+اختصاصی با ذخیره‌سازی جدا. سطح ۴ هم Event Sourcing است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۰ — آیا CQRS همان DDD است؟</span>
+نه. DDD درباره‌ی مدل‌سازی دامنه است و CQRS درباره‌ی جدا کردن نوشتن از خواندن. این‌ها
+مکمل‌اند و معمولاً با هم به کار می‌روند، ولی CQRS بدون DDD هم ممکن است.
+</div>
+
+<h3>سطح Mid (۱۱ تا ۱۷)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۱ — چرا پروژکشن باید idempotent باشد؟</span>
+چون رویداد ممکن است دوباره پردازش شود. اگر پروژکشن غیر idempotent باشد،
+<code>itemCount</code> دو برابر می‌شود یا وضعیت اشتباه ثبت می‌شود. راه‌حل: جدول
+پردازش‌شده یا upsert به‌جای insert.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۲ — Read Model را چطور بازسازی می‌کنید؟</span>
+با اجرای یک اسکریپت که همه‌ی داده‌ی مدل نوشتن را می‌خواند و Read Model را از نو
+می‌سازد (truncate و پر کردن مجدد با batch). چون Read Model مشتق‌شده است، این کار همیشه
+ممکن و بی‌خطر است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۳ — چطور lag را تشخیص می‌دهید؟</span>
+با مقایسه‌ی تعداد رکوردهای مدل نوشتن و Read Model، یا ثبت آخرین زمان پردازش هر
+رویداد. این مقایسه باید زمان‌بندی‌شده اجرا شود و در صورت اختلاف زیاد هشدار بدهد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۴ — چرا نباید از Query Side چیزی بنویسیم؟</span>
+دو دلیل: اول، نقض اصل CQS. دوم، اگر Query بنویسد، Read Model دیگر با رویدادها همگام
+نمی‌شود و کهنه می‌شود. هر نوشتنی باید از مسیر Command برود تا رویداد تولید شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۵ — تفاوت Read Model تخت و نرمال‌شده چیست؟</span>
+تخت یعنی هرچه لازم است در یک سطر ذخیره می‌شود و تکرار داده اشکالی ندارد؛ سریع‌ترین
+حالت برای نمایش است. نرمال‌شده یعنی داده تکرار نمی‌شود و برای گزارش‌های پیچیده با
+join مناسب‌تر است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۶ — چه زمانی به Event Sourcing برویم؟</span>
+وقتی تاریخچه‌ی کامل تغییرات ارزش کسب‌وکاری دارد (بیمه، بانک، بازی) یا می‌خواهید
+«بازی در زمان» انجام دهید. برای بیشتر اپلیکیشن‌ها این پیچیدگی ارزشش را ندارد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۷ — چطور مرز بین Query و Domain را خودکار حفظ کنیم؟</span>
+با ArchUnit: قاعده‌ای که می‌گوید کلاس‌های پوشه‌ی <code>query</code> نباید به پوشه‌ی
+<code>domain</code> وابسته باشند، و کنترلرها نباید مستقیم repository صدا بزنند. این
+تست در CI اجرا می‌شود.
+</div>
+
+<h3>سطح Senior (۱۸ تا ۲۰)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۸ — در چه صورتی CQRS را رد می‌کنید؟</span>
+وقتی نسبت خواندن به نوشتن نزدیک یک است، کوئری‌ها ساده و سریع‌اند، تیم کوچک است،
+یا کاربر باید «همین الان» نتیجه را ببیند. در این حالت هزینه‌ی دو مدل و پایش، بیشتر
+از سودش است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۹ — چگونه تعداد Read Model ها را کنترل می‌کنید؟</span>
+با هم‌ترکیبی: نمایش‌هایی که فیلدهای مشابه دارند را در یک جدول نگه می‌دارید و فقط
+نمایه‌های متفاوت را جدا می‌کنید. برای هر Read Model باید دلیل مشخص و قابل دفاع
+داشته باشید (مثال: «فهرست اصلی» و «داشبورد تجمیعی»).
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۲۰ — CQRS چگونه به Microservices کمک می‌کند؟</span>
+Read Side اولین بخشی است که معمولاً به سرویس مستقل تبدیل می‌شود، چون سازگاری نهایی
+آن را تحمل‌پذیر می‌کند. مدل نوشتن سخت‌تر است، چون منبع حقیقت است. این مسیر
+مهاجرت کم‌ریسکی برای جداسازی سرویس‌ها فراهم می‌کند.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا CQRS برای پروژه‌ی کوچک مناسب است؟</span>
+سطح ۱ (فقط CQS) بله، تقریباً رایگان است و ارزش دارد. سطوح بالاتر برای پروژه‌ی
+کوچک، فقط پیچیدگی بی‌دلیل می‌سازند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا لازم است دو دیتابیس داشته باشم؟</span>
+نه. بیشتر پیاده‌سازی‌های موفق فقط دو <em>جدول</em> جدا دارند (یکی برای نوشتن، یکی
+برای خواندن) در همان دیتابیس. دیتابیس دوم فقط وقتی لازم است که بار خواندن واقعاً
+متفاوت باشد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">اگر کاربر بلافاصله بعد از ثبت، صفحه را رفرش کند چه می‌بیند؟</span>
+اگر پروژکشن ناهمگام است، ممکن است هنوز ندیده باشد. راه‌حل‌ها: (۱) پروژکشن را
+همگام کنید (<code>AFTER_COMMIT</code>)؛ (۲) در آن نمایش خاص، از منبع نوشتن بخوانید؛
+(۳) در رابط کاربری بازخورد «در حال پردازش» نشان دهید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چطور متوجه شوم Read Model خراب شده؟</span>
+سه راه: مقایسه‌ی تعداد رکوردها با مدل نوشتن، بررسی <code>updated_at</code> قدیمی‌ترین
+رکورد، و اسکریپت بازسازی دوره‌ای. گزینه‌ی چهارم: تست خودکار که تفاوت‌ها را گزارش
+می‌دهد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا Read Model می‌تواند جدول جدا نباشد؟</span>
+بله، می‌تواند یک ویو (VIEW) در همان دیتابیس باشد. اما ویو معمولاً به اندازه‌ی جدول
+فیزیکی سریع نیست چون محاسبات در زمان اجرا انجام می‌شود. اگر جدول فیزیکی ندارید،
+باید بپذیرید که سود کمتری می‌برید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">CQRS با چه چیزی بیشترین تضاد را دارد؟</span>
+با تراکنش‌های اسیدی که همه‌چیز را در یک تراکنش می‌بینند. CQRS ذاتاً تک‌تراکنشی نیست.
+اگر کسب‌وکار شما به سازگاری فوری و مطلق نیاز دارد (مثل دفتر مالی)، CQRS باید خیلی
+محتاطانه استفاده شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا Command Bus لازم است؟</span>
+نه. Command Bus فقط یک لایه‌ی انتزاع است که کنترلر را از هندلر جدا می‌کند. بدون آن هم
+می‌شود مستقیم interface را صدا زد. برای اکثر پروژه‌ها، فراخوانی مستقیم ساده‌تر و
+شفاف‌تر است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چطور Read Model را همگام نگه دارم وقتی چند منبع دارد؟</span>
+همه‌ی تغییرات باید از مسیر Command و از طریق رویداد عبور کنند. اگر چیزی مستقیماً
+در دیتابیس نوشته می‌شود (مثل یک اسکریپت پشتیبان)، آن تغییر هرگز به Read Model
+نمی‌رسد. این یکی از رایج‌ترین دلایل کهنگی است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا فیلدهای محاسبه‌شده در Read Model خوب هستند؟</span>
+بله، این یکی از بزرگ‌ترین سودهای CQRS است. <code>highValue</code> یا
+<code>itemCount</code> به‌جای محاسبه در هر نمایش، یک‌بار هنگام نوشتن ذخیره
+می‌شوند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">مزایای CQRS برای تیم محصول چیست؟</span>
+تغییرات ظاهری (مثل افزودن یک ستون به جدول سفارش‌ها) به یک نمایش تبدیل می‌شوند و
+بدون تغییر در منطق کسب‌وکار قابل انجام‌اند. یعنی تیم محصول مستقل‌تر عمل می‌کند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">CQRS با چه معماری‌هایی هم‌زندگی می‌کند؟</span>
+با DDD (مدل نوشتن غنی)، با Event Sourcing (منبع حقیقت = رویدادها)، با
+Event-Driven Architecture (رویدادها به سرویس دیگر می‌روند)، و با Modular Monolith
+(دو ماژول داخل یک فرایند). همه سازگارند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا در اندروید کاربرد دارد؟</span>
+به‌شکل محدود. مدل محلی (Room) می‌تواند نقش Write Model و یک کپی بهینه برای فهرست
+نقش Read Model را داشته باشد. ولی معمولاً ارزشش کمتر از هزینه‌اش است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چقدر طول می‌کشد تا راه بیفتد؟</span>
+سطح ۱: یک روز. سطح ۲: حدود یک هفته. سطح ۳: دو تا چهار هفته بسته به زیرساخت. بیشترین
+زمان صرف طراحی این می‌شود که کدام نمایش‌ها واقعاً به مدل اختصاصی نیاز دارند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چگونه تیم را راضی کنم؟</span>
+با عدد نشان دهید: زمان یک کوئری کند را اندازه بگیرید، سپس یک Read Model فقط برای
+<em>همان یک کوئری</em> بسازید و بهبود را نشان دهید. CQRS را به‌عنوان یک
+سرمایه‌گذاری موضعی معرفی کنید، نه یک بازآفرینی کامل.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">مهم‌ترین توصیه برای شروع چیست؟</span>
+از سطح ۱ شروع کنید (جدا کردن interface ها). اگر بعد از آن کوئری هنوز کند بود، آن‌وقت
+Read Model بسازید. CQRS کامل را فقط وقتی به کار ببرید که واقعاً به آن نیاز دارید.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<table>
+<thead>
+<tr><th>مفهوم</th><th>یک‌خطی</th><th>قانون طلایی</th></tr>
+</thead>
+<tbody>
+<tr><td>CQRS</td><td>جدا کردن مدل نوشتن از خواندن</td><td>فقط وقتی کوئری واقعاً کند است</td></tr>
+<tr><td>CQS</td><td>هر متد یا Command یا Query</td><td>رایگان، همیشه خوب است</td></tr>
+<tr><td>Command</td><td>درخواست تغییر وضعیت</td><td>خروجی فقط شناسه</td></tr>
+<tr><td>Query</td><td>درخواست خواندن</td><td>فقط داده، هرگز تغییر</td></tr>
+<tr><td>Write Model</td><td>مدل نوشتن، غنی با قواعد</td><td>منبع حقیقت</td></tr>
+<tr><td>Read Model</td><td>نمایش تخت و بهینه</td><td>کپی، قابل دور ریختن</td></tr>
+<tr><td>Projection</td><td>به‌روزرسانی Read Model</td><td>idempotent باشد</td></tr>
+<tr><td>Eventual Consistency</td><td>سازگاری با تأخیر</td><td>برای فهرست قابل قبول</td></tr>
+<tr><td>سطح ۱</td><td>فقط CQS</td><td>۹۰٪ پروژه‌ها</td></tr>
+<tr><td>سطح ۲</td><td>مدل و رابط کاربری جدا</td><td>۸٪ پروژه‌ها</td></tr>
+<tr><td>سطح ۳</td><td>Read Model اختصاصی</td><td>۲٪ پروژه‌ها</td></tr>
+<tr><td>سطح ۴</td><td>Event Sourcing</td><td>خیلی کم</td></tr>
+<tr><td>AFTER_COMMIT</td><td>پروژکشن پس از commit</td><td>ساده و قطعی</td></tr>
+<tr><td>REQUIRES_NEW</td><td>تراکنش جدا برای Read Model</td><td>نوشتن اصلی مستقل بماند</td></tr>
+<tr><td>idempotency</td><td>پردازش تکراری بی‌اثر</td><td>جدول پردازش‌شده</td></tr>
+<tr><td>بازسازی</td><td>ساخت دوباره‌ی Read Model</td><td>شبکه‌ی ایمنی شما</td></tr>
+<tr><td>lag</td><td>فاصله‌ی Read و Write</td><td>پایش از روز اول</td></tr>
+<tr><td>فیلد محاسبه‌شده</td><td>محاسبه در لحظه‌ی نوشتن</td><td>بزرگ‌ترین سود CQRS</td></tr>
+<tr><td>تخت (Flat)</td><td>بدون join</td><td>سریع‌ترین Read Model</td></tr>
+<tr><td>مرز معماری</td><td>query نباید domain را ببیند</td><td>با ArchUnit خودکار</td></tr>
+<tr><td>S</td><td>مسئولیت واحد</td><td>هر سمت یک کار</td></tr>
+<tr><td>I</td><td>تفکیک Interface</td><td>جداسازی Command/Query</td></tr>
+<tr><td>D</td><td>وارونگی وابستگی</td><td>پروژکشن فقط به interface</td></tr>
+<tr><td>نشانه‌ی خطا</td><td>Query Side با JPA</td><td>مرز شکسته شده</td></tr>
+<tr><td>نشانه‌ی خطا</td><td>متد <code>getOrCreate</code></td><td>نقض CQS</td></tr>
+<tr><td>قانون طلا</td><td>Write = حقیقت، Read = سرعت</td><td>هرگز برعکس نشود</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">خلاصه در ۱۰ ثانیه</span>
+CQRS = «مدل نوشتن را برای درستی نگه دار، مدل خواندن را برای سرعت بهینه کن، و با
+رویداد این دو را همگام نگه دار. منبع حقیقت همیشه سمت نوشتن است.»
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<h3>Roadmap یادگیری</h3>
+
+<table>
+<thead>
+<tr><th>مرحله</th><th>مدت</th><th>هدف</th><th>تمرین</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>۱. CQS</strong></td><td>۱ هفته</td><td>جدا کردن interface ها</td><td>یک سرویس را به Commands/Queries بشکنید</td></tr>
+<tr><td><strong>۲. مدل خواندن</strong></td><td>۲ هفته</td><td>DTO اختصاصی برای نمایش</td><td>برای ۳ صفحه View بنویسید</td></tr>
+<tr><td><strong>۳. پروژکشن</strong></td><td>۳ هفته</td><td>ساخت و به‌روزرسانی Read Model</td><td>پروژکشن idempotent با تست</td></tr>
+<tr><td><strong>۴. پایش</strong></td><td>۱ هفته</td><td>lag، هشدار، بازسازی</td><td>اسکریپت بازسازی کامل</td></tr>
+<tr><td><strong>۵. مرزها</strong></td><td>۱ هفته</td><td>ArchUnit و انضباط تیم</td><td>قاعده‌ی «query به domain وابسته نیست»</td></tr>
+<tr><td><strong>۶. پیشرفته</strong></td><td>۴ هفته</td><td>Event Sourcing، Command Bus</td><td>یک جریان کامل رویدادمحور</td></tr>
+</tbody>
+</table>
+
+<h3>منابع پیشنهادی</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>مقاله‌ی Bertrand Meyer درباره‌ی Command Query Separation</strong> — تعریف دقیق اصل CQS</li>
+<li><strong>مطالب Greg Young</strong> — کسی که CQRS را به دنیا معرفی کرد</li>
+<li><strong>مستندات Spring Modulith</strong> — ماژول‌های read-only در مونولیت</li>
+<li><strong>مستندات Eventuate / Axon Framework</strong> — برای Event Sourcing</li>
+<li><strong>مستندات ArchUnit</strong> — برای راستی‌آزمایی مرزها</li>
+</ul>
+</div>
+
+<h3>جمع‌بندی</h3>
+
+<p>
+<strong>CQRS</strong> پاسخ یک تضاد بنیادی است: نوشتن می‌خواهد داده را نرمال و سالم
+نگه دارد، خواندن می‌خواهد سریع باشد. این دو خواسته با یک مدل قابل تحقق نیستند.
+</p>
+
+<p>
+نکته‌ای که بیشتر تیم‌ها نمی‌دانند: <strong>بیشتر پروژه‌ها به بیش از سطح ۱ نیاز
+ندارند</strong>. جدا کردن دو interface تقریباً رایگان است و ۸۰٪ سود را می‌دهد. ساخت
+Read Model اختصاصی یک تصمیم جدی است که باید با عدد پشتیبانی شود.
+</p>
+
+<p>
+اگر فقط یک جمله به یاد بماند: <strong>مدل نوشتن حقیقت است، مدل خواندن فقط
+سریع است</strong>. اگر این ترتیب را رعایت کنید، CQRS شما قابل اعتماد است؛ اگر
+برعکس شود، به یک سیستم ناسازگار و غیرقابل عیب‌یابی تبدیل می‌شوید.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله سیزدهمین عضو سری «معماری‌های نرم‌افزاری» است. اکنون الگوهای رابط کاربری
+(MVC، MVP، MVVM، MVI)، الگوهای معماری (Clean، Onion، Hexagonal، Layered، Repository،
+DDD)، ساختار کد (Feature Based)، ارتباط سرویس‌ها (Event Driven) و جداسازی
+خواندن/نوشتن (CQRS) را پوشش داده‌ایم. مقاله‌ی پایانی سری:
+<strong>Microservices</strong> — که همه‌ی این الگوها را در سطح سیستم‌های توزیع‌شده
+به کار می‌گیرد.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: مدلی که هر دو کار را بد انجام می‌دهد</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">CQRS چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: CQS و Command/Query</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">سه سطح CQRS</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">ساختار معماری</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: سفارش</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مدل خواندن و پروژکشن</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: مدلی که هر دو کار را بد انجام می‌دهد</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">CQRS چیست؟ (تعریف دقیق)</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: CQS و Command/Query</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">سه سطح CQRS</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">ساختار معماری</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: سفارش</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مدل خواندن و پروژکشن</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MVI چیست؟ آموزش کامل الگوی Model-View-Intent با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله الگوی MVI را کامل یاد می‌گیرید: تعریف و تاریخچه، جریان یک‌طرفه‌ی Intent و State و Reducer، پیاده‌سازی کامل Java 21، مقایسه با MVVM و MVI در Compose، تست و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="MVI, Model View Intent, MVI چیست, الگوی MVI, Unidirectional Data Flow, Reducer, State, Jetpack Compose, Java, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, MVVM, MVP, MVC">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="MVI چیست؟ آموزش کامل الگوی Model-View-Intent با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله الگوی MVI را کامل یاد می‌گیرید: تعریف و تاریخچه، جریان یک‌طرفه‌ی Intent و State و Reducer، پیاده‌سازی کامل Java 21، مقایسه با MVVM و MVI در Compose، تست و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/mvi-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/mvi-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MVI Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MVI چیست؟ آموزش کامل الگوی Model-View-Intent با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="Intent، State و Reducer، جریان یک‌طرفه، نمونه‌کد Java 21، مقایسه با MVVM و MVI در Compose و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "MVI چیست؟ آموزش کامل الگوی Model-View-Intent با مثال و ساختار پروژه",
+    "description": "در این مقاله الگوی MVI را کامل یاد می‌گیرید: تعریف و تاریخچه، جریان یک‌طرفه‌ی Intent و State و Reducer، پیاده‌سازی کامل Java 21، مقایسه با MVVM و MVI در Compose، تست و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/mvi-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/mvi-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "MVI, Intent, State, Reducer, Unidirectional Data Flow, Java, Compose",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "MVI", "item": "https://haedarfarhani.github.io/My-Articles/articles/mvi-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">MVI</span>؛ وقتی می‌خواهید جریان داده ۱۰۰٪ قابل پیش‌بینی باشد
+          </h1>
+
+          <p class="hero-lead">
+            MVI یعنی <strong>هر کاربر فقط یک کار بیشتر نمی‌تواند بکند: فرستادن Intent</strong>؛
+            وضعیت صفحه فقط از یک تابع خالص به‌دست می‌آید.
+            در این راهنما سه نقش MVI، چرخه‌ی Intent → Reducer → State، پیاده‌سازی کامل با
+            <code>Java 21</code>، مقایسه با MVVM و MVP و MVI در Jetpack Compose،
+            تست واحد Reducer با <code>JUnit 5</code> و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۶۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط تا پیشرفته (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#MVI</span>
+            <span class="post-tag">#Intent</span>
+            <span class="post-tag">#Reducer</span>
+            <span class="post-tag">#Unidirectional_Data_Flow</span>
+            <span class="post-tag">#State</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی وضعیت در ده جا پخش است</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVI چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: سه پایه‌ی MVI</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: اجزای MVI</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: موتور جست‌وجوی زنده</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>MVI در Jetpack Compose</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی وضعیت در ده جا پخش است</h2>
+
+<p>
+یک صفحه‌ی جست‌وجوی زنده را تصور کنید: کاربر تایپ می‌کند، فیلتر دسته را عوض می‌کند،
+نتیجه‌ها بارگذاری می‌شوند، خطا رخ می‌دهد، کاربر دوباره تایپ می‌کند و درخواست قبلی
+باید لغو شود. حالا تصور کنید همه‌ی این وضعیت‌ها در فیلدهای مختلف یک ViewModel
+با <code>setValue</code> و <code>postValue</code> پخش شده باشد.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>// وضعیت MVVM برای جست‌وجوی زنده — وضعیت پراکنده
+
+private MutableLiveData&lt;String&gt;      query    = ...;
+private MutableLiveData&lt;Category&gt;    category  = ...;
+private MutableLiveData&lt;List&lt;Item&gt;&gt;    results   = ...;
+private MutableLiveData&lt;Boolean&gt;     loading   = ...;
+private MutableLiveData&lt;String&gt;      error     = ...;
+private MutableLiveData&lt;Integer&gt;     page      = ...;
+
+  onQueryChanged → loading.postValue(true)
+                 → results.postValue(fetch(q))
+                 → loading.postValue(false)
+
+  onCategoryChanged → results.postValue(fetch(newCategory))   // forgot loading!
+
+  onPageChanged      → results.postValue(concat(page))        // forgot loading!
+
+  onRetry            → results.postValue(fetch(query))        // forgot error=null
+
+⚠️ هر متد جدید یعنی یک جای جدید برای فراموش کردن پاک کردن خطا</code></pre>
+
+<p>
+مشکل فقط «کد زیاد» نیست. مشکل این است که <strong>نمی‌دانید وضعیت صفحه در هر لحظه
+دقیقاً چیست</strong>. برای پاسخ به این سؤال که «الان اگر کاربر این دکمه را بزند چه می‌شود؟»
+باید چهار متد را بخوانید و مسیرهای جانبی را در ذهن اجرا کنید.
+</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ریشه‌ی مشکل</span>
+پراکندگی وضعیت و <strong>اثر جانبی پنهان</strong>. در MVI، وضعیت همیشه
+<strong>یک شیء واحد</strong> است و فقط از <strong>یک تابع خالص</strong> به‌دست می‌آید؛
+بنابراین می‌توانید با خواندن یک امضای تابع، تمام رفتارهای ممکن صفحه را بفهمید.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+برخلاف MVC و MVP، <strong>MVI یک الگوی قدیمی و شناخته‌شده نیست</strong>.
+این نام را در سال‌های اخیر، در پیوند با موج <strong>تابع‌های خالص و برنامه‌نویسی تابعی</strong>
+در فرانت‌اند و اندروید رایج شد. ریشه‌ی فکری آن را می‌توان در سه جا دنبال کرد:
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
+  <tr><td>دهه‌ی ۱۹۸۰ — Elm</td><td>الگوی <code>Model → Update → View</code> با تابع خالص؛ اولین شکل جدی MVI</td></tr>
+  <tr><td>۱۹۹۰s — Haskell</td><td>مفهوم State خالص و عدم تکرار اثر جانبی تثبیت شد</td></tr>
+  <tr><td>۲۰۱۰s — Elm / React</td><td>الگوی <code>update(state, action) → state</code> به‌طور گسترده استفاده شد</td></tr>
+  <tr><td>۲۰۱۶ — Cycle.js</td><td>نام MVI را برای ترکیب این مفاهیم به‌طور رسمی به کار برد</td></tr>
+  <tr><td>۲۰۱۸ — Kotlin/Multiplatform</td><td>الگو به اشتراک‌گذاری منطق بین پلتفرم‌ها کمک کرد</td></tr>
+  <tr><td>۲۰۱۹ به بعد — Jetpack Compose</td><td>چون Compose خودش یک مدل State دارد، MVI الگوی طبیعی شد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">دلیل اصلی ایجاد</span>
+سه نیاز: <strong>۱) پیش‌بینی‌پذیری کامل</strong> — بدانید هر Intent چه State‌ای می‌سازد؛
+<strong>۲) تست‌پذیری با تابع خالص</strong> — بدون هیچ شبیه‌ساز؛ و
+<strong>۳) اشتراک‌گذاری منطق بین چند پلتفرم</strong> بدون تکرار کد.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>MVI چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>MVI</strong> (Model-View-Intent) الگویی است که کل وضعیت صفحه را در یک شیء
+<strong>State</strong> نگه می‌دارد و هیچ تغییری در آن مستقیماً انجام نمی‌شود.
+هر تعامل کاربر به یک <strong>Intent</strong> تبدیل می‌شود، یک تابع خالص به نام
+<strong>Reducer</strong> آن Intent و State قبلی را به State جدید تبدیل می‌کند،
+و View صرفاً State را نمایش می‌دهد.
+</div>
+
+<pre class="kl-code" data-lang="text"><code>معادله‌ی بنیادین MVI:
+
+  newState = reduce(currentState, intent)
+
+قواعد:
+  ۱) reduce  باید یک تابع خالص باشد
+     - بدون ورودی جانبی (شبکه، فایل، ساعت، تصادفی)
+     - بدون اثر جانبی (تغییر وضعیت مشترک، چاپ، نوشتن در فایل)
+     - همیشه همان ورودی  →  همان خروجی
+
+  ۲) State  باید تغییرناپذیر (immutable) باشد
+     - هر تغییر یک شیء جدید می‌سازد
+
+  ۳) View  فقط Intent می‌فرستد و State را نمایش می‌دهد
+     - هیچ منطقی در View نیست</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقش</th><th>مسئولیت</th><th>مثال در Kotlin</th></tr>
+  <tr><td><strong>Model / State</strong></td><td>کل وضعیت صفحه در یک شیء تغییرناپذیر</td><td><code>data class SearchState(...)</code></td></tr>
+  <tr><td><strong>View</strong></td><td>نمایش State و ارسال Intent؛ بدون منطق</td><td>Composable</td></tr>
+  <tr><td><strong>Intent</strong></td><td>توصیف <em>آنچه کاربر می‌خواهد</em>، نه اینکه چه اتفاقی بیفتد</td><td><code>sealed interface SearchIntent</code></td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">چرا Intent مهم است؟</span>
+Intent باید <strong>نیت کاربر</strong> را بیان کند، نه عمل فنی.
+به‌جای <code>SetLoading(false)</code> بنویسید <code>SearchSucceeded(results)</code>،
+و به‌جای <code>ClearList()</code> بنویسید <code>UserConfirmedReset()</code>.
+نتیجه: <strong>Intentها مستند و قابل مرور هستند</strong> — مثل فهرست API.
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سوءتفاهم رایج</span>
+MVI با MVVM یکی نیست، در حالی که هر دو ViewModel دارند. تفاوت در این است که
+<strong>MVVM چند منبع وضعیت دارد</strong> (LiveDataهای متعدد) و
+<strong>MVI یک منبع واحد</strong> (State) دارد که همه‌چیز را شامل می‌شود.
+این تفاوت، تمام مزایا و معایب MVI را توضیح می‌دهد.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<pre class="kl-code" data-lang="java"><code>public class SearchViewModel extends ViewModel {
+
+    private final MutableLiveData&lt;String&gt; query = new MutableLiveData&lt;&gt;();
+    private final MutableLiveData&lt;List&lt;Item&gt;&gt; results = new MutableLiveData&lt;&gt;();
+    private final MutableLiveData&lt;Boolean&gt; loading = new MutableLiveData&lt;&gt;();
+    private final MutableLiveData&lt;String&gt; error = new MutableLiveData&lt;&gt;();
+    private int currentPage = 1;
+    private Category category = Category.ALL;
+
+    public void onQueryChanged(String q) {
+        // ۱) صفر کردن صفحه یادآوری نشده
+        currentPage = 1;
+        // ۲) پاک کردن خطا یادآوری نشده
+        loading.setValue(true);
+        search(q, category, 1, new Callback() {
+            public void onSuccess(List&lt;Item&gt; items) {
+                loading.setValue(false);
+                results.setValue(items);
+            }
+            public void onError(Throwable t) {
+                loading.setValue(false);
+                error.setValue("خطا");
+                // ۳) اگر پاسخ دیر برسد، وضعیت اشتباه نمایش داده می‌شود
+            }
+        });
+    }
+
+    public void onCategoryChanged(Category c) {
+        category = c;
+        onQueryChanged(query.getValue());   // ۴) فراخوانی متد با پارامتر null
+    }
+
+    public void onLoadMore() {
+        currentPage++;
+        // ۵) نتایج قبلی را جایگزین می‌کند، ترکیب نمی‌کند
+        search(query.getValue(), category, currentPage, ...);
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نشانه</th><th>پیامد</th></tr>
+  <tr><td>پنج LiveData جدا</td><td>ترکیب حالت‌ها غیرممکن می‌شود (Loading + Error + Data با هم؟)</td></tr>
+  <tr><td>بازسازی وضعیت در هر متد</td><td>در هر متد جدید یک خطای تازه ممکن است رخ دهد</td></tr>
+  <tr><td>پاسخ‌های خارج از ترتیب</td><td>اگر درخواست قدیمی‌تر دیرتر برسد، نتیجه‌ی اشتباه نمایش داده می‌شود</td></tr>
+  <tr><td>نداشتن شناسه‌ی درخواست</td><td>لغو درخواست قبلی ممکن نیست</td></tr>
+  <tr><td>ترکیب دستی لیست‌ها</td><td>بارگذاری صفحه‌ی بعد با صفحه‌ی قبل قاطی می‌شود</td></tr>
+  <tr><td>تست دشوار</td><td>برای هر حالت باید چند LiveData را هم‌زمان تنظیم کنید</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: سه پایه‌ی MVI</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">سه پایه‌ی MVI</span>
+۱) <strong>State واحد</strong> — همه‌ی وضعیت صفحه در یک شیء تغییرناپذیر.<br>
+۲) <strong>Intent صریح</strong> — هر کنش کاربر یک نوع مشخص با داده‌ی مشخص.<br>
+۳) <strong>تابع خالص</strong> — State جدید فقط از ترکیب State قبلی و Intent ساخته می‌شود.
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    U["کاربر"] -->|"کلیک / تایپ / کشیدن"| V["View (Compose / Fragment)"]
+    V -->|"dispatch(Intent)"| VM["ViewModel — نگه‌دارنده‌ی State"]
+    VM -->|"reduce(state, intent)"| R["Reducer — تابع خالص"]
+    R -->|"State جدید"| VM
+    VM -->|"State"| V
+    VM -->|"اثر جانبی (شبکه، DB)"| S["Side Effect — بیرون از Reducer"]
+    S -->|"نتیجه به‌صورت Intent"| VM
+
+    style U fill:#78350f,stroke:#fbbf24,color:#fff
+    style V fill:#0f766e,stroke:#14b8a6,color:#fff
+    style VM fill:#115e59,stroke:#2dd4bf,color:#fff
+    style R fill:#134e4a,stroke:#5eead4,color:#fff
+    style S fill:#7f1d1d,stroke:#f87171,color:#fff</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>قانون طلایی MVI:
+
+  View  ──Intent──▶  ViewModel ──reduce──▶  State  ──▶ View
+        ◀──────────────────────────────────────────┘
+
+  ۱) View  هرگز  State را تغییر نمی‌دهد
+  ۲) View  هرگز  Repository را صدا نمی‌زند
+  ۳) Reducer  هرگز  I/O انجام نمی‌دهد
+  ۴) هر تغییر وضعیت، از مسیر Intent می‌گذرد
+
+نتیجه: اگر همه‌ی Intentها و یک State نمونه را بدانید،
+کل رفتار صفحه را می‌دانید.</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چرا «تابع خالص» مهم‌ترین ویژگی است؟</span>
+تابع خالص یعنی <code>reduce(s, i) == reduce(s, i)</code> همیشه.
+این یعنی می‌توانید در تست، بدون شبکه و بدون شبیه‌ساز، بنویسید:
+<strong>«اگر این State و این Intent را بدهی، باید دقیقاً این State را بگیری.»</strong>
+این قوی‌ترین سطح تضمینی است که یک الگوی UI می‌تواند بدهد.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>ساختار معماری: اجزای MVI</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نوع MVI</th><th>توضیح</th><th>مثال</th></tr>
+  <tr><td><strong>MVI با ViewModel</strong></td><td>State در ViewModel، Intent متد، Reducer تابع ثابت</td><td>رایج‌ترین حالت در Android</td></tr>
+  <tr><td><strong>MVI با Store</strong></td><td>یک Store مستقل از UI که جریان Intent را مدیریت می‌کند</td><td>پروژه‌های چندپلتفرمی</td></tr>
+  <tr><td><strong>MVI با Side Effect</strong></td><td>اثرات جانبی در لایه‌ی جدا با یک کانال خروجی</td><td>Compose با <code>SharedFlow</code></td></tr>
+  <tr><td><strong>MVI سلسله‌مراتبی</strong></td><td>یک Store والد و چند Store فرزند برای زیرصفحه‌ها</td><td>فرم‌های چندمرحله‌ای</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph VIEW["View — فقط نمایش و ارسال Intent"]
+        V1["Composable یا Fragment"]
+    end
+
+    subgraph CORE["Core MVI — قابل تست و قابل اشتراک"]
+        I["SearchIntent (sealed)"]
+        S["SearchState (immutable)"]
+        R["SearchReducer (pure function)"]
+    end
+
+    subgraph VM["ViewModel — نگه‌دارنده‌ی State + اثرات جانبی"]
+        M1["MutableStateFlow&lt;SearchState&gt;"]
+        M2["Channel&lt;SearchIntent&gt;"]
+        M3["Effect Flow (ناوبری، پیام)"]
+    end
+
+    subgraph DATA["Data Layer"]
+        D1["SearchRepository (Interface)"]
+        D2["RemoteSearchDataSource"]
+    end
+
+    V1 -->|"onIntent(...)"| M2
+    M2 --> M1
+    M1 --> R
+    R --> M1
+    M1 -->|"State"| V1
+    M1 -->|"Side Effect"| D1
+    D1 -->|"نتیجه → Intent"| M2
+    M3 -->|"یک‌بارمصرف"| V1
+
+    style VIEW fill:#0f766e,stroke:#14b8a6,color:#fff
+    style CORE fill:#134e4a,stroke:#5eead4,color:#fff
+    style VM fill:#115e59,stroke:#2dd4bf,color:#fff
+    style DATA fill:#1c1917,stroke:#a8a29e,color:#fff</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">مرز مهم: Reducer و Side Effect</span>
+مهم‌ترین اشتباه در MVI، انجام کار شبکه <strong>داخل</strong> تابع Reducer است.
+اگر <code>reduce</code> بتواند به شبکه وصل شود، دیگر خالص نیست و تست آن ممکن نیست.
+<strong>شبکه، دیتابیس و تایمر، همیشه بیرون از Reducer هستند</strong> و نتیجه‌شان
+به‌صورت Intent جدید برمی‌گردد.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    autonumber
+    actor U as کاربر
+    participant V as View
+    participant VM as ViewModel
+    participant R as Reducer (pure)
+    participant Repo as Repository
+
+    U->>V: تایپ «kotlin»
+    V->>VM: dispatch(SearchIntent.QueryChanged("kotlin"))
+    VM->>R: reduce(state, QueryChanged)
+    R-->>VM: state.copy(query=«kotlin», loading=true, page=1)
+    VM-->>V: State جدید → نمایش loader
+    VM->>Repo: search("kotlin")   ← اثر جانبی، بیرون از Reducer
+    Repo-->>VM: نتیجه
+    VM->>VM: dispatch(SearchIntent.SearchSucceeded(results))
+    VM->>R: reduce(state, SearchSucceeded)
+    R-->>VM: state.copy(loading=false, results=results, error=null)
+    VM-->>V: State نهایی → نمایش نتایج</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>الگوی استاندارد MVI برای هر عملیات ناهمگام:
+
+  ۱) View یک Intent می‌فرستد
+  ۲) Reducer: loading = true ، داده قبلی حفظ می‌شود
+  ۳) ViewModel اثر جانبی را اجرا می‌کند (شبکه/DB)
+  ۴) نتیجه به‌صورت Intent جدید وارد می‌شود
+  ۵) Reducer: loading = false ، نتیجه ذخیره می‌شود
+  ۶) View State جدید را نمایش می‌دهد
+
+نکته: در گام ۲ داده قبلی پاک نمی‌شود تا صفحه «چشمک» نزند؛
+فقط loading = true می‌شود.</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">مدیریت پاسخ‌های خارج از ترتیب</span>
+در MVI، هر Intent یک <code>requestId</code> می‌گیرد. در Reducer بررسی می‌کنید که
+<strong>این پاسخ مربوط به آخرین درخواست است</strong>؛ اگر نبود، آن را نادیده می‌گیرید.
+این کار رابطه‌ای در پیچیده‌ترین حالت‌ها را کاملاً قابل پیش‌بینی می‌کند.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>shared/                             ← ماژول مشترک بین پلتفرم‌ها
+└── core/mvi/search/
+    ├── SearchIntent.kt           ← sealed interface
+    ├── SearchState.kt            ← data class تغییرناپذیر
+    └── SearchReducer.kt          ← تابع خالص (object با fun reduce)
+
+androidApp/src/main/java/.../
+├── ui/search/
+│   ├── SearchScreen.kt           ← Composable
+│   ├── SearchViewModel.kt        ← نگه‌دارنده‌ی State + اثرات
+│   └── component/SearchResultItem.kt
+
+domain/
+└── repository/
+    └── SearchRepository.kt       ← Interface
+
+data/
+├── remote/SearchApi.kt
+└── repository/SearchRepositoryImpl.kt
+
+commonTest/
+└── SearchReducerTest.kt          ← تست تابع خالص، مشترک بین پلتفرم‌ها</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">مزیت پنهان ماژول مشترک</span>
+اگر Intent، State و Reducer را در یک ماژول <code>shared</code> (Kotlin Multiplatform)
+قرار دهید، <strong>تست‌های شما هم بین Android، iOS و دسکتاپ مشترک می‌شود</strong>.
+یک بار تست می‌نویسید و همه‌جا اجرا می‌شود — این بزرگ‌ترین برد اقتصادی MVI.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>مثال عملی کامل: موتور جست‌وجوی زنده</h2>
+
+<p>
+در این مثال یک صفحه‌ی جست‌وجوی زنده با فیلتر دسته‌بندی و بارگذاری صفحه‌ی بعد
+می‌سازیم. این دقیقاً همان سناریویی است که MVVM در بخش قبل با آن مشکل داشت.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Intentهای این صفحه:
+
+  SearchIntent.QueryChanged(query)      → کاربر تایپ کرد
+  SearchIntent.CategorySelected(cat)    → فیلتر دسته تغییر کرد
+  SearchIntent.LoadMoreRequested()      → اسکرول به پایین
+  SearchIntent.RetryRequested()         → تلاش دوباره بعد از خطا
+  SearchIntent.ResetRequested()         → پاک کردن جست‌وجو
+
+State این صفحه:
+
+  SearchState(
+    query,          → متن فعلی جست‌وجو
+    category,       → دسته‌ی انتخاب‌شده
+    results,        → نتایج انباشته‌شده
+    loading,        → آیا درخواست جاری است
+    loadingMore,    → آیا صفحه‌ی بعد در حال بارگذاری است
+    error,          → پیام خطا یا null
+    page,           → شماره‌ی صفحه‌ی جاری
+    hasMore         → آیا نتیجه‌ی بیشتری هست
+  )
+
+تست‌پذیری کامل:
+  «QueryChanged("kotlin") با state اولیه داده‌شده
+     → state.loading == true و page == 1 و error == null»</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">چرا این مثال سخت بود؟</span>
+در این صفحه چهار نوع بارگذاری وجود دارد (بار اول، فیلتر، صفحه‌ی بعد، تلاش دوباره)،
+سه نوع خطا ممکن است، و پاسخ درخواست‌ها می‌تواند خارج از ترتیج برسد.
+در MVVM این‌ها همگی به متدهای جداگانه و حافظه‌ی پنهان پخش می‌شدند.
+در MVI، همه‌ی این‌ها <strong>شش تابع کوچک در یک Reducer</strong> هستند.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>State و Intent</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.core.mvi.search;
+
+import java.util.Collections;
+import java.util.List;
+
+/** وضعیت کامل صفحه‌ی جست‌وجو — تغییرناپذیر، تنها منبع حقیقت. */
+public final class SearchState {
+
+    public enum Status { IDLE, LOADING, LOADING_MORE, READY, ERROR }
+
+    private final String query;
+    private final Category category;
+    private final List&lt;Item&gt; results;
+    private final Status status;
+    private final String errorMessage;
+    private final int page;
+    private final boolean hasMore;
+    private final long latestRequestId;
+
+    private SearchState(Builder b) {
+        this.query = b.query;
+        this.category = b.category;
+        this.results = Collections.unmodifiableList(List.copyOf(b.results));
+        this.status = b.status;
+        this.errorMessage = b.errorMessage;
+        this.page = b.page;
+        this.hasMore = b.hasMore;
+        this.latestRequestId = b.latestRequestId;
+    }
+
+    public static SearchState initial() {
+        return new Builder().build();
+    }
+
+    public String query() { return query; }
+    public Category category() { return category; }
+    public List&lt;Item&gt; results() { return results; }
+    public Status status() { return status; }
+    public String errorMessage() { return errorMessage; }
+    public int page() { return page; }
+    public boolean hasMore() { return hasMore; }
+    public long latestRequestId() { return latestRequestId; }
+
+    public Builder toBuilder() {
+        return new Builder()
+                .query(query)
+                .category(category)
+                .results(results)
+                .status(status)
+                .errorMessage(errorMessage)
+                .page(page)
+                .hasMore(hasMore)
+                .latestRequestId(latestRequestId);
+    }
+
+    public static final class Builder {
+        private String query = "";
+        private Category category = Category.ALL;
+        private List&lt;Item&gt; results = List.of();
+        private Status status = Status.IDLE;
+        private String errorMessage;
+        private int page = 0;
+        private boolean hasMore = false;
+        private long latestRequestId = 0L;
+
+        public Builder query(String v) { this.query = v; return this; }
+        public Builder category(Category v) { this.category = v; return this; }
+        public Builder results(List&lt;Item&gt; v) { this.results = v; return this; }
+        public Builder status(Status v) { this.status = v; return this; }
+        public Builder errorMessage(String v) { this.errorMessage = v; return this; }
+        public Builder page(int v) { this.page = v; return this; }
+        public Builder hasMore(boolean v) { this.hasMore = v; return this; }
+        public Builder latestRequestId(long v) { this.latestRequestId = v; return this; }
+
+        public SearchState build() { return new SearchState(this); }
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.core.mvi.search;
+
+import java.util.List;
+
+/** رویدادهای نیت کاربر و نتایج عملیات بیرونی. */
+public sealed interface SearchIntent {
+
+    /** Intent کاربر */
+    record QueryChanged(String query, long requestId) implements SearchIntent { }
+    record CategorySelected(Category category, long requestId) implements SearchIntent { }
+    record LoadMoreRequested() implements SearchIntent { }
+    record RetryRequested(long requestId) implements SearchIntent { }
+    record ResetRequested() implements SearchIntent { }
+
+    /** نتیجه‌ی بیرونی — دوباره به‌صورت Intent وارد چرخه می‌شود */
+    record SearchSucceeded(List&lt;Item&gt; items, int page, boolean hasMore,
+                           long requestId) implements SearchIntent { }
+    record SearchFailed(String message, long requestId) implements SearchIntent { }
+}
+</code></pre>
+
+<h3>Reducer — قلب الگو</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.core.mvi.search;
+
+/**
+ * تابع خالص. نه I/O می‌کند، نه زمان می‌خواند، نه تصادفی.
+ * همیشه: (State, Intent) → State
+ */
+public final class SearchReducer {
+
+    /** حداقل طول عبارت جست‌وجو برای ارسال درخواست. */
+    private static final int MIN_QUERY_LENGTH = 2;
+
+    private SearchReducer() {
+    }
+
+    public static SearchState reduce(SearchState state, SearchIntent intent) {
+        return switch (intent) {
+            case SearchIntent.QueryChanged q -&gt; onQueryChanged(state, q);
+            case SearchIntent.CategorySelected c -&gt; onCategorySelected(state, c);
+            case SearchIntent.LoadMoreRequested ignored -&gt; onLoadMore(state);
+            case SearchIntent.RetryRequested r -&gt; onRetry(state, r);
+            case SearchIntent.ResetRequested ignored -&gt; SearchState.initial();
+            case SearchIntent.SearchSucceeded s -&gt; onSucceeded(state, s);
+            case SearchIntent.SearchFailed f -&gt; onFailed(state, f);
+        };
+    }
+
+    private static SearchState onQueryChanged(SearchState s, SearchIntent.QueryChanged i) {
+        SearchState base = s.toBuilder()
+                .query(i.query())
+                .errorMessage(null)
+                .page(0)
+                .hasMore(false)
+                .latestRequestId(i.requestId())
+                .build();
+
+        if (i.query() == null || i.query().trim().length() &lt; MIN_QUERY_LENGTH) {
+            return base.toBuilder()
+                    .status(SearchState.Status.IDLE)
+                    .results(List.of())
+                    .build();
+        }
+        return base.toBuilder()
+                .status(SearchState.Status.LOADING)
+                .build();
+    }
+
+    private static SearchState onCategorySelected(SearchState s, SearchIntent.CategorySelected i) {
+        SearchState base = s.toBuilder()
+                .category(i.category())
+                .errorMessage(null)
+                .page(0)
+                .hasMore(false)
+                .latestRequestId(i.requestId())
+                .build();
+
+        if (s.query().trim().length() &lt; MIN_QUERY_LENGTH) {
+            return base.toBuilder().status(SearchState.Status.IDLE).build();
+        }
+        return base.toBuilder().status(SearchState.Status.LOADING).build();
+    }
+
+    private static SearchState onLoadMore(SearchState s) {
+        if (s.status() != SearchState.Status.READY || !s.hasMore()) {
+            return s;   // در حال بارگذاری، یا صفحه‌ی آخر
+        }
+        return s.toBuilder()
+                .status(SearchState.Status.LOADING_MORE)
+                .build();
+    }
+
+    private static SearchState onRetry(SearchState s, SearchIntent.RetryRequested i) {
+        if (s.query().trim().length() &lt; MIN_QUERY_LENGTH) {
+            return s.toBuilder().status(SearchState.Status.IDLE).build();
+        }
+        return s.toBuilder()
+                .status(SearchState.Status.LOADING)
+                .errorMessage(null)
+                .page(0)
+                .latestRequestId(i.requestId())
+                .build();
+    }
+
+    private static SearchState onSucceeded(SearchState s, SearchIntent.SearchSucceeded i) {
+        // قانون: پاسخ قدیمی را نادیده می‌گیریم
+        if (i.requestId() != s.latestRequestId()) {
+            return s;
+        }
+        return s.toBuilder()
+                .results(i.items())
+                .page(i.page())
+                .hasMore(i.hasMore())
+                .errorMessage(null)
+                .status(SearchState.Status.READY)
+                .build();
+    }
+
+    private static SearchState onFailed(SearchState s, SearchIntent.SearchFailed i) {
+        if (i.requestId() != s.latestRequestId()) {
+            return s;
+        }
+        return s.toBuilder()
+                .errorMessage(i.message())
+                .status(SearchState.Status.ERROR)
+                .build();
+    }
+}
+</code></pre>
+
+<h3>ViewModel — نگه‌دارنده‌ی State</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.ui.search;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import com.example.core.mvi.search.SearchIntent;
+import com.example.core.mvi.search.SearchReducer;
+import com.example.core.mvi.search.SearchState;
+import com.example.domain.repository.SearchRepository;
+
+/**
+ * فقط دو کار دارد:
+ * ۱) نگه‌داری State و اجرای Reducer
+ * ۲) اجرای اثرات جانبی و بازگرداندن نتیجه به‌صورت Intent
+ */
+public final class SearchViewModel {
+
+    private final SearchRepository repository;
+    private final AtomicLong requestIds = new AtomicLong();
+
+    private SearchState state = SearchState.initial();
+    private StateListener listener = state -&gt; { };
+
+    public interface StateListener {
+        void onState(SearchState state);
+    }
+
+    public SearchViewModel(SearchRepository repository) {
+        this.repository = repository;
+    }
+
+    public SearchState state() {
+        return state;
+    }
+
+    public void setListener(StateListener listener) {
+        this.listener = listener;
+        listener.onState(state);
+    }
+
+    /** تنها ورودی View به ViewModel. */
+    public void dispatch(SearchIntent intent) {
+        state = SearchReducer.reduce(state, intent);
+        listener.onState(state);
+        executeSideEffects(intent);
+    }
+
+    private void executeSideEffects(SearchIntent intent) {
+        switch (intent) {
+            case SearchIntent.QueryChanged q -&gt;
+                    performSearch(q.query(), q.category(), 1, q.requestId());
+            case SearchIntent.CategorySelected c -&gt;
+                    performSearch(state.query(), c.category(), 1, c.requestId());
+            case SearchIntent.RetryRequested r -&gt;
+                    performSearch(state.query(), state.category(), 1, r.requestId());
+            case SearchIntent.LoadMoreRequested ignored -&gt;
+                    performSearch(state.query(), state.category(),
+                            state.page() + 1, state.latestRequestId());
+            case SearchIntent.SearchSucceeded s -&gt; { }
+            case SearchIntent.SearchFailed f -&gt; { }
+        }
+    }
+
+    private void performSearch(String query, SearchState.Category category,
+                               int page, long requestId) {
+        if (query == null || query.trim().length() &lt; 2) {
+            return;
+        }
+        repository.search(query, category, page, new SearchCallback() {
+            @Override
+            public void onSuccess(List&lt;Item&gt; items, int totalFound) {
+                dispatch(new SearchIntent.SearchSucceeded(
+                        items, page, page * PAGE_SIZE &lt; totalFound, requestId));
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                dispatch(new SearchIntent.SearchFailed(
+                        "جست‌وجو ناموفق بود", requestId));
+            }
+        });
+    }
+
+    public long nextRequestId() {
+        return requestIds.incrementAndGet();
+    }
+
+    private static final int PAGE_SIZE = 20;
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نقطه‌ی قوت کلیدی</span>
+کلاس <code>SearchReducer</code> صفر وابستگی بیرونی دارد و همه‌ی قواعد صفحه
+(حداقل طول، صفحه‌ی بعد، نادیده گرفتن پاسخ قدیمی) در یک فایل قابل مرور است.
+<strong>تمام رفتار ممکن صفحه، از خواندن این یک فایل قابل فهم است.</strong>
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>MVI در Jetpack Compose</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم MVI</th><th>معادل در Compose</th><th>توضیح</th></tr>
+  <tr><td>State</td><td><code>StateFlow&lt;T&gt;</code> یا <code>mutableStateOf</code></td><td>وضعیت قابل مشاهده</td></tr>
+  <tr><td>Intent</td><td><code>fun onIntent()</code> به‌صورت پارامتر Composable</td><td>ورودی از لایه‌ی UI</td></tr>
+  <tr><td>Reducer</td><td><code>fun reduce(state, intent): State</code></td><td>تابع خالص، معمولاً در ماژول مشترک</td></tr>
+  <tr><td>Side Effect</td><td><code>LaunchedEffect</code> + <code>Flow</code></td><td>شبکه، دیتابیس، ناوبری</td></tr>
+  <tr><td>Effect یک‌بارمصرف</td><td><code>Channel</code> با بافر ۱ یا <code>SharedFlow</code></td><td>برای ناوبری و پیام</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>// الگوی استاندارد MVI در Compose
+
+@Composable
+fun SearchRoute(viewModel: SearchViewModel = hiltViewModel()) {
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    // Effect یک‌بارمصرف: ناوبری و پیام
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect -&gt;
+            when (effect) {
+                is Effect.NavigateToResults -&gt;
+                    navController.navigate("results/${effect.query}")
+                is Effect.ShowMessage -&gt;
+                    snackbarHost.showSnackbar(effect.message)
+            }
+        }
+    }
+
+    // بارگذاری اولیه: یک Intent
+    LaunchedEffect(Unit) {
+        viewModel.onIntent(SearchIntent.Start)
+    }
+
+    SearchScreen(
+        state = state,
+        onIntent = viewModel::onIntent
+    )
+}
+
+@Composable
+fun SearchScreen(state: SearchState, onIntent: (SearchIntent) -&gt; Unit) {
+    // این تابع هیچ منطقی ندارد؛ فقط از روی State می‌خواند
+    // و از طریق onIntent درخواست می‌فرستد
+
+    Column {
+        OutlinedTextField(
+            value = state.query,
+            onValueChange = { onIntent(SearchIntent.QueryChanged(it)) },
+            isError = state.error != null
+        )
+        when (state.status) {
+            Status.LOADING   -&gt; CircularProgressIndicator()
+            Status.ERROR     -&gt; ErrorBox(
+                message = state.error!!,
+                onRetry = { onIntent(SearchIntent.Retry) })
+            Status.READY    -&gt; LazyColumn {
+                items(state.results) { SearchResultItem(it) }
+            }
+            else -&gt; EmptyBox()
+        }
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">چرا MVI و Compose عالی با هم کار می‌کنند؟</span>
+Compose خودش یک مدل State دارد: «وقتی state عوض شود، دوباره ترکیب کن».
+MVI دقیقاً همین را به یک <strong>قانون تبدیل می‌کند</strong>: «state فقط از طریق
+Intent تغییر می‌کند». نتیجه: الگویی که با ذات Compose هماهنگ است، نه تحمیلی.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مزایا</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>تست‌پذیری بی‌رقیب</strong></td><td>تابع خالص بدون هیچ شبیه‌ساز، تست می‌شود</td></tr>
+  <tr><td>۲</td><td><strong>پیش‌بینی‌پذیری کامل</strong></td><td>هر Intent نتیجه‌ی مشخص و قابل محاسبه دارد</td></tr>
+  <tr><td>۳</td><td><strong>یک منبع حقیقت</strong></td><td>هیچ امکان ناسازگاری بین چند LiveData وجود ندارد</td></tr>
+  <tr><td>۴</td><td><strong>مدیریت آسان حالت‌های ترکیبی</strong></td><td>حالت‌ها با یک enum نمایش‌داده‌شدنی هستند</td></tr>
+  <tr><td>۵</td><td><strong>مدیریت درخواست‌های ناهمگام</strong></td><td>requestId از پاسخ‌های خارج از ترتیب جلوگیری می‌کند</td></tr>
+  <tr><td>۶</td><td><strong>قابلیت اشتراک بین پلتفرم‌ها</strong></td><td>منطق در ماژول مشترک، تست مشترک</td></tr>
+  <tr><td>۷</td><td><strong>تاریخچه‌ی کامل</strong></td><td>می‌توانید همه‌ی Intentها و Stateها را log کنید</td></tr>
+  <tr><td>۸</td><td><strong>Time Travel در توسعه</strong></td><td>با یک State و Intent، وضعیت گذشته را بازسازی کنید</td></tr>
+  <tr><td>۹</td><td><strong>هماهنگی کامل با Compose</strong></td><td>مدل State ذاتی Compose است</td></tr>
+  <tr><td>۱۰</td><td><strong>کاهش باگ‌های حالت</strong></td><td>امکان حالت «نیمه‌کاره» تقریباً صفر است</td></tr>
+  <tr><td>۱۱</td><td><strong>دیباگ ساده</strong></td><td>لاگ Intent و State برای بازسازی مسیر کاربر</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>معایب</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>State بزرگ</strong></td><td>همه‌ی وضعیت در یک کلاس، به‌سرعت بزرگ می‌شود</td></tr>
+  <tr><td>۲</td><td><strong>تعداد زیاد Intentها</strong></td><td>هر حالت یک Intent و یک شاخه در Reducer</td></tr>
+  <tr><td>۳</td><td><strong>سربار کد</strong></td><td>برای صفحات ساده، بیش از حد مهندسی است</td></tr>
+  <tr><td>۴</td><td><strong>State تغییرناپذیر و پرهزینه</strong></td><td>در لیست‌های بزرگ، کپی زیاد انجام می‌شود</td></tr>
+  <tr><td>۵</td><td><strong>معماری چندمرحله‌ای</strong></td><td>Intents → VM → Reducer → State؛ فهم آن زمان می‌برد</td></tr>
+  <tr><td>۶</td><td><strong>مدیریت Effect پیچیده</strong></td><td>رویدادهای یک‌بارمصرف نیاز به کانال جدا دارند</td></tr>
+  <tr><td>۷</td><td><strong>دیباگ سخت State بزرگ</strong></td><td>خواندن State با صد فیلد دشوار است</td></tr>
+  <tr><td>۸</td><td><strong>نیاز به درک تابعی</strong></td><td>تیم باید مفهوم pure function را بفهمد</td></tr>
+  <tr><td>۹</td><td><strong>تفاوت با MVVM در تیم‌های سنتی</strong></td><td>همکاران باید با این سبک جدید کنار بیایند</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مسئله‌ی واقعی: انفجار Intent</span>
+شایع‌ترین مشکل MVI این است که با رشد صفحه، تعداد Intentها و شاخه‌های Reducer
+<strong>انفجاری</strong> می‌شود. اگر Reducer شما بیش از ۱۰ Intent و بیش از ۲۰۰ خط
+دارد، وقت آن است که صفحه را به دو MVI کوچک‌تر تقسیم کنید.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">موارد مناسب</span>
+<ul>
+  <li>اپ‌های <strong>Jetpack Compose</strong> با وضعیت پیچیده و حالت‌های متعدد</li>
+  <li>صفحاتی با <strong>درخواست‌های ناهمگام</strong> که ممکن است خارج از ترتیب برسند</li>
+  <li>پروژه‌های <strong>چندپلتفرمی</strong> با Kotlin Multiplatform</li>
+  <li>تیم‌هایی که <strong>تست را جدی می‌گیرند</strong> و پوشش بالا می‌خواهند</li>
+  <li>فرم‌های <strong>چندمرحله‌ای</strong> با وضعیت پیچیده</li>
+  <li>اپ‌های <strong>فین‌تک</strong> و بانکی که وضعیت تراکنش باید کاملاً قابل پیش‌بینی باشد</li>
+  <li>پروژه‌هایی که <strong>دیباگ مسیر کاربر</strong> برایشان مهم است</li>
+  <li>تیم‌هایی که با <strong>برنامه‌نویسی تابعی</strong> راحت هستند</li>
+</ul>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی سرانگشتی</span>
+اگر پاسخ به سؤال «الان وضعیت صفحه دقیقاً چیست؟» سخت است، MVI کمک بزرگی است.
+اگر صفحه‌ی شما سه وضعیت بیشتر ندارد، MVI اضافه‌کاری است.
+</div>
+</section>
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">موارد نامناسب</span>
+<ul>
+  <li><strong>صفحات ساده و تک‌حالته</strong> که یک نمایش ساده هستند</li>
+  <li>تیم‌هایی که <strong>تابع خالص</strong> را نمی‌فهمند یا تست نمی‌نویسند</li>
+  <li>پروژه‌های <strong>کوچک و تیم یک‌نفره</strong> که سرعت تحویل اولویت دارد</li>
+  <li>صفحاتی که <strong>نیاز به تزریق وابستگی</strong> به ViewModel نیست</li>
+  <li>وقتی تیم فقط <strong>XML و Fragments</strong> کار می‌کند (بدون Compose)</li>
+  <li>وقتی State آن‌قدر بزرگ شده که <strong>نگه‌داری‌اش سخت‌تر از خود مشکل</strong> شود</li>
+  <li>پروژه‌هایی که <strong>فقط یک کلاینت</strong> دارند و اشتراک بین پلتفرمی مهم نیست</li>
+</ul>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز شما</th><th>الگوی مناسب‌تر</th></tr>
+  <tr><td>صفحه‌ی ساده با دو یا سه حالت</td><td><strong>MVVM</strong> یا هیچ الگویی</td></tr>
+  <tr><td>پروژه‌ی XML با Fragment</td><td><strong>MVP</strong> یا MVVM</td></tr>
+  <tr><td>منطق کسب‌وکار پیچیده</td><td><strong>Clean Architecture</strong> به‌علاوه‌ی MVI در UI</td></tr>
+  <tr><td>تیم بزرگ با استقلال کار</td><td><strong>Feature-Based</strong></td></tr>
+  <tr><td>سیستم بک‌اند</td><td><strong>لایه‌بندی یا میکروسرویس</strong></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    MVP["MVP — Presenter فرمان می‌دهد"]
+    MVVM["MVVM — ViewModel و چند LiveData"]
+    MVI["MVI — ViewModel و یک State + Intent"]
+
+    MVP -. "Presenter → View (پیام) .- MVVM
+    MVVM -. "ViewModel → LiveData (انتشار) .- MVI
+    MVI -. "ViewModel → State واحد (زمان) .- MVP
+
+    style MVP fill:#78350f,stroke:#fbbf24,color:#fff
+    style MVVM fill:#115e59,stroke:#2dd4bf,color:#fff
+    style MVI fill:#0f766e,stroke:#14b8a6,color:#fff</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>معیار</th><th>MVC</th><th>MVP</th><th>MVVM</th><th>MVI</th></tr>
+  <tr><td>View → Model</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+  <tr><td>تعداد منابع وضعیت</td><td>چندتا</td><td>یکی</td><td>چندتا</td><td>یکی</td></tr>
+  <tr><td>جریان داده</td><td>دوطرفه</td><td>یک‌طرفه</td><td>ترکیبی</td><td>یک‌طرفه</td></tr>
+  <tr><td>تابع خالص</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+  <tr><td>مدیریت درخواست ناهمگام</td><td>❌</td><td>⚠️</td><td>⚠️</td><td>✅</td></tr>
+  <tr><td>تست بدون شبیه‌ساز</td><td>❌</td><td>✅</td><td>✅</td><td>✅ کامل</td></tr>
+  <tr><td>مناسب Compose</td><td>❌</td><td>⚠️</td><td>✅</td><td>✅ عالی</td></tr>
+  <tr><td>مناسب Multiplatform</td><td>❌</td><td>⚠️</td><td>⚠️</td><td>✅</td></tr>
+  <tr><td>حجم کد</td><td>کم</td><td>زیاد</td><td>متوسط</td><td>زیاد</td></tr>
+  <tr><td>سختی یادگیری</td><td>کم</td><td>متوسط</td><td>متوسط</td><td>زیاد</td></tr>
+  <tr><td>سال معرفی</td><td>۱۹۷۹</td><td>۱۹۹۰s</td><td>۲۰۰۵</td><td>۲۰۱۰s</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">خلاصه‌ی تفاوت MVVM و MVI</span>
+<strong>MVVM</strong> می‌گوید «ViewModel وضعیت را نگه می‌دارد و LiveData منتشر می‌کند».
+<strong>MVI</strong> می‌گوید «ViewModel فقط Intent می‌گیرد و از طریق یک <em>تابع خالص</em>
+State جدید می‌سازد». در MVI، <strong>ViewModel می‌تواند کاملاً بدون Android باشد</strong>
+و حتی در یک پروژه‌ی غیراندرویدی هم کار کند.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اصل SOLID</th><th>نمود در MVI</th><th>مثال</th></tr>
+  <tr><td><strong>S — SRP</strong></td><td>Reducer فقط تبدیل State؛ ViewModel فقط هماهنگی</td><td>Reducer هیچ I/O ندارد</td></tr>
+  <tr><td><strong>O — OCP</strong></td><td>افزودن Intent جدید بدون تغییر Intentهای موجود</td><td>شاخه جدید در <code>switch</code></td></tr>
+  <tr><td><strong>L — LSP</strong></td><td>همه‌ی Stateها یک قرارداد دارند</td><td>فیلدهای مشترک در State پایه</td></tr>
+  <tr><td><strong>I — ISP</strong></td><td>هر صفحه State و Intent خودش را دارد</td><td>Interface کوچک به‌ازای هر فیچر</td></tr>
+  <tr><td><strong>D — DIP</strong></td><td>ViewModel به Repository (Interface) وابسته است</td><td>تست با FakeSearchRepository</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نقطه‌ی قوت منحصربه‌فرد MVI</span>
+تابع خالص <strong>OCP را به‌شکل بی‌نظیر</strong> رعایت می‌کند: شما می‌توانید ده‌ها Intent
+اضافه کنید بدون آنکه منطق موجود را تغییر دهید. در MVVM، هر Intent معمولاً
+یک متد جدید در ViewModel است که ممکن است منطق موجود را بشکند.
+</div>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>نقش در MVI</th><th>محل استفاده</th></tr>
+  <tr><td><strong>Observer</strong></td><td>انتشار State به View</td><td>StateFlow / LiveData</td></tr>
+  <tr><td><strong>Command</strong></td><td>هر Intent یک فرمان با داده‌ی مشخص</td><td>sealed interface</td></tr>
+  <tr><td><strong>Strategy</strong></td><td>تعویض منبع داده (شبکه، کش، محلی)</td><td>Repository</td></tr>
+  <tr><td><strong>State Pattern</strong></td><td>تغییر رفتار بر اساس وضعیت صفحه</td><td>شاخه‌ی <code>when (state.status)</code></td></tr>
+  <tr><td><strong>Mediator</strong></td><td>ViewModel به‌عنوان نقطه‌ی واسط بین View و داده</td><td>مرکز صفحه</td></tr>
+  <tr><td><strong>Memento</strong></td><td>بازگرداندن به State قبلی</td><td>Undo / Time Travel</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">الگوی واقعاً مهم</span>
+<strong>Command</strong> پایه‌ی Intent است و <strong>State Pattern</strong> پایه‌ی
+مدیریت حالت‌ها. اگر این دو را درک نکنید، عملاً MVI را نمی‌شناسید.
+بقیه‌ی الگوها (Adapter، Facade) اختیاری هستند.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+بزرگ‌ترین مزیت MVI اینجاست که <strong>Reducer را می‌توان بدون هیچ شبیه‌ساز، بدون شبکه
+و بدون شبکه‌ی اندروید تست کرد</strong>. این تست‌ها هم سریع هستند و هم قطعی.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.core.mvi.search;
+
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class SearchReducerTest {
+
+    private static SearchState ready() {
+        return SearchState.initial().toBuilder()
+                .query("kotlin")
+                .status(SearchState.Status.READY)
+                .results(List.of(new Item("1", "Kotlin Coroutines")))
+                .page(1)
+                .hasMore(true)
+                .build();
+    }
+
+    @Nested
+    @DisplayName("QueryChanged")
+    class QueryChangedTests {
+
+        @Test
+        @DisplayName("درخواست جدید باید صفحه و خطا را صفر کند")
+        void resetsPageAndError() {
+            var dirty = ready().toBuilder()
+                    .page(3)
+                    .errorMessage("خطای قبلی")
+                    .build();
+
+            var next = SearchReducer.reduce(
+                    dirty, new SearchIntent.QueryChanged("java", 10L));
+
+            assertThat(next.page()).isZero();
+            assertThat(next.errorMessage()).isNull();
+            assertThat(next.status()).isEqualTo(SearchState.Status.LOADING);
+        }
+
+        @Test
+        @DisplayName("جست‌وجوی کوتاه نباید درخواست بفرستد")
+        void shortQueryStaysIdle() {
+            var next = SearchReducer.reduce(
+                    SearchState.initial(), new SearchIntent.QueryChanged("k", 1L));
+
+            assertThat(next.status()).isEqualTo(SearchState.Status.IDLE);
+            assertThat(next.results()).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("SearchSucceeded")
+    class SucceededTests {
+
+        @Test
+        @DisplayName("پاسخ با requestId قدیمی باید نادیده گرفته شود")
+        void staleResponseIsIgnored() {
+            var state = ready().toBuilder().latestRequestId(10L).build();
+
+            var next = SearchReducer.reduce(state,
+                    new SearchIntent.SearchSucceeded(List.of(), 1, false, 7L));
+
+            assertThat(next).isSameAs(state);
+        }
+
+        @Test
+        @DisplayName("پاسخ معتبر باید نتایج را جایگزین کند")
+        void validResponseReplacesResults() {
+            var state = SearchState.initial().toBuilder()
+                    .query("kotlin")
+                    .latestRequestId(10L)
+                    .status(SearchState.Status.LOADING)
+                    .build();
+            var items = List.of(new Item("1", "a"), new Item("2", "b"));
+
+            var next = SearchReducer.reduce(state,
+                    new SearchIntent.SearchSucceeded(items, 1, true, 10L));
+
+            assertThat(next.results()).containsExactlyElementsOf(items);
+            assertThat(next.hasMore()).isTrue();
+            assertThat(next.status()).isEqualTo(SearchState.Status.READY);
+        }
+    }
+
+    @Nested
+    @DisplayName("LoadMoreRequested")
+    class LoadMoreTests {
+
+        @Test
+        @DisplayName("وقتی در حال بارگذاری هستیم نباید درخواست جدید بدهیم")
+        void ignoresWhenLoading() {
+            var loading = ready().toBuilder()
+                    .status(SearchState.Status.LOADING_MORE)
+                    .build();
+
+            assertThat(SearchReducer.reduce(loading,
+                    new SearchIntent.LoadMoreRequested())).isSameAs(loading);
+        }
+
+        @Test
+        @DisplayName("وقتی صفحه‌ی آخر است نباید درخواست بدهیم")
+        void ignoresWhenNoMorePages() {
+            var last = ready().toBuilder().hasMore(false).build();
+
+            assertThat(SearchReducer.reduce(last,
+                    new SearchIntent.LoadMoreRequested())).isSameAs(last);
+        }
+    }
+
+    @Test
+    @DisplayName("تابع خالص: همان ورودی، همان خروجی")
+    void isPureFunction() {
+        var state = ready();
+        var intent = new SearchIntent.QueryChanged("java", 5L);
+
+        var first = SearchReducer.reduce(state, intent);
+        var second = SearchReducer.reduce(state, intent);
+
+        assertThat(first).isEqualTo(second);
+        assertThat(state.status()).isEqualTo(SearchState.Status.READY);
+    }
+
+    @Test
+    @DisplayName("Reset باید به وضعیت اولیه برگردد")
+    void resetReturnsToInitialState() {
+        var next = SearchReducer.reduce(ready(), new SearchIntent.ResetRequested());
+
+        assertThat(next).isEqualTo(SearchState.initial());
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">عدد واقعی</span>
+تست بالا در کمتر از <strong>۱۰ میلی‌ثانیه</strong> اجرا می‌شود و
+<strong>۱۰۰٪ قطعی</strong> است — نه به شبکه وابسته است، نه به زمان، نه به ترتیب اجرا.
+در پروژه‌های MVI معمولاً <strong>۷۰ تا ۹۰ درصد پوشش تست</strong> فقط با تست Reducer
+به‌دست می‌آید، بدون نیاز به ابزار خاص.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>اشتباه</th><th>نشانه</th><th>راه‌حل</th></tr>
+  <tr><td>۱</td><td><strong>انجام I/O در Reducer</strong></td><td><code>repository.search()</code> داخل <code>reduce</code></td><td>انتقال به ViewModel</td></tr>
+  <tr><td>۲</td><td><strong>State قابل تغییر</strong></td><td><code>var query</code> به‌جای <code>val</code></td><td>استفاده از <code>data class</code> و <code>copy()</code></td></tr>
+  <tr><td>۳</td><td><strong>Intent فنی به‌جای نیت کاربر</strong></td><td><code>SetLoading(false)</code></td><td>استفاده از <code>SearchSucceeded</code></td></tr>
+  <tr><td>۴</td><td><strong>ندادن requestId</strong></td><td>پاسخ‌های خارج از ترتیب</td><td>افزودن requestId به همه‌ی Intentها</td></tr>
+  <tr><td>۵</td><td><strong>State غیرقابل تست</strong></td><td>وجود Context در State</td><td>فقط داده‌ی خالص</td></tr>
+  <tr><td>۶</td><td><strong>منطق در View</strong></td><td><code>if</code> در Composable</td><td>انتقال به Reducer</td></tr>
+  <tr><td>۷</td><td><strong>انفجار Intent</strong></td><td>بیش از ۲۰ Intent در یک صفحه</td><td>تقسیم صفحه به چند MVI</td></tr>
+  <tr><td>۸</td><td><strong>State بزرگ با فیلدهای بی‌ربط</strong></td><td>یک State برای کل صفحه</td><td>تقسیم State به زیر‌وضعیت‌ها</td></tr>
+  <tr><td>۹</td><td><strong>نادیده گرفتن Effect</strong></td><td>دیالوگ دو بار باز می‌شود</td><td>استفاده از Channel یک‌بارمصرف</td></tr>
+  <tr><td>۱۰</td><td><strong>MVI برای صفحه‌ی ساده</strong></td><td>۲۰۰ خط کد برای یک دکمه</td><td>ساده بنویسید</td></tr>
+  <tr><td>۱۱</td><td><strong>استفاده از Coroutine در Reducer</strong></td><td><code>suspend</code> یا <code>launch</code> در Reducer</td><td>انتقال به ViewModel</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">اشتباه مرگبار: Reducer با I/O</span>
+اگر داخل <code>reduce</code> یک درخواست شبکه بفرستید، دیگر تابع خالص نیست و
+<strong>کل مزیت MVI از بین می‌رود</strong>. نه می‌توانید تست کنید، نه می‌توانید
+بازسازی وضعیت انجام دهید. این تنها قانونی است که هرگز نباید شکسته شود.
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱) اپ چت با Jetpack Compose و MVI</h3>
+<p>
+در اپ‌های چت، MVI انتخاب طبیعی است. هر صفحه‌ی گفت‌وگو یک State دارد که شامل
+لیست پیام‌ها، وضعیت تایپ، وضعیت اتصال و صفحه‌بندی است. پیام‌های جدید با Intent
+<code>MessageReceived</code> وارد می‌شوند و با requestId از تداخل بین بارگذاری
+اولیه و پیام زنده جلوگیری می‌شود. به‌علاوه، چون State یک شیء واحد است،
+می‌توان کل تاریخچه‌ی گفت‌وگو را برای دیباگ لاگ کرد.
+</p>
+
+<h3>۲) اپ فین‌تک با MVI</h3>
+<p>
+در اپ‌های بانکی و پرداخت، MVI یک الزام عملی است: وقتی کاربر تراکنش را تأیید می‌کند،
+Intent <code>TransferConfirmed</code> ارسال می‌شود و Reducer به‌صورت قطعی وضعیت را
+به <code>PROCESSING</code> تغییر می‌دهد. اگر پاسخ شبکه دیر برسد، requestId آن را
+نادیده می‌گیرد. این سطح از قطعیت برای سیستم‌های مالی ضروری است.
+</p>
+
+<h3>۳) اپ فروشگاهی با جست‌وجوی زنده</h3>
+<p>
+همین مثال بخش ۹ در پروژه‌ی واقعی استفاده می‌شود: فیلتر دسته، جست‌وجو با debounce،
+بارگذاری صفحه‌ی بعد و نمایش خطا. در MVVM این صفحه حدود ۲۰۰ خط ViewModel با ده‌ها
+حالت ممکن داشت؛ در MVI به ۹۰ خط Reducer و ۸۰ خط ViewModel تبدیل شد و
+<strong>همه‌ی حالت‌های ممکن با یک نگاه قابل شمارش هستند</strong>.
+</p>
+
+<h3>۴) اپ پخش ویدئو با Compose</h3>
+<p>
+در اپ‌های پخش ویدئو، وضعیت پخش (پخش/توقف/جلو/عقب/بارگذاری) یک ماشین حالت
+پیچیده است. با MVI، هر رویداد پخش‌کننده یک Intent است و Reducer ماشین حالت را
+مدیریت می‌کند. نتیجه: <strong>ترتیب درست پیام‌های ویدئو</strong> حتی وقتی
+رویدادها با تأخیر و خارج از ترتیب می‌رسند.
+</p>
+
+<h3>۵) پروژه‌های Kotlin Multiplatform</h3>
+<p>
+در تیم‌هایی که منطق را بین Android، iOS و دسکتاپ به اشتراک می‌گذارند،
+<strong>MVI بیشترین صرفه‌جویی را ایجاد می‌کند</strong>. منطق، State و Intent در
+ماژول <code>shared</code> نوشته می‌شود و <code>commonTest</code> یک بار
+نوشته و در همه‌ی پلتفرم‌ها اجرا می‌شود. این در تیم‌های چندسکویی چند برابر
+صرفه‌جویی در زمان تست می‌آورد.
+</p>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئله</th><th>علت</th><th>راه‌حل</th></tr>
+  <tr><td>کپی زیاد State</td><td>تغییرناپذیری کل شیء در هر Intent</td><td>تفکیک State به زیر‌وضعیت‌های کوچک‌تر</td></tr>
+  <tr><td>ترکیب مجدد بی‌مورد</td><td>انتشار State با مقدار یکسان</td><td><code>distinctUntilChanged</code> روی State</td></tr>
+  <tr><td>رندر مجدد لیست بزرگ</td><td>کل State با هر تغییر منتشر می‌شود</td><td>استفاده از لیست‌های پایدار و کلید در Compose</td></tr>
+  <tr><td>درخواست شبکه‌ی زیاد</td><td>نبود debounce در مسیر Intent</td><td>debounce در لایه‌ی ViewModel با Flow</td></tr>
+  <tr><td>سربار شاخه‌های switch</td><td>تعداد زیاد Intentها</td><td>تفکیک Reducer به چند فایل</td></tr>
+  <tr><td>محاسبه‌ی مکرر مشتق‌شده</td><td>محاسبه در هر ترکیب‌بندی</td><td><code>derivedStateOf</code> یا <code>remember</code></td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>بد — یک State بزرگ برای همه‌ی صفحه:
+
+  data class AppState(
+    val query: String,
+    val results: List&lt;Item&gt;,      // تا ۱۰۰۰ آیتم
+    val cartCount: Int,              // تغییر مکرر
+    val userName: String,            // تغییر کم
+    val theme: String
+  )
+
+  // تغییر cartCount کل لیست ۱۰۰۰ آیتمی را دوباره کپی می‌کند!
+
+بهتر — تفکیک State:
+
+  data class SearchState(val query: String, val results: List&lt;Item&gt;)
+  data class CartState(val count: Int)
+  data class ProfileState(val userName: String)
+
+  // هر بخش مستقل؛ تغییر سبد، لیست جست‌وجو را تکان نمی‌دهد</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی عملی</span>
+تغییرناپذیری، قدرت MVI است اما هزینه دارد. اگر State شما بیش از
+<strong>۱۵ فیلد</strong> یا شامل لیست بزرگ است، آن را به چند State
+تقسیم کنید. این کار هم کارایی را بالا می‌برد و هم خوانایی.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Junior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱ — MVI چیست؟</span>
+الگوی معماری با سه نقش: Model/State (وضعیت کامل صفحه)، View (نمایش منفعل) و
+Intent (توصیف نیت کاربر). وضعیت فقط از طریق یک تابع خالص به‌نام Reducer تغییر می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲ — سه جزء اصلی MVI چیست؟</span>
+State (وضعیت تغییرناپذیر)، Intent (رویداد نیت کاربر) و Reducer (تابع خالصی که
+State جدید را از State قبلی و Intent می‌سازد).
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۳ — Intent دقیقاً چیست؟</span>
+یک شیء که <strong>نیت کاربر</strong> را توصیف می‌کند، نه عمل فنی را.
+مثلاً <code>SearchIntent.QueryChanged("kotlin")</code> به‌جای
+<code>SetQueryFieldValue</code>.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۴ — تابع خالص یعنی چه؟</span>
+تابعی که فقط به ورودی‌هایش وابسته است، هیچ اثر جانبی ندارد و همیشه همان
+ورودی را به همان خروجی تبدیل می‌کند. یعنی نه I/O، نه زمان، نه تصادفی.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۵ — تفاوت MVI و MVVM چیست؟</span>
+MVVM چند LiveData جدا دارد و ViewModel مستقیم آن‌ها را تغییر می‌دهد.
+MVI یک State واحد دارد و تغییر وضعیت فقط از طریق تابع خالص Reducer انجام می‌شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۶ — جریان داده در MVI چیست؟</span>
+<strong>View → Intent → ViewModel → Reducer → State → View</strong>.
+این جریان یک‌طرفه است و در هیچ نقطه‌ای حلقه نمی‌خورد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۷ — چرا State باید تغییرناپذیر باشد؟</span>
+تا وقتی State جدید ساخته می‌شود، وضعیت قبلی دست‌نخورده می‌ماند. این باعث
+می‌شود بتوانید تاریخچه را نگه دارید، از باگ‌های حالت جلوگیری کنید و در تست
+State قبلی را دوباره استفاده کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۸ — Side Effect کجاست؟</span>
+بیرون از Reducer. شبکه، دیتابیس و تایمر در ViewModel یا لایه‌ی Repository
+انجام می‌شود و نتیجه‌شان دوباره به‌صورت Intent وارد می‌شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۹ — چطور یک Intent تعریف می‌کنیم؟</span>
+به‌صورت <code>sealed interface</code> در Kotlin یا یک interface با
+پیاده‌سازی‌های record در Java. مزیت sealed این است که همه‌ی حالت‌ها
+در یک فایل و قابل مرور هستند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۰ — چرا از requestId استفاده می‌کنیم؟</span>
+برای مدیریت درخواست‌های ناهمگام. اگر کاربر سریع تایپ کند، چند درخواست
+هم‌زمان در جریان است؛ requestId مشخص می‌کند کدام پاسخ معتبر است.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Mid</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۱ — چطور تست Reducer بنویسیم؟</span>
+کافی است (State, Intent) بدهید و State خروجی را بررسی کنید. نه Mock لازم است،
+نه شبکه، نه Main Thread. این سریع‌ترین نوع تست موجود است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۲ — تفاوت Intent کاربر و Intent بیرونی چیست؟</span>
+Intent کاربر از تعامل مستقیم (کلیک، تایپ) می‌آید و Intent بیرونی از نتیجه‌ی
+عملیات (پاسخ شبکه، رویداد سیستم). هر دو از یک مسیر وارد چرخه می‌شوند، اما
+در Reducer جدا پردازش می‌شوند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۳ — آیا MVI برای صفحات ساده مناسب است؟</span>
+خیر. برای یک دکمه‌ی ساده، ساختن sealed interface و State و Reducer،
+اضافه‌کاری است. MVI ارزشش را از پیچیدگی وضعیت می‌گیرد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۴ — چطور Effect یک‌بارمصرف (ناوبری) مدیریت می‌شود؟</span>
+با یک <code>Channel</code> با بافر ۱ یا <code>SharedFlow</code>. اگر از
+State استفاده کنید، با چرخش صفحه دوباره اجرا می‌شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۵ — چطور State بزرگ را مدیریت کنیم؟</span>
+آن را به چند State کوچک‌تر تقسیم کنید (مثلاً SearchState و CartState).
+این کار هم کارایی و هم خوانایی را بهبود می‌دهد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۶ — MVI و Compose چه رابطه‌ای دارند؟</span>
+مدل State ذاتی Compose است: «وقتی state عوض شود، دوباره ترکیب کن».
+MVI همین ایده را به قانون تبدیل می‌کند و به‌علاوه قواعد سخت‌گیرانه‌ای
+(تابع خالص، Intent مشخص) اضافه می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۷ — چطور پاسخ‌های خارج از ترتیب را مدیریت می‌کنیم؟</span>
+با requestId: هنگام ارسال درخواست یک شناسه می‌سازیم و در State نگه می‌داریم.
+وقتی پاسخ می‌رسد، در Reducer بررسی می‌کنیم که requestId پاسخ با
+آخرین درخواست یکی است؛ اگر نبود، آن را نادیده می‌گیریم.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Senior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۸ — بزرگ‌ترین چالش MVI چیست؟</span>
+<strong>مدیریت اندازه‌ی State و تعداد Intentها</strong>. با رشد صفحه، State بزرگ
+و Intentها زیاد می‌شوند. راه‌حل: تقسیم به چند MVI کوچک‌تر (MVI سلسله‌مراتبی)
+یا استفاده از زیر‌وضعیت‌های مستقل.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۹ — MVI چه زمانی از MVP بهتر است؟</span>
+وقتی وضعیت صفحه چندحالته و پیچیده است و درخواست‌های ناهمگام دارید.
+MVP برای صفحات ساده‌تر با جریان خطی مناسب‌تر است، چون کد کمتری لازم دارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲۰ — چگونه MVI را در پروژه‌ی بزرگ‌تر مقیاس‌پذیر می‌کنیم؟</span>
+با تقسیم‌بندی Feature-Based هر فیچر MVI مستقل خودش را دارد، و در صورت نیاز
+با استفاده از ماژول مشترک در Kotlin Multiplatform برای اشتراک منطق
+بین پلتفرم‌ها.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پرسش‌های پرتکرار</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱) تفاوت MVI و MVVM دقیقاً چیست؟</span>
+MVVM چند منبع وضعیت مستقل (LiveData) دارد و ViewModel آن‌ها را مستقیم تغییر می‌دهد.
+MVI یک State واحد دارد که <strong>فقط</strong> از طریق یک تابع خالص به‌روزرسانی
+می‌شود. نتیجه: در MVVM ممکن است ناسازگاری بین LiveDataها رخ دهد، در MVI نه.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۲) آیا MVI همان Redux است؟</span>
+<strong>بله، تقریباً.</strong> هر دو یک ایده دارند: State واحد، Action/Intent واحد،
+و Reducer خالص. تفاوت‌ها در واژگان و اکوسیستم ابزار است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۳) چرا MVI برای Compose بهتر است؟</span>
+چون Compose خودش یک مدل State دارد و با تغییر State دوباره ترکیب می‌کند.
+MVI این را به یک قانون سخت تبدیل می‌کند: State فقط از Intent تغییر می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۴) آیا Reducer می‌تواند suspend باشد؟</span>
+توصیه نمی‌شود. اگر Reducer suspend باشد، دیگر تابع خالص نیست و تست آن سخت می‌شود.
+به‌جای آن، عملیات ناهمگام را در ViewModel انجام دهید و نتیجه را به‌صورت Intent برگردانید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۵) State باید چقدر بزرگ باشد؟</span>
+اگر بیش از ۱۵ فیلد دارد یا شامل لیست بزرگ است، آن را تقسیم کنید.
+قانون عملی: اگر نمی‌توانید در یک نگاه بگویید «این State چه چیزهایی را توصیف می‌کند»،
+بیش از حد بزرگ است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۶) آیا MVI برای پروژه‌های کوچک مناسب است؟</span>
+خیر، مگر اینکه از Kotlin Multiplatform استفاده کنید یا تیم به‌شدت
+تست‌محور باشد. در غیر این صورت، هزینه‌ی پیاده‌سازی از مزیتش بیشتر است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۷) چطور با MVI و ViewBinding کار کنیم؟</span>
+می‌شود، اما توصیه نمی‌شود. در ViewBinding، State را باید دستی در Fragment
+به UI منتقل کنید. این کار کار MVI را می‌کند. در Compose، State مستقیماً
+به Composable داده می‌شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۸) آیا MVI و لایه‌بندی می‌توانند با هم استفاده شوند؟</span>
+بله و این ترکیب بسیار رایج است. MVI در لایه‌ی Presentation (الگوی ارتباط با UI)
+و لایه‌بندی در سطح کل سیستم. در پروژه‌های بزرگ، منطق کسب‌وکار در لایه‌ی
+Domain قرار می‌گیرد و MVI فقط لایه‌ی UI را مدیریت می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۹) Intent باید چه اطلاعاتی داشته باشد؟</span>
+<strong>همه‌ی اطلاعات لازم برای پردازش آن رویداد</strong>. اگر Intent فقط بگوید
+«کاربر کلیک کرد» و ViewModel مجبور باشد از View بپرسد «روی چه چیزی؟»،
+مرز MVI شکسته شده است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۰) چطور State اولیه را تعریف کنیم؟</span>
+با یک متد <code>initial()</code> یا <code>IdleState</code>. این حالت باید صریح
+باشد تا در تست و در بازسازی وضعیت قابل استفاده باشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۱) آیا MVI برای وب هم کاربرد دارد؟</span>
+بله. الگوی <code>Reducer</code> در React/Redux، و الگوی مشابه در Vue و
+Svelte هم دقیقاً MVI است. فقط واژگان فرق می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۲) چطور لاگ و دیباگ می‌کنیم؟</span>
+چون همه‌ی تغییرات از مسیر Intent می‌گذرند، می‌توانید در ViewModel یک لاگ از
+<strong>هر Intent و State حاصل</strong> بنویسید. این که «مسیر کاربر» را به‌طور
+کامل بازسازی کنید، در MVVM تقریباً غیرممکن است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۳) آیا همیشه باید از sealed interface استفاده کرد؟</span>
+در Kotlin، بله — این بهترین راه است چون همه‌ی حالت‌ها در یک فایل هستند و
+کامپایلر شما را مجبور می‌کند همه‌ی حالت‌ها را در <code>when</code> پوشش دهید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۴) چطور از نادیده گرفتن خطا جلوگیری کنیم؟</span>
+همیشه در Intentهای موفق، <code>error = null</code> قرار دهید و در Intentهای
+ناموفق، خطا را تنظیم کنید. این باعث می‌شود وضعیت خطا هرگز «گیر نکند».
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۵) آیا MVI برای صفحات با فرم ساده لازم است؟</span>
+نه. برای فرم‌های ساده، MVVM یا حتی یک ViewModel ساده کافی است. MVI زمانی
+لازم می‌شود که وضعیت چندحالته و درخواست‌های ناهمگام داشته باشید.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>خلاصه</th></tr>
+  <tr><td>تعریف</td><td>الگوی معماری با State، View و Intent</td></tr>
+  <tr><td>State</td><td>وضعیت کامل و تغییرناپذیر صفحه</td></tr>
+  <tr><td>Intent</td><td>توصیف نیت کاربر یا نتیجه‌ی عملیات بیرونی</td></tr>
+  <tr><td>Reducer</td><td>تابع خالص (State, Intent) → State</td></tr>
+  <tr><td>Side Effect</td><td>شبکه، DB، تایمر — همیشه بیرون از Reducer</td></tr>
+  <tr><td>معادله</td><td>newState = reduce(currentState, intent)</td></tr>
+  <tr><td>جریان</td><td>View → Intent → ViewModel → Reducer → State → View</td></tr>
+  <tr><td>قانون طلایی</td><td>تابع خالص: همان ورودی، همان خروجی</td></tr>
+  <tr><td>ممنوعیت</td><td>I/O در Reducer، State قابل تغییر، Intent فنی</td></tr>
+  <tr><td>مدیریت ناهمگام</td><td>requestId در همه‌ی Intentها</td></tr>
+  <tr><td>مزیت اصلی</td><td>تست در ۱۰ میلی‌ثانیه بدون هیچ شبیه‌ساز</td></tr>
+  <tr><td>عیب اصلی</td><td>State بزرگ و انفجار Intent</td></tr>
+  <tr><td>بهترین برای</td><td>Compose، وضعیت پیچیده، پروژه‌های Multiplatform</td></tr>
+  <tr><td>نامناسب برای</td><td>صفحات ساده، تیم‌های بدون تست</td></tr>
+  <tr><td>معادل در Redux</td><td>State ↔ Store، Intent ↔ Action، Reducer ↔ Reducer</td></tr>
+  <tr><td>قانون SOLID</td><td>SRP و OCP به‌طور طبیعی در Reducer رعایت می‌شوند</td></tr>
+  <tr><td>الگوی کلیدی</td><td>Command، State Pattern، Observer</td></tr>
+  <tr><td>ابزار تست</td><td>JUnit 5، AssertJ (بدون Mock)</td></tr>
+  <tr><td>معیار موفقیت</td><td>پوشش بالا فقط با تست Reducer</td></tr>
+  <tr><td>سیگنال هشدار</td><td>بیش از ۱۵ فیلد در State، repository داخل Reducer</td></tr>
+  <tr><td>یادآوری نهایی</td><td>MVI ارزشش را از «تابع خالص» می‌گیرد؛ اگر آن را نشکندید، MVI نیست</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله برای به‌خاطر سپردن</span>
+<strong>MVI یعنی هر تغییر یک Intent است، هر Intent یک State جدید می‌سازد، و هیچ چیز
+جز این مسیر حق تغییر وضعیت را ندارد.</strong>
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>هدف</th><th>تمرین پیشنهادی</th></tr>
+  <tr><td>۱ — هفته‌ی اول</td><td>فهم مفهوم تابع خالص</td><td>نوشتن چند تابع خالص و تست‌های جدولی برای آن‌ها</td></tr>
+  <tr><td>۲ — هفته‌ی دوم</td><td>ساخت اولین MVI</td><td>یک صفحه‌ی ساده با State، Intent و Reducer</td></tr>
+  <tr><td>۳ — هفته‌ی سوم</td><td>تست کامل Reducer</td><td>نوشتن ۱۰ تست فقط با State و Intent</td></tr>
+  <tr><td>۴ — هفته‌ی چهارم</td><td>مدیریت Side Effect</td><td>پیاده‌سازی صفحه‌ی جست‌وجوی زنده با requestId</td></tr>
+  <tr><td>۵ — ماه دوم</td><td>Jetpack Compose</td><td>پیاده‌سازی همان صفحه در Compose با MVI</td></tr>
+  <tr><td>۶ — ماه سوم</td><td>State پیچیده و Effects</td><td>صفحات فین‌تک با ناوبری و ماشین حالت</td></tr>
+  <tr><td>۷ — ماه چهارم</td><td>Multiplatform</td><td>اشتراک State و Intent بین Android و دسکتاپ</td></tr>
+</table>
+</div>
+
+<h3>جمع‌بندی</h3>
+<p>
+<strong>MVI</strong> اوج تلاش برای رسیدن به <strong>قطعیت کامل در رفتار رابط کاربری</strong>
+است. اینکه بدانید هر تعامل کاربر چه نتیجه‌ای دارد، نه تقریبی بلکه دقیق.
+</p>
+<p>
+این قطعیت هزینه دارد: کد بیشتر، State بزرگ‌تر و منحنی یادگیری تندتر.
+اما برای اپ‌هایی که وضعیت پیچیده دارند، درخواست‌های ناهمگام دارند و
+تست‌پذیری برایشان حیاتی است، این هزینه کاملاً ارزشش را دارد.
+</p>
+<p>
+نکته‌ی مهمی که باید به خاطر بسپارید: <strong>MVI زیرمجموعه‌ای از تفکر
+«حالت» است، نه یک الگوی جداگانه</strong>. اگر تفکر حالت (state machine) را
+بفهمید، همه‌ی الگوهای دیگر هم برایتان روشن می‌شود.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله هشتمین عضو سری «معماری‌های نرم‌افزاری» است و آخرین عضو بخش الگوهای UI.
+شما اکنون چهار الگوی کلاسیک (MVC، MVP، MVVM، MVI) را با یک زبان مشترک
+می‌شناسید. در ادامه سری به سمت الگوها و معماری‌های سطح بالاتر می‌رویم:
+Repository Pattern، DDD، Feature-Based، Event-Driven، CQRS و Microservices.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی وضعیت در ده جا پخش است</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">MVI چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: سه پایه‌ی MVI</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای MVI</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: موتور جست‌وجوی زنده</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">MVI در Jetpack Compose</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی وضعیت در ده جا پخش است</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">MVI چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: سه پایه‌ی MVI</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای MVI</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: موتور جست‌وجوی زنده</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">MVI در Jetpack Compose</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

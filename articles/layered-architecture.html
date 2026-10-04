@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layered Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله Layered Architecture را کامل یاد می‌گیرید: تعریف، لایه‌های Presentation/Domain/Data، جریان داده، پیاده‌سازی با Java 21، مزایا، معایب و مقایسه با Clean و Onion.">
+  <meta name="keywords" content="Layered Architecture, معماری لایه‌ای, معماری چند لایه, Layered Architecture چیست, N-Tier, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, Design Architecture Pattern, Clean Architecture, Onion Architecture">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Layered Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله Layered Architecture را کامل یاد می‌گیرید: تعریف، لایه‌های Presentation/Domain/Data، جریان داده، پیاده‌سازی با Java 21، مزایا، معایب و مقایسه با Clean و Onion.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/layered-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/layered-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Layered Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Layered Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="لایه‌های Presentation و Domain و Data، نمونه‌کد Java، مقایسه با Clean و Onion و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Layered Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه",
+    "description": "در این مقاله Layered Architecture را کامل یاد می‌گیرید: تعریف، لایه‌های Presentation/Domain/Data، جریان داده، پیاده‌سازی با Java 21، مزایا، معایب و مقایسه با Clean و Onion.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/layered-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/layered-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Layered Architecture, Presentation Layer, Domain Layer, Data Layer, Service Layer, Java",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Layered Architecture", "item": "https://haedarfarhani.github.io/My-Articles/articles/layered-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Layered Architecture</span>؛ ساده‌ترین معماری که واقعاً جواب می‌دهد
+          </h1>
+
+          <p class="hero-lead">
+            معماری لایه‌ای یعنی <strong>کد را به لایه‌هایی تقسیم کنید که فقط رو به پایین به هم وابسته باشند.</strong>
+            در این راهنما لایه‌ها، جریان داده، پیاده‌سازی کامل با <code>Java 21</code>، مرز لایه‌ها،
+            مقایسه با Clean و Onion، تست با <code>JUnit 5</code> و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مبتدی تا متوسط (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Layered_Architecture</span>
+            <span class="post-tag">#N_Tier</span>
+            <span class="post-tag">#Presentation_Layer</span>
+            <span class="post-tag">#Service_Layer</span>
+            <span class="post-tag">#Java</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی کد بدون ساختار فرو می‌ریزد</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Layered Architecture چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: تقسیم به لایه‌ها</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: لایه‌ها</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: سیستم فاکتور</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>ارتباط با زبان‌ها و Frameworkها</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی کد بدون ساختار فرو می‌ریزد</h2>
+
+<p>
+فرض کنید تیم شما یک اپلیکیشن فروشگاهی ساده می‌نویسد. ماه اول همه‌چیز خوب است؛ یک کلاس
+<code>OrderService</code> دارد که هم سفارش می‌سازد، هم قیمت را حساب می‌کند، هم به دیتابیس وصل می‌شود.
+ماه ششم کلاس به ۲۰۰۰ خط رسیده و هر تغییر کوچک، سه باگ جدید می‌سازد.
+</p>
+
+<p>
+مشکل این کد «بد بودنِ نویسنده» نیست؛ مشکل این است که <strong>ساختاری برای نگه‌داشتن آن وجود ندارد</strong>.
+وقتی <strong>مسئولیت‌ها</strong> در یک فایل جمع شوند، هیچ قانونی جلوی رشد بی‌وقفه‌اش را نمی‌گیرد.
+<strong>Layered Architecture</strong> دقیقاً برای همین ساخته شده: کد را به <strong>لایه‌هایی با مسئولیت مشخص</strong>
+تقسیم کن و بین آن‌ها فقط اجازه‌ی عبور رو به پایین بده.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>OrderService.java — ۲۰۰۰ خط، ۱۴ مسئولیت:
+
+  ✅ ساخت سفارش        ✅ محاسبه‌ی مالیات       ✅ اعتبارسنجی کارت
+  ✅ اتصال JDBC        ✅ مدیریت تراکنش        ✅ کش کردن
+  ✅ ارسال ایمیل       ✅ لاگ خطا              ✅ ساخت PDF فاکتور
+  ✅ تبدیل به DTO      ✅ مدیریت انبار        ❌ و ...
+
+
+میانگین زمان یک تغییر کوچک در این کد: ۴ ساعت.
+میانگین زمان همان تغییر بعد از لایه‌بندی: ۲۵ دقیقه.</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نکته‌ی کلیدی این مقاله</span>
+لایه‌بندی <strong>ساده‌ترین</strong> معماری‌های نرم‌افزاری است و برای بیشتر پروژه‌های دنیای واقعی
+<strong>کافی و درست</strong> است. اشتباه رایج این است که یا آن را دست‌کم بگیریم و بی‌ساختار کد بنویسیم،
+یا بیش از حد لایه بسازیم. این مقاله هر دو دام را نشان می‌دهد.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+ریشه‌ی معماری لایه‌ای به دهه‌ی ۱۹۷۰ برمی‌گردد؛ زمانی که سیستم‌های بزرگ مدیریتی (مثل IBM mainframe)
+برای اولین بار به چند «سطح» تقسیم شدند. نام مشهور این رویکرد <strong>N-Tier Architecture</strong> است
+که یک زیرمجموعه‌ی <strong>Multi-Tier</strong> به شمار می‌رود.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
+  <tr><td>دهه‌ی ۱۹۷۰ — Mainframe</td><td>مفهوم Presentation / Business / Data برای جداسازی کاربری از پردازش و ذخیره‌سازی شکل گرفت</td></tr>
+  <tr><td>دهه‌ی ۱۹۹۰ — Client/Server</td><td>لایه‌ی UI از سرور جدا شد و منطق روی سرور متمرکز شد</td></tr>
+  <tr><td>دهه‌ی ۱۹۹۰ — توسعه‌ی سریع و بی‌نظم</td><td>پروژه‌ها «Spaghetti» شدند؛ لایه‌بندی به‌عنوان پاسخ عملی پذیرفته شد</td></tr>
+  <tr><td>۱۹۹۷ — Microsoft Three-Tier</td><td>مدل Presentation / Business Logic / Data Access به‌عنوان استاندارد صنعتی رسمی شد</td></tr>
+  <tr><td>۲۰۰۰ — Spring / Hibernate</td><td>لایه‌بندی به‌صورت پیش‌فرض در پروژه‌های Java رایج شد</td></tr>
+  <tr><td>۲۰۱۲ به بعد — Clean / Onion</td><td>معماری‌های پیشرفته‌تر برای حل محدودیت‌های لایه‌بندی کلاسیک پیشنهاد شدند</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">دلیل اصلی ایجاد</span>
+سه نیاز عملی: <strong>۱) تقسیم مسئولیت‌ها</strong> تا کد قابل فهم باشد،
+<strong>۲) جداسازی رابط کاربری از منطق</strong> تا بتوان منطق را بدون UI تست کرد،
+<strong>۳) قابلیت تعویض لایه‌ها</strong> — مثلاً عوض کردن JPA با یک API بدون دست‌زدن به منطق.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Layered Architecture چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>Layered Architecture</strong> روشی برای سازمان‌دهی کد است که منطق برنامه را به
+<strong>لایه‌های افقی با مسئولیت مشخص</strong> تقسیم می‌کند؛ در این ساختار، <strong>هر لایه فقط می‌تواند
+لایه‌های پایین‌تر خود را صدا بزند</strong> و هرگز اجازه‌ی تماس مستقیم با لایه‌های بالاتر یا کناری را ندارد.
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>✅ هست…</th><th>❌ نیست…</th></tr>
+  <tr><td>تقسیم‌بندی کد بر اساس <strong>مسئولیت</strong> در پوشه‌ها و ماژول‌ها</td><td>الزام به <strong>مرکزیت Domain</strong> — این تفاوت اصلی با Onion/Clean است</td></tr>
+  <tr><td>قاعده‌ی ساده‌ی <strong>وابستگی یک‌طرفه رو به پایین</strong></td><td>یک کتابخانه یا Framework خاص</td></tr>
+  <tr><td>امکان تست جداگانه‌ی هر لایه با <strong>Mock</strong> کردن لایه‌ی پایین</td><td>Design Pattern مشخصی به‌تنهایی</td></tr>
+  <tr><td>امکان نگه‌داشتن <strong>لایه‌ی Presentation</strong> چندباره (وب، موبایل، CLI)</td><td>استقلال کامل از دیتابیس (این کار Clean Architecture است)</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سوءتفاهم رایج</span>
+لایه‌بندی با «چند تا پوشه ساختن» فرق دارد. اگر لایه‌ی Service بتواند مستقیم از لایه‌ی Data
+Repository صدا بزند و Repository هم منطق کسب‌وکار داشته باشد، شما فقط <strong>پوشه‌بندی</strong>
+کرده‌اید، نه لایه‌بندی.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<p>همان اپلیکیشن فروشگاهی را قبل از لایه‌بندی ببینید:</p>
+
+<pre class="kl-code" data-lang="java"><code>@RestController
+public class OrderController {
+
+    private final DataSource dataSource;
+    private final EmailSender emailSender;
+
+    @PostMapping("/orders")
+    public ResponseEntity&lt;?&gt; create(@RequestBody String json) {
+        // ۱) پارس کردن JSON دستی
+        // ۲) اتصال مستقیم به دیتابیس
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO orders (total) VALUES (?)");
+            ps.setBigDecimal(1, calculateTotal(json)); // ۳) منطق کسب‌وکار
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            emailSender.sendError(e);                  // ۴) اعلان خطا
+            return ResponseEntity.status(500).build(); // ۵) تصمیم HTTP
+        }
+        return ResponseEntity.ok().build();             // ۶) پاسخ
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نشانه</th><th>چرا دردسرساز است؟</th></tr>
+  <tr><td>SQL داخل Controller</td><td>تست این کد نیاز به دیتابیس واقعی دارد</td></tr>
+  <tr><td>پنج مسئولیت در یک کلاس</td><td>نقض کامل SRP؛ تغییر هر بخش، بقیه را می‌شکند</td></tr>
+  <tr><td>تبدیل JSON با کد دستی</td><td>خطاهای مبهم در زمان اجرا به‌جای زمان کامپایل</td></tr>
+  <tr><td>منطق مالیات داخل حلقه‌ی دیتابیس</td><td>قانون تجاری به زیرساخت چسبیده و مهاجرت را سخت می‌کند</td></tr>
+  <tr><td>نبود امکان استفاده‌ی CLI یا Job</td><td>هر ورودی جدید باید منطق را کپی کند</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>بعد از لایه‌بندی:
+
+HTTP Request
+   ↓
+[Presentation]   Controller — فقط: اعتبارسنجی شکل داده + تبدیل به DTO
+   ↓
+[Service]        OrderService — فقط: هماهنگی و تراکنش
+   ↓
+[Domain]         Order, Money, TaxRule — فقط: قوانین کسب‌وکار (بدون هیچ وابستگی بیرونی)
+   ↓
+[Data]           JpaOrderRepository, JdbcTemplate — فقط: گفت‌وگو با دیتابیس
+
+هر پیکان یک‌طرفه است. هیچ لایه‌ای به بالا برنمی‌گردد.</code></pre>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: تقسیم به لایه‌ها</h2>
+
+<p>
+ایده‌ی مرکزی ساده است: <strong>هر لایه یک سؤال را جواب می‌دهد</strong>. اگر نتوانید برای یک لایه
+در یک جمله بگویید «این لایه فقط مسئول چیست؟»، آن لایه را اشتباه ساخته‌اید.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>لایه</th><th>سؤالی که جواب می‌دهد</th><th>ممنوعیت کلیدی</th></tr>
+  <tr><td><strong>Presentation</strong></td><td>ورودی کاربر چیست و چه نمایشی بدهیم؟</td><td>نباید منطق کسب‌وکار داشته باشد</td></tr>
+  <tr><td><strong>Service / Application</strong></td><td>برای این Use Case چه کارهایی و با چه ترتیبی؟</td><td>نباید قوانین دامنه را دوباره بنویسد</td></tr>
+  <tr><td><strong>Domain / Business</strong></td><td>قانون کسب‌وکار چیست؟</td><td>نباید به DB یا Framework وابسته باشد</td></tr>
+  <tr><td><strong>Data / Infrastructure</strong></td><td>داده چطور خوانده و ذخیره می‌شود؟</td><td>نباید تصمیم تجاری بگیرد</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph UI["Presentation Layer"]
+        A["Controller / REST"]
+        B["Controller / GraphQL"]
+        C["CLI / Scheduler"]
+    end
+
+    subgraph APP["Service Layer"]
+        D["OrderService"]
+        E["InvoiceService"]
+    end
+
+    subgraph DOM["Domain Layer"]
+        F["Order (Entity)"]
+        G["TaxRule (Domain Service)"]
+    end
+
+    subgraph DATA["Data Layer"]
+        H["JPA Repository"]
+        I["JDBC DAO"]
+        J["Cache Adapter"]
+    end
+
+    A --> D
+    B --> D
+    C --> E
+    D --> F
+    D --> G
+    E --> F
+    F --> H
+    G --> I
+    D --> H
+
+    style UI fill:#0f766e,stroke:#14b8a6,color:#fff
+    style APP fill:#115e59,stroke:#2dd4bf,color:#fff
+    style DOM fill:#134e4a,stroke:#5eead4,color:#fff
+    style DATA fill:#1c1917,stroke:#a8a29e,color:#fff</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قانون طلایی وابستگی</span>
+پیکان‌ها همیشه <strong>رو به پایین</strong> هستند. هرگز <code>Domain → JPA</code>،
+هرگز <code>Data → Service</code>. اگر مجبور شدید فلشی رو به بالا یا موربی بکشید،
+معمولاً یک Interface را در لایه‌ی پایین‌تر جا انداخته‌اید.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>ساختار معماری: لایه‌ها</h2>
+
+<p>
+لایه‌بندی رایج دو شکل دارد: <strong>سه‌لایه‌ای کلاسیک</strong> و <strong>چهارلایه‌ای با Service Layer</strong>.
+در پروژه‌های جدید، فرم چهارلایه‌ای را ترجیح می‌دهیم چون کنترل تراکنش و مرز Use Case روشن‌تر می‌شود.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>لایه</th><th>مسئولیت</th><th>کلاس‌های نمونه</th></tr>
+  <tr><td>Presentation</td><td>دریافت درخواست، اعتبارسنجی شکلی، نگاشت به DTO و ساخت پاسخ</td><td><code>OrderController</code>، <code>OrderRequest</code>، <code>OrderResponse</code></td></tr>
+  <tr><td>Application (Service)</td><td>اجرای Use Case، مدیریت تراکنش، انتخاب Repository مناسب</td><td><code>OrderService</code>، <code>CheckoutUseCase</code></td></tr>
+  <tr><td>Domain</td><td>Entity، مقدار شیئی، قوانین و Domain Service</td><td><code>Order</code>، <code>Money</code>، <code>TaxPolicy</code></td></tr>
+  <tr><td>Data</td><td>پیاده‌سازی Repository، نقشه‌ی Entity/DTO، پیکربندی DB</td><td><code>JpaOrderRepository</code>، <code>OrderRow</code></td></tr>
+</table>
+</div>
+
+<p>
+نکته‌ی مهم درباره‌ی لایه‌ی Domain در لایه‌بندی کلاسیک: برخلاف Onion یا Clean، <strong>لایه‌ی Domain
+معمولاً خالی یا بسیار نازک است</strong> و منطق بیشتر در Service Layer قرار می‌گیرد.
+این تفاوت را در بخش مقایسه دقیق‌تر بررسی می‌کنیم.
+</p>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    Client["REST Client"] --> Pres["Presentation Layer"]
+    Pres -->|"اعتماد به قرارداد لایه‌ی بالا"| App["Application / Service Layer"]
+    App -->|"اعتماد به قرارداد لایه‌ی بالا"| Dom["Domain Layer (Entity + Rule)"]
+    Dom -->|"اعتماد به قرارداد لایه‌ی بالا"| Data["Data Layer (Repository impl)"]
+    Data --> DB[("Database")]
+
+    Infra["Cross-cutting: Security / Logging / Transaction"] -.-> App
+
+    style Pres fill:#0f766e,stroke:#14b8a6,color:#fff
+    style App fill:#115e59,stroke:#2dd4bf,color:#fff
+    style Dom fill:#134e4a,stroke:#5eead4,color:#fff
+    style Data fill:#1c1917,stroke:#a8a29e,color:#fff
+    style Infra fill:#78350f,stroke:#fbbf24,color:#fff</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">لایه‌ی افقی (Cross-cutting)</span>
+امنیت، لاگ، تراکنش، کش و اعلان معمولاً بین لایه‌ها پخش‌اند. آن‌ها را در ماژول جدا نگه دارید
+(AOP، Filter، Interceptor) تا لایه‌های اصلی از آن‌ها پر نشوند.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
+
+<p>
+دو جریان اصلی داریم: <strong>جریان پایین‌رو (درخواست)</strong> و <strong>جریان بالارو (پاسخ/داده)</strong>.
+در لایه‌بندی کلاسیک، جریان داده فقط <strong>یک‌طرفه و زنجیره‌ای</strong> است.
+</p>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    autonumber
+    participant C as کاربر
+    participant CT as OrderController
+    participant S as OrderService
+    participant D as Domain (Order)
+    participant R as OrderRepository
+
+    C->>CT: POST /orders
+    CT->>CT: اعتبارسنجی شکل داده
+    CT->>S: createOrder(command)
+    S->>R: findById(customerId)
+    R-->>S: Customer
+    S->>D: new Order(items, customer)
+    D->>D: محاسبه‌ی subtotal و مالیات
+    D-->>S: Order
+    S->>R: save(order)
+    R-->>S: Order
+    S-->>CT: OrderId
+    CT-->>C: 201 Created { id }</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>قواعد جریان داده در Layered:
+
+۱) داده همیشه از بالا وارد و از پایین برمی‌گردد.
+۲) Controller هرگز Repository را مستقیم صدا نمی‌زند (مگر در پروژه‌های خیلی کوچک CRUD).
+۳) لایه‌ی Domain داده را از بیرون نمی‌گیرد؛ ورودی آن پارامترهای ساده است.
+۴) Entity دامنه هرگز به ViewModel یا DTO تبدیل نمی‌شود؛ تبدیل در Presentation انجام می‌شود.
+۵) هیچ داده‌ای از لایه‌ی پایین به لایه‌ی بالا «call-back» نمی‌کند.</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">جریان داده و Circular Dependency</span>
+اگر مجبور شدید از لایه‌ی پایین، متدی از لایه‌ی بالا را صدا بزنید (مثلاً Repository که Service را صدا می‌زند)،
+مدل لایه‌ای شکسته است. این دقیقاً همان جایی است که تیم‌ها می‌گویند «لایه‌بندی برای پروژه‌ی ما کافی نبود».
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار پروژه واقعی</h2>
+
+<p>
+ساختار پوشه‌ها باید <strong>لایه‌محور</strong> باشد (نه فیچرمحور) تا قاعده‌ی لایه‌ها در فایل‌سیستم
+هم دیده شود. در پروژه‌ی واقعی چند ماژول (Gradle/Maven) یک چنین ساختاری دارند:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>order-service/
+├── src/main/java/com/app/order/
+│   ├── presentation/                 ← لایه ۱
+│   │   ├── OrderController.java
+│   │   ├── dto/
+│   │   │   ├── CreateOrderRequest.java
+│   │   │   └── OrderResponse.java
+│   │   └── mapper/OrderMapper.java
+│   │
+│   ├── application/                  ← لایه ۲
+│   │   ├── OrderService.java
+│   │   ├── command/CreateOrderCommand.java
+│   │   └── exception/BusinessException.java
+│   │
+│   ├── domain/                       ← لایه ۳
+│   │   ├── model/
+│   │   │   ├── Order.java
+│   │   │   ├── OrderLine.java
+│   │   │   ├── Money.java
+│   │   │   └── OrderStatus.java
+│   │   └── service/TaxPolicy.java
+│   │
+│   └── infrastructure/               ← لایه ۴
+│       ├── persistence/
+│       │   ├── JpaOrderRepository.java
+│       │   ├── OrderJpaEntity.java
+│       │   └── SpringDataOrderRepository.java
+│       ├── cache/RedisOrderCache.java
+│       └── config/AppConfig.java
+│
+└── src/test/java/com/app/order/
+    ├── application/OrderServiceTest.java
+    └── domain/OrderTest.java</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی مهم درباره‌ی ماژول‌بندی</span>
+در مقیاس بزرگ، هر لایه را به یک <strong>ماژول مستقل</strong> تبدیل کنید
+(<code>domain</code>، <code>application</code>، <code>infrastructure</code>).
+آن‌وقت کامپایلر خودش جلوی وابستگی معکوس را می‌گیرد، چون ماژول Domain نمی‌تواند به ماژول
+Infrastructure ارجاع دهد.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>مثال عملی کامل: سیستم فاکتور</h2>
+
+<p>
+در بخش‌های بعد کد کامل همین مثال را با <code>Java 21</code> می‌بینیم. فعلاً تصویر کلی سناریو را مرور کنیم:
+</p>
+
+<ul class="kl-check">
+  <li>کاربر یا سیستم فروشنده یک <strong>سفارش</strong> ثبت می‌کند.</li>
+  <li>سیستم <strong>قیمت کالا</strong> را می‌خواند، <strong>تخفیف</strong> و <strong>مالیات</strong> را محاسبه می‌کند.</li>
+  <li>سفارش ذخیره و یک <strong>فاکتور</strong> تولید می‌شود.</li>
+  <li>وضعیت سفارش تغییر می‌کند و <strong>اعلان</strong> ارسال می‌شود.</li>
+</ul>
+
+<pre class="kl-code" data-lang="text"><code>Use Case: ثبت سفارش
+
+  ۱) Controller  →  OrderService.createOrder(command)
+  ۲) Service     →  کش را چک می‌کند (Read-through)
+  ۳) Service     →  ProductRepository از Data Layer
+  ۴) Service     →  Order (Domain) می‌سازد و قوانین را اجرا می‌کند
+  ۵) Service     →  OrderRepository.save() + InvoiceRepository.save()
+  ۶) Service     →  @Transactional ثبت می‌شود
+  ۷) Controller  →  OrderResponse برمی‌گرداند</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">مسئولیت هر لایه در این سناریو</span>
+<strong>Presentation</strong>: JSON را به Command تبدیل می‌کند و خطا را به Status Code ترجمه می‌کند.<br>
+<strong>Service</strong>: ترتیب اجرا، مدیریت تراکنش و انتخاب مسیر کش را تعیین می‌کند.<br>
+<strong>Domain</strong>: قانون «سفارش باید حداقل یک قلم داشته باشد» و محاسبه‌ی مالیات را نگه می‌دارد.<br>
+<strong>Data</strong>: اجرای <code>SELECT</code> و <code>INSERT</code> و ترجمه‌ی ردیف دیتابیس به Entity.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>لایه ۴ — داده (Infrastructure)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.order.infrastructure.persistence;
+
+import java.util.Optional;
+
+/** قرارداد ذخیره‌سازی سفارش — این Interface متعلق به لایه‌ی بالاتر است. */
+public interface OrderStore {
+    Optional&lt;OrderView&gt; findById(String orderId);
+    void save(OrderRecord record);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.order.infrastructure.persistence;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
+
+/** تنها کلاسی که حرف JDBC می‌زند؛ هیچ قانون کسب‌وکاری اینجا نیست. */
+public final class JdbcOrderStore implements OrderStore {
+
+    private final DataSourceProvider dataSource;
+
+    public JdbcOrderStore(DataSourceProvider dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public Optional&lt;OrderView&gt; findById(String orderId) {
+        String sql = """
+                SELECT id, customer_id, status, total_cents
+                FROM orders
+                WHERE id = ?
+                """;
+        try (Connection conn = dataSource.get();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next()
+                        ? Optional.of(map(rs))
+                        : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new StorageException("خواندن سفارش ناموفق بود", e);
+        }
+    }
+
+    @Override
+    public void save(OrderRecord record) {
+        String sql = """
+                INSERT INTO orders (id, customer_id, status, total_cents)
+                VALUES (?, ?, ?, ?)
+                """;
+        try (Connection conn = dataSource.get();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, record.id());
+            ps.setString(2, record.customerId());
+            ps.setString(3, record.status().name());
+            ps.setLong(4, record.total().cents());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new StorageException("ذخیره‌ی سفارش ناموفق بود", e);
+        }
+    }
+
+    private OrderView map(ResultSet rs) throws SQLException {
+        return new OrderView(
+                rs.getString("id"),
+                rs.getString("customer_id"),
+                OrderStatus.valueOf(rs.getString("status")),
+                Money.ofCents(rs.getLong("total_cents")));
+    }
+}
+</code></pre>
+
+<h3>لایه ۳ — دامنه</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.order.domain.model;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
+public record Money(BigDecimal amount, String currency) {
+
+    public Money {
+        if (currency == null || currency.isBlank()) {
+            throw new IllegalArgumentException("واحد پول الزامی است");
+        }
+    }
+
+    public Money add(Money other) {
+        if (!currency.equals(other.currency)) {
+            throw new IllegalStateException("جمع دو پول متفاوت ممکن نیست");
+        }
+        return new Money(amount.add(other.amount), currency);
+    }
+
+    public Money multiply(BigDecimal factor) {
+        return new Money(
+                amount.multiply(factor).setScale(2, RoundingMode.HALF_UP),
+                currency);
+    }
+
+    public static Money ofCents(long cents) {
+        return new Money(BigDecimal.valueOf(cents, 2), "IRR");
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.order.domain.model;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+public final class Order {
+
+    private final String id;
+    private final String customerId;
+    private final List&lt;OrderLine&gt; lines = new ArrayList&lt;&gt;();
+    private OrderStatus status;
+    private Money total;
+
+    private Order(String id, String customerId) {
+        this.id = id;
+        this.customerId = customerId;
+        this.status = OrderStatus.DRAFT;
+        this.total = new Money(BigDecimal.ZERO, "IRR");
+    }
+
+    public static Order draft(String id, String customerId) {
+        if (customerId == null || customerId.isBlank()) {
+            throw new IllegalArgumentException("سفارش بدون مشتری معتبر نیست");
+        }
+        return new Order(id, customerId);
+    }
+
+    /** قانون تجاری: سفارش باید حداقل یک قلم داشته باشد. */
+    public void addLine(OrderLine line) {
+        if (status != OrderStatus.DRAFT) {
+            throw new IllegalStateException("سفارش تأییدشده قابل تغییر نیست");
+        }
+        lines.add(line);
+        total = total.add(line.subtotal());
+    }
+
+    /** قانون تجاری: بدون قلم نمی‌توان سفارش را نهایی کرد. */
+    public void confirm() {
+        if (lines.isEmpty()) {
+            throw new IllegalStateException("سفارش بدون قلم قابل تأیید نیست");
+        }
+        status = OrderStatus.CONFIRMED;
+    }
+
+    public String id() {
+        return id;
+    }
+
+    public String customerId() {
+        return customerId;
+    }
+
+    public Money total() {
+        return total;
+    }
+
+    public OrderStatus status() {
+        return status;
+    }
+
+    public int lineCount() {
+        return lines.size();
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تفاوت ظریف اما مهم</span>
+کلاس <code>Order</code> هیچ <code>import</code>ای از JPA یا JDBC ندارد. اگر فردا دیتابیس را عوض کنید،
+<strong>این فایل حتی یک خط تغییر نمی‌کند</strong>. این همان چیزی است که Clean Architecture
+به‌صورت «قانون وابستگی» رسمی می‌کند و لایه‌بندی کلاسیک فقط به‌صورت قرارداد شفاهی نگهش می‌دارد.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>ارتباط با زبان‌ها و Frameworkها</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اکوسیستم</th><th>لایه‌های متناظر</th><th>نکته</th></tr>
+  <tr><td><strong>Spring Boot</strong></td><td>Controller → Service → Repository → Entity</td><td><code>@Service</code> و <code>@Repository</code> همان annotation لایه‌ها هستند</td></tr>
+  <tr><td><strong>Android (Kotlin)</strong></td><td>UI (Compose) → ViewModel → Repository → Room</td><td>MVVM در اندروید عملاً یک لایه‌بندی سه‌لایه‌ای است</td></tr>
+  <tr><td><strong>ASP.NET Core</strong></td><td>Controller → Service → Repository → EF Core</td><td>مدل استاندارد مایکروسافت برای لایه‌بندی است</td></tr>
+  <tr><td><strong>Express + TypeScript</strong></td><td>Route → Service → Repository</td><td>پوشه‌بندی بر اساس هر سه نقش</td></tr>
+  <tr><td><strong>Django</strong></td><td>View (Template) → Model/Service → ORM</td><td>به‌صورت پیش‌فرض لایه‌ای است</td></tr>
+  <tr><td><strong>.NET Clean Architecture Template</strong></td><td>Domain / Application / Infrastructure</td><td>نمونه‌ی مدرن لایه‌بندی سخت‌گیرانه</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>Spring Boot — نقشه‌ی annotationها به لایه‌ها:
+
+  @RestController / @Controller   →  لایه ۱ (Presentation)
+  @Service                        →  لایه ۲ (Application)
+  @Component (domain)             →  لایه ۳ (Domain / Port)
+  @Repository / @Component (jdbc) →  لایه ۴ (Data)
+  @Transactional                  →  مرز لایه ۲ (اعلامی، نه دستی)
+
+اگر این چهار annotation را جدی بگیرید، ۸۰٪ ارزش Layered را گرفته‌اید.</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Spring Data و «لایه‌بندی خودکار»</span>
+<code>JpaRepository</code> به‌صورت خودکار یک Repository می‌سازد که هم به دیتابیس وصل است
+و هم متدهای کسب‌وکاری در خود دارد (مثلاً <code>findByStatusAndTotalGreaterThan</code>).
+این یک میان‌بُر است: برای CRUDهای کوچک عالی است، اما برای دامنه‌ی پیچیده خطرناک است.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مزایا</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>سادگی و شفافیت</strong></td><td>هر توسعه‌دهنده‌ای در ۵ دقیقه ساختار پروژه را می‌فهمد</td></tr>
+  <tr><td>۲</td><td><strong>جداسازی مسئولیت</strong></td><td>هر لایه یک دلیل برای تغییر دارد (SRP در سطح ماژول)</td></tr>
+  <tr><td>۳</td><td><strong>تست‌پذیری بهتر</strong></td><td>لایه‌ی Service با Mock کردن Repository بدون دیتابیس تست می‌شود</td></tr>
+  <tr><td>۴</td><td><strong>قابلیت استفاده‌ی مجدد</strong></td><td>یک لایه‌ی Service می‌تواند پشت REST، گرافنل و CLI باشد</td></tr>
+  <tr><td>۵</td><td><strong>استقلال تیم‌ها</strong></td><td>تیم UI و تیم داده می‌توانند موازی کار کنند</td></tr>
+  <tr><td>۶</td><td><strong>هزینه‌ی یادگیری پایین</strong></td><td>پارادایم غالب در کتاب‌ها، دانشگاه‌ها و ابزارهای AI</td></tr>
+  <tr><td>۷</td><td><strong>امکان تعویض زیرساخت</strong></td><td>تعویض JPA با JDBC فقط لایه‌ی Data را درگیر می‌کند</td></tr>
+  <tr><td>۸</td><td><strong>نگهداشت‌پذیری بلندمدت</strong></td><td>پیوستن کارمند جدید به تیم آسان‌تر است</td></tr>
+  <tr><td>۹</td><td><strong>تست یکپارچه‌ی طبیعی</strong></td><td>مرز لایه‌ها مشخصاً می‌گوید کجا تست بنویسید</td></tr>
+  <tr><td>۱۰</td><td><strong>قابلیت مهاجرت</strong></td><td>تعویض UI (مثلاً وب به موبایل) بدون بازنویسی منطق</td></tr>
+  <tr><td>۱۱</td><td><strong>هماهنگی با ابزارها</strong></td><td>اکثر ORM، DI Container و Profiler لایه‌محور هستند</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>معایب</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>قانون لایه‌ها فقط انسانی است</strong></td><td>کامپایلر جلوی نقض ترتیب لایه‌ها را نمی‌گیرد مگر ماژول‌بندی کنید</td></tr>
+  <tr><td>۲</td><td><strong>God Service</strong></td><td>Service Layer وسوسه می‌شود همه‌ی Use Caseها را در یک کلاس جمع کند</td></tr>
+  <tr><td>۳</td><td><strong>پیود رابطه‌ای ضعیف در لایه‌ی دامنه</strong></td><td>در لایه‌بندی کلاسیک، Domain نازک است و منطق در Service پخش می‌شود</td></tr>
+  <tr><td>۴</td><td><strong>Overhead لایه‌ها</strong></td><td>برای پروژه‌های کوچک، DTO و mapper اضافه است</td></tr>
+  <tr><td>۵</td><td><strong>پراکندگی منطق</strong></td><td>بدون قاعده‌ی سخت‌گیرانه، یک قانون بین دو لایه تقسیم می‌شود</td></tr>
+  <tr><td>۶</td><td><strong>عملیات چندلایه‌ای روی یک موجودیت</strong></td><td>به‌روزرسانی یک Aggregate نیازمند چند Repository است</td></tr>
+  <tr><td>۷</td><td><strong>جریان یک‌طرفه و خشک</strong></td><td>Use Caseهایی که نیازمند Event یا جریان برگشتی‌اند، بد می‌نشینند</td></tr>
+  <tr><td>۸</td><td><strong>مقیاس‌ناپذیری تیمی</strong></td><td>در پروژه‌های ۵۰+ نفره، یک ماژول بزرگ کند می‌شود</td></tr>
+  <tr><td>۹</td><td><strong>ریسک Anemic Domain</strong></td><td>اگر Service همه‌چیز را بنویسد، Domain به مدل داده‌ی بی‌روح تبدیل می‌شود</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">بزرگ‌ترین خطر</span>
+ترکیب لایه‌بندی با <strong>مدل داده‌ی مشترک (Shared Anemic Model)</strong>. اگر همه‌ی لایه‌ها
+یک Entity مشترک را بخوانند و بنویسند، لایه‌بندی شما فقط سه تا پوشه روی همان کد یکپارچه است.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">معیارهای مثبت</span>
+<ul>
+  <li><strong>سیستم‌های CRUD و ابزارهای داخلی سازمان</strong> که دامنه‌ی پیچیده ندارند.</li>
+  <li><strong>تیم‌های کوچک تا متوسط</strong> (۲ تا ۱۵ نفر) که سرعت تحویل مهم‌تر از مدل دامنه‌ی عمیق است.</li>
+  <li>پروژه‌هایی که <strong>بیش از یک نوع کلاینت</strong> دارند (وب + موبایل + گزارش‌گیری).</li>
+  <li>سامانه‌هایی که <strong>منطق یک‌باره و نسبتاً ساده</strong> دارند و نیاز به تکامل چندساله‌ی دامنه ندارند.</li>
+  <li>موقعیت‌هایی که <strong>تیم تازه‌وارد</strong> دارد و سرعت یادگیری اولویت دارد.</li>
+  <li>سامانه‌های <strong>یکپارچه‌سازی</strong> که چند منبع داده‌ی متفاوت را پشت یک API جمع می‌کنند.</li>
+  <li>پروژه‌هایی که <strong>منابع محدود</strong> دارند و نمی‌خواهند هزینه‌ی معماری پیچیده را بپردازند.</li>
+</ul>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی سرانگشتی</span>
+اگر می‌توانید دامنه را در ۲۰ Entity با رفتار ساده توصیف کنید، لایه‌بندی کلاسیک انتخاب درستی است.
+اگر بیش از ۴۰ Aggregate و ده‌ها مفهوم دامنه دارید، سراغ Clean یا Onion بروید.
+</div>
+</section>
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مواردی که لایه‌بندی کلاسیک جواب نمی‌دهد</span>
+<ul>
+  <li><strong>دامنه‌ی بسیار پیچیده</strong>: سیستم‌های مالی، بیمه یا لجستیک که قواعد در همه‌جا پخش‌اند.</li>
+  <li><strong>نیاز به چندین نسخه‌ی هم‌زمان از منطق</strong> (مثلاً مشتریان با قوانین متفاوت) که تراکنشی و یک‌طرفه نیست.</li>
+  <li><strong>نیاز به جریان‌های رویدادمحور</strong> و پردازش ناهمگام سنگین — اینجا Event-Driven بهتر است.</li>
+  <li><strong>تیم بزرگ با دامنه‌های مستقل</strong> — مرز ماژول باید Feature یا Aggregate باشد، نه لایه.</li>
+  <li><strong>پروژه‌های اسکریپتی و کوچک</strong>: افزودن لایه فقط بوی معماری می‌دهد.</li>
+  <li><strong>وقتی مستقلی از دیتابیس لازم است</strong>: گزارش‌گیری با Query پیچیده یا چند مدل خواندنی متفاوت.</li>
+  <li><strong>سامانه‌های یکپارچه‌سازی</strong> که منطق اصلی‌شان در اتصال به سرویس‌های بیرونی است.</li>
+</ul>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز شما</th><th>معماری مناسب‌تر</th></tr>
+  <tr><td>استقلال کامل Domain از دیتابیس و تست بدون DB</td><td><strong>Clean / Onion</strong></td></tr>
+  <tr><td>جایگزینی آسان پیاده‌سازی‌های بیرونی</td><td><strong>Hexagonal</strong></td></tr>
+  <tr><td>واکنش به رویدادها و جفت‌شدگی کم</td><td><strong>Event-Driven</strong></td></tr>
+  <tr><td>دو مدل خواندن و نوشتن متفاوت</td><td><strong>CQRS</strong></td></tr>
+  <tr><td>تیم‌های مستقل و deploy جداگانه</td><td><strong>Microservices</strong> یا Feature-Based</td></tr>
+  <tr><td>مدل دامنه‌ی غنی با زبان مشترک</td><td><strong>DDD</strong></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph L["Layered"]
+        L1["Presentation"] --> L2["Service"] --> L3["Domain"] --> L4["Data"]
+    end
+    subgraph C["Clean"]
+        C1["Entities"] --> C2["Use Cases"] --> C3["Interface Adapters"]
+    end
+    subgraph O["Onion"]
+        O1["Domain (مرکز)"] --> O2["Services"] --> O3["Repositories"] --> O4["Infrastructure"]
+    end
+
+    L2 -. "تفاوت: Domain دست‌آخر قرار می‌گیرد" .- C1
+    L3 -. "تفاوت: مرکزیت Domain" .- O1
+
+    style L fill:#134e4a,stroke:#5eead4,color:#fff
+    style C fill:#0f766e,stroke:#14b8a6,color:#fff
+    style O fill:#115e59,stroke:#2dd4bf,color:#fff</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>معیار</th><th>Layered</th><th>Clean</th><th>Onion</th><th>Hexagonal</th></tr>
+  <tr><td>واحد سازمان‌دهی</td><td>لایه‌ی افقی</td><td>حلقه/Use Case</td><td>حلقه‌ی متحدالمرکز</td><td>Port &amp; Adapter</td></tr>
+  <tr><td>قانون وابستگی</td><td>رو به پایین (شفاهی)</td><td>به سمت هسته (قانون سخت)</td><td>فقط به داخل</td><td>فقط به هسته</td></tr>
+  <tr><td>جایگاه Domain</td><td>یک لایه‌ی معمولی</td><td>مرکزی و غنی</td><td>مرکزی و غنی</td><td>بی‌ساختار</td></tr>
+  <tr><td>تعداد Interface</td><td>کم</td><td>زیاد</td><td>زیاد</td><td>خیلی زیاد</td></tr>
+  <tr><td>مناسب برای پروژه‌ی کوچک</td><td>✅ عالی</td><td>⚠️ سنگین</td><td>⚠️ سنگین</td><td>❌ نامناسب</td></tr>
+  <tr><td>مناسب برای دامنه‌ی پیچیده</td><td>⚠️ متوسط</td><td>✅ عالی</td><td>✅ عالی</td><td>✅ عالی</td></tr>
+  <tr><td>زمان راه‌اندازی</td><td>کم</td><td>زیاد</td><td>زیاد</td><td>زیاد</td></tr>
+  <tr><td>تعداد فایل‌ها</td><td>متوسط</td><td>خیلی زیاد</td><td>زیاد</td><td>خیلی زیاد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">جمع‌بندی مقایسه</span>
+<strong>Layered</strong> یعنی «لایه‌بندی ساده با جهت رو به پایین»،
+<strong>Clean</strong> یعنی «لایه‌بندی با قانون سخت وابستگی و Use Case محور»،
+<strong>Onion</strong> یعنی «لایه‌بندی با حلقه‌های متحدالمرکز حول Domain»،
+و <strong>Hexagonal</strong> یعنی «لایه‌بندی بر اساس Port و Adapter». هر چهار تا، خانواده‌ای از یک ایده‌اند:
+<strong>جدا کردن کارِ اصلی از کارِ زیرساختی</strong>.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اصل SOLID</th><th>نمود در لایه‌بندی</th><th>مثال</th></tr>
+  <tr><td><strong>S — Single Responsibility</strong></td><td>هر لایه یک دلیل تغییر</td><td>تغییر قوانین فقط Domain را تغییر می‌دهد</td></tr>
+  <tr><td><strong>O — Open/Closed</strong></td><td>افزودن لایه‌ی جدید بدون تغییر لایه‌های بالا</td><td>افزودن لایه‌ی Cache بین Service و Data</td></tr>
+  <tr><td><strong>L — Liskov Substitution</strong></td><td>پیاده‌سازی‌های Repository به‌جای هم قابل استفاده‌اند</td><td><code>JpaOrderStore</code> و <code>InMemoryOrderStore</code></td></tr>
+  <tr><td><strong>I — Interface Segregation</strong></td><td>Interfaceهای کوچک و متمرکز در هر لایه</td><td><code>OrderStore</code> جدا از <code>ProductStore</code></td></tr>
+  <tr><td><strong>D — Dependency Inversion</strong></td><td>لایه‌ی بالا قرارداد را تعریف می‌کند، لایه‌ی پایین پیاده می‌کند</td><td>Service به <code>OrderStore</code> وابسته است، نه به JDBC</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی صادقانه</span>
+لایه‌بندی کلاسیک فقط به‌صورت ضمنی DIP را رعایت می‌کند. اگر می‌خواهید DIP واقعی داشته باشید
+(یعنی لایه‌ی Domain حتی Interface هم نداشته باشد)، باید به سمت Clean یا Onion بروید.
+</div>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>نقش در لایه‌بندی</th><th>محل استفاده</th></tr>
+  <tr><td><strong>Repository</strong></td><td>پنهان کردن جزئیات ذخیره‌سازی از لایه‌ی بالاتر</td><td>مرز لایه ۲ و ۳ به لایه ۴</td></tr>
+  <tr><td><strong>Service Layer</strong></td><td>تعریف مرز Use Case و تراکنش</td><td>خود لایه ۲</td></tr>
+  <tr><td><strong>DTO / Mapper</strong></td><td>جداسازی مدل دامنه از مدل انتقال داده</td><td>لایه ۱ ↔ لایه ۲</td></tr>
+  <tr><td><strong>Facade</strong></td><td>پنهان کردن پیچیدگی چند زیرسیستم پشت یک API ساده</td><td>لایه ۲ روی لایه ۴</td></tr>
+  <tr><td><strong>Strategy</strong></td><td>تعویض الگوریتم (مالیات، ارسال) بدون تغییر کد</td><td>لایه ۲ یا ۳</td></tr>
+  <tr><td><strong>Adapter</strong></td><td>تبدیل فرمت‌های مختلف بیرونی به مدل داخلی</td><td>لایه ۴</td></tr>
+  <tr><td><strong>Decorator</strong></td><td>افزودن کش، لاگ یا retry دور Repository</td><td>لایه ۴</td></tr>
+  <tr><td><strong>Singleton</strong></td><td>مدیریت منابع مشترک (EntityManagerFactory، Connection Pool)</td><td>لایه ۴ (با احتیاط)</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">الگو به‌جای لایه</span>
+الگوها لایه‌ها را جایگزین نمی‌کنند. <code>Repository</code> در یک فایل <code>main</code>
+هم قابل استفاده است، اما سیستم بی‌لایه با ۲۰ تا Repository همچنان یک کامپوزیت غیرقابل نگهداری است.
+</div>
+</section>
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+بزرگ‌ترین برد لایه‌بندی این است که <strong>لایه‌ی Service را بدون دیتابیس تست می‌کنید</strong>.
+کافی است Repository را Mock کنید.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.order.application;
+
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class OrderServiceTest {
+
+    @Mock
+    private OrderStore store;
+    @Mock
+    private ProductStore productStore;
+    @Mock
+    private TaxPolicy taxPolicy;
+
+    private OrderService service;
+
+    @BeforeEach
+    void setUp() {
+        service = new OrderService(store, productStore, taxPolicy);
+    }
+
+    @Test
+    @DisplayName("سفارش خالی نباید ذخیره شود")
+    void doesNotPersistEmptyOrder() {
+        var command = new CreateOrderCommand("o-1", "c-1", List.of());
+
+        assertThatThrownBy(() -> service.createOrder(command))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("بدون قلم");
+
+        verify(store, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("سفارش معتبر باید محاسبه و ذخیره شود")
+    void persistsValidOrder() {
+        when(productStore.findBySku("SKU-1"))
+                .thenReturn(Optional.of(new ProductView("SKU-1",
+                        Money.ofCents(1_000_000))));
+        when(taxPolicy.apply(Money.ofCents(1_000_000)))
+                .thenReturn(Money.ofCents(90_000));
+
+        var command = new CreateOrderCommand("o-1", "c-1",
+                List.of(new OrderLineCommand("SKU-1", 1)));
+
+        var result = service.createOrder(command);
+
+        assertThat(result.total().cents()).isEqualTo(1_090_000);
+        verify(store).save(any(OrderRecord.class));
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>لایه</th><th>نوع تست</th><th>سرعت هدف</th></tr>
+  <tr><td>Domain</td><td>Unit خالص — بدون Mock، بدون Spring</td><td>زیر ۱۰۰ میلی‌ثانیه</td></tr>
+  <tr><td>Service</td><td>Unit با Mock کردن لایه‌ی Data</td><td>زیر ۵۰۰ میلی‌ثانیه</td></tr>
+  <tr><td>Data</td><td>Integration با Testcontainers</td><td>چند ثانیه</td></tr>
+  <tr><td>Presentation</td><td>Slice تست با <code>@WebMvcTest</code></td><td>زیر ۱ ثانیه</td></tr>
+  <tr><td>کل سیستم</td><td>E2E با Testcontainers کامل</td><td>ده‌ها ثانیه</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تست لایه‌ی Data را حذف نکنید</span>
+بزرگ‌تران اشتباه لایه‌بندی این است که چون Repository را Mock می‌کنیم، فکر می‌کنیم نیازی به تست
+لایه‌ی داده نیست. SQL اشتباه فقط در تست Integration لو می‌رود؛ پس آن را جدی بگیرید.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>اشتباه</th><th>نشانه</th><th>راه‌حل</th></tr>
+  <tr><td>۱</td><td><strong>پوشه‌بندی بدون قاعده</strong></td><td>لایه‌ها هر هفته جابه‌جا می‌شوند</td><td>ساختار پوشه را در README قفل کنید</td></tr>
+  <tr><td>۲</td><td><strong>God Service</strong></td><td>یک Service با ۴۰ متد</td><td>بر اساس Use Case تقسیم کنید</td></tr>
+  <tr><td>۳</td><td><strong>Controller با منطق</strong></td><td><code>if</code>های کسب‌وکار در متد Controller</td><td>انتقال به Service یا Domain</td></tr>
+  <tr><td>۴</td><td><strong>Domain آلوده به JPA</strong></td><td><code>@Entity</code> روی کلاس دامنه</td><td>Entity دامنه و Entity دیتابیس را جدا کنید</td></tr>
+  <tr><td>۵</td><td><strong>Repository با منطق کسب‌وکار</strong></td><td><code>if (type == VIP)</code> داخل DAO</td><td>منطق را به Domain ببرید</td></tr>
+  <tr><td>۶</td><td><strong>Entity مشترک همه‌ی لایه‌ها</strong></td><td>یک مدل برای UI، Service و DB</td><td>مدل جدا برای هر مرز (DTO)</td></tr>
+  <tr><td>۷</td><td><strong>لایه‌ی Service که فقط Pass-through است</strong></td><td>متدی که فقط یک خط دارد</td><td>لایه را حذف یا واقعاً ارزشمند کنید</td></tr>
+  <tr><td>۸</td><td><strong>تراکنش در همه‌ی متدها</strong></td><td><code>@Transactional</code> روی توابع خواندن</td><td>فقط روی مرز Use Case</td></tr>
+  <tr><td>۹</td><td><strong>لایه‌ی Data با قوانین اعتباری سنگین</strong></td><td>اعتبارسنجی پیچیده در لایه‌ی Data</td><td>اعتبارسنجی دامنه در Domain</td></tr>
+  <tr><td>۱۰</td><td><strong>تست همه‌چیز از راه Controller</strong></td><td>همه‌ی سناریوها فقط E2E</td><td>تست Service و Domain جدا</td></tr>
+  <tr><td>۱۱</td><td><strong>لایه‌های بی‌فایده (Facade of Facade)</strong></td><td>تبدیل بی‌مورد بین ۵ مدل</td><td>حذف لایه‌های بی‌ارزش</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">اشتباه مرگبار: استفاده از Entity دیتابیس به‌عنوان مدل دامنه</span>
+وقتی کلاس دامنه <code>@Entity</code> است، Lombok، Setter و <code>save()</code> به آن تزریق می‌شود و
+آرام‌آرام تمام قواعد کسب‌وکار را از دست می‌دهید. این یعنی شما Domain ندارید؛ فقط یک POJO دارید.
+</div>
+</section>
+
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱) سامانه‌ی فروشگاه اینترنتی (E-commerce)</h3>
+<p>
+پروژه‌های فروشگاهی اینترنتی کلاسیک‌ترین نمونه‌ی لایه‌بندی هستند: لایه‌ی
+Presentation شامل REST API و صفحات Thymeleaf، لایه‌ی Service با <code>OrderService</code> و
+<code>CartService</code>، لایه‌ی Domain با <code>Cart</code> و <code>Order</code>، و لایه‌ی Data
+با Spring Data JPA و Redis برای کش سبد خرید. اکثر تیم‌های محصول با ۲ تا ۵ سرویس و این معماری
+سال‌ها بدون مشکل محصولشان را توسعه می‌دهند.
+</p>
+
+<h3>۲) اپلیکیشن بانکداری و پرداخت داخلی</h3>
+<p>
+در یک اپلیکیشن بانکی داخلی، لایه‌ی Service قلب سیستم است: هماهنگی احراز هویت،
+محاسبه‌ی کارمزد، کنترل موجودی و ثبت تراکنش. لایه‌ی Data به هر بانک متصل است و لایه‌ی
+Presentation فقط APIهای ثبت و گزارش را ارائه می‌دهد. چون دامنه نسبتاً ساده اما نیازمندی اتصالی
+زیادی وجود دارد، لایه‌بندی کلاسیک انتخاب اقتصادی درستی است.
+</p>
+
+<h3>۳) سیستم رزرو نوبت کلینیک</h3>
+<p>
+در این سیستم، Presentation شامل API رزرو و پیامک تأیید، Service منطق تداخل نوبت و ساعت کاری،
+Domain موجودیت‌های <code>Appointment</code> و <code>Schedule</code>، و Data پایگاه‌داده‌ی بیمارستان
+است. منطق «اگر بیمار فعال نوبت هم‌زمان داشت، رد کن» در Domain نوشته شده و با ۲۰ تست واحد پوشش دارد.
+</p>
+
+<h3>۴) پنل مدیریت داخلی (Admin Panel) و داشبورد گزارش</h3>
+<p>
+داشبوردهای داخلی بهترین نمونه برای لایه‌بندی سبک هستند. لایه‌ی Presentation کامپوننت‌های React یا
+Thymeleaf، لایه‌ی Service ساخت Query و ترکیب داده، و لایه‌ی Data کوئری‌های خواندنی بهینه‌سازی‌شده
+است. در این پروژه‌ها معمولاً Clean Architecture بیش از حد مهندسی است.
+</p>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<p>
+لایه‌بندی ذاتاً کند نیست، اما <strong>راه‌هایی دارد که می‌تواند</strong> بد استفاده شود:
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئله</th><th>علت</th><th>راه‌حل</th></tr>
+  <tr><td>N+1 Query</td><td>کشیدن لیست اصلی و صدا زدن Repository در حلقه</td><td>خواندن همه در یک کوئری یا استفاده از <code>@EntityGraph</code></td></tr>
+  <tr><td>تبدیل DTO بی‌مورد</td><td>۵ مدل مختلف بین چهار لایه</td><td>حداکثر دو تبدیل در مسیر</td></tr>
+  <tr><td>Overhead لایه‌ی Service</td><td>متدهای یک‌خطی که فقط فایل دیگری را صدا می‌زنند</td><td>حذف لایه‌های بی‌ارزش در مسیر داغ</td></tr>
+  <tr><td>نبود کش در لایه‌ی Service</td><td>خواندن مکرر داده‌ی ثابت</td><td>کش محلی یا Redis در لایه ۲</td></tr>
+  <tr><td>بارگذاری تنبل در جای اشتباه</td><td><code>LazyInitializationException</code> یا N+1</td><td>تصمیم صریح درباره‌ی مرز تراکنش</td></tr>
+  <tr><td>سریال‌سازی مکرر</td><td>تبدیل داخل حلقه به DTO</td><td>تبدیل یک‌باره در انتهای لایه ۱</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>بد (N+1):
+
+  for (order : orders) {
+      order.setCustomerName(customerRepo.findById(order.customerId()).name);
+  }
+
+بهتر:
+
+  Map&lt;String, Customer&gt; cache = customerRepo
+      .findAllById(orders.stream()
+          .map(Order::customerId)
+          .collect(toSet()))
+      .stream()
+      .collect(toMap(Customer::id, Function.identity()));
+
+  orders.forEach(o -> o.setCustomerName(cache.get(o.customerId()).name));</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">معیار تصمیم‌گیری</span>
+لایه‌بندی ارزشش را وقتی می‌دهد که بتوانید یک لایه را عوض کنید یا تست کنید بدون دست‌زدن به بقیه.
+اگر هیچ‌وقت عوض نمی‌کنید و تست‌ها فقط E2E هستند، لایه‌بندی فقط هزینه‌ی غیرضروری است.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Junior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱ — Layered Architecture چیست؟</span>
+روشی برای سازمان‌دهی کد به لایه‌های افقی با مسئولیت مشخص (مثلاً Presentation، Service، Domain، Data)
+که در آن هر لایه فقط می‌تواند لایه‌های پایین‌تر را صدا بزند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲ — تفاوت لایه‌بندی افقی و عمودی چیست؟</span>
+لایه‌بندی <strong>افقی</strong> بر اساس نوع مسئولیت (UI / منطق / داده) است؛
+لایه‌بندی <strong>عمودی یا Feature-Based</strong> پروژه را بر اساس قابلیت‌های کسب‌وکار به ستون‌های مستقل تقسیم می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۳ — لایه‌های استاندارد در یک سیستم تجاری کدام‌اند؟</span>
+معمولاً: Presentation، Application/Service، Domain/Business و Data/Access.
+بسته به پروژه ممکن است لایه‌ی Infrastructure یا Cross-cutting هم اضافه شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۴ — منطق کسب‌وکار باید در کدام لایه باشد؟</span>
+در لایه‌ی Domain. قوانینی که به داده‌ی یک موجودیت مربوط‌اند باید در خود موجودیت و قوانین
+بین‌موجودیتی در Domain Service بنشینند، نه در Controller یا Repository.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۵ — تفاوت لایه‌بندی و MVC چیست؟</span>
+لایه‌بندی درباره‌ی <strong>مسئولیت کد</strong> صحبت می‌کند؛ MVC درباره‌ی <strong>تقسیم‌پذیری مسئولیت در یک کامپوننت</strong>
+(مدل، ویو، کنترلر). یک پروژه می‌تواند هم‌زمان هر دو باشد: ساختار لایه‌ای، و داخل لایه‌ی UI یک MVC ساده.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۶ — چرا نباید از Repository مستقیم در Controller استفاده کرد؟</span>
+چون باعث می‌شود Controller هم مسئول هماهنگی Use Case شود و هم Query. کنترلر باید فقط
+ورودی را اعتبارسنجی و خروجی را تولید کند؛ منطق در Service قرار می‌گیرد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۷ — Repository Pattern چیست و در کدام لایه قرار می‌گیرد؟</span>
+الگویی که ذخیره‌سازی داده را پشت یک Interface پنهان می‌کند. قرارداد در لایه‌ی بالاتر
+(Service) تعریف و پیاده‌سازی در لایه‌ی Data قرار می‌گیرد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۸ — تفاوت DTO و Entity در لایه‌بندی چیست؟</span>
+Entity مدل داخلی و پایدار سیستم است و DTO مدل انتقال داده بین لایه‌هاست. جداسازی آن‌ها
+اجازه می‌دهد ساختار دیتابیس را بدون شکستن API تغییر دهید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۹ — تراکنش دیتابیس (@Transactional) باید در کدام لایه باشد؟</span>
+در لایه‌ی Service، دقیقاً روی مرز Use Case. قرار دادن آن در Repository باعث می‌شود
+هر عملیات کوچک تراکنش مستقل شود و اتمیک بودن سناریوی کامل از بین برود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۰ — تفاوت Service Layer و Service Domain چیست؟</span>
+Service Domain شامل قوانین کسب‌وکار است، اما Service Layer (Application Service) شامل
+هماهنگی بین لایه‌ها و مدیریت تراکنش می‌شود. اولی «چه چیزی درست است» را تعیین می‌کند و دومی «چه کاری باید انجام شود».
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Mid</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۱ — قانون لایه‌ها را چطور در کد اجباری می‌کنید؟</span>
+با ماژول‌بندی: هر لایه یک Gradle/Maven module مستقل با <code>build.gradle</code> جدا.
+کامپایلر اجازه‌ی ارجاع از ماژول بالا به پایین را می‌دهد و نه برعکس.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۲ — تفاوت لایه‌بندی و معماری Onion چیست؟</span>
+در Onion، Domain در مرکز قرار می‌گیرد و همه‌ی وابستگی‌ها به سمت آن جریان دارند؛ در لایه‌بندی
+کلاسیک، Domain فقط یکی از لایه‌هاست و قاعده‌ی وابستگی صرفاً رو به پایین است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۳ — Anemic Domain Model چیست و چرا رخ می‌دهد؟</span>
+وقتی همه‌ی منطق در Service بنشیند، Entity فقط Getter/Setter دارد. معمولاً به‌دلیل عجله در
+نوشتن لایه‌ی Service، نتیجه‌اش مدلی بدون رفتار است که نگهداری آن سخت می‌شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۴ — آیا باید لایه‌ی Service وجود داشته باشد؟</span>
+در پروژه‌های خیلی کوچک، خیر؛ می‌توان Controller را مستقیم به Repository وصل کرد. اما به‌محض
+داشتن بیش از یک Use Case یا منطق تراکنشی، لایه‌ی Service ارزش واقعی دارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۵ — چطور یک لایه‌ی Service خوب طراحی کنیم؟</span>
+بر اساس Use Case تقسیم‌بندی کنید، متدهای کوتاه و کم‌وابسته بنویسید، خروجی را با DTO
+مشخص برگردانید و تراکنش را فقط در مرز سرویس مدیریت کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۶ — در لایه‌بندی چطور خطاها را مدیریت می‌کنید؟</span>
+خطاهای دامنه با Exception اختصاصی در Domain، خطاهای فنی در Data، و تبدیل آن‌ها به
+پاسخ HTTP در Presentation. لایه‌ی Service نباید کد وضعیت HTTP داشته باشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۷ — لایه‌ی Data در لایه‌بندی کلاسیک شامل چه چیزهایی است؟</span>
+پیاده‌سازی Repository، کلاس‌های نگاشت (Entity دیتابیس)، DAOها، پیکربندی اتصال و
+پیاده‌سازی Adapterهای بیرونی مثل پیامک یا پرداخت.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۸ — چه زمانی لایه‌بندی را به Feature-Based تغییر دهیم؟</span>
+وقتی ساختار لایه‌ای باعث شود دو تیم روی فایل‌های مشترک تداخل داشته باشند. در آن حالت
+هر فیچر پوشه‌ی مستقل خود با لایه‌های داخلی می‌گیرد.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Senior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۹ — مهم‌ترین محدودیت لایه‌بندی کلاسیک چیست؟</span>
+اینکه فقط <strong>قانون رو به پایین</strong> را تضمین می‌کند، نه <strong>قانون وابستگی به سمت هسته</strong>.
+نتیجه: لایه‌ی Data مجبور است همه‌ی مدل‌ها را بشناسد و لایه‌ی Domain نازک می‌ماند.
+اینجاست که معماری‌های Clean یا Onion برتری پیدا می‌کنند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲۰ — چطور جلوی تبدیل لایه‌بندی به «لایه‌سازی بی‌فایده» را بگیریم؟</span>
+برای هر لایه بنویسید دقیقاً چه مسئولیتی دارد. اگر نتوانید در یک جمله بگویید «این لایه فقط…»،
+لایه را حذف یا ادغام کنید. لایه‌ای که فقط یک خط را به لایه‌ی دیگر منتقل می‌کند، فقط هزینه است.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پرسش‌های پرتکرار</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱) آیا Layered Architecture همان N-Tier است؟</span>
+<strong>لایه‌بندی</strong> به تقسیم کد به لایه‌های داخل یک برنامه اشاره دارد و
+<strong>N-Tier</strong> به تقسیم سیستم به چند سطح که ممکن است روی چند سرور و فرایند جدا اجرا شوند.
+لایه‌بندی می‌تواند کاملاً در یک پروسه باشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۲) تفاوت لایه با ماژول چیست؟</span>
+لایه یک <strong>مفهوم معماری</strong> است؛ ماژول یک <strong>واحد فایل/کامپایل</strong> است.
+می‌توانید چند ماژول در یک لایه داشته باشید، یا هر لایه را یک ماژول مستقل کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۳) آیا لایه‌بندی برای اپلیکیشن اندروید هم مناسب است؟</span>
+بله. در اندروید معمولاً سه لایه داریم: UI/Compose، ViewModel (که نقش Service را دارد)
+و Repository (که نقش Data را دارد). این دقیقاً همان لایه‌بندی با سه لایه است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۴) تفاوت لایه‌ی Domain و لایه‌ی Business Logic چیست؟</span>
+در بسیاری از پروژه‌ها این دو یکی هستند. اصطلاح Domain تأکید می‌کند که این لایه
+مدل مفهومی کسب‌وکار را نگه می‌دارد، نه صرفاً یک سری if و else.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۵) چطور جلوی نشت لایه (Leaky Abstraction) را بگیریم؟</span>
+با تعریف قرارداد دقیق بین لایه‌ها. مثلاً اگر Service نباید SQL ببیند، متدهای Repository
+را طوری طراحی کنید که نیازی به SQL نداشته باشند و تست‌های معماری (ArchUnit) بنویسید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۶) آیا باید برای هر لایه پروژه‌ی جدا بسازیم؟</span>
+خیر. در اکثر پروژه‌ها پوشه‌بندی کافی است. ماژول‌بندی مستقل فقط زمانی لازم است که
+تیم بزرگ باشد یا بخواهید قانون وابستگی را در سطح کامپایل اجباری کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۷) لایه‌ی Service باید تراکنش دیتابیس داشته باشد؟</span>
+بله، تراکنش مرز Use Case است و معمولاً روی متدهای Service قرار می‌گیرد. اما مراقب باشید
+برای عملیات خواندن معمولی تراکنش اضافه ایجاد نکنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۸) تفاوت لایه‌بندی و Clean Architecture دقیقاً چیست؟</span>
+در Clean، قانون وابستگی به سمت هسته (Use Caseها) است و لایه‌ی بیرونی باید این قانون را رعایت کند،
+حتی اگر این‌طور طراحی نشده باشد. در لایه‌بندی کلاسیک، هر لایه فقط می‌تواند لایه‌ی پایین را صدا بزند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۹) آیا لایه‌بندی باعث کندی می‌شود؟</span>
+خودِ لایه‌بندی خیر. کندی زمانی رخ می‌دهد که N+1 Query، تبدیل بی‌مورد DTO یا
+حلقه‌های پرکاری در لایه‌ی Data داشته باشید. اینها مشکل پیاده‌سازی است نه معماری.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۰) لایه‌ی UI در پروژه‌ی وب باید شامل چه چیزی باشد؟</span>
+Controller، مدل درخواست/پاسخ (DTO)، نگاشتگر بین DTO و مدل دامنه، و اعتبارسنجی ورودی.
+همه‌ی منطق کسب‌وکار باید به Service منتقل شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۱) آیا می‌توانم لایه‌ی Domain را حذف کنم؟</span>
+در پروژه‌های کوچک بله، اگر منطق کسب‌وکار ساده است. اما به‌محض پیچیده شدن قوانین،
+داشتن یک جای مشخص برای این قوانین از پخش شدن آن‌ها در Controller و Service جلوگیری می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۲) تفاوت Repository با DAO چیست؟</span>
+DAO معمولاً یک کلاس ساده است که مستقیم با دیتابیس کار می‌کند و وابسته به تکنولوژی است.
+Repository یک قرارداد دامنه‌محور است که می‌تواند با هر فناوری پیاده‌سازی شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۳) لایه‌بندی با Event-Driven چه تفاوتی دارد؟</span>
+لایه‌بندی جریان داده‌ی <strong>همگام و مستقیم</strong> دارد. Event Driven جریان را غیرهمگام می‌کند
+و وابستگی را از طریق پیام کم می‌کند. می‌توانید هر دو را با هم ترکیب کنید: لایه‌بندی درون سرویس، رویداد بین سرویس‌ها.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۴) چطور از رعایت قوانین لایه‌ای مطمئن شوم؟</span>
+با تست معماری مثل <code>ArchUnit</code> در تست خودکار. مثلاً: «کلاس‌های پکیج domain نباید
+هیچ ایمپورتی از پکیج infrastructure داشته باشند.»
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۵) آیا لایه‌بندی برای پروژه‌ی میکروسرویس مناسب است؟</span>
+بله، هر میکروسرویس معمولاً یک پروژه‌ی کوچک لایه‌ای است. اما اگر بین سرویس‌ها
+جریان پیچیده دارید، داخل هر سرویس به لایه‌بندی به‌علاوه‌ی Event Bus نیاز دارید.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>خلاصه</th></tr>
+  <tr><td>تعریف</td><td>تقسیم کد به لایه‌های افقی با مسئولیت مشخص</td></tr>
+  <tr><td>قانون طلایی</td><td>وابستگی فقط رو به پایین، هرگز رو به بالا</td></tr>
+  <tr><td>لایه ۱</td><td>Presentation: Controller، DTO، اعتبارسنجی شکلی</td></tr>
+  <tr><td>لایه ۲</td><td>Service: هماهنگی Use Case، تراکنش، کش</td></tr>
+  <tr><td>لایه ۳</td><td>Domain: Entity و قوانین کسب‌وکار</td></tr>
+  <tr><td>لایه ۴</td><td>Data: Repository، DAO، نگاشت دیتابیس</td></tr>
+  <tr><td>ممنوعیت‌ها</td><td>منطق در Controller، SQL در Service، JPA در Domain</td></tr>
+  <tr><td>مزیت اصلی</td><td>تست و تعویض لایه‌ها بدون دست‌زدن به بقیه</td></tr>
+  <tr><td>عیب اصلی</td><td>قانون وابستگی فقط انسانی است، نه کامپایلی</td></tr>
+  <tr><td>بهترین برای</td><td>CRUD، سیستم‌های داخلی، تیم کوچک تا متوسط</td></tr>
+  <tr><td>نامناسب برای</td><td>دامنه‌ی بسیار پیچیده و تیم‌های بزرگ</td></tr>
+  <tr><td>جایگزین‌ها</td><td>Clean، Onion، Hexagonal، Feature-Based، Microservices</td></tr>
+  <tr><td>الگوی کلیدی</td><td>Repository + Service Layer + DTO/Mapper</td></tr>
+  <tr><td>قانون SOLID محوری</td><td>SRP در سطح ماژول، DIP بین لایه‌ها</td></tr>
+  <tr><td>ابزار کنترل</td><td>ArchUnit، SonarQube، Review در PR</td></tr>
+  <tr><td>معیار موفقیت</td><td>تست Service بدون دیتابیس، تغییر UI بدون تغییر منطق</td></tr>
+  <tr><td>سیگنال هشدار</td><td>کلاس‌های بیش از ۵۰۰ خط، Service با ۳۰+ متد</td></tr>
+  <tr><td>قانون طلایی دوم</td><td>اگر نمی‌توانید مسئولیت یک لایه را در یک جمله بگویید، آن لایه را بازطراحی کنید</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله برای به‌خاطر سپردن</span>
+<strong>لایه‌بندی یعنی کد را به «قفسه‌ها» مرتب کنید: هر قفسه یک کار، و ارتباط فقط از بالا به پایین.</strong>
+اگر توانستید این را حفظ کنید، بقیه‌ی جزئیات را از همین مقاله بازسازی می‌کنید.
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>هدف</th><th>تمرین پیشنهادی</th></tr>
+  <tr><td>۱ — هفته‌ی اول</td><td>تسلط بر سه لایه‌ی استاندارد</td><td>بازسازی یک CRUD ساده با سه پوشه‌ی presentation/service/repository</td></tr>
+  <tr><td>۲ — هفته‌ی دوم</td><td>مرزبندی درست لایه‌ها</td><td>یک ToDo App که منطقش در Domain باشد و تست واحد بدون Spring</td></tr>
+  <tr><td>۳ — هفته‌ی سوم</td><td>تست‌پذیری واقعی</td><td>نوشتن تست Service با Mock و تست داده با Testcontainers</td></tr>
+  <tr><td>۴ — هفته‌ی چهارم</td><td>تست معماری</td><td>راه‌اندازی ArchUnit برای اجباری کردن قوانین لایه‌ای</td></tr>
+  <tr><td>۵ — ماه دوم</td><td>ماژول‌بندی مستقل</td><td>تبدیل پروژه به چهار ماژول Gradle با وابستگی یک‌طرفه</td></tr>
+  <tr><td>۶ — ماه سوم</td><td>درک مرز لایه‌بندی</td><td>مقایسه‌ی عملی: پروژه‌ی لایه‌ای در برابر نسخه‌ی Hexagonal</td></tr>
+  <tr><td>۷ — ماه چهارم</td><td>انتخاب معماری</td><td>طراحی یک سیستم واقعی و انتخاب مستند بین Layered و Clean</td></tr>
+</table>
+</div>
+
+<h3>جمع‌بندی</h3>
+<p>
+<strong>Layered Architecture</strong> ساده‌ترین و در عین حال بیشترین بازده را برای اکثر پروژه‌ها دارد.
+این معماری به شما اجازه می‌دهد بدون درگیر شدن با پیچیدگی‌های سنگین Onion یا Clean،
+مسئولیت‌ها را جدا کنید، تست بنویسید و چند کلاینت مختلف به یک منطق مشترک وصل کنید.
+</p>
+<p>
+اما فراموش نکنید که <strong>لایه‌بندی یک قرارداد انسانی است، نه یک قانون کامپایلی</strong>.
+اگر تیم شما نمی‌تواند قوانین را رعایت کند، لایه‌بندی فقط چند پوشه‌ی خالی است.
+در آن صورت یا با ابزار (ماژول‌بندی، ArchUnit) آن را اجباری کنید، یا به سراغ معماری‌هایی بروید
+که ساختارشان محیط را مجبور به رعایت قانون می‌کند.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله چهارمین عضو سری «معماری‌های نرم‌افزاری» است. اگر این چهار مقاله را دنبال کرده‌اید
+(Clean، Onion، Hexagonal، Layered)، حالا می‌دانید <strong>طیف معماری‌ها از چیدمان ساده‌ی
+لایه‌ای تا حلقه‌های کاملاً ایزوله‌ی دامنه</strong> کشیده شده است. مقاله‌ی بعدی سری به MVC می‌پردازد.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی کد بدون ساختار فرو می‌ریزد</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Layered Architecture چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: تقسیم به لایه‌ها</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: لایه‌ها</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سیستم فاکتور</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ارتباط با زبان‌ها و Frameworkها</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی کد بدون ساختار فرو می‌ریزد</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Layered Architecture چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: تقسیم به لایه‌ها</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: لایه‌ها</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سیستم فاکتور</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ارتباط با زبان‌ها و Frameworkها</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

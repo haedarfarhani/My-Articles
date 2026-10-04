@@ -1,0 +1,2967 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DDD چیست؟ آموزش کامل Domain-Driven Design با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله DDD را کامل یاد می‌گیرید: زبان مشترک، Aggregate و Value Object و Entity، مرزهای زمینه‌ای، پیاده‌سازی کامل Java 21، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="DDD, Domain-Driven Design, طراحی دامنه محور, Aggregate, Entity, Value Object, Ubiquitous Language, Bounded Context, Java, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, Event Storming">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="DDD چیست؟ آموزش کامل Domain-Driven Design با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله DDD را کامل یاد می‌گیرید: زبان مشترک، Aggregate و Value Object و Entity، مرزهای زمینه‌ای، پیاده‌سازی کامل Java 21، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/ddd-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/ddd-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Domain-Driven Design">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DDD چیست؟ آموزش کامل Domain-Driven Design با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="مدل دامنه، زبان مشترک، Aggregate و Bounded Context، پیاده‌سازی Java 21 و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "DDD چیست؟ آموزش کامل Domain-Driven Design با مثال و ساختار پروژه",
+    "description": "در این مقاله DDD را کامل یاد می‌گیرید: زبان مشترک، Aggregate و Value Object و Entity، مرزهای زمینه‌ای، پیاده‌سازی کامل Java 21، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/ddd-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/ddd-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "DDD, Domain-Driven Design, Aggregate, Entity, Value Object, Ubiquitous Language",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "DDD", "item": "https://haedarfarhani.github.io/My-Articles/articles/ddd-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">DDD</span>؛ نرم‌افزاری که بالاخره زبان کسب‌وکار را می‌فهمد
+          </h1>
+
+          <p class="hero-lead">
+            طراحی دامنه‌محور یعنی <strong>مدل کسب‌وکار را داخل کد بسازیم، نه اینکه
+            دیتابیس را مدل کنیم</strong>. در این راهنما از تعریف دقیق و Ubiquitous Language
+            تا <code>Aggregate</code> و <code>Value Object</code> و <code>Bounded Context</code>،
+            پیاده‌سازی کامل با <code>Java 21</code>، تست واحد بدون دیتابیس و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۶۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: پیشرفته (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#DDD</span>
+            <span class="post-tag">#Aggregate</span>
+            <span class="post-tag">#Value_Object</span>
+            <span class="post-tag">#Ubiquitous_Language</span>
+            <span class="post-tag">#Bounded_Context</span>
+            <span class="post-tag">#Java</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: نرم‌افزاری که زبان کسب‌وکار را نمی‌فهمد</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>DDD چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: زبان مشترک و مدل دامنه</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>مفاهیم کلیدی دامنه</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>Repository و Service دامنه</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار معماری: لایه‌های DDD</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>مثال عملی کامل: دامنه‌ی سفارش</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مقایسه با معماری‌های دیگر</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: نرم‌افزاری که زبان کسب‌وکار را نمی‌فهمد</h2>
+
+<p>
+یک سیستم فروش را در نظر بگیرید. کارشناس کسب‌وکار می‌گوید: «وقتی مشتری بیش از ۵۰۰ هزار تومان خرید کرد
+و قبلاً سفارش تسویه‌شده دارد، او را <strong>وفادار</strong> حساب کنید و ۱۰٪ تخفیف بدهید».
+مهندس نرم‌افزار به دیتابیس نگاه می‌کند و می‌نویسد:
+</p>
+
+<pre class="kl-code" data-lang="sql"><code>SELECT COUNT(*) FROM orders
+WHERE customer_id = ? AND status = 'SETTLED';
+
+-- اگر نتیجه &gt; 0 و مبلغ &gt; 500000 است:
+UPDATE customers SET discount = 10 WHERE id = ?;</code></pre>
+
+<p>
+این کد <strong>کار می‌کند</strong>. ولی هیچ‌جای آن «وفاداری» وجود ندارد. شش ماه بعد، مدیر فروش
+می‌آید و می‌گوید «وفاداری یعنی بیش از ۲۰۰ هزار و خرید در ۹۰ روز گذشته». برای اعمال این تغییر باید
+دوباره کل سیستم را بگردید و ببینید این منطق در ۱۴ جا کپی شده است: در یک
+<code>@Scheduled</code>، در یک <code>Service</code>، در یک <code>Trigger</code> دیتابیس و
+حتی در یک فایل اکسل که دستی به‌روز می‌شود.
+</p>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">نشانه‌ی اصلی مشکل</span>
+وقتی افراد کسب‌وکار برای تغییر یک قانون، مجبورند به شما پیام بدهند و شما در چند فایل
+دست ببرید، مشکل «کد کم» نیست؛ مشکل <strong>نبودِ مدل دامنه</strong> است.
+DDD دقیقاً برای همین وضعیت ساخته شده است.
+</div>
+
+<p>
+<strong>DDD</strong> (طراحی دامنه‌محور) یعنی به‌جای اینکه از دیتابیس شروع کنیم و کد را
+<em>به‌اطراف جدول‌ها</em> بسازیم، از <strong>زبان کسب‌وکار</strong> شروع کنیم و مدل را داخل کد
+<em>به‌اطراف مفاهیم واقعی</em> بسازیم.
+</p>
+
+<h3>در این مقاله چه می‌آموزید؟</h3>
+
+<ul>
+<li><strong>DDD دقیقاً چیست</strong> و چه تفاوتی با «لایه‌بندی» دارد (بخش ۳)</li>
+<li>چرا <code>Aggregate</code> مهم‌ترین مفهوم DDD است و چگونه مرز تراکنش را تعیین می‌کند (بخش ۶)</li>
+<li>تفاوت دقیق <code>Entity</code> و <code>Value Object</code> و اینکه چرا این تفاوت روی تست اثر می‌گذارد (بخش ۶)</li>
+<li>چگونه یک دامنه‌ی واقعی (سفارش) را با Java 21 مدل کنیم (بخش‌های ۱۰ و ۱۱)</li>
+<li>چه زمانی DDD <strong>اشتباه</strong> است و چه هزینه‌ای می‌پردازیم (بخش‌های ۱۴ و ۱۶)</li>
+</ul>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+ایده‌ی DDD قدیم‌تر از آن است که فکر کنید نوشته شده است. ریشه‌ی آن به دهه‌ی ۱۹۶۰ و کار
+<strong>William Cooper</strong> در IBM برمی‌گردد؛ او برای اولین بار عبارت
+<strong>«مدل دامنه» (Domain Model)</strong> را در مقاله‌ای کلاسیک معرفی کرد. ایده‌ی مرکزی‌اش
+ساده و انقلابی بود:
+</p>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">نقل‌قول Cooper</span>
+«به‌جای اینکه برنامه را با توجه به پایگاه داده طراحی کنیم، باید پایگاه داده را با توجه
+به برنامه طراحی کنیم.»
+</div>
+
+<p>
+پس از آن، سه موج در تاریخ DDD شکل گرفت:
+</p>
+
+<table>
+<thead>
+<tr><th>موج</th><th>بازه</th><th>رویداد یا اثر</th><th>تأثیر بر DDD</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>موج اول: تولد</strong></td><td>۱۹۶۰–۱۹۹۰</td><td>مقاله‌ی Domain Model کوپر</td><td>معرفی مدل دامنه به‌جای مدل داده</td></tr>
+<tr><td><strong>موج دوم: فرهنگ‌سازی</strong></td><td>۱۹۹۷–۲۰۰۳</td><td>انتشار کتاب <em>Domain-Driven Design</em> اریک ایوانز</td><td>تثبیت واژگان: Entity، Value Object، Aggregate، Ubiquitous Language</td></tr>
+<tr><td><strong>موج سوم: کاربرد عملی</strong></td><td>۲۰۰۳–۲۰۱۵</td><td>آلوده به شبکه (Alistair Cockburn) و شش‌ضلعی، اریک ایوانز</td><td>معماری‌های Clean و Onion به‌عنوان بیان کد DDD</td></tr>
+<tr><td><strong>موج چهارم: دوباره‌گسترش</strong></td><td>۲۰۱۵–اکنون</td><td>Event Storming، CQRS، Microservices</td><td>DDD به زبان مشترک سازمانی و مرزهای سرویس تبدیل شد</td></tr>
+</tbody>
+</table>
+
+<h3>چرا در آن زمان کسی جدی نگرفت؟</h3>
+
+<p>
+تا قبل از حدود ۲۰۱۰، نرم‌افزار «شیءگرا» در عمل یعنی «لایه‌بندی با کلاس‌هایی به نام
+<code>Service</code> و <code>Manager</code>». بیشتر تیم‌ها مدل دامنه را یک
+<em>هزینه‌ی اختیاری</em> می‌دیدند: «اگر وقت داشتیم اضافه می‌کنیم».
+</p>
+
+<p>
+سه چیز این نگاه را عوض کرد:
+</p>
+
+<ol>
+<li><strong>بحران نرم‌افزار بومی</strong> (2001): آژانس‌های دولتی پروژه‌ها را برون‌سپاری کردند و
+سازنده سال بعد عوض شد؛ مدل دامنه‌ی مستندشده تنها دارایی باقی‌مانده بود.</li>
+<li><strong>موج میکروسرویس (2014 به بعد):</strong> فهمیدیم «مرز سرویس» دقیقاً همان
+«مرز دامنه» است و اینکه DDD ابزار طراحی این مرزهاست.</li>
+<li><strong>تمرکز بر هزینه‌ی تغییر</strong>: داده نشان داد سیستم‌هایی که مدل دامنه‌ی صریح دارند
+<strong>کمتر تغییر می‌کنند</strong> و وقتی تغییر می‌دهند، محل تغییرشان محدود و قابل پیش‌بینی است.</li>
+</ol>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نکته‌ی مهم برای تازه‌کارها</span>
+DDD یک <strong>روش‌شناسی کشف و مدل‌سازی</strong> است، نه یک فریم‌ورک و نه یک کتابخانه.
+نمی‌توانید با نصب یک پکیج آن را به پروژه اضافه کنید. بخش بزرگی از کار، <em>گفت‌وگو با
+کسب‌وکار</em> است — و این کار در هیچ ابزاری خودکار نمی‌شود.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>DDD چیست؟ (تعریف دقیق)</h2>
+
+<p>
+<strong>DDD یعنی طراحی نرم‌افزار با تمرکز بر «مدل دامنه»</strong>: مدلی که مفاهیم،
+قواعد و زبان کسب‌وکار را بازتاب می‌دهد — نه ساختار دیتابیس و نه ساختار شبکه.
+این تعریف از خود ایوانز است و سه جزء جدا دارد که اغلب با هم اشتباه گرفته می‌شوند:
+</p>
+
+<ol>
+<li><strong>Strategic Design (طراحی راهبردی)</strong> — تقسیم سیستم به
+<em>زیرسیستم‌ها</em> و <em>زمینه‌های محدود</em> (Bounded Context). این بخش درباره‌ی
+<strong>مرزها</strong> است و در سطح سیستم کار می‌کند.</li>
+<li><strong>Tactical Design (طراحی تاکتیکی)</strong> — ساخت مدل داخل یک زمینه‌ی محدود با
+<em>Entity</em>، <em>Value Object</em>، <em>Aggregate</em>، <em>Domain Service</em> و
+<em>Domain Event</em>. این بخش درباره‌ی <strong>مدل</strong> است و در سطح کلاس‌ها کار می‌کند.</li>
+<li><strong>Ubiquitous Language (زبان همه‌جاست)</strong> — یک واژگان مشترک بین کسب‌وکار و کد
+که در هر دو طرف <em>دقیقاً یک معنا</em> دارد.</li>
+</ol>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تعریف یک‌خطی</span>
+DDD یعنی «کسب‌وکار را مدل کن، مدل را داخل کد بنویس، و نام‌های کد را همان نام‌های کسب‌وکار بگذار».
+</div>
+
+<h3>DDD یعنی «لایه‌بندی» نیست</h3>
+
+<p>
+این مهم‌ترین سوءتفاهم درباره‌ی DDD است. هر پروژه‌ای لایه‌ی <code>repository</code>،
+<code>service</code> و <code>controller</code> دارد، اما این <strong>لایه‌بندی</strong> است،
+نه DDD. تفاوت‌ها:
+</p>
+
+<table>
+<thead>
+<tr><th>معیار</th><th>لایه‌بندی ساده (Layered)</th><th>DDD واقعی (Domain-Driven)</th></tr>
+</thead>
+<tbody>
+<tr><td>منشأ نام‌ها</td><td>نام جدول دیتابیس یا اسم متد فنی</td><td>واژه‌ی کسب‌وکار</td></tr>
+<tr><td>محل قواعد</td><td>در Service یا حتی Controller</td><td><strong>داخل خودِ مدل</strong></td></tr>
+<tr><td>مرز تغییر</td><td>تغییر یک قانون = ویرایش چند لایه</td><td>تغییر یک قانون = ویرایش یک کلاس</td></tr>
+<tr><td>مرز Aggregate</td><td>معمولاً وجود ندارد</td><td>مرز تراکنش را صریح تعیین می‌کند</td></tr>
+<tr><td>تست دامنه</td><td>نیازمند دیتابیس یا شبیه‌سازی</td><td>تست خالص، بدون زیرساخت</td></tr>
+</tbody>
+</table>
+
+<h3>ساختار کلان مفاهیم</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    A[Ubiquitous Language<br/>زبان مشترک] --> B[Bounded Context<br/>زمینه‌ی محدود]
+    B --> C[Subdomain<br/>زیرسیستم]
+    C --> D[Module<br/>ماژول داخلی]
+    D --> E[Entity &amp; Value Object]
+    E --> F[Aggregate Root<br/>ریشه‌ی تجمیع]
+    F --> G[Repository]
+    F --> H[Domain Service]
+    F --> I[Domain Event]</code></pre>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<p>
+برای فهمیدن ارزش DDD، باید درد «بدون DDD» را دقیق بدانیم. چهار الگوی رایج در کدبیس‌های
+بزرگ که DDD درمان می‌کند:
+</p>
+
+<h3>۱. مدل داده‌ای به‌جای مدل دامنه (Data Model)</h3>
+
+<pre class="kl-code" data-lang="java"><code>// مدل داده‌ای کلاسیک: کلاس فقط یک کیسه‌ی داده است
+public class Customer {
+    private Long id;
+    private String name;
+    private String email;
+    private String phone;
+    private Integer statusCode;   // ← عدد بی‌معنا
+    private Integer typeCode;     // ← عدد بی‌معنا
+
+    // هیچ رفتاری وجود ندارد؛ «مشتری» نمی‌داند چه کاری می‌کند
+}</code></pre>
+
+<p>
+قواعد کسب‌وکار کجا می‌روند؟ در <code>CustomerService</code> که به‌مرور به یک کلاس
+۱۰۰۰ خطی تبدیل می‌شود:
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public class CustomerService {
+    public void process(Long id) {
+        // ۲۸۷ خط کد با ۱۴ if و ۹ حلقه و ۵ پرس‌وجوی دیتابیس
+        // و هیچ‌کدام ربطی به «مشتری» به‌عنوان یک مفهوم کسب‌وکاری ندارد
+    }
+}</code></pre>
+
+<h3>۲. مدل贫血 (Anemic Domain Model)</h3>
+
+<p>
+حالت رایج‌تر و بدتر: کلاس‌ها ساختار دارند ولی هیچ رفتاری ندارند و همه‌ی منطق در سرویس‌هاست.
+<code>Customer</code> فقط getter/setter دارد. این یعنی کسب‌وکار «هیچ‌جا» نیست — قوانین در
+سرویس‌ها پخش‌اند و کسی نمی‌تواند بگوید قانون «وفاداری» دقیقاً کجاست.
+</p>
+
+<h3>۳. نشتی جزئیات فنی به دامنه (Leaky Abstraction)</h3>
+
+<pre class="kl-code" data-lang="java"><code>public class CustomerService {
+    public List&lt;Customer&gt; findActiveCustomers() {
+        // ← منطق کسب‌وکار به SQL آلوده شده
+        return jdbcTemplate.query(
+            "SELECT * FROM customers WHERE status = 1", this::map);
+    }
+}</code></pre>
+
+<p>
+حالا تغییر دیتابیس (مثلاً مهاجرت به MongoDB) یعنی بازنویسی منطق کسب‌وکار. این دقیقاً همان چیزی است
+که DDD با مرز Aggregate و Repository حل می‌کند.
+</p>
+
+<h3>۴. قوانین پخش‌شده و تکراری</h3>
+
+<p>
+قانون «سفارش بالای ۱۰۰ عدد باید تأیید مدیر بگیرد» ممکن است در پنج جا نوشته شده باشد:
+کنترلر، سرویس، یک Trigger، یک Job زمان‌بندی‌شده و یک سرویس بیرونی. تغییر قانون یعنی پنج
+ویرایش و امید به اینکه همه را پیدا کنید.
+</p>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">هزینه‌ی پنهان این وضعیت</span>
+هیچ‌کدام از این مشکلات در کوتاه‌مدت دردناک نیستند. درد در ماه ششم شروع می‌شود:
+تغییری که باید ۳۰ دقیقه طول بکشد، سه روز می‌گیرد چون «نمی‌دانیم این قانون کجاها کپی شده».
+DDD سرعت <em>تغییر</em> را بهبود می‌دهد، نه سرعت <em>نوشتن</em> کد را.
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: زبان مشترک و مدل دامنه</h2>
+
+<p>
+اگر فقط یک چیز از DDD را باید به خاطر بسپارید، آن یکی <strong>Ubiquitous Language</strong>
+(زبان همه‌جاست) است. ایوانز آن را چنین تعریف می‌کند:
+</p>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">Ubiquitous Language</span>
+«یک زبان مشترک بین برنامه‌نویسان و متخصصان کسب‌وکار، در یک محدوده‌ی مشخص، که در آن
+مدل و کد ساختار مشترکی دارند.»
+</div>
+
+<p>
+یعنی نامی که کارشناس فروش به کار می‌برد، باید <strong>دقیقاً همان نام</strong> در کد باشد.
+اگر کسب‌وکار می‌گوید «سفارش در وضعیت تأییدنشده»، در کد نباید
+<code>OrderStatus.PENDING_REVIEW</code> باشد.
+</p>
+
+<table>
+<thead>
+<tr><th>واژه‌ی کسب‌وکار</th><th>❌ نام اشتباه در کد</th><th>✅ نام درست در کد</th><th>چرا؟</th></tr>
+</thead>
+<tbody>
+<tr><td>سفارش</td><td><code>OrderEntity</code></td><td><code>Order</code></td><td>پسوند <code>Entity</code> نویز است</td></tr>
+<tr><td>سبد خرید</td><td><code>CartObject</code></td><td><code>ShoppingCart</code></td><td>«Cart» واژه‌ی فنی است، «سبد خرید» واژه‌ی کسب‌وکار</td></tr>
+<tr><td>تخفیف</td><td><code>DiscountDTO</code></td><td><code>Discount</code></td><td>DTO یعنی داده‌ی انتقال، نه قاعده‌ی کسب‌وکار</td></tr>
+<tr><td>مهلت پرداخت</td><td><code>expireTime</code></td><td><code>PaymentDeadline</code></td><td>واژه‌ی کسب‌وکار، نه پیاده‌سازی فنی</td></tr>
+</tbody>
+</table>
+
+<h3>زبان مشترک چگونه ساخته می‌شود؟</h3>
+
+<ol>
+<li><strong>Event Storming</strong>: یک کارگاه ۲ تا ۳ ساعته با کسب‌وکار، توسعه‌دهنده و
+QA. روی تخته، «رویداد»های دامنه را می‌چینید: «سفارش ثبت شد»، «پرداخت تأیید شد»، …
+این واژه‌ها دقیقاً همان‌هایی هستند که باید کلاس Event شما باشند.</li>
+<li><strong>مدل دامنه‌ی مشترک</strong>: یک مستند کوچک یا یک ویکی که در آن هر مفهوم با
+تعریف، مثال، و قواعدش آمده است.</li>
+<li><strong>تداوم در کد</strong>: نام مفهوم در کد، نام فیلد در DTO، نام جدول در دیتابیس و
+نام تسک در Jira — همه یکی.</li>
+</ol>
+
+<h3>مدل دامنه چه ویژگی‌هایی دارد؟</h3>
+
+<div class="kl-check">
+<ul>
+<li>مدل، <strong>قواعد کسب‌وکار را در خود نگه می‌دارد</strong>، نه در سرویس‌ها</li>
+<li>مدل <strong>مستقل از ذخیره‌سازی</strong> است: در دامنه هیچ <code>@Entity</code> وابسته به JPA نیست</li>
+<li>مدل <strong>مستقل از رابط کاربری</strong> است: هیچ DTO فرمی در آن نیست</li>
+<li>مدل <strong>قابل تست بدون زیرساخت</strong> است</li>
+<li>مدل <strong>کوچک و دقیق</strong> است، نه همه‌چیز از همه‌چیز</li>
+</ul>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تست تشخیص سریع</span>
+یک کلاس از مدل دامنه را بردارید و ببینید آیا بدون هیچ کتابخانه‌ی بیرونی (بدون Spring، بدون
+JPA) قابل <code>new</code> کردن و فراخوانی است. اگر بله، مدل دارید. اگر نه، Service دارید.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>مفاهیم کلیدی دامنه</h2>
+
+<p>
+پنج مفهوم، ستون فقرات DDD تاکتیکی هستند. بیایید هرکدام را با یک مثال واحد (سفارش) تعریف کنیم.
+</p>
+
+<h3>Entity (موجودیت)</h3>
+
+<p>
+چیزی که <strong>هویت</strong> دارد، حتی اگر ویژگی‌هایش عوض شود. دو کاربر با نام یکسان
+<strong>دو Entity متفاوت</strong> هستند. معیار تشخیص: آیا می‌توانید بگویید «این <em>همان</em>
+یکی است»؟ اگر بله، Entity است.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public final class Order {          // ← Entity: دارای هویت
+    private final OrderId id;    // ← هویت، هرگز عوض نمی‌شود
+    private CustomerId customerId;
+    private List&lt;OrderLine&gt; lines = new ArrayList&lt;&gt;();
+    private Money total;         // ← ویژگی‌ها عوض می‌شوند
+
+    // مقایسه بر اساس هویت، نه بر اساس محتوا
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order other)) return false;
+        return id.equals(other.id);   // ← نکته‌ی کلیدی
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+}</code></pre>
+
+<h3>Value Object (شیء مقداری)</h3>
+
+<p>
+چیزی که <strong>هویت ندارد</strong> و تمام ارزشش در مقادیرش است. «۱۰۰ هزار تومان» یک
+Value Object است؛ دو تا از آن با مبلغ یکسان <strong>برابرند</strong>. VOها
+<strong>تغییرناپذیر (Immutable)</strong> هستند و در عمل ۲۰ تا ۳۰٪ کدبیس واقعی را می‌سازند
+چون پارامترهای نامعتبر را در constructor حذف می‌کنند.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public record Money(BigDecimal amount, Currency currency) {
+
+    public Money {
+        Objects.requireNonNull(amount, "مبلغ نمی‌تواند null باشد");
+        Objects.requireNonNull(currency, "ارز نمی‌تواند null باشد");
+        if (amount.scale() &gt; 2) {
+            throw new IllegalArgumentException("مبلغ بیش از دو رقم اعشار ندارد");
+        }
+        if (amount.signum() &lt; 0) {
+            throw new IllegalArgumentException("مبلغ نمی‌تواند منفی باشد");
+        }
+    }
+
+    public Money add(Money other) {
+        if (!currency.equals(other.currency)) {
+            throw new IllegalArgumentException("جمع دو ارز متفاوت ممکن نیست");
+        }
+        return new Money(amount.add(other.amount), currency);
+    }
+
+    // مقایسه بر اساس محتوا — و چون record است، خودکار انجام می‌شود
+}</code></pre>
+
+<table>
+<thead>
+<tr><th>معیار</th><th>Entity</th><th>Value Object</th></tr>
+</thead>
+<tbody>
+<tr><td>هویت</td><td>دارد (id)</td><td>ندارد</td></tr>
+<tr><td>برابری</td><td>بر اساس id</td><td>بر اساس همه‌ی فیلدها</td></tr>
+<tr><td>تغییرپذیری</td><td>تغییر می‌کند</td><td><strong>تغییرناپذیر</strong></td></tr>
+<tr><td>نمونه</td><td>Order، Customer، Product</td><td>Money، Email، DateRange، Address</td></tr>
+<tr><td>محل ذخیره</td><td>جدول جدا با کلید اصلی</td><td>درون همان ستون/JSON</td></tr>
+<tr><td>ساخت مقدار جدید</td><td>متد setter یا متد دامنه</td><td>سازنده‌ی جدید</td></tr>
+</tbody>
+</table>
+
+<h3>Aggregate (تجمیع) و Aggregate Root</h3>
+
+<p>
+این <strong>مهم‌ترین</strong> مفهوم DDD است. Aggregate یک <em>مجموعه‌ی شیء</em> است که
+با هم یک <strong>واحد تراکنش</strong> می‌سازند. قاعده‌ی طلایی:
+</p>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">قاعده‌ی Aggregate</span>
+«یک تراکنش، فقط یک Aggregate را تغییر می‌دهد. سایر Aggregate‌ها از طریق شناسه (id) ارجاع
+می‌شوند، نه شیء.»
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph AggA["Aggregate: Order ✅ مرز تراکنش"]
+        OR["Order<br/>Aggregate Root"]
+        OL1["OrderLine<br/>Entity"]
+        OL2["OrderLine<br/>Entity"]
+        DL["DeliveryAddress<br/>Value Object"]
+        OR -->|"داخل"| OL1
+        OR -->|"داخل"| OL2
+        OR -->|"داخل"| DL
+    end
+
+    subgraph AggB["Aggregate: Customer"]
+        CR["Customer<br/>Aggregate Root"]
+    end
+
+    OR -->|"فقط CustomerId<br/>نه شیء Customer"| CR
+
+    AggA --> DB1[("یک تراکنش<br/>واحد کار")]
+    AggB -.->|"تراکنش جدا"| DB1</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">چرا این قاعده انقدر مهم است؟</span>
+اگر داخل یک تراکنش به دو Aggregate دست بزنید، <strong>قفل</strong> لازم می‌شود و
+<strong>race condition</strong> وارد سیستم می‌شود. اگر Aggregate را کوچک نگیرید (مثلاً کل سیستم
+را یک Aggregate کنید)، عملکرد فرو می‌ریزد. اندازه‌ی درست Aggregate یک تصمیم معماری واقعی است.
+</div>
+
+<p>
+<strong>Aggregate Root</strong> تنها شیءی است که بیرون از Aggregate می‌تواند آن را
+<em>دریافت و ویرایش</em> کند. بقیه‌ی اعضا فقط از داخل Root در دسترس‌اند. این قاعده باعث
+می‌شود کسی نتواند <code>order.getLines().get(0).setPrice(-100)</code> بکند و سیستم را خراب کند.
+</p>
+
+<h3>Domain Service</h3>
+
+<p>
+وقتی یک قاعده به <strong>بیش از یک Aggregate</strong> مربوط است، جای طبیعی‌اش داخل هیچ‌کدام
+از آن‌ها نیست. آن‌وقت یک <code>Domain Service</code> بدون وضعیت (stateless) می‌سازید:
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public final class LoyaltyPolicy {
+
+    private LoyaltyPolicy() {}   // ← فقط متد استاتیک، نه آبجکت
+
+    public static boolean isLoyal(Customer customer, OrderHistory history) {
+        // این قاعده هم به Customer مربوط است، هم به OrderHistory
+        return history.settledCountInLastDays(90) &gt;= 3
+            &amp;&amp; history.totalSpentInLastDays(90).isGreaterThan(Money.toman(2_000_000));
+    }
+}</code></pre>
+
+<h3>Domain Event</h3>
+
+<p>
+رویدادی که <strong>در دامنه اتفاق افتاده</strong> و گذشته است. تفاوتش با پیام سیستمی این است که
+پیام سیستمی درباره‌ی «اطلاع‌رسانی» است، اما Domain Event درباره‌ی <strong>تغییر وضعیت</strong>:
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public record OrderPlaced(
+        OrderId orderId,
+        CustomerId customerId,
+        Money total,
+        Instant occurredAt
+) implements DomainEvent {}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">قانون نام‌گذاری Domain Event</span>
+همیشه با <strong>ق past</strong> شروع کنید: <code>OrderPlaced</code>، <code>PaymentCaptured</code>،
+<code>CustomerBlocked</code>. این نام‌گذاری یک چیز را تضمین می‌کند: هیچ‌کس نمی‌تواند در نام Event
+از فعل آینده استفاده کند، و همین ساده‌ترین قانون، کل مدل را درست نگه می‌دارد.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>Repository و Service دامنه</h2>
+
+<p>
+<strong>Repository</strong> در DDD فقط یک الگوی دسترسی به داده نیست؛ یک
+<strong>جمع‌کننده‌ی موجودیت‌های یک Aggregate</strong> است. این تعریف، تمام تفاوت‌ها را توضیح می‌دهد.
+</p>
+
+<h3>RepositoryAggregator نوشته می‌شود، نه برای هر چیزی</h3>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">قانون</span>
+<strong>یک Repository برای هر Aggregate Root</strong> بسازید — نه برای هر Entity و نه برای هر جدول.
+اگر سه Aggregate Root دارید، سه Repository دارید.
+</div>
+
+<pre class="kl-code" data-lang="java"><code>// ✅ درست: Repository برای Aggregate Root
+public interface OrderRepository {
+    Optional&lt;Order&gt; findById(OrderId id);
+    void save(Order order);
+    boolean existsById(OrderId id);
+}
+
+// ❌ غلط: Repository برای OrderLine که داخل Aggregate است
+public interface OrderLineRepository { ... }   // ← نشانه‌ی مرز اشتباه</code></pre>
+
+<h3>تفاوت Repository دامنه با DAO فنی</h3>
+
+<table>
+<thead>
+<tr><th>DAO</th><th>Repository (دامنه‌محور)</th></tr>
+</thead>
+<tbody>
+<tr><td>یک متد = یک جدول</td><td>یک متد = یک عملیات معنادار دامنه</td></tr>
+<tr><td><code>findByStatusAndDateBetween(...)</code></td><td><code>findUnshippedFor(CustomerId id)</code></td></tr>
+<tr><td>از نام جدول ساخته شده</td><td>از زبان کسب‌وکار ساخته شده</td></tr>
+<tr><td>معمولاً در لایه‌ی زیرساخت</td><td>در لایه‌ی دامنه (به‌صورت Interface)</td></tr>
+<tr><td>می‌تواند قاعده‌ی دامنه داشته باشد</td><td><strong>نباید</strong> قاعده‌ی دامنه داشته باشد</td></tr>
+</tbody>
+</table>
+
+<p>
+نکته‌ی ظریف: متد <code>existsByEmail</code> خوب است، اما
+<code>findByEmailAndStatusActiveAndCreatedAfterAndRoleNotIn</code> یک <strong>DAO</strong>
+است که فقط اسمش را عوض کرده‌اید.
+</p>
+
+<h3>Domain Service در برابر Application Service</h3>
+
+<table>
+<thead>
+<tr><th>Domain Service</th><th>Application Service</th></tr>
+</thead>
+<tbody>
+<tr><td>منطق کسب‌وکار <em>مادر</em></td><td>هماهنگی و <em>اجرا</em> منطق</td></tr>
+<tr><td>بدون وضعیت</td><td>بدون وضعیت (معمولاً)</td></tr>
+<tr><td>در لایه‌ی دامنه</td><td>در لایه‌ی application</td></tr>
+<tr><td>بدون Transaction</td><td><strong>مرز Transaction</strong></td></tr>
+<tr><td>بدون Repository</td><td>Repository را صدا می‌زند</td></tr>
+<tr><td>نمونه: <code>calculateDiscount()</code></td><td>نمونه: <code>placeOrder()</code></td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">اشتباه مرزی رایج</span>
+<code>@Transactional</code> روی متدی در لایه‌ی دامنه یعنی دامنه‌ی شما به فریم‌ورک وابسته شده.
+تست خالص دامنه دیگر ممکن نیست. مرز Transaction جایی در لایه‌ی application است.
+</div>
+
+<h3>جریان تصمیم در یک سناریو</h3>
+
+<pre class="kl-code" data-lang="text"><code>کاربر دکمه‌ی «ثبت سفارش» را می‌زند
+   ↓
+ApplicationService.placeOrder(command)          ← باز کردن تراکنش
+   ↓
+OrderRepository.findById(...)                   ← خواندن Aggregate
+   ↓
+order.addLine(product, quantity)                ← قاعده‌ی دامنه: بررسی موجودی
+   ↓                                              (پرتاب خطا اگر ناموجود)
+order.place()                                   ← تغییر وضعیت + انتشار Event
+   ↓
+OrderRepository.save(order)                     ← نوشتن یک Aggregate
+   ↓
+ایجاد OrderPlaced در صف                         ← تراکنش commit می‌شود
+   ↓
+مصرف‌کننده: ارسال ایمیل، کم‌کردن موجودی انبار، ساخت فاکتور</code></pre>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار معماری: لایه‌های DDD</h2>
+
+<p>
+لایه‌بندی کلاسیک DDD چهار لایه دارد. مهم‌ترین نکته‌ی آن <strong>جهت وابستگی</strong> است:
+پیکان‌ها همیشه به داخل می‌روند.
+</p>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    IN["لایه‌ی رابط کاربری<br/>Interface / Presentation<br/>Controller، REST، UI"]
+    APP["لایه‌ی Application<br/>Use Case ها<br/>جریان تراکنش، مرز تراکنش"]
+    DOM["لایه‌ی Domain<br/>مدل دامنه<br/>Entity، VO، Aggregate، Domain Service"]
+    INF["لایه‌ی Infrastructure<br/>پیاده‌سازی‌های فنی<br/>JPA، HTTP، Kafka، فایل"]
+
+    IN -->|"وابسته به"| APP
+    APP -->|"وابسته به"| DOM
+    INF -.->|"پیاده‌سازی Interface های"| DOM
+    APP -.->|"پیاده‌سازی Port های"| INF
+
+    style DOM fill:#0f766e,color:#fff,stroke:#0f766e
+    style INF fill:#475569,color:#fff,stroke:#475569</code></pre>
+
+<h3>لایه‌ی Domain — قلب سیستم</h3>
+
+<p>
+<strong>هیچ وابستگی بیرونی ندارد.</strong> نه Spring، نه JPA، نه Jackson، نه حتی
+<code>java.util.logging</code> از پروژه‌ی شما. این تنها قانونی است که نباید شکسته شود.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>domain/
+├── order/
+│   ├── Order.java                 ← Aggregate Root
+│   ├── OrderId.java               ← Value Object
+│   ├── OrderLine.java             ← Entity داخل Aggregate
+│   ├── OrderStatus.java           ← Enum با قواعد
+│   ├── Money.java                 ← Value Object
+│   ├── OrderRepository.java       ← Port دامنه
+│   ├── OrderPlaced.java           ← Domain Event
+│   └── exception/
+│       ├── OrderNotFoundException.java
+│       └── InsufficientStockException.java
+└── customer/
+    ├── Customer.java
+    ├── Email.java
+    └── CustomerRepository.java</code></pre>
+
+<h3>لایه‌ی Application — نازک و بی‌منطق</h3>
+
+<p>
+این لایه فقط <strong>هماهنگ‌کننده</strong> است. قاعده‌ی کلیدی: اگر یک <code>if</code> در این
+لایه دیدید که یک قانون کسب‌وکار را بررسی می‌کند، آن <code>if</code> جای درستی ندارد.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>@Service                       // ← Spring اینجا اشکالی ندارد
+@Transactional                  // ← مرز تراکنش اینجاست
+public class OrderApplicationService {
+
+    private final OrderRepository orders;    // ← Port
+    private final EventPublisher events;     // ← Port
+
+    public OrderId placeOrder(PlaceOrderCommand cmd) {
+        Order order = Order.create(cmd.customerId());     // ← منطق در مدل
+
+        for (var line : cmd.lines()) {
+            order.addLine(line.productId(), line.quantity());  // ← اعتبارسنجی در مدل
+        }
+
+        order.place();                                    // ← تغییر وضعیت در مدل
+
+        orders.save(order);                               // ← یک Repository
+        events.publish(order.pullEvents());               // ← انتشار Event
+        return order.id();
+    }
+}</code></pre>
+
+<h3>لایه‌ی Infrastructure — همه‌ی چیزهای فنی</h3>
+
+<pre class="kl-code" data-lang="text"><code>infrastructure/
+├── persistence/
+│   ├── OrderJpaEntity.java         ← مدل دیتابیس (@Entity)
+│   ├── OrderEntityMapper.java      ← Data Mapper
+│   ├── JpaOrderRepository.java     ← implements OrderRepository
+│   └── SpringEventPublisher.java   ← implements EventPublisher
+├── messaging/
+│   └── KafkaEventPublisher.java
+└── config/
+    └── DomainConfig.java           ← تزریق وابستگی</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چرا Infrastructure پایین است؟</span>
+چون <strong>هیچ‌کس نباید وابسته به آن باشد</strong>. اگر لایه‌ی Domain به
+<code>OrderJpaEntity</code> وابسته شود، دیگر مدل دامنه نیست — یک لایه‌ی نازک روی JPA است.
+این همان تفاوت DDD با «لایه‌بندی + JPA» است.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>جریان داده (Data Flow)</h2>
+
+<p>
+جریان خواندن در یک DDD سالم همیشه یک مسیر مشخص دارد. هر گام جداست و می‌توان آن را تست کرد:
+</p>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant C as کاربر
+    participant CT as OrderController
+    participant AS as OrderApplicationService
+    participant R as OrderRepository (Port)
+    participant PR as JpaOrderRepository (Adapter)
+    participant DB as دیتابیس
+
+    C->>CT: POST /orders (PlaceOrderRequest)
+    CT->>CT: اعتبارسنجی فرم و تبدیل به Command
+    CT->>AS: placeOrder(command)
+    AS->>R: findById(orderId)
+    R->>PR: (تنها کسی که JPA می‌شناسد)
+    PR->>DB: SELECT * FROM orders
+    DB-->>PR: ردیف‌ها
+    PR-->>AS: Order (موجودیت، نه ردیف دیتابیس)
+    AS->>AS: قوانین دامنه اجرا می‌شود
+    AS->>R: save(order)
+    R->>PR: save
+    PR->>DB: INSERT / UPDATE
+    AS-->>CT: OrderId
+    CT-->>C: 201 Created + Location</code></pre>
+
+<h3>قواعد جریان داده</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>ورودی همیشه Command است</strong>، نه مستقیم Entity — تا لایه‌ی بالا نتواند
+بی‌دلیل فیلدهای مدل را عوض کند</li>
+<li><strong>خروجی همیشه DTO است</strong>، نه Entity — تا ساختار مدل در API لو نرود</li>
+<li><strong>تبدیل فقط در دو نقطه</strong>: <code>Request → Command</code> در لایه‌ی UI و
+<code>Entity ⇄ JPA</code> در لایه‌ی زیرساخت</li>
+<li><strong>هیچ‌گاه</strong> لایه‌ی UI مستقیم Repository را صدا نزند</li>
+<li><strong>هیچ‌گاه</strong> Aggregate دوم در همان تراکنش بارگذاری نشود</li>
+</ul>
+</div>
+
+<h3>جریان نوشتن — چه چیزی ذخیره می‌شود؟</h3>
+
+<pre class="kl-code" data-lang="text"><code>در یک تراکنش، این‌ها ذخیره می‌شوند:
+  ✅ Order (Aggregate 1)  → جدول orders
+  ✅ OrderLine های آن     → جدول order_lines
+  ✅ OutboxEvent های آن   → جدول outbox_events
+
+در این تراکنش، این‌ها ذخیره نمی‌شوند (فقط ID خوانده می‌شوند):
+  ⛔ Customer             → فقط customer_id خوانده می‌شود
+  ⛔ Product              → فقط product_id خوانده می‌شود
+
+بعد از commit، به‌صورت ناهمگام:
+  📤 ارسال OrderPlaced به صف
+  📧 ارسال ایمیل
+  📊 به‌روزرسانی گزارش‌ها</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">الگوی Outbox</span>
+اگر رویداد دامنه را <em>قبل</em> از commit در Kafka بفرستید و تراکنش fail شود، یک
+رویداد برای سفارشی می‌فرستید که اصلاً ثبت نشده. راه‌حل استاندارد: رویداد را در
+<strong>جدول outbox در همان تراکنش</strong> بنویسید، و یک پروسه‌ی جدا آن را به صف
+منتشر کند. این یکی از مهم‌ترین الگوهای عملی DDD است.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>مثال عملی کامل: دامنه‌ی سفارش</h2>
+
+<p>
+بیایید یک دامنه‌ی واقعی بسازیم: ثبت سفارش. تمام مفاهیم DDD در همین یک سناریو دیده می‌شوند.
+</p>
+
+<h3>سناریوی کسب‌وکار</h3>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">قواعد دامنه‌ی سفارش</span>
+<ul>
+<li>سفارش باید حداقل یک ردیف داشته باشد</li>
+<li>سفارش بیش از ۵۰ ردیف ندارد (قانون جلوگیری از abuse)</li>
+<li>سفارش بالای ۱۰ میلیون ریال نیاز به تأیید مدیر دارد</li>
+<li>سفارش در وضعیت <code>PLACED</code> قابل ویرایش نیست</li>
+<li>سفارش لغوشده قابل بازگشت نیست (قانون کسب‌وکار)</li>
+<li>مجموع ردیف‌ها باید با مبلغ اعلامی کاربر برابر باشد</li>
+</ul>
+</div>
+
+<h3>ساختار پروژه</h3>
+
+<pre class="kl-code" data-lang="text"><code>src/main/java/com/shop/
+├── domain/                         ← ❌ هیچ import خارجی اینجا نیست
+│   ├── order/
+│   │   ├── Order.java              ← Aggregate Root
+│   │   ├── OrderId.java            ← Value Object (record)
+│   │   ├── OrderLine.java          ← Entity داخل Aggregate
+│   │   ├── OrderStatus.java
+│   │   ├── OrderRepository.java    ← Port
+│   │   ├── OrderPlaced.java        ← Domain Event
+│   │   └── OrderError.java         ← خطاهای دامنه
+│   └── customer/
+│       ├── Customer.java
+│       └── Email.java
+├── application/
+│   ├── OrderApplicationService.java
+│   └── command/PlaceOrderCommand.java
+└── infrastructure/
+    ├── persistence/
+    │   ├── OrderJpaEntity.java
+    │   ├── OrderLineJpaEntity.java
+    │   ├── OrderEntityMapper.java
+    │   └── JpaOrderRepository.java
+    └── web/OrderController.java</code></pre>
+
+<h3>Entity درون Aggregate</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.domain.order;
+
+import java.util.List;
+
+public final class Order {
+
+    private final OrderId id;
+    private final String customerId;
+    private final List&lt;OrderLine&gt; lines;
+    private OrderStatus status;
+    private Money total;
+    private final List&lt;DomainEvent&gt; events = new ArrayList&lt;&gt;();
+
+    private Order(OrderId id, String customerId) {
+        this.id = id;
+        this.customerId = customerId;
+        this.lines = new ArrayList&lt;&gt;();
+        this.status = OrderStatus.DRAFT;
+        this.total = Money.zero("IRR");
+    }
+
+    // ── نقطه‌ی ورود: ساخت از طریق کارخانه ──
+    public static Order draft(String customerId) {
+        if (customerId == null || customerId.isBlank()) {
+            throw new OrderError("شناسه‌ی مشتری الزامی است");
+        }
+        return new Order(OrderId.newId(), customerId);
+    }
+
+    // ── متد دامنه: افزودن ردیف + اعتبارسنجی ──
+    public Order addLine(String productId, int quantity, Money unitPrice) {
+        ensureModifiable();
+        if (quantity &lt;= 0) {
+            throw new OrderError("تعداد باید بزرگ‌تر از صفر باشد");
+        }
+        if (lines.size() &gt;= 50) {
+            throw new OrderError("سفارش نمی‌تواند بیش از ۵۰ ردیف داشته باشد");
+        }
+        if (lines.stream().anyMatch(l -&gt; l.productId().equals(productId))) {
+            throw new OrderError("این محصول قبلاً در سفارش هست؛ تعداد را تغییر دهید");
+        }
+
+        lines.add(new OrderLine(productId, quantity, unitPrice));
+        recalculateTotal();      // ← مدل همیشه سازگار می‌ماند
+        return this;
+    }
+
+    // ── انتقال وضعیت ──
+    public Order place() {
+        ensureModifiable();
+        if (lines.isEmpty()) {
+            throw new OrderError("سفارش بدون ردیف قابل ثبت نیست");
+        }
+        this.status = OrderStatus.PLACED;
+        this.events.add(new OrderPlaced(id, customerId, total, Instant.now()));
+        return this;
+    }
+
+    public boolean requiresApproval() {
+        return total.isGreaterThan(Money.toman(10_000_000));
+    }
+
+    public void cancel(String reason) {
+        if (status == OrderStatus.CANCELLED) {
+            throw new OrderError("سفارش قبلاً لغو شده است");
+        }
+        if (status == OrderStatus.DELIVERED) {
+            throw new OrderError("سفارش تحویل‌شده قابل لغو نیست");
+        }
+        this.status = OrderStatus.CANCELLED;
+        this.events.add(new OrderCancelled(id, reason, Instant.now()));
+    }
+
+    private void ensureModifiable() {
+        if (status != OrderStatus.DRAFT) {
+            throw new OrderError("سفارش در وضعیت " + status + " قابل ویرایش نیست");
+        }
+    }
+
+    private void recalculateTotal() {
+        Money sum = Money.zero("IRR");
+        for (OrderLine line : lines) {
+            sum = sum.add(line.subtotal());
+        }
+        this.total = sum;
+    }
+
+    public List&lt;DomainEvent&gt; pullEvents() {
+        List&lt;DomainEvent&gt; copy = List.copyOf(events);
+        events.clear();
+        return copy;
+    }
+
+    // ── getter های محدود (بدون setter!) ──
+    public OrderId id()                { return id; }
+    public String customerId()        { return customerId; }
+    public OrderStatus status()       { return status; }
+    public Money total()              { return total; }
+    public List&lt;OrderLine&gt; lines() { return List.copyOf(lines); }
+}</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی کد بالا</span>
+هیچ <code>setTotal()</code> عمومی وجود ندارد. <code>total</code> فقط از راه
+<code>addLine</code> تغییر می‌کند. یعنی <strong>امکان ساختن موجودیت ناسازگار وجود ندارد</strong> —
+این دقیقاً همان چیزی است که «مدل دامنه‌ی درون‌گرا» انجام می‌دهد.
+</div>
+
+<h3>Value Object با اعتبارسنجی سازنده</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.domain.order;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Currency;
+import java.util.Objects;
+
+public record Money(BigDecimal amount, Currency currency) implements Comparable&lt;Money&gt; {
+
+    public Money {
+        Objects.requireNonNull(amount, "مبلغ نمی‌تواند null باشد");
+        Objects.requireNonNull(currency, "ارز نمی‌تواند null باشد");
+        if (amount.signum() &lt; 0) {
+            throw new OrderError("مبلغ نمی‌تواند منفی باشد");
+        }
+        if (amount.scale() &gt; 2) {
+            throw new OrderError("مبلغ بیش از دو رقم اعشار ندارد");
+        }
+    }
+
+    public static Money zero(String currencyCode) {
+        return new Money(BigDecimal.ZERO, Currency.getInstance(currencyCode));
+    }
+
+    public static Money toman(long amount) {
+        return new Money(BigDecimal.valueOf(amount), Currency.getInstance("IRR"));
+    }
+
+    public Money add(Money other) {
+        requireSameCurrency(other);
+        return new Money(amount.add(other.amount), currency);
+    }
+
+    public Money multiply(int factor) {
+        if (factor &lt; 0) {
+            throw new OrderError("ضریب نمی‌تواند منفی باشد");
+        }
+        return new Money(amount.multiply(BigDecimal.valueOf(factor))
+                .setScale(2, RoundingMode.HALF_UP), currency);
+    }
+
+    public boolean isGreaterThan(Money other) {
+        requireSameCurrency(other);
+        return amount.compareTo(other.amount) &gt; 0;
+    }
+
+    private void requireSameCurrency(Money other) {
+        if (!currency.equals(other.currency)) {
+            throw new OrderError("عملیات روی دو ارز متفاوت ممکن نیست");
+        }
+    }
+
+    @Override
+    public int compareTo(Money other) {
+        requireSameCurrency(other);
+        return amount.compareTo(other.amount);
+    }
+
+    @Override
+    public String toString() {
+        return amount + " " + currency.getCurrencyCode();
+    }
+}</code></pre>
+
+<h3>Domain Event و خطاهای دامنه</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.domain;
+
+import java.time.Instant;
+
+/** هر رویداد دامنه باید تغییر وضعیت گذشته را توصیف کند. */
+public interface DomainEvent {
+    Instant occurredAt();
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.domain.order;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+public final class OrderLine {
+
+    private final String productId;
+    private final int quantity;
+    private final Money unitPrice;
+
+    OrderLine(String productId, int quantity, Money unitPrice) {
+        this.productId = Objects.requireNonNull(productId);
+        this.quantity = quantity;
+        this.unitPrice = Objects.requireNonNull(unitPrice);
+    }
+
+    public Money subtotal() {
+        return unitPrice.multiply(quantity);
+    }
+
+    public String productId() { return productId; }
+    public int quantity()     { return quantity; }
+    public Money unitPrice()  { return unitPrice; }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.domain.order;
+
+/** خطای دامنه: مسئله‌ی کسب‌وکار است، نه اشکال فنی. */
+public class OrderError extends RuntimeException {
+
+    private final String code;
+
+    public OrderError(String message) {
+        super(message);
+        this.code = "ORDER_DOMAIN_ERROR";
+    }
+
+    public String code() {
+        return code;
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>پیاده‌سازی کد با Java 21</h2>
+
+<p>
+در این بخش پیاده‌سازی سمت زیرساخت و لایه‌ی application را می‌بینید. توجه کنید که
+<strong>هیچ‌کدام</strong> از این کلاس‌ها قاعده‌ی کسب‌وکار ندارند.
+</p>
+
+<h3>مدل JPA (در لایه‌ی زیرساخت، نه دامنه)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.infrastructure.persistence;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "orders")
+class OrderJpaEntity {
+
+    @Id
+    @Column(name = "id", length = 36)
+    private String id;
+
+    @Column(name = "customer_id", nullable = false, length = 36)
+    private String customerId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "total", nullable = false, precision = 19, scale = 2)
+    private BigDecimal total;
+
+    @Column(name = "currency", nullable = false, length = 3)
+    private String currency;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,
+               orphanRemoval = true, fetch = FetchType.LAZY)
+    private List&lt;OrderLineJpaEntity&gt; lines = new ArrayList&lt;&gt;();
+
+    // سازنده‌ی محافظت‌شده برای JPA
+    protected OrderJpaEntity() {}
+
+    // getter های package-private
+    String id()           { return id; }
+    String customerId()   { return customerId; }
+    String status()       { return status; }
+    BigDecimal total()    { return total; }
+    String currency()     { return currency; }
+    List&lt;OrderLineJpaEntity&gt; lines() { return lines; }
+}
+</code></pre>
+
+<h3>Data Mapper — جدا کردن مدل دامنه از مدل دیتابیس</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.infrastructure.persistence;
+
+import com.shop.domain.order.*;
+import java.math.BigDecimal;
+import java.util.Currency;
+
+final class OrderEntityMapper {
+
+    private OrderEntityMapper() {}
+
+    // ── دامنه → دیتابیس ──
+    static OrderJpaEntity toJpa(Order order) {
+        var entity = new OrderJpaEntityWriter().create();
+        entity.apply(order.id().value(), order.customerId(),
+                order.status().name(), order.total().amount(),
+                order.total().currency().getCurrencyCode());
+
+        for (OrderLine line : order.lines()) {
+            entity.addLine(line.productId(), line.quantity(),
+                    line.unitPrice().amount());
+        }
+        return entity.build();
+    }
+
+    // ── دیتابیس → دomain ──
+    static Order toDomain(OrderJpaEntity e) {
+        Order order = Order.restore(
+                new OrderId(e.id()), e.customerId(),
+                OrderStatus.valueOf(e.status()));
+
+        for (OrderLineJpaEntity l : e.lines()) {
+            order.restoreLine(new OrderLine(l.productId(), l.quantity(),
+                    new Money(l.unitPrice(), Currency.getInstance(e.currency()))));
+        }
+        return order;
+    }
+}
+</code></pre>
+
+<h3>پیاده‌سازی Repository (Adapter)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.infrastructure.persistence;
+
+import com.shop.domain.order.*;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+@Transactional
+class JpaOrderRepository implements OrderRepository {
+
+    private final OrderJpaDao dao;
+
+    JpaOrderRepository(OrderJpaDao dao) {
+        this.dao = dao;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional&lt;Order&gt; findById(OrderId id) {
+        return dao.findById(id.value())
+                  .map(OrderEntityMapper::toDomain);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List&lt;Order&gt; findByCustomerId(String customerId) {
+        return dao.findByCustomerId(customerId).stream()
+                  .map(OrderEntityMapper::toDomain)
+                  .toList();
+    }
+
+    @Override
+    public void save(Order order) {
+        if (dao.existsById(order.id().value())) {
+            dao.deleteByOrderId(order.id().value());
+        }
+        dao.save(OrderEntityMapper.toJpa(order));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsById(OrderId id) {
+        return dao.existsById(id.value());
+    }
+}
+</code></pre>
+
+<h3>لایه‌ی Application با مرز تراکنش</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.application;
+
+import com.shop.application.command.PlaceOrderCommand;
+import com.shop.domain.DomainEvent;
+import com.shop.domain.order.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class OrderApplicationService {
+
+    private final OrderRepository orders;
+    private final EventPublisher events;
+
+    public OrderApplicationService(OrderRepository orders, EventPublisher events) {
+        this.orders = orders;
+        this.events = events;
+    }
+
+    @Transactional                        // ← تنها مرز تراکنش
+    public OrderId placeOrder(PlaceOrderCommand cmd) {
+        Order order = Order.draft(cmd.customerId());
+
+        cmd.lines().forEach(l -&gt;
+                order.addLine(l.productId(), l.quantity(), l.unitPrice()));
+
+        order.place();
+
+        orders.save(order);
+        events.publishAll(order.pullEvents());   // ← در همان تراکنش (Outbox)
+        return order.id();
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;OrderView&gt; listByCustomer(String customerId) {
+        return orders.findByCustomerId(customerId).stream()
+                     .map(OrderView::from)
+                     .toList();
+    }
+}
+</code></pre>
+
+<h3>کنترلر — فقط تبدیل ورودی/خروجی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.infrastructure.web;
+
+import com.shop.application.OrderApplicationService;
+import com.shop.application.command.PlaceOrderCommand;
+import com.shop.domain.order.OrderError;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.net.URI;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/orders")
+class OrderController {
+
+    private final OrderApplicationService service;
+
+    OrderController(OrderApplicationService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;OrderCreatedResponse&gt; create(
+            @Valid @RequestBody PlaceOrderRequest request) {
+
+        PlaceOrderCommand command = new PlaceOrderCommand(
+                request.customerId(),
+                request.lines().stream()
+                        .map(l -&gt; new PlaceOrderCommand.Line(
+                                l.productId(), l.quantity(),
+                                new BigDecimal(l.unitPrice())))
+                        .toList());
+
+        var id = service.placeOrder(command);
+        return ResponseEntity
+                .created(URI.create("/api/orders/" + id.value()))
+                .body(new OrderCreatedResponse(id.value()));
+    }
+
+    // ── DTO های ورودی/خروجی ──
+    record PlaceOrderRequest(
+            @NotBlank String customerId,
+            @NotEmpty @Valid List&lt;Line&gt; lines) {
+
+        record Line(
+                @NotBlank String productId,
+                @Min(1) int quantity,
+                @NotBlank String unitPrice) {}
+    }
+
+    record OrderCreatedResponse(String id) {}
+}
+</code></pre>
+
+<h3>تبدیل خطای دامنه به پاسخ HTTP</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.infrastructure.web;
+
+import com.shop.domain.order.OrderError;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+class DomainExceptionHandler {
+
+    @ExceptionHandler(OrderError.class)
+    ResponseEntity&lt;ErrorBody&gt; handle(OrderError ex) {
+        // خطای دامنه = ۴۰۴ یا ۴۲۲، نه ۵۰۰
+        HttpStatus status = ex.code().equals("ORDER_NOT_FOUND")
+                ? HttpStatus.NOT_FOUND
+                : HttpStatus.UNPROCESSABLE_ENTITY;
+
+        return ResponseEntity.status(status)
+                .body(new ErrorBody(ex.code(), ex.getMessage()));
+    }
+
+    record ErrorBody(String code, String message) {}
+}
+</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی حرفه‌ای</span>
+<code>Order.restore</code> متدی است که فقط برای بازسازی از دیتابیس استفاده می‌شود و
+قوانین ساخت از مسیر تازه را دور می‌زند. این یک تکنیک استاندارد و ضروری است: اگر هر بار
+بارگذاری از دیتابیس را با اعتبارسنجی کامل رد کنید، داده‌های قدیمی ناسازگار شما کل سیستم را
+از کار می‌اندازند. اما <code>restore</code> باید <code>package-private</code> باشد تا کسی از
+بیرون دامنه صدایش نزند.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مقایسه با معماری‌های دیگر</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    subgraph Layered["معماری لایه‌ای"]
+        L1[Controller] --> L2[Service] --> L3[DAO]
+        L3 --> L4[(DB)]
+    end
+
+    subgraph Hex["معماری شش‌ضلعی"]
+        H1[Adapter ورودی] --> H2[Use Case]
+        H2 --> H3[Port]
+        H3 --> H4[Adapter خروجی]
+        H4 --> H5[(DB)]
+    end
+
+    subgraph DDDx["DDD تاکتیکی"]
+        D1[UI] --> D2[Application]
+        D2 --> D3[Domain Model]
+        D3 --> D4[Repository Port]
+        D4 --> D5[Adapter]
+        D5 --> D6[(DB)]
+    end
+
+    style D3 fill:#0f766e,color:#fff
+    style H2 fill:#334155,color:#fff</code></pre>
+
+<h3>مقایسه‌ی DDD با معماری شش‌ضلعی و لایه‌ای</h3>
+
+<table>
+<thead>
+<tr><th>معیار</th><th>لایه‌ای</th><th>شش‌ضلعی</th><th>DDD</th></tr>
+</thead>
+<tbody>
+<tr><td>محور اصلی</td><td>لایه‌ها</td><td>ورودی/خروجی</td><td><strong>مدل دامنه</strong></td></tr>
+<tr><td>منبع ساختار</td><td>ساختار فنی</td><td>نوع منبع داده</td><td><strong>زبان کسب‌وکار</strong></td></tr>
+<tr><td>مرز تراکنش</td><td>معمولاً Service</td><td>Use Case</td><td><strong>Aggregate</strong></td></tr>
+<tr><td>ریشه‌ی پیچیدگی</td><td>سرویس‌های بزرگ</td><td>تعداد Adapter</td><td><strong>مدل دامنه</strong></td></tr>
+<tr><td>Domain Event</td><td>معمولاً نه</td><td>اختیاری</td><td><strong>بله، شهروند درجه‌یک</strong></td></tr>
+<tr><td>مناسب برای</td><td>CRUD ساده</td><td>زیرساخت‌های متنوع</td><td><strong>منطق پیچیده</strong></td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">رابطه‌ی DDD و شش‌ضلعی</span>
+این دو رقیب نیستند؛ <strong>لایه‌ای هستند</strong>. الگوی شش‌ضلعی به شما می‌گوید
+<em>وابستگی‌ها به کجا بروند</em> و DDD می‌گوید <em>مدل چه باشد</em>. معماری Hexagonal با
+یک مدل فقیر و DDD با یک ساختار لایه‌ای، هر دو شکست می‌خورند. این دو را با هم به کار ببرید.
+</div>
+
+<h3>DDD در برابر مدل‌سازی داده‌محور (Data-Driven)</h3>
+
+<table>
+<thead>
+<tr><th>پرسش</th><th>مدل داده‌محور</th><th>DDD</th></tr>
+</thead>
+<tbody>
+<tr><td>منبع حقیقت</td><td>ساختار داده</td><td>قواعد کسب‌وکار</td></tr>
+<tr><td>تغییر ساختار داده</td><td>ساده</td><td>پرهزینه</td></tr>
+<tr><td>تغییر قانون کسب‌وکار</td><td>پرهزینه</td><td>ساده</td></tr>
+<tr><td>مناسب برای</td><td>گزارش، ETL، داده‌کاوی</td><td>سیستم‌های تراکنشی پیچیده</td></tr>
+<tr><td>نمونه</td><td>انبار داده، داشبورد</td><td>بیمه، بانک، فروشگاه</td></tr>
+</tbody>
+</table>
+
+<h3>DDD در برابر Active Record</h3>
+
+<p>
+در <code>Active Record</code> خودِ مدل دیتابیس همان مدل دامنه است و <code>save()</code>
+روی همان کلاس قرار دارد. DDD این دو را جدا می‌کند. نتیجه:
+</p>
+
+<div class="kl-check">
+<ul>
+<li>تست دامنه نیازی به دیتابیس ندارد</li>
+<li>می‌توانید مدل دیتابیس را بدون تغییر منطق کسب‌وکار مهاجرت دهید</li>
+<li>در مقابل، کد بیشتر است (Entity + JPA Entity + Mapper)</li>
+</ul>
+</div>
+</section>
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>مزایا</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>تست واحد سریع</strong></td><td>کل مدل دامنه بدون Spring و بدون دیتابیس تست می‌شود؛ زمان اجرای تست میلی‌ثانیه‌ای است نه دقیقه‌ای</td></tr>
+<tr><td>۲</td><td><strong>نام‌های یکسان بین کسب‌وکار و کد</strong></td><td>Ubiquitous Language جلوی سوءتفاهم و ترجمه‌ی اشتباه نام‌ها را می‌گیرد</td></tr>
+<tr><td>۳</td><td><strong>تغییر ارزان‌تر</strong></td><td>تغییر یک قانون فقط یک کلاس را عوض می‌کند، نه کل زنجیره‌ی لایه‌ها</td></tr>
+<tr><td>۴</td><td><strong>مرز تراکنش شفاف</strong></td><td>مرز Aggregate مشخص می‌کند چه چیزی باید در یک تراکنش عوض شود و چه چیزی نه</td></tr>
+<tr><td>۵</td><td><strong>اعتبار داده در محل درست</strong></td><td>قواعد در کلاس خودشان هستند؛ هر مسیری که وارد شود، همان قانون را می‌بیند</td></tr>
+<tr><td>۶</td><td><strong>استقلال از فناوری</strong></td><td>مهاجرت از JPA به JDBC، از SQL به NoSQL یا از REST به gRPC بدون بازنویسی منطق کسب‌وکار ممکن است</td></tr>
+<tr><td>۷</td><td><strong>مسیر طبیعی به Microservices</strong></td><td>Bounded Context همان چیزی است که بعدها مرز سرویس شد</td></tr>
+<tr><td>۸</td><td><strong>Domain Event طبیعی</strong></td><td>واکنش‌های جانبی (ایمیل، گزارش، اعلان) بدون دست‌کاری هسته‌ی سیستم اضافه می‌شوند</td></tr>
+<tr><td>۹</td><td><strong>اجتناب از مدل贫血</strong></td><td>کلاس‌ها رفتار واقعی دارند، نه فقط getter/setter</td></tr>
+<tr><td>۱۰</td><td><strong>مستندسازی زنده</strong></td><td>کد خودش مستند است؛ خواندن مدل دامنه برابر خواندن مستندات کسب‌وکار است</td></tr>
+<tr><td>۱۱</td><td><strong>مالکیت روشن کد</strong></td><td>برای یک دامنه‌ی مشخص فقط یک تیم و یک مدل وجود دارد</td></tr>
+<tr><td>۱۲</td><td><strong>کاهش وابستگی متقابل تیم‌ها</strong></td><td>تیم‌ها روی Bounded Context خود کار می‌کنند و کمتر همدیگر را می‌شکنند</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">بزرگ‌ترین مزیت به زبان ساده</span>
+«مدل دامنه نوشتن یک‌باره نیست.» مدل با هر مصاحبه‌ی تازه با کسب‌وکار رشد می‌کند. همین
+تکرار و بازبینی مداوم، چیزی است که DDD را از یک جلسه‌ی کارگاهی متفاوت می‌کند.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>معایب</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>نیاز به دانش دامنه</strong></td><td>نیازمند تیمی است که واقعاً کسب‌وکار را می‌فهمد، نه فقط کدنویس است</td></tr>
+<tr><td>۲</td><td><strong>هزینه‌ی زمانی بالا</strong></td><td>طراحی تاکتیکی زمان‌بر است؛ برای یک CRUD ساده، بیش از حد</td></tr>
+<tr><td>۳</td><td><strong>پیچیدگی بیشتر</strong></td><td>Entity + JPA Entity + Mapper + Repository چند برابر کد می‌نویسد</td></tr>
+<tr><td>۴</td><td><strong>نیاز به مهارت مفهومی</strong></td><td>بسیاری از توسعه‌دهندگان Aggregate را با Collection اشتباه می‌گیرند</td></tr>
+<tr><td>۵</td><td><strong>مقاومت تیم و مدیریت</strong></td><td>مدیران معمولاً «چرا این‌همه کلاس برای یک جدول؟» می‌پرسند</td></tr>
+<tr><td>۶</td><td><strong>بازطراحی پرهزینه</strong></td><td>اگر مدل را اشتباه طراحی کنید، بازنویسی آن هم سخت است</td></tr>
+<tr><td>۷</td><td><strong>بازدهی با تأخیر</strong></td><td>سود در ماه‌های اول دیده نمی‌شود، در ماه‌های بعدی هم</td></tr>
+<tr><td>۸</td><td><strong>مدل‌سازی ذهنی دشوار</strong></td><td>Event Storming و تحلیل نیازمند مهارتی است که آموزش داده نمی‌شود</td></tr>
+<tr><td>۹</td><td><strong>مرزهای مبهم در عمل</strong></td><td>کسب‌وکارها اغلب یکپارچه و پیچیده‌اند و تعیین Bounded Context دشوار است</td></tr>
+<tr><td>۱۰</td><td><strong>وابستگی به ابزار کم</strong></td><td>برخلاف Spring یا Docker، ابزار DDD کم و بی‌کیفیت است</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">صادق باشیم</span>
+DDD «تکنیک برد» نیست. در بسیاری از پروژه‌های CRUD، بهترین تصمیم مهندسی این است که
+DDD را کنار بگذارید و یک لایه‌بندی تمیز ساده بنویسید. نادیده گرفتن DDD مهارت است،
+نه ضعف.
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-check">
+<ul>
+<li><strong>منطق کسب‌وکار پیچیده است</strong> — قوانین زیاد، شرطی، و متغیر با زمان</li>
+<li><strong>قوانین زیاد تغییر می‌کنند</strong> — تیم محصول مدام در حال بازتنظیم قوانین است</li>
+<li><strong>موجودیت‌های دامنه واقعی و معنادار دارند</strong> — نه فقط جدول‌های نرمال‌شده</li>
+<li><strong>تیم چندنفره و نسبتاً پایدار است</strong> — مدل مشترک نیاز به تعهد دارد</li>
+<li><strong>به دسترسی کسب‌وکار دارید</strong> — بدون کارشناس، Ubiquitous Language ساختنی نیست</li>
+<li><strong>سیستم قرار است سال‌ها زندگی کند</strong> — سرمایه‌گذاری اولیه بازگشت دارد</li>
+<li><strong>حریم‌های داده و حسابرسی مهم است</strong> — DDD مسیر ممیزی روشنی می‌سازد</li>
+<li><strong>در حال حرکت به سمت Microservices هستید</strong> — DDD ابزار تعیین مرز سرویس است</li>
+<li><strong>حوزه‌های تخصصی دارید</strong> — بیمه، بانکداری، پزشکی، لجستیک، فین‌تک</li>
+<li><strong>قوانین مالی و محاسباتی دقیق دارید</strong> — جایی که خطای یک واحد، هزینه‌ی واقعی دارد</li>
+</ul>
+</div>
+
+<h3>مثال‌هایی که DDD در آن‌ها می‌درخشد</h3>
+
+<pre class="kl-code" data-lang="text"><code>✅ بیمه    — هزاران قاعده‌ی وابسته (پوشش، استثنا، تخفیف نردبانی)
+✅ بانک     — حساب، تراکنش، موجودی، قفل‌گذاری، سود روزشماری
+✅ فروشگاه  — تخفیف پلکانی، موجودی انبار، مرجوعی، مالیات
+✅ سلامت    — پرونده‌ی بیمار، نسخه‌، تداخل دارویی، بیمه‌ی درمان
+✅ لجستیک  — مسیریابی، نرخ‌گذاری پویا، تحویل و بازگشت
+✅ فین‌تک   — کیف پول، تراکنش، سقف روزانه، احراز هویت
+✅ رزرو     — موجودی لحظه‌ای، همزمانی، قفل زمان‌مند</code></pre>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>چه زمانی استفاده نکنیم؟</h2>
+
+<table>
+<thead>
+<tr><th>وضعیت</th><th>چرا DDD مناسب نیست؟</th><th>جایگزین بهتر</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CRUD ساده</strong> (فقط ثبت و نمایش)</td><td>مدل‌سازی، هزینه دارد و هیچ منطقی برای پنهان کردن وجود ندارد</td><td>لایه‌بندی ساده + Spring Data</td></tr>
+<tr><td><strong>پروژه‌ی ۲ هفته‌ای</strong></td><td>زمان تحلیل دامنه از زمان پیاده‌سازی بیشتر می‌شود</td><td>سریع‌ترین راه ممکن</td></tr>
+<tr><td><strong>MVP / اپلیکیشن یک‌صفحه‌ای</strong></td><td>مدل دامنه ناقص و تغییر مکرر، سرمایه‌گذاری را هدر می‌دهد</td><td>ساختار سبک با امکان بازطراحی</td></tr>
+<tr><td><strong>تیم یک‌نفره</strong></td><td>مزیت اصلی (زبان مشترک) معنا ندارد</td><td>سادگی</td></tr>
+<tr><td><strong>بدون دسترسی به کارشناس</strong></td><td>مدل از حدس ساخته می‌شود و به‌احتمال زیاد غلط است</td><td>نوشتن مستقیم از روی نیاز فنی</td></tr>
+<tr><td><strong>محصول کاملاً نامشخص</strong></td><td>مدل‌سازی چیزی که نمی‌شناسید، حدس زدن است</td><td>کشف محصول (Product Discovery)</td></tr>
+<tr><td><strong>پروژه‌ی داخلی ۵ روزه</strong></td><td>هیچ‌کس قرار نیست دو سال بعد آن را نگه دارد</td><td>اسکریپت، cronjob، ابزار ساده</td></tr>
+<tr><td><strong>داده‌کاوی و گزارش‌گیری</strong></td><td>DDD برای منطق تراکنشی است، نه برای تحلیل داده</td><td>مدل ستاره‌ای و انبار داده</td></tr>
+<tr><td><strong>تیم تحت فشار زمانی شدید</strong></td><td>گفت‌وگو با کسب‌وکار اولویت ندارد و DDD بدون آن بی‌معنی است</td><td>اجرای سریع، بازطراحی بعداً</td></tr>
+<tr><td><strong>میکروسرویس‌های ریزدانه</strong></td><td>DDD مرزهای بزرگ و معنادار می‌سازد، نه سرویس‌های ۵ خطی</td><td>اول یک مدولار مونولیث</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">قاعده‌ی ۸۰/۲۰</span>
+حدود ۸۰٪ نرم‌افزارهای کسب‌وکار به DDD نیاز ندارند و به یک لایه‌بندی تمیز بسنده
+می‌کنند. DDD ابزار <em>ویژه</em> است، نه ابزار پیش‌فرض. سؤال درست این نیست که «چطور
+DDD را پیاده کنیم؟» بلکه این است که «آیا مشکل ما از جنس پیچیدگی دامنه است یا جنس
+پیچیدگی فنی؟»
+</div>
+
+<h3>راه میانه: مدولار مونولیث</h3>
+
+<p>
+اگر بین دو سر طیف گیر کرده‌اید، بهترین گزینه معمولاً یک <strong>مدولار مونولیث</strong> با
+لایه‌بندی سبک و مدل دامنه‌ی محدود در ماژول‌های پرپیچیدگی است. این یعنی:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>ساده CRUD:            Controller → Service → Repository
+ماژول پیچیده:        Controller → Application → Domain → Repository
+سیستم‌های پیچیده:     ماژول‌های مستقل با Bounded Context مجزا
+
+← به‌جای «همه‌جا DDD یا هیچ‌جا»، «DDD جایی که ارزش دارد»</code></pre>
+</section>
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<p>
+DDD تقریباً به‌طور کامل بر پایه‌ی اصل‌های SOLID ساخته شده است. برای هر اصل، مثال مشخص DDD:
+</p>
+
+<table>
+<thead>
+<tr><th>اصل</th><th>نام</th><th>نمود در DDD</th><th>مثال در این مقاله</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>S</strong></td><td>Single Responsibility</td><td>هر کلاس یک دلیل برای تغییر</td><td><code>OrderRepository</code> فقط ذخیره می‌کند؛ قاعده‌ی کسب‌وکار ندارد</td></tr>
+<tr><td><strong>O</strong></td><td>Open/Closed</td><td>افزودن مفهوم جدید بدون تغییر کد موجود</td><td>افزودن <code>DiscountPolicy</code> جدید، <code>Order</code> را تغییر نمی‌دهد</td></tr>
+<tr><td><strong>L</strong></td><td>Liskov Substitution</td><td>همه‌ی Repository‌های دامنه قابل جایگزینی‌اند</td><td>هر پیاده‌سازی JPA هر رفتار از Repository را درست کند</td></tr>
+<tr><td><strong>I</strong></td><td>Interface Segregation</td><td>Interface‌های کوچک دامنه</td><td><code>OrderRepository</code> به‌جای یک <code>GenericCrud</code> بزرگ</td></tr>
+<tr><td><strong>D</strong></td><td>Dependency Inversion</td><td><strong>مهم‌ترین ستون DDD</strong></td><td>لایه‌ی دامنه <code>OrderRepository</code> را تعریف می‌کند، زیرساخت پیاده می‌کند</td></tr>
+</tbody>
+</table>
+
+<h3>DIP — قلب DDD</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    subgraph Wrong["❌ وابستگی اشتباه (لایه‌ای سنتی)"]
+        A1["Service"] --> B1["JpaRepository<br/>کلاس JPA"]
+    end
+
+    subgraph Right["❗ وابستگی درست (DDD)"]
+        A2["OrderApplicationService"] --> B2["OrderRepository<br/>Interface دامنه"]
+        C2["JpaOrderRepository"] -.->|"implements"| B2
+    end
+
+    style Right fill:#0f766e,color:#fff
+    style Wrong fill:#7f1d1d,color:#fff</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تفاوت کلیدی</span>
+در لایه‌بندی سنتی، سرویس به کتابخانه وابسته است و کتابخانه هم تغییر می‌کند.
+در DDD، <strong>مالک Interface، دامنه است</strong> — یعنی کسی که کمتر تغییر می‌کند
+بماند ثابت و کسی که زیاد تغییر می‌کند (زیرساخت) پشت آن مخفی شود.
+</div>
+
+<h3>OCD — چرا Aggregate مهم است</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ❌ با OCP ناسازگار: هر قاعده‌ی جدید یک if به Order اضافه می‌کند
+if (lines.size() &gt; 50) { ... }        // قانون ۱
+if (customerType == VIP) { ... }        // قانون ۲
+if (isCampaignDay) { ... }              // قانون ۳ → تغییر کلاس Order
+
+// ✅ با OCP سازگار: قاعده در کلاس خودش
+public interface OrderRule {
+    void check(Order order);      // هر قاعده یک کلاس مستقل
+}
+public class MaxFiftyLinesRule implements OrderRule { ... }
+public class VipDiscountRule    implements OrderRule { ... }</code></pre>
+
+<h3>ISP — Repository‌های کوچک</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ❌ ISP نقض می‌شود
+public interface Repository&lt;T, ID&gt; {
+    void save(T e);
+    void delete(ID id);
+    Optional&lt;T&gt; findById(ID id);
+    List&lt;T&gt; findAll();
+    long count();
+    boolean existsById(ID id);
+    void flush();
+    void clear();                  // ← JPA-محور، بی‌ربط به دامنه
+}
+
+// ✅ ISP رعایت می‌شود
+public interface OrderRepository {
+    Optional&lt;Order&gt; findById(OrderId id);
+    void save(Order order);
+    boolean existsById(OrderId id);
+}</code></pre>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>نقش در DDD</th><th>نمود در این مقاله</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Repository</strong></td><td><strong>الگوی اصلی DDD</strong> — جمع‌کننده‌ی Aggregate</td><td><code>OrderRepository</code></td></tr>
+<tr><td><strong>Entity</strong></td><td>مدل با هویت</td><td><code>Order</code>، <code>OrderLine</code></td></tr>
+<tr><td><strong>Domain Factory</strong></td><td>ساخت موجودیت پیچیده با قواعد اولیه</td><td><code>Order.draft(...)</code></td></tr>
+<tr><td><strong>Specification</strong></td><td>ترکیب قوانین به‌صورت اشیا</td><td><code>OrderRule</code>، <code>LoyaltyPolicy</code></td></tr>
+<tr><td><strong>Strategy</strong></td><td>الگوریتم قابل تعویض برای یک رفتار</td><td><code>DiscountPolicy</code> بسته به نوع مشتری</td></tr>
+<tr><td><strong>Domain Event</strong></td><td>اعلام تغییر وضعیت بدون کوپل مستقیم</td><td><code>OrderPlaced</code></td></tr>
+<tr><td><strong>Unit of Work</strong></td><td>مرز تراکنش، هماهنگ‌کننده‌ی ذخیره‌سازی</td><td><code>@Transactional</code> در لایه‌ی application</td></tr>
+<tr><td><strong>Data Mapper</strong></td><td>جدا کردن مدل دامنه از مدل دیتابیس</td><td><code>OrderEntityMapper</code></td></tr>
+<tr><td><strong>Anti-Corruption Layer</strong></td><td>محافظت از مدل در برابر مدل بیرونی</td><td>تبدیل مدل پرداخت‌گیر خارجی به مدل داخلی</td></tr>
+<tr><td><strong>Outbox</strong></td><td>انتشار مطمئن رویداد پس از commit</td><td>جدول <code>outbox_events</code></td></tr>
+<tr><td><strong>Aggregate (محی)</strong></td><td>گروهی از اشیا با مرز تراکنش واحد</td><td><code>Order</code> + <code>OrderLine</code></td></tr>
+<tr><td><strong>Specification + Chain of Responsibility</strong></td><td>زنجیره‌ی بررسی قوانین</td><td>اجرای پشت‌سرهم قوانین سفارش</td></tr>
+</tbody>
+</table>
+
+<h3>الگوی Factory دامنه</h3>
+
+<pre class="kl-code" data-lang="java"><code>public final class OrderFactory {
+
+    private final OrderRepository orders;
+    private final PriceService prices;
+
+    public OrderFactory(OrderRepository orders, PriceService prices) {
+        this.orders = orders;
+        this.prices = prices;
+    }
+
+    public Order createFromCart(CustomerId customerId, List&lt;CartItem&gt; cart) {
+        Order order = Order.draft(customerId.value());
+        for (CartItem item : cart) {
+            order.addLine(item.productId(), item.quantity(),
+                    prices.currentPrice(item.productId()));
+        }
+        return order;
+    }
+}
+</code></pre>
+
+<h3>Specification — قاعده به‌عنوان شیء</h3>
+
+<pre class="kl-code" data-lang="java"><code>@FunctionalInterface
+public interface Specification&lt;T&gt; {
+    boolean isSatisfiedBy(T candidate);
+    String message();
+
+    default Specification&lt;T&gt; and(Specification&lt;T&gt; other) {
+        return candidate -&gt; {
+            if (!isSatisfiedBy(candidate)) return false;
+            if (!other.isSatisfiedBy(candidate)) return false;
+            return true;
+        };
+    }
+
+    default Specification&lt;T&gt; or(Specification&lt;T&gt; other) {
+        return candidate -&gt; isSatisfiedBy(candidate) || other.isSatisfiedBy(candidate);
+    }
+}
+
+public final class OrderSpecifications {
+
+    public static Specification&lt;Order&gt; hasAtLeastOneLine() {
+        return o -&gt; !o.lines().isEmpty();
+    }
+
+    public static Specification&lt;Order&gt; totalBelow(Money limit) {
+        return o -&gt; !o.total().isGreaterThan(limit);
+    }
+
+    public static Specification&lt;Order&gt; isPlaceable() {
+        return hasAtLeastOneLine().and(totalBelow(Money.toman(100_000_000)));
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی مهم</span>
+Specification وقتی خوب است که قوانین <strong>مستقل و قابل ترکیب</strong> باشند. اگر
+فقط یک قانون دارید، <code>if</code> داخل مدل بهتر و ساده‌تر است. استفاده از الگو برای
+مسئله‌ای که وجود ندارد، فقط پیچیدگی کاذب می‌سازد.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+بزرگ‌ترین دستاورد عملی DDD این است که <strong>مدل دامنه بدون هیچ زیرساختی قابل تست است</strong>.
+در این بخش یک Repository حافظه‌ای می‌سازیم و مدل را با JUnit 5 و AssertJ می‌آزماییم.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.test;
+
+import com.shop.domain.order.*;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+/** پیاده‌سازی تست: نباید هیچ وابستگی خارجی داشته باشد. */
+final class InMemoryOrderRepository implements OrderRepository {
+
+    private final Map&lt;String, Order&gt; storage = new ConcurrentHashMap&lt;&gt;();
+    private int saveCount = 0;
+
+    @Override
+    public Optional&lt;Order&gt; findById(OrderId id) {
+        return Optional.ofNullable(storage.get(id.value()));
+    }
+
+    @Override
+    public void save(Order order) {
+        saveCount++;
+        storage.put(order.id().value(), order);
+    }
+
+    @Override
+    public boolean existsById(OrderId id) {
+        return storage.containsKey(id.value());
+    }
+
+    @Override
+    public List&lt;Order&gt; findByCustomerId(String customerId) {
+        return storage.values().stream()
+                .filter(o -&gt; o.customerId().equals(customerId))
+                .toList();
+    }
+
+    int saveCount() {
+        return saveCount;
+    }
+}
+</code></pre>
+
+<h3>تست قواعد کسب‌وکار</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.test;
+
+import com.shop.domain.order.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.Currency;
+
+import static org.assertj.core.api.Assertions.*;
+
+@DisplayName("مدل دامنه‌ی Order")
+class OrderTest {
+
+    private static final Currency IRR = Currency.getInstance("IRR");
+
+    @Nested
+    @DisplayName("ساخت و مقداردهی اولیه")
+    class Creation {
+
+        @Test
+        @DisplayName("سفارش جدید در وضعیت DRAFT ساخته می‌شود")
+        void newOrderIsDraft() {
+            Order order = Order.draft("customer-1");
+
+            assertThat(order.status()).isEqualTo(OrderStatus.DRAFT);
+            assertThat(order.lines()).isEmpty();
+            assertThat(order.total().amount()).isEqualByComparingTo("0");
+        }
+
+        @Test
+        @DisplayName("شناسه‌ی مشتری خالی پذیرفته نمی‌شود")
+        void blankCustomerIdRejected() {
+            assertThatThrownBy(() -&gt; Order.draft("  "))
+                    .isInstanceOf(OrderError.class)
+                    .hasMessageContaining("شناسه‌ی مشتری");
+        }
+    }
+
+    @Nested
+    @DisplayName("افزودن ردیف")
+    class AddingLines {
+
+        @Test
+        @DisplayName("مجموع مبلغ با افزوده شدن ردیف به‌روز می‌شود")
+        void totalRecalculates() {
+            Order order = Order.draft("customer-1")
+                    .addLine("p1", 2, Money.toman(150_000))
+                    .addLine("p2", 1, Money.toman(50_000));
+
+            assertThat(order.total().amount())
+                    .isEqualByComparingTo("350000");
+            assertThat(order.lines()).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("محصول تکراری پذیرفته نمی‌شود")
+        void duplicateProductRejected() {
+            Order order = Order.draft("c1").addLine("p1", 1, Money.toman(1000));
+
+            assertThatThrownBy(() -&gt; order.addLine("p1", 2, Money.toman(1000)))
+                    .isInstanceOf(OrderError.class)
+                    .hasMessageContaining("قبلاً در سفارش");
+        }
+
+        @Test
+        @DisplayName("تعداد نامعتبر پذیرفته نمی‌شود")
+        void invalidQuantityRejected() {
+            Order order = Order.draft("c1");
+
+            assertThatThrownBy(() -&gt; order.addLine("p1", 0, Money.toman(1000)))
+                    .isInstanceOf(OrderError.class)
+                    .hasMessageContaining("تعداد");
+        }
+
+        @Test
+        @DisplayName("سقف ۵۰ ردیف رعایت می‌شود")
+        void maxLinesEnforced() {
+            Order order = Order.draft("c1");
+            for (int i = 0; i &lt; 50; i++) {
+                order.addLine("product-" + i, 1, Money.toman(1000));
+            }
+
+            assertThatThrownBy(() -&gt; order.addLine("product-50", 1, Money.toman(1000)))
+                    .isInstanceOf(OrderError.class)
+                    .hasMessageContaining("۵۰ ردیف");
+        }
+    }
+
+    @Nested
+    @DisplayName("ثبت سفارش")
+    class Placing {
+
+        @Test
+        @DisplayName("سفارش خالی قابل ثبت نیست")
+        void emptyOrderCannotBePlaced() {
+            Order order = Order.draft("c1");
+
+            assertThatThrownBy(order::place)
+                    .isInstanceOf(OrderError.class)
+                    .hasMessageContaining("بدون ردیف");
+        }
+
+        @Test
+        @DisplayName("ثبت موفق، وضعیت را به PLACED می‌برد")
+        void placeChangesStatus() {
+            Order order = Order.draft("c1")
+                    .addLine("p1", 1, Money.toman(100_000))
+                    .place();
+
+            assertThat(order.status()).isEqualTo(OrderStatus.PLACED);
+        }
+
+        @Test
+        @DisplayName("ثبت سفارش، رویداد دامنه تولید می‌کند")
+        void placeRaisesDomainEvent() {
+            Order order = Order.draft("c1")
+                    .addLine("p1", 1, Money.toman(100_000))
+                    .place();
+
+            var events = order.pullEvents();
+
+            assertThat(events).hasSize(1);
+            assertThat(events.get(0)).isInstanceOf(OrderPlaced.class);
+        }
+
+        @Test
+        @DisplayName("رویداد فقط یک‌بار قابل استخراج است")
+        void eventsArePulledOnce() {
+            Order order = Order.draft("c1")
+                    .addLine("p1", 1, Money.toman(100_000))
+                    .place();
+
+            assertThat(order.pullEvents()).hasSize(1);
+            assertThat(order.pullEvents()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("سفارش ثبت‌شده قابل ویرایش نیست")
+        void placedOrderIsNotModifiable() {
+            Order order = Order.draft("c1")
+                    .addLine("p1", 1, Money.toman(100_000))
+                    .place();
+
+            assertThatThrownBy(() -&gt; order.addLine("p2", 1, Money.toman(1000)))
+                    .isInstanceOf(OrderError.class)
+                    .hasMessageContaining("قابل ویرایش نیست");
+        }
+    }
+
+    @Nested
+    @DisplayName("لغو سفارش")
+    class Cancelling {
+
+        @Test
+        @DisplayName("سفارش لغوشده دوباره لغو نمی‌شود")
+        void doubleCancelRejected() {
+            Order order = Order.draft("c1")
+                    .addLine("p1", 1, Money.toman(1000))
+                    .place();
+            order.cancel("درخواست مشتری");
+
+            assertThatThrownBy(() -&gt; order.cancel("دوباره"))
+                    .isInstanceOf(OrderError.class)
+                    .hasMessageContaining("قبلاً لغو");
+        }
+    }
+
+    @Nested
+    @DisplayName("آستانه‌ی تأیید مدیر")
+    class Approval {
+
+        @Test
+        @DisplayName("سفارش بزرگ نیاز به تأیید دارد")
+        void largeOrderNeedsApproval() {
+            Order order = Order.draft("c1")
+                    .addLine("p1", 1, Money.toman(20_000_000));
+
+            assertThat(order.requiresApproval()).isTrue();
+        }
+
+        @Test
+        @DisplayName("سفارش کوچک نیاز به تأیید ندارد")
+        void smallOrderDoesNotNeedApproval() {
+            Order order = Order.draft("c1")
+                    .addLine("p1", 1, Money.toman(500_000));
+
+            assertThat(order.requiresApproval()).isFalse();
+        }
+    }
+}
+</code></pre>
+
+<h3>تست تراکنش با Repository واقعی</h3>
+
+<pre class="kl-code" data-lang="java"><code>@SpringBootTest
+@Transactional                      // ← هر تست در تراکنش خودش، داده پاک می‌شود
+class OrderApplicationServiceTest {
+
+    @Autowired OrderApplicationService service;
+    @Autowired OrderRepository repository;
+
+    @Test
+    @DisplayName("ثبت سفارش، Aggregate را ذخیره می‌کند")
+    void placeOrderPersistsAggregate() {
+        var command = new PlaceOrderCommand("c1", List.of(
+                new PlaceOrderCommand.Line("p1", 2, new BigDecimal("150000"))));
+
+        var id = service.placeOrder(command);
+
+        assertThat(repository.findById(id)).isPresent();
+        assertThat(repository.findById(id).get().total().amount())
+                .isEqualByComparingTo("300000");
+    }
+
+    @Test
+    @DisplayName("قانون دامنه در سطح سرویس هم برقرار است")
+    void domainRuleEnforcedAtServiceLevel() {
+        var command = new PlaceOrderCommand("c1", List.of());
+
+        assertThatThrownBy(() -&gt; service.placeOrder(command))
+                .isInstanceOf(OrderError.class);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">پیامد عملی تست</span>
+۲۰ تست مدل دامنه در چند میلی‌ثانیه اجرا می‌شوند و در هر بار اجرا (حتی در CI) هزاران
+ترکیب قوانین را می‌آزمایند. این یعنی می‌توانید <em>بازطراحی دامنه را با اطمینان انجام
+دهید</em>، چون رفتار قفل شده است.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>اشتباه</th><th>چرا اشتباه است؟</th><th>راه درست</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td>استفاده از <code>@Entity</code> JPA در لایه‌ی دامنه</td><td>مدل دامنه به فریم‌ورک وابسته می‌شود و تست خالص غیرممکن می‌شود</td><td>Entity دامنه + <code>OrderJpaEntity</code> جدا در زیرساخت</td></tr>
+<tr><td>۲</td><td>Repository به‌ازای هر جدول</td><td>مرز Aggregate را نابود می‌کند و کل مدل بی‌معنای می‌شود</td><td>فقط برای Aggregate Root</td></tr>
+<tr><td>۳</td><td>قرار دادن قاعده‌ی کسب‌وکار در Repository</td><td>منطق از مدل بیرون می‌رود و فقط یک لایه‌ی دیگه شلوغ می‌شود</td><td>قاعده در Aggregate یا Domain Service</td></tr>
+<tr><td>۴</td><td>داشتن setter عمومی روی فیلدهای Aggregate</td><td>امکان ساخت موجودیت ناسازگار را باز می‌گذارد</td><td>متد دامنه؛ <code>total</code> فقط از <code>addLine</code> تغییر کند</td></tr>
+<tr><td>۵</td><td>تزریق یک Aggregate در دیگری</td><td>مرز تراکنش و قفل را بی‌دلیل بزرگ می‌کند</td><td>فقط شناسه (<code>CustomerId</code>) را نگه دارید</td></tr>
+<tr><td>۶</td><td>استفاده از کلاس Entity به‌جای Value Object</td><td><code>BigDecimal</code> برای مبلغ، منفی بودن را ممکن می‌کند</td><td><code>Money</code> با اعتبارسنجی در سازنده</td></tr>
+<tr><td>۷</td><td>قرار دادن <code>@Transactional</code> در لایه‌ی دامنه</td><td>دامنه به Spring وابسته می‌شود</td><td>مرز تراکنش در Application Service</td></tr>
+<tr><td>۸</td><td>بازگرداندن مستقیم Entity به لایه‌ی UI</td><td>ساختار مدل در API لو می‌رود و تغییر آن breaking change است</td><td>تبدیل به DTO در لایه‌ی application</td></tr>
+<tr><td>۹</td><td>یکی گرفتن Aggregate با Collection</td><td><code>List&lt;Order&gt;</code> در یک تراکنش، عملاً یک Aggregate عظیم و خطرناک است</td><td>هر Aggregate یک واحد تراکنش</td></tr>
+<tr><td>۱۰</td><td>استفاده از نام‌های فنی به‌جای نام‌های کسب‌وکار</td><td>Ubiquitous Language از بین می‌رود</td><td>نام دقیقاً همان واژه‌ی کارشناس باشد</td></tr>
+<tr><td>۱۱</td><td>بارگذاری کامل همه‌ی رابطه‌ها (EAGER)</td><td>N+1 و کندی شدید؛ مرز Aggregate نقض می‌شود</td><td>بارگذاری تنبل، در حد نیاز</td></tr>
+<tr><td>۱۲</td><td>انجام DDD برای یک CRUD ساده</td><td>پیچیدگی بدون بازده</td><td>لایه‌بندی ساده کافی است</td></tr>
+</tbody>
+</table>
+
+<h3>نشانه‌های هشدار در کدبیس</h3>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">اگر این‌ها را دیدید، DDD را اشتباه اجرا کرده‌اید</span>
+<ul>
+<li>یک کلاس دامنه با بیش از ۲۰۰ فیلد یا ۵۰۰ خط متد</li>
+<li>فایل‌هایی با نام <code>OrderServiceImpl</code> که همه‌ی منطق در آن است</li>
+<li>متدی در Repository به نام <code>findByStatusAndCustomerIdAndCreatedAtBetween</code></li>
+<li>لایه‌ی دامنه که <code>import org.springframework</code> دارد</li>
+<li><code>Order</code> که فیلد <code>customer</code> از نوع <code>Customer</code> دارد</li>
+<li>دامنه‌ای که در هر دو لایه تکرار شده (Entity و JPAEntity یکی)</li>
+</ul>
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱. سامانه‌ی بیمه‌ی ایرانیان</h3>
+
+<p>
+بیمه یکی از نمونه‌های کلاسیک DDD است. دلیلش پیچیدگی است combinatorی قوانین است:
+پوشش پایه + پوشش تکمیلی، با تخفیف نردبانی که به نسبت بیمه‌ی پرداختی و سال‌های بدون
+ادعا و نوع خودرو و شهر وارد می‌شود.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>زمینه‌های محدود:
+├── InsuranceContext      → بیمه‌نامه، حق‌بیمه، قسط
+├── ClaimsContext         → پرونده‌ی خسارت، ارزیابی، پرداخت
+└── CustomerContext       → مشتری، احراز هویت، رضایت
+
+مدل InsuranceContext:
+├── Policy (Aggregate Root)
+│   ├── PolicyId (Value Object)
+│   ├── Coverage            ← Value Object با قواعد پوشش
+│   ├── PremiumSchedule     ← Value Object: نرخ پلکانی
+│   └── PolicyHolderId      ← فقط شناسه!
+
+قاعده‌ی تخفیف نردبانی (در PremiumSchedule):
+  ۳ سال بدون ادعا   → ۱۰٪
+  ۵ سال بدون ادعا   → ۲۰٪
+  نرخ پرداخت یکجا   → ۵٪
+  این‌ها ضرب می‌شوند، نه جمع → این یک Value Object است</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نتیجه</span>
+وقتی مقررات فدراسال عوض شد، فقط <code>PremiumSchedule</code> تغییر کرد — یک کلاس و
+یک تست. پیش از آن، این تغییر در ۴ سرویس و ۲ گزارش دستی انجام می‌شد و معمولاً
+دیرتر از موعد اعمال می‌شد.
+</div>
+
+<h3>۲. درگاه پرداخت فین‌تک</h3>
+
+<p>
+در یک درگاه پرداخت، مرز Aggregate سخت‌ترین قسمت کار است. موجودی کیف پول یک تراکنش است،
+اما کیف پول مربوط به کاربر است — پس موجودی در Aggregate کیف پول است و
+<code>WalletId</code> فقط یک شناسه است.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Aggregate: Wallet
+├── WalletId (Value Object)
+├── Money balance           ← تغییر فقط با deposit/withdraw
+└── transactions           ← نه! تراکنش‌ها Aggregate جدا هستند
+
+Workflow جداسازی:
+  ۱. برداشت از کیف پول مبدأ   → تراکنش ۱ + قفل سطر کیف پول مبدأ
+  ۲. واریز به کیف پول مقصد    → تراکنش ۲ + قفل سطر کیف پول مقصد
+  ۳. ثبت دفتر کل             → تراکنش ۳
+
+چرا یک تراکنش نیست؟
+  ← چون کیف پول مبدأ و مقصد در دو سرور متفاوت ممکن است باشند
+  ← و چون قفل همزمان روی چند کیف پول، بن‌بست تولید می‌کند
+
+راه‌حل: Outbox + Saga
+  تراکنش ۱ و Outbox در یک تراکنش محلی → سپس تراکنش ۲ با جبران خطا</code></pre>
+
+<h3>۳. پلتفرم آموزش آنلاین</h3>
+
+<pre class="kl-code" data-lang="text"><code>زمینه‌های محدود (کلید موفقیت این پلتفرم):
+├── EnrollmentContext   → ثبت‌نام، انشاپت، پرداخت شهریه
+├── CourseContext       → دوره، درس، محتوا، مدرس
+├── AssessmentContext   → آزمون، نمره، گواهی
+└── NotificationContext → ایمیل، پیامک  ← کاملاً جدا
+
+چرا NotificationContext جدا بود؟
+  ← تیم اعلان ۶ نفره بود و ماهی ۴۰ تغییر می‌دادند
+  ← اگر داخل Enrollment بود، هر تغییر اعلان = استقرار جدید Enrollment
+  ← جدا کردن آن باعث شد تیم اعلان مستقل منتشر کند
+
+مدل EnrollmentContext:
+├── Enrollment (Aggregate Root)
+│   ├── EnrollmentId
+│   ├── StudentId          ← فقط شناسه
+│   ├── CourseId           ← فقط شناسه
+│   ├── EnrollmentStatus
+│   └── PaymentRecord      ← وضعیت پرداخت (نه درگاه پرداخت)
+
+Domain Event:
+  EnrollmentConfirmed → NotificationContext ایمیل تأیید می‌فرستد</code></pre>
+
+<h3>۴. فروشگاه اینترنتی با تخفیف پویا</h3>
+
+<pre class="kl-code" data-lang="java"><code>// مدل دامنه: تخفیف به‌صورت اشیا، نه if-else
+public interface DiscountPolicy {
+    Money apply(Order order, CustomerId customerId);
+}
+
+public final class SeasonalCampaignPolicy implements DiscountPolicy {
+    private final String campaignCode;
+    private final Percentage rate;
+    private final LocalDate from;
+    private final LocalDate to;
+
+    @Override
+    public Money apply(Order order, CustomerId customerId) {
+        if (LocalDate.now().isBefore(from) || LocalDate.now().isAfter(to)) {
+            return order.total();              // ← کمپین تمام شده
+        }
+        return order.total().minus(order.total().multiply(rate.toFraction()));
+    }
+}
+
+public final class DiscountEngine {
+    private final List&lt;DiscountPolicy&gt; policies;
+
+    public Money calculate(Order order, CustomerId customerId) {
+        Money result = order.total();
+        for (DiscountPolicy policy : policies) {
+            result = policy.apply(order, customerId);
+        }
+        return result;
+    }
+}
+
+// افزودن کمپین جدید = افزودن یک کلاس، بدون تغییر هیچ کد موجود
+</code></pre>
+
+<h3>۵. سامانه‌ی لجستیک و مسیریابی</h3>
+
+<pre class="kl-code" data-lang="text"><code>مدل:
+├── Shipment (Aggregate Root)
+│   ├── ShipmentId
+│   ├── Route            ← Value Object: مبدأ، مقصد، مسافت
+│   ├── Parcel[]         ← Entity داخلی
+│   └── ShipmentStatus
+├── DeliveryAttempt     ← Aggregate جداست! هر تلاش برای تحویل یک موجودیت
+└── PricePolicy         ← قاعده‌ی نرخ‌گذاری
+
+چرا DeliveryAttempt Aggregate جداست؟
+  ← هر تلاش برای تحویل رکورد مستقل با زمان و پاسخ راننده است
+  ← در طول تحویل، ۱۰ بار تلاش ممکن است
+  ← نگه‌داشتن همه در Shipment باعث بزرگ شدن Aggregate می‌شود</code></pre>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<p>
+مهم‌ترین نگرانی درباره‌ی DDD همیشه این است: «آیا این همه لایه سرعت را کم می‌کند؟»
+پاسخ کوتاه: <strong>DDD کند نیست؛ Aggregate اشتباه کند است.</strong>
+</p>
+
+<h3>هزینه‌ی زمان اجرا در حد صفر</h3>
+
+<table>
+<thead>
+<tr><th>عامل</th><th>زمان اجرا</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>فراخوانی متد در حافظه</td><td>۱ تا ۱۰ نانوثانیه</td><td>لایه‌ی اضافه یعنی یک فراخوانی؛ نه قابل اندازه‌گیری</td></tr>
+<tr><td>ساخت یک VO (مثل Money)</td><td>۱۰ تا ۵۰ نانوثانیه</td><td>اعتبارسنجی سازنده عملاً رایگان است</td></tr>
+<tr><td>تبدیل Entity ⇄ JPA Entity</td><td>۱ تا ۱۰ میکروثانیه</td><td>در مقایسه با query دیتابیس ناچیز است</td></tr>
+<tr><td>یک query دیتابیس (۱۰ ردیف)</td><td>۱ تا ۱۰ میلی‌ثانیه</td><td>بازه‌ی ۱۰۰ تا ۱۰۰۰ برابر لایه‌ها</td></tr>
+<tr><td>یک round-trip شبکه</td><td>۱۰ تا ۱۰۰ میلی‌ثانیه</td><td>عامل غالب در هر معماری</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">قاعده‌ی ۱۰۰۰ برابر</span>
+اگر DDD یک لایه به مسیر اضافه کند (مثلاً ۵ میکروثانیه) و کل سرویس ۱۰ میلی‌ثانیه طول بکشد،
+هزینه‌ی لایه‌بندی <strong>۰٫۰۵٪</strong> است. هر چیزی که بیشتر از ۱٪ وقت را بگیرد،
+مشکل از لایه‌بندی نیست.
+</div>
+
+<h3>ریشه‌ی واقعی کندی در DDD</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>Aggregate بیش از حد بزرگ</strong> — بارگذاری ۱۰۰۰ سفارش با ۵۰٬۰۰۰ ردیف برای یک تغییر وضعیت</li>
+<li><strong>N+1 Query</strong> — حلقه‌ای که برای هر خط سفارش یک query می‌زند</li>
+<li><strong>مرز اشتباه Aggregate</strong> — تغییر یک رکورد، بارگذاری یک Aggregate غول‌پیکر</li>
+<li><strong>Domain Event ناهمگام زیاد</strong> — صدها رویداد در هر تراکنش</li>
+<li><strong>Value Object حجیم</strong> — ساخت Money در یک حلقه‌ی یک‌میلیونی</li>
+</ul>
+</div>
+
+<h3>بهینه‌سازی‌های عملی</h3>
+
+<h3>۱. بارگذاری تنبل با مرز مشخص</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ❌ N+1: برای هر سفارش یک query جدا
+for (Order order : orders) {
+    System.out.println(order.lines().size());   // ← lazy load در هر تکرار
+}
+
+// ✅ در یک query
+@Query("select distinct o from OrderJpaEntity o left join fetch o.lines")
+List&lt;OrderJpaEntity&gt; findAllWithLines(Pageable pageable);
+</code></pre>
+
+<h3>۲. جداسازی مدل خواندن از مدل نوشتن</h3>
+
+<pre class="kl-code" data-lang="text"><code>نوشتن:  Aggregate کامل → Order → outbox_events
+خواندن:  یک Query ساده مستقیم → OrderView (بدون ساخت Aggregate)
+
+چرا؟ چون برای نمایش لیست سفارش‌ها نیازی به کل Aggregate نیست.
+ساختن Aggregate برای فقط خواندن، هزینه و پیچیدگی بی‌دلیل است.</code></pre>
+
+<h3>۳. اجرای قوانین سنگین بیرون از مسیر بحرانی</h3>
+
+<pre class="kl-code" data-lang="text"><code>تحقیق در دیتابیس ۵ هزار خطی:    → داخل تراکنش، سریع
+ساخت ObjectGraph ۱۰ هزار تایی:  → خارج از تراکنش، با cache
+محاسبه‌ی نرخ بیمه:               → memoize در PremiumSchedule
+اعتبارسنجی پیچیده‌ی آدرس:        → index اختصاصی یا بیرون از تراکنش</code></pre>
+
+<h3>۴. اندازه‌گیری واقعی</h3>
+
+<pre class="kl-code" data-lang="java"><code>@Test
+@DisplayName("افزودن ۱۰۰۰ خط سفارش نباید بیش از X طول بکشد")
+void addingThousandLinesIsFast() {
+    Order order = Order.draft("c1");
+    long start = System.nanoTime();
+
+    for (int i = 0; i &lt; 1_000; i++) {
+        order.addLine("product-" + i, 1, Money.toman(10_000));
+    }
+
+    long elapsedMs = (System.nanoTime() - start) / 1_000_000;
+    assertThat(elapsedMs).isLessThan(50);   // ← معیار قابل اندازه‌گیری
+}
+</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">جمع‌بندی بخش Performance</span>
+قبل از هر بهینه‌سازی، اول <em>اندازه بگیرید</em>. در ۹۰٪ مواردی که تیم‌ها فکر می‌کنند
+DDD کند است، مشکل واقعی یکی از این سه مورد است: <strong>Aggregate بزرگ</strong>،
+<strong>N+1</strong> یا <strong>بازسازی بیش از حد مدل</strong>. هر سه، مشکل مدل‌سازی‌اند نه
+مشکل معماری.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<h3>سطح Junior (۱ تا ۱۰)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱ — DDD چیست و چه تفاوتی با لایه‌بندی دارد؟</span>
+DDD یعنی طراحی نرم‌افزار بر اساس مدل دامنه، جایی که مفاهیم و قواعد کسب‌وکار داخل کد
+مدل شده‌اند. لایه‌بندی فقط کد را به لایه‌های فنی تقسیم می‌کند (Controller، Service، DAO)
+و هیچ تضمینی نمی‌دهد منطق کسب‌وکار کجا باشد. در DDD منطق در مدل دامنه است و
+لایه‌بندی فقط ابزار انتقال آن است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۲ — Entity و Value Object را تفاوت بدهید</span>
+Entity هویت دارد (مثل Order با <code>id</code>) و برابری‌اش بر اساس شناسه است؛
+ویژگی‌هایش تغییر می‌کنند. Value Object هویت ندارد (مثل Money یا Email)، تغییرناپذیر
+است و برابری‌اش بر اساس مقدار است. VO اعتبارسنجی را در سازنده اعمال می‌کند و معمولاً
+درون همان جدول ذخیره می‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۳ — Aggregate چیست و چه چیزی را تعیین می‌کند؟</span>
+Aggregate یک گروه از اشیاء است که با هم یک واحد تراکنش می‌سازند. مهم‌ترین چیزی که تعیین
+می‌کند <strong>مرز تراکنش</strong> است: یک تراکنش فقط یک Aggregate را تغییر می‌دهد.
+سایر Aggregate‌ها فقط با شناسه ارجاع می‌شوند، نه با شیء.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۴ — Ubiquitous Language چیست؟</span>
+یک واژگان مشترک بین برنامه‌نویسان و متخصصان کسب‌وکار که در هر دو طرف دقیقاً یک معنا
+دارد. نامی که کارشناس می‌گوید باید همان نام در کد باشد. اگر زبان‌ها جدا شوند، ترجمه‌ی
+اشتباه نام‌ها شروع می‌شود و مدل دامنه به‌تدریج نامعتبر می‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۵ — Aggregate Root چه ویژگی‌هایی دارد؟</span>
+تنها عضوی از Aggregate که بیرون از Aggregate قابل دسترسی و ویرایش است. بقیه‌ی اعضا فقط
+از داخل Root در دسترس‌اند. این قانون تضمین می‌کند که هیچ‌کس نتواند مستقیم یک عضو را
+تغییر دهد و موجودیت را در وضعیت ناسازگار بگذارد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۶ — چرا نباید در لایه‌ی دامنه از JPA استفاده کرد؟</span>
+چون مدل دامنه به فریم‌ورک وابسته می‌شود. نتیجه‌ها: تست واحد نیازمند دیتابیس یا
+شبیه‌سازی می‌شود، مهاجرت به ORM دیگر غیرممکن می‌شود، و مدل دامنه عملاً به یک لایه‌ی
+نازک روی دیتابیس تبدیل می‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۷ — Domain Event چیست و چه تفاوتی با پیام معمولی دارد؟</span>
+رویدادی که در دامنه اتفاق افتاده و حالت گذشته را توصیف می‌کند؛ مثل
+<code>OrderPlaced</code>. تفاوت با پیام سیستمی این است که پیام سیستمی درباره‌ی
+اطلاع‌رسانی است و وابستگی ایجاد می‌کند، اما Domain Event درباره‌ی تغییر وضعیت است و
+معمولاً از طریق نام با گذشته مشخص می‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۸ — Domain Service کی لازم است؟</span>
+وقتی یک قاعده‌ی کسب‌وکار به بیش از یک Aggregate مربوط است، جای طبیعی‌اش داخل هیچ‌کدام
+از آن‌ها نیست. در این حالت یک سرویس بدون وضعیت در لایه‌ی دامنه می‌سازیم. مثال:
+محاسبه‌ی وفاداری که هم به مشتری نیاز دارد هم به تاریخچه‌ی سفارش.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۹ — Repository در DDD برای چه ساخته می‌شود؟</span>
+برای جمع و نگهداری موجودیت‌های یک Aggregate Root. یک Repository برای هر Aggregate Root،
+نه برای هر Entity و نه برای هر جدول. اگر برای <code>OrderLine</code> هم Repository بسازید،
+مرز Aggregate را نابود کرده‌اید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۰ — چرا متدهای Domain روی خود کلاس هستند؟</span>
+چون مدل داده‌ای (فقط getter/setter) اجازه می‌دهد موجودیت در وضعیت ناسازگار قرار بگیرد؛
+مثلاً مجموع خطوط با مجموع مبالغ نخواند. متدهای دامنه (<code>addLine</code>) هر تغییری را
+از یک نقطه عبور می‌دهند و سازگاری را تضمین می‌کنند.
+</div>
+
+<h3>سطح Mid (۱۱ تا ۱۷)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۱ — Bounded Context چیست و چگونه آن را تعیین می‌کنید؟</span>
+مرزی که در آن یک مدل معنی‌دار و یک زبان مشترک وجود دارد. تعیین آن از طریق
+Event Storming و تحلیل زبان انجام می‌شود: اگر دو بخش از سیستم نیاز به دو مدل متفاوت
+از یک موجودیت داشته باشند، آن‌ها در دو Bounded Context هستند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۲ — چگونه اندازه‌ی درست Aggregate را تعیین می‌کنید؟</span>
+سه معیار: (۱) کمینه باشد — کوچک‌ترین چیزی که همیشه با هم تغییر می‌کند؛ (۲) در یک
+تراکنش قفل شود — تغییر همزمان دو نفر نباید نیاز به قفل متقابل داشته باشد؛
+(۳) کلاس‌هایی که همیشه با هم خوانده می‌شوند در یک باشند. اگر Aggregate خیلی بزرگ
+باشد، contention و کندی می‌آورد؛ اگر خیلی کوچک، مدل ناسازگار می‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۳ — چه زمانی یک متد در Repository بد است؟</span>
+وقتی نام متد جزئیات فنی را لو بدهد، مثل
+<code>findByStatusAndCreatedAtBetweenAndCustomerIdIn</code>. این یعنی DAO را فقط
+rename کرده‌اید. متد خوب از زبان کسب‌وکار می‌آید:
+<code>findUnshippedFor(customerId)</code>.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۴ — تفاوت Data Mapper و Active Record چیست؟</span>
+در Active Record همان کلاس دامنه نقش مدل دیتابیس را هم دارد و <code>save()</code> روی
+خودش است؛ در نتیجه مدل به ORM گره می‌خورد. در Data Mapper (روش پیشنهادی DDD) کلاس
+دامنه کاملاً از دیتابیس جداست و یک mapper جدا تبدیل را انجام می‌دهد. هزینه‌اش کد بیشتر
+و سودش استقلال و تست‌پذیری است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۵ — چرا نمی‌توان دو Aggregate را در یک تراکنش تغییر داد؟</span>
+از نظر تئوری می‌توانید، اما عملاً باعث مشکلاتی می‌شود: قفل همزمان روی دو سطر در دو
+جدول مختلف (و در سیستم توزیع‌شده، روی دو نود متفاوت) که به بن‌بست و کاهش تکرارپذیری
+می‌انجامد. راه‌حل استاندارد، استفاده از رویداد دامنه و Saga است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۶ — الگوی Outbox چه مشکلی را حل می‌کند؟</span>
+مشکل انتشار رویداد در کنار تراکنش. اگر رویداد را قبل از commit به Kafka بفرستید و تراکنش
+fail شود، رویدادی برای چیزی که ذخیره نشده منتشر می‌شود. Outbox رویداد را در همان
+تراکنش در یک جدول می‌نویسد و یک پروسه‌ی جدا آن را به صف منتشر می‌کند؛ پس انتشار
+گران‌بار شدن حداقل یک‌بار را تضمین می‌کند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۷ — چرا DDD برای همه‌ی پروژه‌ها مناسب نیست؟</span>
+چون هزینه‌ی مدل‌سازی واقعی است: زمان، نیاز به دانش دامنه، پیچیدگی کد و مقاومت تیم.
+برای یک CRUD ساده یا یک MVP دو هفته‌ای، این هزینه بازگشت ندارد. DDD را جایی به کار
+ببرید که پیچیدگی کسب‌وکار واقعاً بالاست.
+</div>
+
+<h3>سطح Senior (۱۸ تا ۲۰)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۸ — چگونه تشخیص می‌دهید یک Aggregate بیش از حد بزرگ است؟</span>
+سه نشانه: (۱) هر بارگذاری Aggregate داده‌ی زیادی می‌آورد که استفاده نمی‌شود؛
+(۲) دو کاربر برای تغییر دو چیز متفاوت در همان Aggregate نیاز به قفل دارند؛
+(۳) کلاس‌های Aggregate بیش از ۲۰۰ خط دارند. در این حالت Aggregate را به چند
+Aggregate تقسیم کنید و از طریق شناسه ارتباط دهید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۹ — چگونه DDD را در یک تیم بزرگتر از ۱۰ نفر جایگزین می‌کنید؟</span>
+با شروع از یک Bounded Context محدود که بیشترین درد را دارد: یک دامنه‌ی پیچیده با
+منطق پراکنده. ابتدا زبان مشترک را با Event Storming درباره‌ی همان دامنه توافق کنید،
+سپس مدل را داخل همان دامنه بسازید، و به‌تدریج به دامنه‌های دیگر گسترش دهید.
+مهاجرت تدریجی، هم ریسک کمتری دارد و هم مقاومت تیم را کم می‌کند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۲۰ — چه زمانی DDD و CQRS و Event Sourcing را ترکیب می‌کنید؟</span>
+وقتی دو نیاز همزمان دارید: پیچیدگی دامنه بالا (→ DDD) و نیاز به گزارش‌ها و audit trail
+کامل از تاریخچه‌ی تغییرات (→ Event Sourcing). در این حالت Event Store جای دیتابیس
+اصلی می‌نشیند و وضعیت فعلی به‌صورت فولد رویدادها محاسبه می‌شود. این ترکیب قدرتمند
+اما پرهزینه است و فقط وقتی ارزشش را دارد که تاریخچه‌ی تغییرات واقعاً ارزشمند باشد
+(بیمه، بانک، بازی).
+</div>
+</section>
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-h">
+<span class="kl-h">DDD فقط برای سیستم‌های پیچیده است؟</span>
+تقریباً بله. DDD وقتی ارزش دارد که منطق کسب‌وکار پیچیده و پرتله‌باشد. برای یک CRUD ساده
+یا یک پروژه‌ی دو هفته‌ای، یک لایه‌بندی تمیز چند برابر ارزان‌تر است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا DDD و TDD با هم سازگارند؟</span>
+بله، و حتی مکمل‌اند. TDD روی <em>رفتار</em> تمرکز دارد و DDD روی <em>ساختار</em>. ترکیب
+این‌ها یعنی مدل دامنه‌ای دارید که با تست‌های سریع قفل شده است — که دقیقاً همان چیزی است
+که DDD به شما وعده می‌دهد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا هر Aggregate باید یک جدول جدا داشته باشد؟</span>
+نه. Aggregate یک واحد تراکنش و یک زمان است، نه الزاماً یک جدول. اعضای داخل Aggregate
+می‌توانند در چند جدول باشند و حتی می‌توانند در یک ستون به‌صورت JSON ذخیره شوند
+(<code>OrderLine</code>ها). معیار درست بودن، مرز تراکنش است نه تعداد جدول‌ها.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">تفاوت Aggregate و Bounded Context چیست؟</span>
+Bounded Context مرز <em>مدل‌سازی</em> است: کجا یک زبان مشترک وجود دارد. Aggregate مرز
+<em>تراکنش</em> است: کم‌ترین واحدی که باید یک‌جا تغییر کند. یک Bounded Context معمولاً
+چند Aggregate دارد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا می‌توان یک Entity در دو Bounded Context داشت؟</span>
+بله، و این در واقع طبیعی است. کالا در Context فروش مدل متفاوتی از کالا در Context
+انبار دارد. این دو نباید یکی شوند؛ باید از طریق یک لایه‌ی ضدخورده (ACL) و ترجمه‌ی
+مدل بین آن‌ها ارتباط برقرار کنند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">DDD آیا همان ORM نیست؟</span>
+نه. ORM مسئله‌ی ذخیره‌سازی را حل می‌کند، DDD مسئله‌ی مدل‌سازی. این‌ها مکمل‌اند. با
+DDD می‌توانید از هیچ ORMی استفاده کنید و حتی از JPA در لایه‌ی زیرساخت.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا DDD برای موبایل مناسب است؟</span>
+بخش تاکتیکی بله. مدل دامنه‌ی خالص و قابل تست در پروژه‌ی اندروید بسیار مفید است. بخش
+راهبردی (Bounded Context) در اپ موبایل معمولاً کم‌کاربرد است، چون معمولاً یک سرور و
+یک کلاینت داریم.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چرا متدهای Aggregate را <code>static</code> نمی‌سازم؟</span>
+چون همیشه دارد روی یک نمونه‌ی موجود کار می‌کند. آنچه <code>static</code> است سازنده‌ی
+کارخانه‌ای است (<code>Order.draft</code>) یا قاعده‌ای که به هیچ نمونه‌ای نیاز ندارد
+(<code>LoyaltyPolicy.isLoyal</code>).
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">اگر یک قانون در چند جا لازم شد، کجا بگذارم؟</span>
+اگر به یک Aggregate مربوط است، متد همان Aggregate. اگر به چند Aggregate مربوط است،
+Domain Service. اگر واقعاً مشترک و بی‌ربط به دامنه است، یک Utility ساده. نکته: قانون
+نباید در لایه‌ی application یا UI باشد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا DDD باعث کندی تیم نمی‌شود؟</span>
+در ابتدا بله، چون کشف مدل زمان می‌برد. بعد از بلوغ مدل، تغییرات سریع‌تر می‌شوند چون محل
+تغییر مشخص است. اندازه‌گیری کنید: زمان سپری‌شده از پیشنهاد تا استقرار.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">Event Sourcing همان DDD است؟</span>
+نه. Event Sourcing یک تصمیم درباره‌ی <em>ذخیره‌سازی</em> است: به‌جای نگه‌داشتن وضعیت
+فعلی، رویدادها را نگه می‌دارید. DDD درباره‌ی <em>مدل‌سازی</em> است. می‌توانید DDD بدون
+Event Sourcing داشته باشید (حالت رایج‌تر).
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">Repository را کجا تعریف کنم؟</span>
+در لایه‌ی دomain. دامنه مالک قرارداد است؛ زیرساخت آن را پیاده می‌کند. این همان اصل
+Dependency Inversion است و به شما اجازه می‌دهد مدل را بدون زیرساخت تست کنید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا یک میکروسرویس = یک Bounded Context؟</span>
+تقریباً، ولی نه همیشه. یک Bounded Context می‌تواند در یک میکروسرویس باشد. گاهی چند
+Bounded Context کوچک در یک سرویس زندگی می‌کنند و گاهی یک Bounded Context باید
+در دو سرویس شکسته شود (به‌ندرت). این تصمیم سازمانی است، نه فنی.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چطور متوجه شوم مدل مدل نیست؟</span>
+سه نشانه: مدل نمی‌تواند بدون دیتابیس تست شود؛ تغییر یک قانون نیازمند تغییر چند لایه
+است؛ و هیچ‌کسی نمی‌تواند توضیح دهد «سفارش» در این سیستم یعنی چه. اگر این سه را دارید،
+مدل شما فقط یک پوشه‌ی کلاس است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا Anonymous Entity ممکن است؟</span>
+بله. اگر موجودیتی هیچ ویژگی‌ای جز هویت ندارد (مثل یک رکورد لاگ)، می‌توانید
+<code>@Entity</code> نباشید و شناسه را به‌عنوان Value Object نگه دارید. همه‌ی اشیا نباید
+Entity باشند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چطور مدل را مهاجرت دهم وقتی اشتباه طراحی شده؟</span>
+به‌ندرت از صفر شروع کنید. مدل را با تست‌های رفتاری قفل کنید، سپس به‌تدریج
+<code>restore</code> را اضافه کنید و کلاس‌ها را به Aggregate منتقل کنید. مهاجرت تدریجی
+DDD‌شده از مهاجرت بزرگ بسیار کم‌ریسک‌تر است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">مهم‌ترین یک جمله‌ای که باید به خاطر بسپارم چیست؟</span>
+«قواعد کسب‌وکار را در جایی بگذارید که کسی که آن کار را انجام می‌دهد بتواند پیدایش
+کند.» اگر کاربردی که یک سفارش را ثبت می‌کند، قانون اعتبارسنجی سفارش را در
+<code>Order</code> پیدا کند، مدل درست است.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<table>
+<thead>
+<tr><th>مفهوم</th><th>یک‌خطی</th><th>قانون طلایی</th><th>نمونه</th></tr>
+</thead>
+<tbody>
+<tr><td>Ubiquitous Language</td><td>زبان مشترک کسب‌وکار و کد</td><td>نام کد = نام کارشناس</td><td>سفارش = Order</td></tr>
+<tr><td>Entity</td><td>دارای هویت</td><td>برابری با id</td><td>Order</td></tr>
+<tr><td>Value Object</td><td>بدون هویت، تغییرناپذیر</td><td>اعتبارسنجی در سازنده</td><td>Money، Email</td></tr>
+<tr><td>Aggregate</td><td>واحد تراکنش</td><td>یک تراکنش = یک Aggregate</td><td>Order + OrderLine</td></tr>
+<tr><td>Aggregate Root</td><td>تنها نقطه‌ی ورود</td><td>فقط Root قابل دسترسی بیرونی</td><td><code>order.addLine()</code></td></tr>
+<tr><td>Bounded Context</td><td>مرز مدل و زبان</td><td>دو مدل متفاوت = دو Context</td><td>Sales / Warehouse</td></tr>
+<tr><td>Domain Service</td><td>منطق چند Aggregate</td><td>بدون وضعیت، در دامنه</td><td>LoyaltyPolicy</td></tr>
+<tr><td>Domain Event</td><td>تغییر وضعیت گذشته</td><td>نام با گذشته</td><td>OrderPlaced</td></tr>
+<tr><td>Application Service</td><td>هماهنگ‌کننده</td><td>مرز تراکنش، بدون قاعده</td><td>OrderApplicationService</td></tr>
+<tr><td>Repository</td><td>مجموعه‌ی Aggregate</td><td>یکی برای هر Aggregate Root</td><td>OrderRepository</td></tr>
+<tr><td>Factory</td><td>ساخت موجودیت پیچیده</td><td>از مسیر عمومی نساز</td><td><code>Order.draft()</code></td></tr>
+<tr><td>Specification</td><td>قاعده به‌عنوان شیء</td><td>برای قوانین ترکیب‌پذیر</td><td>OrderSpecifications</td></tr>
+<tr><td>Data Mapper</td><td>جدا کردن مدل از دیتابیس</td><td>هر دو مدل مستقل</td><td>OrderEntityMapper</td></tr>
+<tr><td>Outbox</td><td>انتشار مطمئن رویداد</td><td>همان تراکنش دیتابیس</td><td>outbox_events</td></tr>
+<tr><td>Ubiquitous L.</td><td>مستندسازی زنده</td><td>مدل = مستند</td><td>—</td></tr>
+<tr><td>Anti-Corruption L.</td><td>محافظت از مدل بیرونی</td><td>ترجمه در مرز</td><td>PaymentGatewayAdapter</td></tr>
+<tr><td>Strategy</td><td>الگوریتم تعویض‌پذیر</td><td>هر قاعده یک کلاس</td><td>DiscountPolicy</td></tr>
+<tr><td>S</td><td>مسئولیت واحد</td><td>یک دلیل تغییر</td><td>Repository ≠ قاعده</td></tr>
+<tr><td>O</td><td>باز/بسته</td><td>قاعده‌ی جدید = کلاس جدید</td><td>OrderRule</td></tr>
+<tr><td>L</td><td>جایگزینی</td><td>همه‌ی Adapterها</td><td>InMemoryRepository</td></tr>
+<tr><td>I</td><td>تفکیک Interface</td><td>Interface کوچک</td><td>OrderRepository (نه GenericCrud)</td></tr>
+<tr><td>D</td><td>وارونگی وابستگی</td><td>مالک Interface دامنه است</td><td>domain → port</td></tr>
+<tr><td>لایه‌ی Domain</td><td>بدون وابستگی</td><td>نه Spring، نه JPA</td><td>Order.java</td></tr>
+<tr><td>لایه‌ی App</td><td>نازک</td><td>اگر شما if دیدید، جابه‌جا شود</td><td>placeOrder()</td></tr>
+<tr><td>لایه‌ی Infra</td><td>همه‌ی فنی</td><td>هیچ‌کس به آن وابسته نیست</td><td>JpaOrderRepository</td></tr>
+<tr><td>پرچم قرمز</td><td>نشانه‌ی خطا</td><td>بازبینی کنید</td><td><code>@Transactional</code> در دامنه</td></tr>
+<tr><td>نشانه‌ی درست</td><td>تست خالص دامنه</td><td>بدون زیرساخت</td><td><code>new Order(...)</code></td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">خلاصه در ۱۰ ثانیه</span>
+DDD = «مدل کسب‌وکار را داخل کد بنویس، با همان نام‌هایی که کسب‌وکار می‌گوید، مرز تراکنش
+را مشخص کن (Aggregate)، و اجازه بده تست‌ها بدون دیتابیس بگذرند.»
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<h3>Roadmap چهار مرحله‌ای یادگیری DDD</h3>
+
+<table>
+<thead>
+<tr><th>مرحله</th><th>مدت</th><th>هدف</th><th>خروجی مورد انتظار</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>۱. پایه</strong></td><td>۲–۳ هفته</td><td>Entity، VO، Aggregate، Ubiquitous Language</td><td>بتوانید تشخیص دهید کدام کلاس چیست</td></tr>
+<tr><td><strong>۲. تاکتیکی</strong></td><td>۳–۴ هفته</td><td>ساخت یک دامنه‌ی کامل با لایه‌بندی</td><td>یک Aggregate با تست واحد</td></tr>
+<tr><td><strong>۳. راهبردی</strong></td><td>۳–۴ هفته</td><td>Event Storming و تعیین Bounded Context</td><td>نقشه‌ی زمینه‌های محدود</td></tr>
+<tr><td><strong>۴. پیشرفته</strong></td><td>۴–۶ هفته</td><td>Domain Event، Outbox، Saga، Event Sourcing</td><td>معماری توزیع‌شده‌ی دامنه‌محور</td></tr>
+</tbody>
+</table>
+
+<h3>مسیرهای یادگیری پیشنهادی</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>کتاب‌ها</strong>: <em>Domain-Driven Design</em> ایوانز (مقدمه تا فصل ۱۰ کافی است)،
+<em>Implementing DDD</em> واگنر، <em>Domain-Driven Design Distilled</em> واگنر</li>
+<li><strong>مقالات</strong>: مقاله‌ی کوپر درباره‌ی Domain Model، نوشته‌های کلاسیک Cockburn
+درباره‌ی شش‌ضلعی، مقاله‌های Vaughn Vernier درباره‌ی DDD در مقالات فنی</li>
+<li><strong>تمرین</strong>: یک دامنه‌ی واقعی کوچک انتخاب کنید (مثلاً کتابخانه‌ی محلی) و
+مدل آن را <em>بدون دیتابیس</em> بنویسید، بعد وصل کنید</li>
+<li><strong>ابزار</strong>: <code>JHipster</code> برای دیدن ساختار DDD در عمل،
+<code>Spring Modulith</code> برای مدولار مونولیث</li>
+</ul>
+</div>
+
+<h3>سه کتاب که اگر وقت کم دارید بخوانید</h3>
+
+<ol>
+<li><strong>Domain-Driven Design Distilled</strong> — کوتاه‌ترین خلاصه‌ی دقیق؛ بهترین شروع</li>
+<li><strong>مقدمه‌ی کتاب ایوانز</strong> (فصل‌های ۱ تا ۵) — برای جذب زبان مشترک</li>
+<li><strong>Implementing DDD</strong> — برای وقتی که دارید کد می‌زنید و به الگوهای عملی نیاز دارید</li>
+</ol>
+
+<h3>جمع‌بندی</h3>
+
+<p>
+<strong>DDD</strong> یک روش برای فکر کردن است، نه یک فریم‌ورک. ارزش آن در سه چیز است:
+<strong>زبان مشترک</strong> که سوءتفاهم را حذف می‌کند، <strong>مرز Aggregate</strong> که
+تراکنش را قابل فهم می‌کند، و <strong>تست‌پذیری</strong> که به شما اجازه می‌دهد
+بازطراحی را با اطمینان انجام دهید.
+</p>
+
+<p>
+و مهم‌تر از همه: DDD را به هر پروژه‌ای تحمیل نکنید. اگر مسئله‌ی شما پیچیدگی دامنه است،
+DDD بهترین پاسخ است. اگر مسئله‌ی شما حجم ترافیک است، به دنبال کش و معماری توزیع‌شده
+بروید. اگر مسئله‌ی شما CRUD است، یک لایه‌بندی ساده و تمیز کافی است — و این یک
+تصمیم حرفه‌ای است، نه یک شکست.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله دهمین عضو سری «معماری‌های نرم‌افزاری» است. اکنون الگوهای رابط کاربری
+(MVC، MVP، MVVM، MVI)، الگوهای معماری (Clean، Onion، Hexagonal، Layered، Repository)
+و مدل‌سازی دامنه (DDD) را پوشش داده‌اید. در ادامه سری به معماری‌های سطح بالا
+می‌رسد: <strong>Feature-Based</strong>، <strong>Event-Driven</strong>،
+<strong>CQRS</strong> و <strong>Microservices</strong>.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: زبان کسب‌وکار را نمی‌فهمد</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">DDD چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: زبان مشترک</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مفاهیم کلیدی دامنه</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Repository و Service دامنه</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار معماری: لایه‌های DDD</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: دامنه‌ی سفارش</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مقایسه با معماری‌های دیگر</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: زبان کسب‌وکار را نمی‌فهمد</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">DDD چیست؟ (تعریف دقیق)</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: زبان مشترک</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مفاهیم کلیدی دامنه</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Repository و Service دامنه</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار معماری: لایه‌های DDD</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: دامنه‌ی سفارش</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مقایسه با معماری‌های دیگر</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

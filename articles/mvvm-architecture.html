@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MVVM چیست؟ آموزش کامل الگوی Model-View-ViewModel با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله الگوی MVVM را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با MVP و MVC، داده‌ی دوحالته و LiveData، پیاده‌سازی کامل با Java 21، تست، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="MVVM, Model View ViewModel, MVVM چیست, MVVM در اندروید, LiveData, Data Binding, Java, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, MVC, MVP, MVI">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="MVVM چیست؟ آموزش کامل الگوی Model-View-ViewModel با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله الگوی MVVM را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با MVP و MVC، داده‌ی دوحالته و LiveData، پیاده‌سازی کامل با Java 21، تست، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/mvvm-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/mvvm-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MVVM Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MVVM چیست؟ آموزش کامل الگوی Model-View-ViewModel با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="ViewModel، داده‌ی دوحالته و LiveData، نمونه‌کد Java 21، مقایسه با MVP و MVC و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "MVVM چیست؟ آموزش کامل الگوی Model-View-ViewModel با مثال و ساختار پروژه",
+    "description": "در این مقاله الگوی MVVM را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با MVP و MVC، داده‌ی دوحالته و LiveData، پیاده‌سازی کامل با Java 21، تست، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/mvvm-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/mvvm-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "MVVM, ViewModel, LiveData, Data Binding, Android, Java, Unit Test",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "MVVM", "item": "https://haedarfarhani.github.io/My-Articles/articles/mvvm-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">MVVM</span>؛ الگویی که وضعیت UI را واقعاً مدیریت می‌کند
+          </h1>
+
+          <p class="hero-lead">
+            MVVM یعنی <strong>ViewModel، وضعیت صفحه را نگه می‌دارد و داده‌ی دوحالته را
+            خودش مدیریت می‌کند</strong>؛ بدون اینکه به یک کلمه اندروید وابسته باشد.
+            در این راهنما سه نقش MVVM، چرخه‌ی حیات، داده‌ی دوحالته و LiveData،
+            پیاده‌سازی کامل با <code>Java 21</code>، مقایسه با MVP و MVC و MVI،
+            تست واحد ViewModel با <code>JUnit 5</code> و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#MVVM</span>
+            <span class="post-tag">#ViewModel</span>
+            <span class="post-tag">#LiveData</span>
+            <span class="post-tag">#Two_Way_Data_Binding</span>
+            <span class="post-tag">#Android</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی چرخش صفحه همه‌چیز را پاک می‌کند</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVVM چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: ViewModel و وضعیت</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: اجزای MVVM</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: صفحه‌ی پروفایل کاربر</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>MVVM در Jetpack Compose</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی چرخش صفحه همه‌چیز را پاک می‌کند</h2>
+
+<p>
+یک فرم پروفایل کاربر را تصور کنید. کاربر نام و ایمیل را تایپ می‌کند و در حالی که دارد
+شهر را انتخاب می‌کند، گوشی را می‌چرخاند. اگر وضعیت در Activity نگه‌داری شده باشد،
+<strong>همه‌ی آن‌ها پاک می‌شود</strong> و کاربر باید از اول شروع کند.
+</p>
+
+<p>
+این یعنی کاربر هر بار که گوشی را بچرخاند یا از اپ خارج و وارد شود، باید دوباره همه‌چیز را
+وارد کند. برای دیتابیسی که با هر بار خواندن، یک درخواست شبکه می‌فرستد، این هم کند است هم
+هزینه‌بر.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>مشکل دوگانه:
+
+  ۱) وضعیت UI (تایپ کاربر، اسکرول، انتخاب تب)
+     → با چرخش صفحه یا خروج از اپ از بین می‌رود
+
+  ۲) منطق UI (کی دکمه فعال است، چه پیامی نشان دهم)
+     → داخل کلاس Activity است و تست‌ناپذیر
+
+راه‌حل: یک کلاس که زنده می‌ماند و وضعیت را نگه می‌دارد
+        → ViewModel</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ریشه‌ی مشکل</span>
+<strong>ViewModel</strong> در اندروید یک کلاس است که سیستم نگهش می‌دارد تا وقتی کاربر
+اپ را ببندد باقی می‌ماند، اما وقتی Activity واقعاً تمام شود (مثلاً فشار دکمه‌ی Back در
+حالتی که صفحه در پشته باقی نمی‌ماند) پاک می‌شود. یعنی <strong>دقیقاً عمر مورد نیاز
+شما را دارد</strong>.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+ریشه‌ی MVVM به سال <strong>۲۰۰۵</strong> برمی‌گردد؛ زمانی که مایکروسافت آن را در
+<strong>WPF</strong> و <strong>Silverlight</strong> معرفی کرد. دلیل اصلی یک چیز بود:
+<strong>سیستم‌های داده‌ی دوحالته‌ای که MVC از پشتیبانی آن‌ها ناتوان بود.</strong>
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
+  <tr><td>۱۹۸۸ — Smalltalk</td><td>MVC و دشواری مدیریت جریان داده‌ی رو به عقب</td></tr>
+  <tr><td>۱۹۹۰s — MVP</td><td>جداسازی View از Model و حل مشکل تست‌پذیری</td></tr>
+  <tr><td>۱۹۹۸ — VB6 / VB.NET</td><td>پایداری فرم، تغییر نمایشی و تغییر منطق به‌صورت مستقل</td></tr>
+  <tr><td>۲۰۰۵ — WPF</td><td>مایکروسافت MVVM را برای XAML و Data Binding معرفی کرد</td></tr>
+  <tr><td>۲۰۱۰ — MVVM Light Toolkit</td><td>MVVM را برای سایر پلتفرم‌ها در دسترس عمومی قرار داد</td></tr>
+  <tr><td>۲۰۱۱ — Prism</td><td>MVVM را در برنامه‌های سازمانی WPF و Silverlight استاندارد کرد</td></tr>
+  <tr><td>۲۰۱۲ — Android (Google I/O)</td><td>الگوی Lifecycle-aware در پیشنهاد رسمی آمد</td></tr>
+  <tr><td>۲۰۱۷ — Jetpack</td><td>MVVM به الگوی پیشنهادی رسمی اندروید تبدیل شد</td></tr>
+  <tr><td>۲۰۲۰s — Flow</td><td>LiveData و متعاقباً Kotlin Flow جایگزین‌های مدرن شدند</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">چرا MVVM جواب داد؟</span>
+چون <strong>حافظه‌ی مشترک (Shared Memory)</strong> بین View و ViewModel ساخت:
+هر دو به یک شیء اشاره می‌کنند. با تغییر یکی، دیگری به‌طور خودکار با چرخه‌ی حیات
+هماهنگ می‌شود — بدون اینکه View مجبور باشد مدیریت وضعیت را کد بزند.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>MVVM چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>MVVM</strong> یک الگوی معماری است که برنامه را به سه نقش تقسیم می‌کند:
+<strong>Model</strong> (داده و قواعد کسب‌وکار)، <strong>View</strong> (رابط کاربری کاملاً منفعل)
+و <strong>ViewModel</strong> (که وضعیت صفحه و منطق نمایش را نگه می‌دارد).
+<strong>ViewModel</strong> به View ارجاع مستقیم ندارد؛ این یعنی می‌توان آن را
+<strong>کاملاً بدون اندروید تست کرد</strong>.
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقش</th><th>مسئولیت</th><th>نمونه</th></tr>
+  <tr><td><strong>Model</strong></td><td>داده و قوانین کسب‌وکار؛ منبع حقیقت</td><td><code>User</code>، <code>UserRepository</code></td></tr>
+  <tr><td><strong>ViewModel</strong></td><td>وضعیت صفحه، تبدیل داده به فرمت نمایشی، مدیریت چرخه‌ی حیات</td><td><code>ProfileViewModel</code></td></tr>
+  <tr><td><strong>View</strong></td><td>نمایش داده‌ی ViewModel و ارسال رویداد به آن</td><td><code>ProfileFragment</code> + layout</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">سه اصل بنیادین MVVM</span>
+۱) <strong>ViewModel هرگز View را نمی‌بیند</strong> — نه <code>Context</code>، نه <code>View</code>، نه <code>Fragment</code>.<br>
+۲) <strong>ViewModel زنده می‌ماند</strong> — با چرخش صفحه و تغییر پیکربندی از دست نمی‌رود.<br>
+۳) <strong>ViewModel وضعیت را نگه می‌دارد</strong> — نه View، نه Activity.
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سوءتفاهم رایج</span>
+MVVM با MVP <strong>تقریباً یکسان</strong> به نظر می‌رسد، اما یک تفاوت حیاتی دارد:
+در MVP، View باید صریحاً از Presenter <strong>داده بگیرد</strong> (به‌صورت پشتیبان یا Observer)؛
+در MVVM، ViewModel وضعیت را <strong>منتشر می‌کند</strong> و View خودش آن را
+مشاهده (observe) می‌کند و به‌روز می‌شود. این تفاوت، همه‌ی قدرت MVVM است.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<pre class="kl-code" data-lang="java"><code>public class ProfileActivity extends AppCompatActivity {
+
+    private EditText nameInput;
+    private EditText emailInput;
+    private Spinner citySpinner;
+    private Button saveButton;
+    private List&lt;String&gt; cities;
+
+    private String currentUserId;      // با چرخش صفحه پاک می‌شود
+    private User loadedUser;           // با چرخش صفحه پاک می‌شود
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+
+        nameInput  = findViewById(R.id.name);
+        emailInput = findViewById(R.id.email);
+        citySpinner = findViewById(R.id.city);
+        saveButton = findViewById(R.id.save);
+
+        // ۱) هر بار ساخت صفحه، دوباره درخواست شبکه
+        api.fetchUser(getIntent().getStringExtra("user_id"))
+           .enqueue(new Callback&lt;User&gt;() {
+               @Override
+               public void onResponse(Call&lt;User&gt; call, Response&lt;User&gt; r) {
+                   // ۲) منطق نمایش در Callback
+                   loadedUser = r.body();
+                   nameInput.setText(loadedUser.getName());
+                   saveButton.setEnabled(isValid(loadedUser));
+               }
+               @Override
+               public void onFailure(Call&lt;User&gt; call, Throwable t) {
+                   // ۳) خطا فقط با Toast
+                   Toast.makeText(ProfileActivity.this,
+                           "خطا در بارگذاری", Toast.LENGTH_SHORT).show();
+               }
+           });
+
+        // ۴) اعتبارسنجی زنده، ولی فقط در حافظه
+        nameInput.addTextChangedListener(new TextWatcher() {
+            @Override public void afterTextChanged(Editable s) {
+                saveButton.setEnabled(s.length() &gt; 2);
+            }
+        });
+    }
+
+    private boolean isValid(User user) {
+        return user.getName().length() &gt; 2 &amp;&amp; user.getCity() != null;
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مشکل</th><th>اثر</th></tr>
+  <tr><td>وضعیت در فیلدهای Activity</td><td>با هر چرخش صفحه از بین می‌رود</td></tr>
+  <tr><td>درخواست شبکه در <code>onCreate</code></td><td>با هر چرخش صفحه تکرار می‌شود</td></tr>
+  <tr><td>منطق نمایش در Callback</td><td>غیرقابل تست و غیرقابل استفاده‌ی مجدد</td></tr>
+  <tr><td>حالت خطا فقط با Toast</td><td>پس از چند ثانیه ناپدید می‌شود و تست آن سخت است</td></tr>
+  <tr><td>داده‌ی دوطرفه دستی</td><td>هر تغییر در UI باید دستی به Activity منتقل شود</td></tr>
+  <tr><td>سربار <code>setEnabled</code> در هر کاراکتر</td><td>به‌روزرسانی بی‌مورد UI</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: ViewModel و وضعیت</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">ViewModel چیست؟</span>
+کلاسی که سیستم برای مدت حیات یک صفحه (یا Activity) در حافظه نگه می‌دارد و
+<strong>با چرخش صفحه و تغییر پیکربندی از بین نمی‌رود</strong>.
+اگر کاربر اپ را کامل ببندد، پاک می‌شود — که درست همان چیزی است که می‌خواهیم.
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    V["View (Fragment) — فقط نمایش"]
+    VM["ViewModel — وضعیت و منطق نمایش"]
+    M["Model — داده و قواعد کسب‌وکار"]
+    R["Repository — دسترسی به داده"]
+
+    V -->|"مشاهده‌ی LiveData / Flow"| VM
+    V -->|"رویداد کاربر"| VM
+    VM -->|"می‌خواند / می‌نویسد"| R
+    R --> M
+
+    VM -. "❌ هرگز ارجاعی به View ندارد" .- V
+
+    style V fill:#0f766e,stroke:#14b8a6,color:#fff
+    style VM fill:#115e59,stroke:#2dd4bf,color:#fff
+    style M fill:#134e4a,stroke:#5eead4,color:#fff
+    style R fill:#78350f,stroke:#fbbf24,color:#fff</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>سه سطح مسئولیت در MVVM:
+
+  Model      : "قیمت محصول چقدر است؟"      → داده خام و قانون کسب‌وکار
+  ViewModel  : "با ۹٪ تخفیف نمایش بده"    → تبدیل داده به فرمت نمایشی
+  View       : "این متن را روی صفحه بنویس"  → فقط اجرای دستور
+
+سؤال راهنما برای هر خط کد:
+  این خط به دیتابیس وصل می‌شود؟      → Model
+  این خط رشته‌ی نمایشی می‌سازد؟      → ViewModel
+  این خط فقط صفحه را تغییر می‌دهد؟    → View</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">تفاوت کلیدی با MVP</span>
+در MVP، Presenter متدهایی مثل <code>view.setName(...)</code> را روی View صدا می‌زند؛
+یعنی View باید در زمان اجرا وجود داشته باشد. در MVVM، ViewModel فقط <strong>LiveData</strong>
+منتشر می‌کند. اگر View نبود (مثلاً در تست)، ViewModel همچنان کار می‌کند — و همین
+تست را ممکن می‌سازد.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>ساختار معماری: اجزای MVVM</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>وظیفه</th><th>چرا مهم است</th></tr>
+  <tr><td><strong>ViewModel</strong></td><td>نگه‌داری وضعیت صفحه و منطق نمایش</td><td>مرز بین UI و داده</td></tr>
+  <tr><td><strong>LiveData</strong></td><td>ظرف قابل مشاهده و چرخه‌ی حیات‌آگاه</td><td>انتشار امن داده به UI</td></tr>
+  <tr><td><strong>MediatorLiveData</strong></td><td>ترکیب چند منبع LiveData</td><td>ساخت وضعیت ترکیبی</td></tr>
+  <tr><td><strong>StateFlow</strong></td><td>جایگزین مدرن LiveData در Kotlin</td><td>یک‌طرفه و سریع‌تر</td></tr>
+  <tr><td><strong>SavedStateHandle</strong></td><td>ذخیره‌ی وضعیت در Bundle</td><td>بازیابی پس از مرگ فرایند</td></tr>
+  <tr><td><strong>Data Binding</strong></td><td>اتصال خودکار لایوت به مدل</td><td>کم کردن کد تکراری</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph VLAYER["View — XML یا Compose"]
+        V1["Fragment / Activity"]
+        V2["layout با Data Binding"]
+    end
+
+    subgraph SLAYER["Shared ViewModel"]
+        S1["LiveData&lt;UiState&gt;"]
+        S2["LiveData&lt;String&gt;"]
+        S3["MutableLiveData&lt;Event&gt;"]
+    end
+
+    subgraph ALAYER["Android Framework — شما کد نمی‌نویسید"]
+        A1["ViewModelProvider"]
+        A2["SavedStateRegistry"]
+        A3["LifecycleOwner (Fragment)"]
+    end
+
+    V1 --> A3
+    V1 --> A1
+    A1 --> S1
+    V1 -->|"observe" S1
+    V1 -->|"observe" S2
+    V2 -. "دوحالته: UI → ViewModel" .-> S3
+
+    style VLAYER fill:#0f766e,stroke:#14b8a6,color:#fff
+    style SLAYER fill:#115e59,stroke:#2dd4bf,color:#fff
+    style ALAYER fill:#78350f,stroke:#fbbf24,color:#fff</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ViewModel را از کجا بگیریم؟</span>
+از <code>ViewModelProvider</code> سیستم، نه با <code>new</code>. سیستم است که نمونه را
+در چرخش صفحه نگه می‌دارد و در صورت مرگ فرایند، از <code>SavedStateHandle</code> بازیابی می‌کند.
+اگر خودتان <code>new ProfileViewModel()</code> بنویسید، مزیت اصلی MVVM را از دست داده‌اید.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    autonumber
+    actor U as کاربر
+    participant V as View
+    participant VM as ViewModel
+    participant R as Repository
+
+    VM->>VM: load() — در onInit
+    VM->>R: getUser(id)
+    R-->>VM: User (داده خام)
+    VM->>VM: تبدیل به UiState
+    VM->>V: LiveData منتشر می‌کند
+    V-->>U: نمایش نام و ایمیل
+
+    U->>V: تغییر متن نام
+    V->>VM: setName("علی")
+    VM->>VM: به‌روزرسانی UiState
+    VM->>V: LiveData جدید منتشر می‌کند
+    V-->>U: دکمه ذخیره فعال می‌شود</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>دو جریان در MVVM:
+
+  ۱) جریان یک‌طرفه (View → ViewModel)
+     View رویداد کاربر را به متد ViewModel می‌دهد.
+     ViewModel وضعیت را به‌روز و LiveData را منتشر می‌کند.
+
+  ۲) جریان مشاهده (ViewModel → View)
+     View با observe() به LiveData گوش می‌دهد و هر تغییر را رندر می‌کند.
+
+نکته: هر دو جریان از وسط (ViewModel) می‌گذرند.
+ViewModel تنها منبع حقیقت برای وضعیت صفحه است.</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">چرخه‌ی حیات‌آگاه بودن</span>
+اگر Activity در حالت <code>STOPPED</code> باشد، LiveData فعال نمی‌شود و View به‌روزرسانی
+نمی‌شود. وقتی Activity دوباره <code>STARTED</code> می‌شود، LiveData آخرین مقدار را
+<strong>بلافاصله</strong> به View می‌دهد. این یعنی <strong>UI همیشه آخرین وضعیت را نشان می‌دهد</strong>،
+حتی اگر مدتی در پس‌زمینه بوده باشد.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>app/src/main/java/com/example/profile/
+├── ui/profile/                     ← لایه‌ی VIEW
+│   ├── ProfileFragment.java
+│   ├── ProfileFragmentBinding.java (تولیدشده)
+│   └── res/layout/fragment_profile.xml
+│
+├── ui/common/                     ← اجزای مشترک
+│   ├── UiState.java
+│   └── Event.java
+│
+├── presentation/                  ← لایه‌ی VIEWMODEL
+│   └── profile/
+│       ├── ProfileViewModel.java
+│       └── ProfileViewModelFactory.java
+│
+├── domain/                        ← لایه‌ی MODEL
+│   ├── model/User.java
+│   └── repository/UserRepository.java
+│
+└── data/                          ← پیاده‌سازی Repository
+    └── repository/UserRepositoryImpl.java
+
+app/src/test/java/com/example/presentation/profile/
+├── ProfileViewModelTest.java      ← تست واحد، بدون Robolectric
+└── FakeUserRepository.java</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی مهم درباره‌ی پوشه‌ی presentation</span>
+پوشه‌ی <code>presentation/</code> (ViewModelها) باید <strong>مستقل</strong> از پوشه‌ی
+<code>ui/</code> باشد. اگر ViewModel در کنار Fragment باشد، کم‌کم وابستگی به Android وارد
+ViewModel می‌شود و تست‌پذیری از بین می‌رود.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>مثال عملی کامل: صفحه‌ی پروفایل کاربر</h2>
+
+<ul class="kl-check">
+  <li>کاربر صفحه‌ی پروفایل را باز می‌کند؛ ViewModel در <code>onInit</code> داده را می‌خواند.</li>
+  <li>ViewModel داده خام را به <strong>UiState</strong> تبدیل می‌کند (مثلاً قالب‌بندی تاریخ تولد).</li>
+  <li>View به LiveData مشاهده می‌کند و مقادیر را در UI می‌گذارد.</li>
+  <li>کاربر نام را تغییر می‌دهد؛ ViewModel وضعیت را به‌روز می‌کند و دکمه‌ی ذخیره فعال می‌شود.</li>
+  <li>با چرخش صفحه، ViewModel باقی می‌ماند و همه‌ی این وضعیت حفظ می‌شود.</li>
+</ul>
+
+<pre class="kl-code" data-lang="text"><code>توزیع مسئولیت در سناریو:
+
+  «کاربر در این آدرس زندگی می‌کند»
+      → Model (User entity، روش getAddress())
+
+  «آدرس را به این شکل نمایش بده»
+      → ViewModel (تبدیل آدرس به رشته‌ی نمایشی)
+
+  «آدرس را در TextView نشان بده»
+      → View (setText)
+
+اگر فردا UI را عوض کنیم (مثلاً آدرس روی نقشه نشان داده شود)،
+فقط View تغییر می‌کند. منطق در ViewModel و مدل ثابت می‌ماند.</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">نمونه‌ی اشتباه رایج</span>
+اگر ViewModel شامل <code>new TextView(context)</code> باشد، دیگر ViewModel نیست.
+اگر ViewModel به <code>getApplication()</code> نیاز داشته باشد، تست آن سخت می‌شود.
+<strong>ViewModel باید یک کلاس Java/Kotlin خالص باشد</strong> — فقط با ورودی و خروجی.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>UiState</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.ui.common;
+
+/**
+ * وضعیت کامل صفحه‌ی پروفایل. هر حالت ممکن صفحه دقیقاً یک حالت از این رکورد است.
+ */
+public record ProfileUiState(
+        boolean loading,
+        String displayName,
+        String formattedAddress,
+        String avatarUrl,
+        boolean saveEnabled,
+        String errorMessage) {
+
+    public static ProfileUiState loading() {
+        return new ProfileUiState(true, "", "", "", false, null);
+    }
+
+    public static ProfileUiState empty() {
+        return new ProfileUiState(false, "", "", "", false, null);
+    }
+
+    public static ProfileUiState of(User user, boolean hasChanges) {
+        return new ProfileUiState(
+                false,
+                user.fullName(),
+                formatAddress(user.address()),
+                user.avatarUrl(),
+                hasChanges,
+                null);
+    }
+
+    public static ProfileUiState error(String message) {
+        return new ProfileUiState(false, "", "", "", false, message);
+    }
+
+    /** تبدیل آدرس به رشته‌ی نمایشی — این کار متعلق به ViewModel است، نه View. */
+    private static String formatAddress(Address address) {
+        if (address == null) {
+            return "ثبت نشده";
+        }
+        StringBuilder sb = new StringBuilder(address.city());
+        if (address.street() != null &amp;&amp; !address.street().isBlank()) {
+            sb.append("، ").append(address.street());
+        }
+        return sb.toString();
+    }
+}
+</code></pre>
+
+<h3>ViewModel</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.presentation.profile;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModel;
+import com.example.domain.model.User;
+import com.example.domain.repository.UserRepository;
+import com.example.ui.common.ProfileUiState;
+
+/**
+ * نگه‌دارنده‌ی وضعیت صفحه‌ی پروفایل.
+ * این کلاس هیچ وابستگی‌ای به Android UI ندارد و کاملاً قابل تست است.
+ */
+public class ProfileViewModel extends ViewModel {
+
+    /** قانون: نام باید حداقل ۳ کاراکتر باشد. */
+    private static final int MIN_NAME_LENGTH = 3;
+
+    private final UserRepository userRepository;
+    private final MutableLiveData&lt;ProfileUiState&gt; state = new MutableLiveData&lt;&gt;(ProfileUiState.empty());
+    private final MutableLiveData&lt;Event&lt;Void&gt;&gt; events = new MutableLiveData&lt;&gt;();
+
+    private User original;
+    private String draftName = "";
+    private boolean hasChanges;
+
+    public ProfileViewModel(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public LiveData&lt;ProfileUiState&gt; state() {
+        return state;
+    }
+
+    public LiveData&lt;Event&lt;Void&gt;&gt; events() {
+        return events;
+    }
+
+    /** فقط یک‌بار در طول عمر ViewModel صدا زده می‌شود. */
+    public void load(String userId) {
+        if (original != null) {
+            return;
+        }
+        state.setValue(ProfileUiState.loading());
+        userRepository.getUser(userId, new UserCallback() {
+            @Override
+            public void onLoaded(User user) {
+                original = user;
+                draftName = user.fullName();
+                hasChanges = false;
+                state.postValue(ProfileUiState.of(user, false));
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                state.postValue(ProfileUiState.error("بارگذاری پروفایل ناموفق بود"));
+            }
+        });
+    }
+
+    /** رویداد دوحالته: کاربر نام را تغییر داده است. */
+    public void onNameChanged(String name) {
+        this.draftName = name == null ? "" : name.trim();
+        boolean valid = this.draftName.length() >= MIN_NAME_LENGTH;
+        if (valid &amp;&amp; original != null) {
+            hasChanges = !this.draftName.equals(original.fullName());
+        } else {
+            hasChanges = false;
+        }
+        ProfileUiState current = state.getValue();
+        if (current != null &amp;&amp; !current.loading()) {
+            state.setValue(new ProfileUiState(
+                    false,
+                    this.draftName,
+                    current.formattedAddress(),
+                    current.avatarUrl(),
+                    valid &amp;&amp; hasChanges,
+                    null));
+        }
+    }
+
+    public void onSaveClicked() {
+        ProfileUiState current = state.getValue();
+        if (current == null || !current.saveEnabled() || original == null) {
+            return;
+        }
+        original = original.withName(draftName);
+        state.setValue(ProfileUiState.of(original, false));
+        userRepository.save(original, new SaveCallback() {
+            @Override public void onSaved() { events.setValue(new Event&lt;&gt;(null)); }
+            @Override public void onError(Throwable e) { events.setValue(new Event&lt;&gt;("ذخیره ناموفق بود")); }
+        });
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        original = null;
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.ui.common;
+
+/** رویداد یک‌بارمصرف: با مصرف، محتوا خالی می‌شود تا دوباره اجرا نشود. */
+public final class Event&lt;T&gt; {
+
+    private final T content;
+    private boolean handled;
+
+    public Event(T content) {
+        this.content = content;
+    }
+
+    public synchronized T consume() {
+        if (handled) {
+            return null;
+        }
+        handled = true;
+        return content;
+    }
+}
+</code></pre>
+
+<h3>View</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.ui.profile;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import com.example.databinding.FragmentProfileBinding;
+import com.example.presentation.profile.ProfileViewModel;
+
+/**
+ * پوسته‌ی نمایشی. هیچ منطقی اینجا نیست:
+ * فقط مشاهده‌ی وضعیت و اجرای دستورهای UI.
+ */
+public class ProfileFragment extends Fragment {
+
+    private FragmentProfileBinding binding;
+    private ProfileViewModel viewModel;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        binding = FragmentProfileBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle saved) {
+        super.onViewCreated(view, saved);
+
+        // ViewModel از سیستم گرفته می‌شود، نه با new
+        viewModel = new ViewModelProvider(this)
+                .get(ProfileViewModel.class);
+
+        // ۱) مشاهده‌ی وضعیت
+        viewModel.state().observe(getViewLifecycleOwner(), state -&gt; render(state));
+
+        // ۲) رویدادهای یک‌بارمصرف
+        viewModel.events().observe(getViewLifecycleOwner(), event -&gt; {
+            String message = event.consume();
+            if (message != null) {
+                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        // ۳) ارسال رویداد به ViewModel
+        binding.nameInput.doAfterTextChanged(
+                text -&gt; viewModel.onNameChanged(text.toString()));
+        binding.saveButton.setOnClickListener(v -&gt; viewModel.onSaveClicked());
+
+        viewModel.load(requireArguments().getString("user_id"));
+    }
+
+    /** تنها کار View: تبدیل وضعیت به pixels. */
+    private void render(ProfileUiState state) {
+        binding.progress.setVisibility(state.loading() ? View.VISIBLE : View.GONE);
+        binding.nameInput.setText(state.displayName());
+        binding.addressText.setText(state.formattedAddress());
+        binding.saveButton.setEnabled(state.saveEnabled());
+
+        if (state.errorMessage() != null) {
+            binding.errorText.setText(state.errorMessage());
+            binding.errorText.setVisibility(View.VISIBLE);
+        } else {
+            binding.errorText.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        // پاک کردن مرجع binding از نشتی حافظه جلوگیری می‌کند
+        binding = null;
+        super.onDestroyView();
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی پیاده‌سازی</span>
+کلاس <code>ProfileViewModel</code> هیچ <code>import</code> از اندروید به‌جز کلاس پایه‌ی
+<code>ViewModel</code> (که فقط یک پوسته برای چرخه‌ی حیات است) ندارد. این یعنی همه‌ی
+منطق واقعی را می‌توان در یک JVM ساده و در کمتر از ۱۰۰ میلی‌ثانیه تست کرد.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>MVVM در Jetpack Compose</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم در XML</th><th>معادل در Compose</th><th>توضیح</th></tr>
+  <tr><td>Data Binding</td><td>Composition و State</td><td>وقتی state تغییر کند، Composable دوباره ترکیب می‌شود</td></tr>
+  <tr><td>LiveData</td><td><code>StateFlow</code> و <code>collectAsStateWithLifecycle</code></td><td>هر دو چرخه‌ی حیات‌آگاه هستند</td></tr>
+  <tr><td>MutableLiveData</td><td><code>MutableStateFlow</code></td><td>منبع تغییر وضعیت</td></tr>
+  <tr><td>ViewModel</td><td><code>androidx.lifecycle.ViewModel</code></td><td>همان مفهوم، با API یکسان</td></tr>
+  <tr><td>Event</td><td><code>Channel</code> یا <code>SharedFlow</code></td><td>رویداد یک‌بارمصرف</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>// XML: observe(this) { state -&gt; ... }
+// Compose: جمع‌آوری Flow و ترکیب مجدد
+
+@Composable
+fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
+
+    // چرخه‌ی حیات‌آگاه: وقتی صفحه در پس‌زمینه است، جمع‌آوری متوقف می‌شود
+    val state by viewModel.state().collectAsStateWithLifecycle()
+    val snackbarHost = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.events().collect { event -&gt;
+            event.consume()?.let { snackbarHost.showSnackbar(it) }
+        }
+    }
+
+    // ViewModel تنها منبع حقیقت است
+    val name by viewModel.name.collectAsStateWithLifecycle()
+
+    ProfileContent(
+        name = name,
+        onNameChange = viewModel::onNameChanged,
+        saveEnabled = state.saveEnabled,
+        onSave = viewModel::onSaveClicked,
+        snackbarHost = snackbarHost
+    )
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">توصیه‌ی عملی</span>
+در Compose از <code>collectAsStateWithLifecycle</code> استفاده کنید، نه
+<code>collectAsState</code>. اولی جمع‌آوری را در <code>STOPPED</code> متوقف می‌کند و
+در نتیجه هم مصرف باتری کمتر است و هم رفتار درست‌تر.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مزایا</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>بقا در چرخش صفحه</strong></td><td>وضعیت با چرخش گوشی و تغییر زبان حفظ می‌شود</td></tr>
+  <tr><td>۲</td><td><strong>تست‌پذیری کامل</strong></td><td>ViewModel یک کلاس خالص است و در JVM تست می‌شود</td></tr>
+  <tr><td>۳</td><td><strong>چرخه‌ی حیات‌آگاه</strong></td><td>LiveData خودش متوجه STOPPED شدن صفحه می‌شود</td></tr>
+  <tr><td>۴</td><td><strong>جدایی کامل UI از داده</strong></td><td>ViewModel هیچ ارجاعی به View ندارد</td></tr>
+  <tr><td>۵</td><td><strong>داده‌ی دوحالته</strong></td><td>LiveData هم جریان یک‌طرفه و هم همگام‌سازی دوطرفه را می‌دهد</td></tr>
+  <tr><td>۶</td><td><strong>سازگاری با Compose</strong></td><td>همان ViewModel در XML و Compose کار می‌کند</td></tr>
+  <tr><td>۷</td><td><strong>الگوی رسمی گوگل</strong></td><td>مستندات و ابزارهای رسیدگی رسماً برای آن هستند</td></tr>
+  <tr><td>۸</td><td><strong>کاهش کد تکراری</strong></td><td>Data Binding فرایندهای همگام‌سازی را خودکار می‌کند</td></tr>
+  <tr><td>۹</td><td><strong>استفاده‌ی مجدد از منطق</strong></td><td>یک ViewModel برای موبایل و تبلت</td></tr>
+  <tr><td>۱۰</td><td><strong>مدیریت متمرکز رویدادها</strong></td><td>ناوبری و اعلان‌ها از یک نقطه کنترل می‌شوند</td></tr>
+  <tr><td>۱۱</td><td><strong>قابلیت ذخیره‌سازی وضعیت</strong></td><td><code>SavedStateHandle</code> وضعیت را از مرگ فرایند نجات می‌دهد</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>معایب</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>ViewModel بزرگ</strong></td><td>به‌مرور به کلاسی با صدها خط و ده‌ها LiveData تبدیل می‌شود</td></tr>
+  <tr><td>۲</td><td><strong>پیچیدگی Data Binding</strong></td><td>یادگیری آن برای تازه‌کاران دشوار است</td></tr>
+  <tr><td>۳</td><td><strong>مشکل تست وضعیت LiveData</strong></td><td>نیاز به ابزار خاص برای تست مشاهده‌گر دارد</td></tr>
+  <tr><td>۴</td><td><strong>سربار Data Binding در build</strong></td><td>زمان build و حجم APK بیشتر می‌شود</td></tr>
+  <tr><td>۵</td><td><strong>نیاز به کتابخانه‌ی AndroidX Lifecycle</strong></td><td>وابستگی به فریم‌ورک اندروید</td></tr>
+  <tr><td>۶</td><td><strong>توهّم جدایی</strong></td><td>اگر ViewModel به View دسترسی پیدا کند، الگو فرو می‌ریزد</td></tr>
+  <tr><td>۷</td><td><strong>دشواری در جریان‌های پیچیده</strong></td><td>برای جریان‌های رویدادمحور با یک State کار می‌کند ولی بهینه نیست</td></tr>
+  <tr><td>۸</td><td><strong>یک ViewModel برای هر صفحه</strong></td><td>در صفحات پیچیده باید تقسیم شود</td></tr>
+  <tr><td>۹</td><td><strong>یادگیری غیرقابل اجتناب</strong></td><td>مفاهیم چرخه‌ی حیات و coroutine لازم است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مسئله‌ی واقعی: God ViewModel</span>
+شایع‌ترین مشکل MVVM این است که یک ViewModel برای کل صفحه نوشته می‌شود و همه‌ی
+درخواست‌ها، همه‌ی وضعیت‌ها و همه‌ی ناوبری‌ها را در خود جمع می‌کند.
+راه‌حل: <strong>ViewModelهای کوچک‌تر</strong> یا استفاده از الگوی MVI با State واحد.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">موارد مناسب</span>
+<ul>
+  <li><strong>اپلیکیشن‌های اندروید</strong> (XML یا Compose) با وضعیت صفحه‌ی پیچیده</li>
+  <li>پروژه‌هایی که <strong>تست واحد</strong> برایشان اولویت دارد</li>
+  <li>صفحاتی با <strong>داده‌ی دوحالته</strong> (فرم‌ها، فیلترها، تنظیمات)</li>
+  <li>تیم‌هایی که <strong>الگوی رسمی گوگل</strong> را ترجیح می‌دهند</li>
+  <li>وقتی می‌خواهید <strong>منطق را در Compose و XML</strong> به‌صورت یکسان نگه دارید</li>
+  <li>پروژه‌هایی با <strong>صفحات چندخطی و داده‌محور</strong></li>
+  <li>تیم‌هایی که <strong>Coroutines و Flow</strong> را بلد هستند</li>
+  <li>وقتی به <strong>پشتیبانی رسمی و ابزار</strong> نیاز دارید</li>
+</ul>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی سرانگشتی</span>
+اگر رابط کاربری شما وضعیتی دارد که باید از چرخش صفحه و تغییر پیکربندی جان سالم به در ببرد،
+MVVM انتخاب درست است. اگر جریان داده‌ی شما پیوسته و رویدادمحور است، MVI بهتر است.
+</div>
+</section>
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">موارد نامناسب</span>
+<ul>
+  <li><strong>پروژه‌های غیراندرویدی</strong> که ViewModel در آن‌ها مفهوم چرخه‌ی حیات ندارد</li>
+  <li>صفحات با <strong>جریان رویداد پیچیده</strong> که به State واحد نیاز ندارند (MVI بهتر است)</li>
+  <li>تیم‌هایی که <strong>Data Binding را دوست ندارند</strong> و ترجیح می‌دهند View را دستی کنترل کنند</li>
+  <li>پروژه‌های <strong>بسیار کوچک</strong> که یک صفحه‌ی ساده دارند</li>
+  <li>وقتی تیم <strong>تست نمی‌نویسد</strong> و فقط کد اضافه می‌شود</li>
+  <li>سیستم‌های <strong>غیر UI</strong> مثل سرویس‌های بک‌اند (این‌جا اصلاً MVVM معنا ندارد)</li>
+  <li>وقتی به <strong>معماری کلان</strong> نیاز دارید (لایه‌بندی بهتر است)</li>
+</ul>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز شما</th><th>الگوی مناسب‌تر</th></tr>
+  <tr><td>جریان کاملاً پیش‌بینی‌پذیر و تست کامل</td><td><strong>MVI</strong></td></tr>
+  <tr><td>صفحات ساده و بدون وضعیت</td><td><strong>MVP</strong> یا هیچ الگویی</td></tr>
+  <tr><td>سیستم بک‌اند یا دامنه‌ی پیچیده</td><td><strong>Clean Architecture / Onion</strong></td></tr>
+  <tr><td>تیم‌های بزرگ با مرز مستقل</td><td><strong>Feature-Based</strong></td></tr>
+  <tr><td>واکنش به رویدادهای بیرونی</td><td><strong>Event-Driven</strong></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    MVP["MVP — Presenter ←→ View (به‌صورت Push)"]
+    MVVM["MVVM — ViewModel → LiveData → View"]
+    MVI["MVI — Intent → Reducer → State → View"]
+
+    MVP -. "به‌جای Push از LiveData استفاده می‌شود" .- MVVM
+    MVVM -. "به‌جای چند LiveData از State واحد" .- MVI
+
+    style MVP fill:#78350f,stroke:#fbbf24,color:#fff
+    style MVVM fill:#0f766e,stroke:#14b8a6,color:#fff
+    style MVI fill:#115e59,stroke:#2dd4bf,color:#fff</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>معیار</th><th>MVC</th><th>MVP</th><th>MVVM</th><th>MVI</th></tr>
+  <tr><td>محور میانی</td><td>Controller</td><td>Presenter</td><td>ViewModel</td><td>Store + Reducer</td></tr>
+  <tr><td>View → Model</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+  <tr><td>جریان داده</td><td>دوطرفه</td><td>یک‌طرفه</td><td>ترکیبی</td><td>یک‌طرفه</td></tr>
+  <tr><td>حفظ وضعیت</td><td>❌</td><td>دستی</td><td>✅ خودکار</td><td>✅ خودکار</td></tr>
+  <tr><td>وابستگی به اندروید</td><td>زیاد</td><td>کم</td><td>کم</td><td>کم</td></tr>
+  <tr><td>تست واحد</td><td>⚠️</td><td>✅</td><td>✅</td><td>✅</td></tr>
+  <tr><td>پیچیدگی مفهومی</td><td>کم</td><td>متوسط</td><td>متوسط</td><td>زیاد</td></tr>
+  <tr><td>حجم کد</td><td>کم</td><td>زیاد</td><td>متوسط</td><td>زیاد</td></tr>
+  <tr><td>مناسب Compose</td><td>❌</td><td>⚠️</td><td>✅</td><td>✅ عالی</td></tr>
+  <tr><td>سازگار با XML</td><td>✅</td><td>✅</td><td>✅</td><td>⚠️</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">خلاصه‌ی تفاوت MVP و MVVM</span>
+تفاوت این دو در «مکانیزم انتقال داده» است:
+<strong>MVP</strong> داده را <em>می‌فرستد</em> (Presenter متد View را صدا می‌زند)،
+<strong>MVVM</strong> داده را <em>منتشر می‌کند</em> (ViewModel LiveData منتشر می‌کند و View گوش می‌دهد).
+نتیجه: MVVM چرخه‌ی حیات را خودش مدیریت می‌کند، MVP باید دستی این کار را بکند.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اصل SOLID</th><th>نمود در MVVM</th><th>مثال</th></tr>
+  <tr><td><strong>S — SRP</strong></td><td>ViewModel فقط وضعیت و منطق نمایش را نگه می‌دارد</td><td>ViewModel نباید منطق شبکه بنویسد</td></tr>
+  <tr><td><strong>O — OCP</strong></td><td>تغییر UI بدون تغییر ViewModel</td><td>تعویض XML با Compose بدون تغییر ViewModel</td></tr>
+  <tr><td><strong>L — LSP</strong></td><td>هر View از قرارداد مشترک پیروی می‌کند</td><td>همه‌ی صفحات یک الگوی رندر دارند</td></tr>
+  <tr><td><strong>I — ISP</strong></td><td>هر ViewModel فقط LiveDataهای مورد نیاز خودش را دارد</td><td>ViewModel صفحه‌ی پروفایل، LiveData سبد خرید ندارد</td></tr>
+  <tr><td><strong>D — DIP</strong></td><td>ViewModel به Repository (Interface) وابسته است</td><td>تست با FakeUserRepository</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی مهم درباره‌ی SRP</span>
+اگر ViewModel شما هم داده می‌خواند، هم ذخیره می‌کند، هم ناوبری می‌کند و هم اعلان می‌فرستد،
+دیگر SRP را رعایت نکرده است. در این حالت بهتر است از
+<strong>Domain Use Case</strong> های کوچک و یک Coordinator برای ناوبری استفاده کنید.
+</div>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>نقش در MVVM</th><th>محل استفاده</th></tr>
+  <tr><td><strong>Observer</strong></td><td>پایه‌ی LiveData؛ مشاهده‌ی تغییرات وضعیت</td><td>ViewModel → View</td></tr>
+  <tr><td><strong>Memento</strong></td><td><code>SavedStateHandle</code> به‌عنوان ذخیره‌ی وضعیت</td><td>ViewModel</td></tr>
+  <tr><td><strong>Mediator</strong></td><td><code>MediatorLiveData</code> برای ترکیب چند منبع</td><td>ViewModel</td></tr>
+  <tr><td><strong>Strategy</strong></td><td>تعویض منبع داده (شبکه، کش، محلی)</td><td>Repository</td></tr>
+  <tr><td><strong>Adapter</strong></td><td>تبدیل مدل به فرمت نمایشی</td><td>ViewModel</td></tr>
+  <tr><td><strong>Factory</strong></td><td><code>ViewModelProvider.Factory</code> برای ساخت با وابستگی</td><td>مرز View و ViewModel</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">الگوی واقعاً مهم</span>
+<strong>Observer</strong> پایه‌ی MVVM است، ولی اگر شما از LiveData یا StateFlow
+استفاده می‌کنید، دیگر Observer را مستقیم پیاده‌سازی نمی‌کنید. همچنین
+<strong>Memento</strong> در <code>SavedStateHandle</code> بسیار ارزشمند است و
+در بیشتر پروژه‌ها دست‌کم گرفته می‌شود.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.presentation.profile;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.Observer;
+import com.example.domain.model.Address;
+import com.example.domain.model.User;
+import com.example.domain.repository.UserRepository;
+import com.example.ui.common.ProfileUiState;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class ProfileViewModelTest {
+
+    @Rule
+    public InstantTaskExecutorRule instantRule = new InstantTaskExecutorRule();
+
+    private FakeUserRepository repository;
+    private ProfileViewModel viewModel;
+    private AtomicReference&lt;ProfileUiState&gt; lastState;
+
+    @Before
+    public void setUp() {
+        repository = new FakeUserRepository();
+        viewModel = new ProfileViewModel(repository);
+        lastState = new AtomicReference&lt;&gt;();
+        viewModel.state().observeForever(lastState::set);
+    }
+
+    @Test
+    public void loadingStateIsPublishedFirst() {
+        viewModel.load("u-1");
+
+        assertEquals("باید ابتدا حالت بارگذاری منتشر شود",
+                true, lastState.get().loading());
+    }
+
+    @Test
+    public void successfulLoadFormatsAddress() throws InterruptedException {
+        viewModel.load("u-1");
+        repository.completeWith(user());
+
+        ProfileUiState state = awaitState();
+        assertFalse(state.loading());
+        assertEquals("علی رضایی", state.displayName());
+        assertEquals("تهران، خیابان ولیعصر", state.formattedAddress());
+        assertFalse(state.saveEnabled());
+    }
+
+    @Test
+    public void nameShorterThanThreeDoesNotEnableSave() throws InterruptedException {
+        viewModel.load("u-1");
+        repository.completeWith(user());
+
+        viewModel.onNameChanged("ع");
+
+        assertFalse("نام کوتاه نباید ذخیره را فعال کند",
+                lastState.get().saveEnabled());
+    }
+
+    @Test
+    public void changedNameEnablesSave() throws InterruptedException {
+        viewModel.load("u-1");
+        repository.completeWith(user());
+
+        viewModel.onNameChanged("علی محمدی");
+
+        assertTrue("تغییر معتبر باید ذخیره را فعال کند",
+                lastState.get().saveEnabled());
+    }
+
+    @Test
+    public void loadIsCalledOnlyOnce() {
+        viewModel.load("u-1");
+        repository.completeWith(user());
+        int callsAfterFirst = repository.callCount();
+
+        viewModel.load("u-1");
+
+        assertEquals("بارگذاری نباید دوباره اجرا شود",
+                callsAfterFirst, repository.callCount());
+    }
+
+    @Test
+    public void loadFailurePublishesErrorMessage() {
+        repository.failWith(new RuntimeException("offline"));
+
+        viewModel.load("u-1");
+
+        assertNotNull(lastState.get().errorMessage());
+        assertFalse(lastState.get().loading());
+    }
+
+    private static User user() {
+        return new User("u-1", "علی رضایی",
+                new Address("تهران", "خیابان ولیعصر"), null);
+    }
+
+    private ProfileUiState awaitState() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        viewModel.state().observeForever(state -&gt; latch.countDown());
+        latch.await(1, TimeUnit.SECONDS);
+        return lastState.get();
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقش</th><th>روش تست</th><th>سرعت هدف</th></tr>
+  <tr><td><strong>ViewModel</strong></td><td>Unit با <code>InstantTaskExecutorRule</code> و Fake</td><td>زیر ۱۰۰ میلی‌ثانیه</td></tr>
+  <tr><td><strong>View</strong></td><td>Compose Test یا Robolectric</td><td>زیر ۱ ثانیه</td></tr>
+  <tr><td><strong>Repository</strong></td><td>تست Integration با Room in-memory</td><td>چند ثانیه</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی تست LiveData</span>
+به‌دلیل اینکه LiveData روی «Main Thread» کار می‌کند، در تست‌های واحد باید از
+<code>InstantTaskExecutorRule</code> استفاده کنید تا اجرای LiveData فوری انجام شود.
+بدون آن، تست‌ها یا شکست می‌خورند یا در حالت «never finished» گیر می‌کنند.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>اشتباه</th><th>نشانه</th><th>راه‌حل</th></tr>
+  <tr><td>۱</td><td><strong>ساخت ViewModel با <code>new</code></strong></td><td><code>new ProfileViewModel()</code></td><td>استفاده از <code>ViewModelProvider</code></td></tr>
+  <tr><td>۲</td><td><strong>ارجاع به Context در ViewModel</strong></td><td><code>getApplication()</code> در ViewModel</td><td>تزریق Context از بیرون، غیر از View</td></tr>
+  <tr><td>۳</td><td><strong>دسترسی به View از ViewModel</strong></td><td><code>binding</code> در ViewModel</td><td>فقط LiveData منتشر کنید</td></tr>
+  <tr><td>۴</td><td><strong>استفاده از LiveData برای ورودی</strong></td><td>MutableLiveData برای هر EditText</td><td>برای خروجی LiveData، برای ورودی متد ساده</td></tr>
+  <tr><td>۵</td><td><strong>Event تکراری</strong></td><td>دیالوگ دو بار باز می‌شود</td><td>استفاده از <code>Event</code> یک‌بارمصرف</td></tr>
+  <tr><td>۶</td><td><strong>God ViewModel</strong></td><td>صدها خط و ده‌ها LiveData</td><td>تقسیم به چند ViewModel یا Use Case</td></tr>
+  <tr><td>۷</td><td><strong>نادیده گرفتن onCleared</strong></td><td>درخواست‌های معلق باقی می‌مانند</td><td>لغو در <code>onCleared</code></td></tr>
+  <tr><td>۸</td><td><strong>استفاده از setValue از thread غیر اصلی</strong></td><td>Crash با پیام فقط Main Thread</td><td>استفاده از <code>postValue</code></td></tr>
+  <tr><td>۹</td><td><strong>منطق شبکه در ViewModel</strong></td><td>درخواست HTTP در ViewModel</td><td>انتقال به Repository</td></tr>
+  <tr><td>۱۰</td><td><strong>نداشتن تست</strong></td><td>MVVM بدون تست = کد اضافه</td><td>تست واحد با Fake</td></tr>
+  <tr><td>۱۱</td><td><strong>ندادن مالک چرخه‌ی حیات به observe</strong></td><td>نشتی حافظه</td><td><code>viewLifecycleOwner</code> به‌جای <code>this</code></td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">اشتباه مرگبار: setValue از thread پس‌زمینه</span>
+<code>setValue</code> فقط روی Main Thread کار می‌کند و در غیر این صورت برنامه کرش می‌کند.
+اگر داده از یک Coroutine یا شبکه می‌آید، از <code>postValue</code> استفاده کنید.
+این یکی از رایج‌ترین علت‌های کرش اپ‌های MVVM است.
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱) اپ فروشگاهی اندروید با MVVM</h3>
+<p>
+در اپ‌های فروشگاهی، صفحه‌ی لیست محصولات یک <code>ProductListViewModel</code> دارد که
+<strong>سبد خرید، فیلتر دسته‌بندی و وضعیت بارگذاری</strong> را نگه می‌دارد. با چرخش صفحه،
+سبد خرید حفظ می‌شود و کاربر مجبور نیست دوباره همه‌چیز را انتخاب کند.
+این دقیقاً همان چیزی است که MVP به‌سختی می‌توانست انجام دهد.
+</p>
+
+<h3>۲) اپ بانکی با MVVM</h3>
+<p>
+در اپ بانکی، صفحه‌ی تراکنش داده‌ی حساس دارد. ViewModel وضعیت فرم (مبلغ، مقصد، توضیح)
+را نگه می‌دارد و فقط وقتی همه‌ی قواعد اعتبارسنجی پاس شوند، دکمه‌ی پرداخت را فعال می‌کند.
+تست‌های واحد این ViewModel تمام حالت‌های ممکن تراکنش را پوشش می‌دهند — چیزی که
+برای یک سیستم مالی الزامی است.
+</p>
+
+<h3>۳) اپ پیام‌رسان با MVVM و LiveData</h3>
+<p>
+در اپ چت، هر <code>ChatViewModel</code> وضعیت پیام‌ها، وضعیت تایپ و اتصال را نگه می‌دارد.
+وقتی کاربر به هر صفحه می‌رود، LiveData آخرین وضعیت را تحویل می‌دهد و نیازی به
+بارگذاری مجدد نیست. این باعث می‌شود اسکرول در جای خودش باقی بماند.
+</p>
+
+<h3>۴) اپ سلامت و پایش بیمار</h3>
+<p>
+در اپ‌های پایش سلامت، ViewModel داده‌ی حساس را در حافظه نگه می‌دارد و با
+<code>SavedStateHandle</code> از مرگ فرایند محافظت می‌کند. اگر کاربر میان‌بر زده و
+به اپ برگردد، وضعیت فرم از دست نمی‌رود. این برای داده‌های سلامتی حیاتی است.
+</p>
+
+<h3>۵) اپ فروشگاهی با Compose و MVVM</h3>
+<p>
+در پروژه‌های مدرن Compose، همان <code>ViewModel</code> استفاده می‌شود اما
+<strong>LiveData با <code>StateFlow</code> جایگزین شده</strong>.
+مزیت این تغییر: سرعت بیشتر، پشتیبانی از مقدار اولیه و ترکیب‌پذیری با
+<code>combine</code> و اپراتورهای Flow.
+</p>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئله</th><th>علت</th><th>راه‌حل</th></tr>
+  <tr><td>به‌روزرسانی بی‌مورد UI</td><td>انتشار LiveData در هر تغییر جزئی</td><td>استفاده از <code>distinctUntilChanged</code> یا <code>switchMap</code></td></tr>
+  <tr><td>N+1 در لیست</td><td>دریافت داده برای هر ردیف</td><td>خواندن همه در یک کوئری و نگه‌داری در ViewModel</td></tr>
+  <tr><td>درخواست شبکه‌ی تکراری</td><td>اجرای <code>load()</code> در هر چرخش</td><td>نگه‌داری وضعیت در ViewModel، اجرا فقط یک‌بار</td></tr>
+  <tr><td>سربار Data Binding در inflations</td><td>تجزیه‌ی لایوت در هر inflations</td><td>استفاده از <code>ViewBinding</code> به‌جای <code>DataBinding</code> در صفحات ساده</td></tr>
+  <tr><td>حافظه‌ی زیاد ViewModel</td><td>نگه‌داری لیست بزرگ در LiveData</td><td>صفحه‌بندی و نگه‌داری فقط صفحه‌ی جاری</td></tr>
+  <tr><td>به‌روزرسانی در چرخه‌ی حیات نامناسب</td><td>استفاده از <code>observe</code> بدون owner</td><td><code>viewLifecycleOwner</code> و <code>collectAsStateWithLifecycle</code></td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>بد — جست‌وجو در هر کاراکتر:
+
+  onNameChanged(name):
+      search(name)          // Network call در هر کلید
+
+بهتر — ترکیبی با Flow:
+
+  nameFlow
+      .debounce(300, MILLISECONDS)
+      .distinctUntilChanged()
+      .flatMapLatest { query -&gt; repository.search(query) }
+      .onEach { results -&gt; state.postValue(ProfileUiState.of(results)) }
+      .launchIn(viewModelScope)
+
+نکته: flatMapLatest درخواست قبلی را لغو می‌کند، بنابراین
+پاسخ‌های خارج از ترتیب هم مشکلی ایجاد نمی‌کنند.</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">معیار تصمیم‌گیری</span>
+MVVM در صورتی بهترین بازده را دارد که از LiveData برای <strong>وضعیت صفحه</strong>
+استفاده کنید، نه به‌عنوان یک <strong>جریان رویداد پیوسته</strong>.
+برای جریان‌های پیوسته (چت، قیمت زنده‌ی بورس) و <strong>MVI یا Flow خالص</strong> بهتر است.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Junior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱ — MVVM چیست؟</span>
+الگوی معماری با سه نقش: Model (داده و منطق)، ViewModel (وضعیت صفحه و منطق نمایش) و
+View (رابط کاربری کاملاً منفعل). تفاوت اصلی با MVC در این است که ViewModel
+<strong>وضعیت</strong> را نگه می‌دارد و داده را از طریق LiveData منتشر می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲ — تفاوت اصلی MVVM و MVP چیست؟</span>
+در MVP، Presenter داده را به View می‌فرستد. در MVVM، ViewModel داده را منتشر می‌کند
+و View خودش آن را مشاهده می‌کند. نتیجه: در MVVM، ViewModel حتی بدون View هم کار می‌کند
+و چرخه‌ی حیات خودش مدیریت می‌شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۳ — ViewModel دقیقاً چه کاری انجام می‌دهد؟</span>
+وضعیت صفحه را نگه می‌دارد، با Model ارتباط برقرار می‌کند، داده را به فرمت نمایشی
+تبدیل می‌کند و با LiveData در اختیار View می‌گذارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۴ — چطور یک ViewModel بسازیم؟</span>
+از <code>ViewModelProvider</code> سیستم استفاده می‌کنیم (نه با <code>new</code>) تا
+سیستم آن را در چرخش صفحه نگه دارد. برای وابستگی‌های خاص از
+<code>ViewModelProvider.Factory</code> یا Hilt استفاده می‌کنیم.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۵ — LiveData چیست؟</span>
+یک ظرف داده‌ی قابل مشاهده و آگاه به چرخه‌ی حیات. وقتی مقدارش تغییر کند، فقط
+به اجزایی که در حالت فعال هستند اطلاع می‌دهد و در نتیجه هم بهینه و هم امن است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۶ — تفاوت LiveData و StateFlow چیست؟</span>
+LiveData مخصوص اندروید است و چرخه‌ی حیات‌آگاه است. StateFlow مخصوص Kotlin است،
+سریع‌تر است، مقدار اولیه دارد و با اپراتورهای Flow ترکیب می‌شود. در پروژه‌های
+جدید Compose معمولاً StateFlow ترجیح داده می‌شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۷ — آیا ViewModel می‌تواند به Context دسترسی داشته باشد؟</span>
+نه به Context خودش (چون دنبال آن نمی‌گردد). اگر واقعاً لازم است (مثلاً برای یک سرویس
+سیستمی)، باید آن را به‌عنوان وابستگی از بیرون تزریق کنید، نه اینکه خودتان
+<code>getApplication()</code> صدا بزنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۸ — داده‌ی دوحالته در MVVM یعنی چه؟</span>
+یعنی داده هم از Model به View جریان دارد (پایین‌رو) و هم تغییرات کاربر در View
+به ViewModel منتقل می‌شود (بالا‌رو). LiveData این را با
+<code>twoWayBinding</code> در Data Binding ممکن می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۹ — چه زمانی از Event استفاده می‌کنیم؟</span>
+وقتی رویدادی باید <strong>فقط یک بار</strong> اجرا شود (مثل ناوبری به صفحه‌ی دیگر یا
+نمایش Snackbar). اگر LiveData معمولی استفاده کنیم، با چرخش صفحه دوباره اجرا می‌شود.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Mid</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۰ — ViewModel در چرخش صفحه چه می‌شود؟</span>
+<strong>نابود نمی‌شود.</strong> سیستم آن را نگه می‌دارد و در Activity جدید دوباره به
+ViewModelProvider تحویل می‌دهد. این اصلی‌ترین دلیل وجود MVVM است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۱ — تفاوت setValue و postValue چیست؟</span>
+<code>setValue</code> فقط روی Main Thread کار می‌کند و در غیر این صورت کرش می‌دهد.
+<code>postValue</code> از هر thread قابل استفاده است و مقدار را در صف Main Thread
+می‌گذارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۲ — چطور تست ViewModel بنویسیم؟</span>
+با Fake Repository و <code>InstantTaskExecutorRule</code>. LiveData را با
+<code>observeForever</code> مشاهده می‌کنیم و تغییرات وضعیت را با
+<code>getOrAwaitValue</code> می‌خوانیم. هیچ شبیه‌ساز اندرویدی لازم نیست.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۳ — چطور از ساخت چندباره‌ی ViewModel جلوگیری کنیم؟</span>
+در متد <code>onInit</code> (که فقط یک بار صدا زده می‌شود) داده را بارگذاری کنید،
+یا یک فلگ <code>hasLoaded</code> نگه دارید. صدا زدن <code>load()</code> در
+<code>onViewCreated</code> در هر بار ساخت View، درخواست شبکه‌ی تکراری می‌سازد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۴ — مشکل God ViewModel چیست؟</span>
+وقتی یک ViewModel همه‌ی کارهای صفحه (شبکه، ذخیره‌سازی، ناوبری، اعلان، اعتبارسنجی)
+را انجام می‌دهد، تست آن سخت و تغییرش پرهزینه می‌شود. راه‌حل: تقسیم به
+Use Case های کوچک و استفاده از Coordinator برای ناوبری.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۵ — MVVM در Compose چه تفاوتی دارد؟</span>
+مفهوم عوض نمی‌شود. فقط ابزارها عوض می‌شوند: LiveData با StateFlow،
+<code>observe</code> با <code>collectAsStateWithLifecycle</code>، و Data Binding
+با ترکیب‌پذیری (Composition).
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۶ — چرا یک ViewModel برای هر صفحه بهتر است؟</span>
+چون هر صفحه چرخه‌ی حیات و وضعیت مستقل خودش را دارد. یک ViewModel بزرگ برای
+کل اپ باعث می‌شود با هر صفحه‌ی جدید، وضعیت صفحات دیگر هم در حافظه بماند و
+مسئولیت‌ها قاطی شوند.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Senior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۷ — در چه شرایطی MVVM کافی نیست؟</span>
+وقتی جریان داده بسیار پیچیده و رویدادمحور باشد (مثلاً یک ویرایشگر چندمرحله‌ای با
+undo/redo). در این حالت MVI با State واحد و Reducer قابل پیش‌بینی‌تر است.
+همچنین برای منطق کسب‌وکار پیچیده، MVVM به‌تنهایی کافی نیست و باید با لایه‌بندی
+یا Clean Architecture ترکیب شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۸ — چطور MVVM را در پروژه‌ی بزرگ‌تر مقیاس‌پذیر می‌کنیم؟</span>
+با تقسیم‌بندی Feature-Based: هر فیچر پوشه‌ی خودش را دارد که شامل View، ViewModel
+و Contract است. در این حالت ViewModel ها مستقل و قابل تست هستند و تیم‌ها
+کمتر با هم تداخل دارند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۹ — تفاوت ViewModel و Presenter در مدیریت چرخه‌ی حیات؟</span>
+ViewModel توسط فریم‌ورک Android به‌طور خودکار با چرخه‌ی حیات هماهنگ می‌شود و
+تا وقتی Activity وجود دارد باقی می‌ماند. Presenter باید دستی مدیریت شود
+(attach/detach) و معمولاً باید خودش منطق حفظ وضعیت را پیاده کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲۰ — چه زمانی MVVM را با لایه‌بندی ترکیب کنیم؟</span>
+وقتی منطق کسب‌وکار پیچیده باشد. در این حالت MVVM فقط در لایه‌ی Presentation
+به‌عنوان الگوی ارتباط با UI استفاده می‌شود، و منطق در لایه‌ی Domain قرار می‌گیرد.
+این ترکیب در پروژه‌های بزرگ اندروید بسیار رایج است.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پرسش‌های پرتکرار</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱) تفاوت MVVM و MVP دقیقاً چیست؟</span>
+تفاوت در مکانیزم انتقال داده است. در MVP، Presenter متدهای View را صدا می‌زند.
+در MVVM، ViewModel داده را منتشر می‌کند و View فقط مشاهده می‌کند. نتیجه: در MVVM،
+ViewModel حتی بدون View هم قابل تست و قابل استفاده است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۲) آیا ViewModel در چرخش صفحه باقی می‌ماند؟</span>
+بله، این اصلی‌ترین ویژگی آن است. سیستم اندروید نمونه‌ی ViewModel را نگه می‌دارد
+و در Activity جدید تحویل می‌دهد، بنابراین وضعیت صفحه از دست نمی‌رود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۳) آیا MVVM برای پروژه‌های غیراندرویدی هم کاربرد دارد؟</span>
+مفهوم آن بله، اما کلاس <code>ViewModel</code> خاص اندروید است. در سایر پلتفرم‌ها
+می‌توانید یک کلاس مشابه با خودتان بسازید که توسط فریم‌ورک مدیریت شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۴) LiveData یا StateFlow؟</span>
+اگر پروژه Kotlin و Compose است، <code>StateFlow</code> بهتر است (سریع‌تر، مقدار اولیه دارد،
+با Flow ترکیب می‌شود). اگر XML استفاده می‌کنید یا تیم Java است،
+<code>LiveData</code> انتخاب طبیعی‌تری است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۵) آیا ViewModel باید Context داشته باشد؟</span>
+نه به‌صورت مستقیم. اگر به Context نیاز دارید (مثلاً برای یک سرویس سیستمی)،
+آن را به‌عنوان وابستگی از بیرون تزریق کنید. به این ترتیب تست واحد باقی می‌ماند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۶) آیا MVVM برای پروژه‌های کوچک مناسب است؟</span>
+اگر صفحه‌ی ساده‌ای دارید که فقط داده نمایش می‌دهد، ممکن است MVVM بیش از حد
+مهندسی باشد. اما برای صفحات با فرم و وضعیت پیچیده، ارزشش را دارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۷) تفاوت <code>onInit</code> و <code>onViewCreated</code> برای بارگذاری داده؟</span>
+اگر می‌خواهید داده فقط یک بار بارگذاری شود (معمولاً برای درخواست شبکه)، از
+<code>onInit</code> استفاده کنید. اگر می‌خواهید با هر بار نمایش صفحه (مثلاً
+بازگشت از صفحه‌ی دیگر) به‌روزرسانی شود، از <code>onViewCreated</code>.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۸) آیا باید از Data Binding استفاده کنیم؟</span>
+نه. MVVM بدون Data Binding هم کار می‌کند — کافی است ViewModel را با
+<code>observe</code> بخوانید. Data Binding فقط کد تکراری را کم می‌کند و
+زمان build را بالا می‌برد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۹) چطور رویداد یک‌بارمصرف پیاده کنیم؟</span>
+از کلاس <code>Event</code> استفاده کنید که با مصرف شدن محتوا پاک می‌شود.
+در Kotlin می‌توانید از <code>Channel</code> (بافر ۱) یا <code>SharedFlow</code>
+هم استفاده کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۰) آیا MVVM برای صفحات با وضعیت پیچیده کافی است؟</span>
+نه همیشه. اگر وضعیت شما آن‌قدر پیچیده است که باید همه‌ی حالت‌های ممکن را ردیابی کنید،
+الگوی <strong>MVI</strong> با State واحد و Reducer کنترل بهتری به شما می‌دهد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۱) تفاوت MVVM و لایه‌بندی چیست؟</span>
+MVVM یک <strong>الگو</strong> است که فقط لایه‌ی UI را توضیح می‌دهد. لایه‌بندی یک
+<strong>معماری</strong> است که کل سیستم را به لایه‌ها تقسیم می‌کند.
+این دو مکمل یکدیگرند و اغلب با هم استفاده می‌شوند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۲) چطور MVVM را با لایه‌بندی ترکیب کنیم؟</span>
+MVVM را در لایه‌ی Presentation (جایی که View و ViewModel هستند) استفاده کنید
+و منطق کسب‌وکار را به لایه‌ی Domain منتقل کنید. ViewModel فقط Use Case ها
+را صدا می‌زند و داده را برای نمایش آماده می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۳) آیا ViewModel می‌تواند داده را کش کند؟</span>
+بله، اما بهتر است منطق کش در Repository باشد و ViewModel فقط از آن استفاده کند.
+اگر کش در ViewModel باشد، با تغییر ViewModel داده از دست می‌رود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۴) چطور مشکل God ViewModel را حل کنیم؟</span>
+ViewModel را به Use Case های کوچک تقسیم کنید، برای ناوبری از یک Coordinator
+جدا استفاده کنید، و اگر لازم بود از چند ViewModel کوچک برای بخش‌های مختلف صفحه
+به‌کار ببرید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۵) آیا MVVM برای سیستم‌های غیر UI هم کاربرد دارد؟</span>
+خیر. MVVM یک الگوی <strong>رابط کاربری</strong> است. برای سرویس‌های بک‌اند و
+منطق کسب‌وکار، لایه‌بندی یا Clean Architecture مناسب‌تر است.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>خلاصه</th></tr>
+  <tr><td>تعریف</td><td>الگوی معماری با Model، ViewModel و View</td></tr>
+  <tr><td>ViewModel</td><td>نگه‌دارنده‌ی وضعیت صفحه و منطق نمایش</td></tr>
+  <tr><td>View</td><td>رابط کاربری کاملاً منفعل؛ فقط مشاهده و ارسال رویداد</td></tr>
+  <tr><td>Model</td><td>داده و قوانین کسب‌وکار؛ منبع حقیقت</td></tr>
+  <tr><td>LiveData</td><td>ظرف داده‌ی قابل مشاهده و چرخه‌ی حیات‌آگاه</td></tr>
+  <tr><td>StateFlow</td><td>جایگزین مدرن LiveData در Kotlin</td></tr>
+  <tr><td>جریان</td><td>View → ViewModel → LiveData → View</td></tr>
+  <tr><td>قانون طلایی</td><td>ViewModel هرگز نباید به View یا Context دسترسی داشته باشد</td></tr>
+  <tr><td>ساخت صحیح</td><td><code>new ViewModelProvider(this).get(...)</code></td></tr>
+  <tr><td>ممنوعیت</td><td><code>setValue</code> از thread غیر اصلی، Event تکراری، ViewModel بزرگ</td></tr>
+  <tr><td>مزیت اصلی</td><td>بقای وضعیت در چرخش صفحه + تست واحد سریع</td></tr>
+  <tr><td>عیب اصلی</td><td>God ViewModel و پیچیدگی Data Binding</td></tr>
+  <tr><td>بهترین برای</td><td>اپ اندروید با فرم و وضعیت پیچیده</td></tr>
+  <tr><td>نامناسب برای</td><td>جریان‌های رویدادمحور پیچیده، سیستم‌های بک‌اند</td></tr>
+  <tr><td>جایگزین</td><td>MVI (برای جریان پیچیده)، لایه‌بندی (برای منطق کسب‌وکار)</td></tr>
+  <tr><td>قانون SOLID</td><td>SRP و DIP در سطح ViewModel رعایت می‌شوند</td></tr>
+  <tr><td>الگوی کلیدی</td><td>Observer، Memento، Mediator</td></tr>
+  <tr><td>ابزار تست</td><td>JUnit، InstantTaskExecutorRule، Fake Repository</td></tr>
+  <tr><td>معیار موفقیت</td><td>ViewModel در یک JVM بدون Robolectric تست می‌شود</td></tr>
+  <tr><td>سیگنال هشدار</td><td>ViewModel با Context، LiveData بدون مالک چرخه‌ی حیات</td></tr>
+  <tr><td>یادآوری نهایی</td><td>MVVM ارزشش را از «بقای وضعیت» می‌گیرد؛ بدون آن فقط لایه‌بندی اضافه است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله برای به‌خاطر سپردن</span>
+<strong>MVVM یعنی وضعیت صفحه را در کلاسی بگذار که زنده بماند، داده را منتشر کن، و اجازه بده UI فقط گوش دهد.</strong>
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>هدف</th><th>تمرین پیشنهادی</th></tr>
+  <tr><td>۱ — هفته‌ی اول</td><td>فهم چرخه‌ی حیات و ViewModel</td><td>یک صفحه‌ی ساده با ViewModel و LiveData</td></tr>
+  <tr><td>۲ — هفته‌ی دوم</td><td>تست واحد ViewModel</td><td>نوشتن ۶ تست با Fake Repository</td></tr>
+  <tr><td>۳ — هفته‌ی سوم</td><td>آشنایی با Data Binding</td><td>تبدیل یک صفحه به Data Binding</td></tr>
+  <tr><td>۴ — هفته‌ی چهارم</td><td>تزریق وابستگی</td><td>استفاده از Hilt برای ساخت ViewModel</td></tr>
+  <tr><td>۵ — ماه دوم</td><td>مهاجرت به Kotlin و Flow</td><td>تبدیل LiveData به StateFlow</td></tr>
+  <tr><td>۶ — ماه سوم</td><td>Jetpack Compose</td><td>پیاده‌سازی همان صفحه با Compose و همان ViewModel</td></tr>
+  <tr><td>۷ — ماه چهارم</td><td>مقایسه‌ی الگوها</td><td>پیاده‌سازی یک صفحه با MVI و مقایسه با MVVM</td></tr>
+</table>
+</div>
+
+<h3>جمع‌بندی</h3>
+<p>
+<strong>MVVM</strong> الگویی است که مشکل واقعی چرخه‌ی حیات را حل می‌کند: اینکه چگونه
+وضعیت صفحه را نگه دارید در حالی که سیستم‌عامل به‌طور دائم آن را نابود می‌کند.
+راه‌حل ساده و عمیقی است: وضعیت را در یک کلاس بگذارید که سیستم مدیریتش می‌کند.
+</p>
+<p>
+اگر در حال یادگیری هستید، پیشنهاد می‌کنم مسیر <strong>MVP → MVVM → MVI</strong> را
+دنبال کنید. MVP به شما یاد می‌دهد منطق را از View جدا کنید، MVVM به شما یاد می‌دهد
+وضعیت را مدیریت کنید، و MVI به شما یاد می‌دهد جریان را کاملاً قابل پیش‌بینی کنید.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله هفتمین عضو سری «معماری‌های نرم‌افزاری» است. اکنون شما سه الگوی کلاسیک
+UI (MVC، MVP، MVVM) را می‌شناسید و ساختارهای کلان معماری را هم پوشش داده‌اید.
+مقاله‌ی بعدی به MVI می‌پردازد — الگویی که همه‌ی این‌ها را به اوج می‌رساند.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی چرخش صفحه همه‌چیز را پاک می‌کند</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">MVVM چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: ViewModel و وضعیت</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای MVVM</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: صفحه‌ی پروفایل کاربر</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">MVVM در Jetpack Compose</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی چرخش صفحه همه‌چیز را پاک می‌کند</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">MVVM چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: ViewModel و وضعیت</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای MVVM</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: صفحه‌ی پروفایل کاربر</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">MVVM در Jetpack Compose</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

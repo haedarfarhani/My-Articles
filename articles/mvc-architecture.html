@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MVC چیست؟ آموزش کامل الگوی Model-View-Controller با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله الگوی MVC را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با MVVM و Layered، ساختار پروژه، پیاده‌سازی کامل Java 21، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="MVC, Model View Controller, MVC چیست, الگوی MVC, MVC در Java, MVC در Spring, MVC در اندروید, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, MVVM, MVP, Layered Architecture">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="MVC چیست؟ آموزش کامل الگوی Model-View-Controller با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله الگوی MVC را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با MVVM و Layered، ساختار پروژه، پیاده‌سازی کامل Java 21، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/mvc-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/mvc-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MVC Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MVC چیست؟ آموزش کامل الگوی Model-View-Controller با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="سه نقش Model و View و Controller، جریان داده، نمونه‌کد Java 21، مقایسه با MVVM و MVP و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "MVC چیست؟ آموزش کامل الگوی Model-View-Controller با مثال و ساختار پروژه",
+    "description": "در این مقاله الگوی MVC را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با MVVM و Layered، ساختار پروژه، پیاده‌سازی کامل Java 21، مزایا، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/mvc-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/mvc-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "MVC, Model, View, Controller, Java, Spring MVC, Android",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "MVC", "item": "https://haedarfarhani.github.io/My-Articles/articles/mvc-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">MVC</span>؛ قدیمی‌ترین و هنوز پرکاربردترین الگوی معماری
+          </h1>
+
+          <p class="hero-lead">
+            MVC یعنی <strong>جدا کردن داده، نمایش و کنترل جریان</strong>؛ الگویی که از ۱۹۷۹ تا امروز
+            در Spring، Rails، Django، ASP.NET و اندروید زنده مانده است.
+            در این راهنما سه نقش MVC، جریان داده، پیاده‌سازی کامل با <code>Java 21</code>،
+            مقایسه با MVVM و MVP و Layered، تست با <code>JUnit 5</code> و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مبتدی تا متوسط (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#MVC</span>
+            <span class="post-tag">#Model_View_Controller</span>
+            <span class="post-tag">#Spring_MVC</span>
+            <span class="post-tag">#Separation_of_Concerns</span>
+            <span class="post-tag">#Java</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی همه‌چیز در یک کلاس است</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVC چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: سه نقش مجزا</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: اجزای MVC</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: فروشگاه اینترنتی</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>MVC در Spring و اندروید</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی همه‌چیز در یک کلاس است</h2>
+
+<p>
+یک کلاس <code>ProductPage</code> را تصور کنید که هم‌زمان: درخواست کاربر را می‌خواند، قیمت را
+از دیتابیس می‌گیرد، تخفیف را حساب می‌کند و HTML نهایی را با <code>StringBuilder</code> می‌سازد.
+کار می‌کند؟ بله. خوانا است؟ اصلاً.
+</p>
+
+<p>
+مشکل این نیست که کد «کار» نمی‌کند؛ مشکل این است که <strong>سه دلیل کاملاً متفاوت برای تغییر</strong>
+دارد. طراح می‌خواهد رنگ دکمه را عوض کند (View)، محصول اضافه کند (Model)، و قوانین تخفیف را
+به‌روز کند (Business Logic). این سه نگرانی هیچ ارتباطی با هم ندارند، اما در یک فایل زندگی می‌کنند.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>ProductPage.java — وضعیت قبل از MVC:
+
+  public String render(HttpServletRequest req) {
+      // ۱) کنترل ورودی
+      String id = req.getParameter("id");
+
+      // ۲) دسترسی به داده
+      Product p = jdbc.queryForObject("SELECT * FROM products WHERE id=?", Product.class, id);
+
+      // ۳) منطق کسب‌وکار
+      if (p.isExpired()) { p.applyDiscount(0.1); }
+
+      // ۴) ساخت نمایش
+      return "<h1>" + p.getName() + "</h1><span>" + p.getPrice() + "</span>";
+  }
+
+یک تغییر در View → کل منطق کسب‌وکار در معرض خطر.
+یک تغییر در دیتابیس → کل نمایش از کار می‌افتد.</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ریشه‌ی مشکل</span>
+هر سه مسئولیت به هم چسبیده‌اند. <strong>MVC</strong> با یک ایده‌ی ساده این را حل می‌کند:
+<strong>هر بخش را در یک نقش جدا بگذار و ارتباطشان را از طریق قرارداد مشخص کن.</strong>
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+ریشه‌ی MVC به سال <strong>۱۹۷۹</strong> برمی‌گردد؛ زمانی که <strong>Trygve Reenskaug</strong>
+در مؤسسه‌ی فناوری نروژ (NTNU) آن را برای یک سیستم تعاملی به نام <strong>Smalltalk-80</strong>
+معرفی کرد. جمله‌ی مشهور او این بود: «MVC یک ابزار برای فکر کردن درباره‌ی طراحی است، نه یک فرمول جادویی.»
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
+  <tr><td>۱۹۷۹ — Smalltalk-80</td><td>Trygve Reenskaug الگوی MVC را معرفی کرد تا سیستم چندپنجره‌ای مدیریت شود</td></tr>
+  <tr><td>۱۹۸۰s — Smalltalk و Objective-C</td><td>MVC به پایه‌ی گرافیک‌های工作站 تبدیل شد</td></tr>
+  <tr><td>۱۹۹۰s — NeXT / NeXTSTEP</td><td>Apple از آن برای NeXTSTEP استفاده کرد؛ پایه‌ی AppKit</td></tr>
+  <tr><td>۱۹۹۵ — NeXTSTEP نیز در iOS</td><td>UIKit و سپس SwiftUI بر همین زبان بصری ساخته شدند</td></tr>
+  <tr><td>۱۹۹۴ — Struts</td><td>نخستین پیاده‌سازی گسترده‌ی MVC در وب</td></tr>
+  <tr><td>۲۰۰۰s — Spring MVC، Rails، ASP.NET MVC</td><td>MVC به استاندارد پیش‌فرض وب در سراسر صنعت تبدیل شد</td></tr>
+  <tr><td>۲۰۱۰s — MVVM در WPF و اندروید</td><td>برای پشتیبانی بهتر از داده‌های دوحالته و تست ViewModel</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">دلیل ایجاد</span>
+در دهه‌ی ۱۹۷۰ سیستم‌های گرافیکی با <strong>چند پنجره و کنترل هم‌زمان</strong> ساخته می‌شدند و
+مدیریت وضعیت آن‌ها وحشتناک بود. MVC ایده‌ی «مدیریت از طریق رویداد» را معرفی کرد:
+کاربر رویدادی می‌زند، Controller تصمیم می‌گیرد، Model وضعیت را به‌روز می‌کند و View دوباره رسم می‌شود.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>MVC چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>MVC</strong> یک الگوی معماری است که برنامه را به سه نقش مجزا تقسیم می‌کند:
+<strong>Model</strong> (داده و قواعد کسب‌وکار)، <strong>View</strong> (نمایش) و
+<strong>Controller</strong> (ورودی کاربر و انتخاب پاسخ). این سه بخش از طریق
+<strong>رویداد</strong> و <strong>اشاره‌گر به داده</strong> با هم ارتباط دارند و
+هر بخش را می‌توان مستقل تست و تعویض کرد.
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقش</th><th>مسئولیت</th><th>نمونه</th></tr>
+  <tr><td><strong>Model</strong></td><td>نگه‌داری داده، وضعیت و قواعد کسب‌وکار</td><td><code>Product</code>، <code>Cart</code>، <code>User</code></td></tr>
+  <tr><td><strong>View</strong></td><td>نمایش داده به کاربر؛ بدون منطق کسب‌وکار</td><td>فایل Thymeleaf، <code>RecyclerView.Adapter</code>، Razor</td></tr>
+  <tr><td><strong>Controller</strong></td><td>دریافت رویداد، انتخاب Model و View مناسب</td><td><code>@Controller</code>، <code>ProductController</code></td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سوءتفاهم رایج</span>
+MVC یک <strong>الگو</strong> است، نه یک <strong>معماری کامل</strong>. MVC درباره‌ی «چگونه یک صفحه کار می‌کند»
+حرف می‌زند، نه درباره‌ی «چگونه کل سیستم به سرویس‌ها تقسیم می‌شود». یک سیستم بزرگ می‌تواند
+معماری میکروسرویسی داشته باشد و درون هر سرویس از MVC استفاده کند.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<pre class="kl-code" data-lang="java"><code>public class ProductServlet extends HttpServlet {
+
+    // همه‌چیز در یک کلاس: Model + View + Controller
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        String id = req.getParameter("id");
+        Connection conn = DriverManager.getConnection(DB_URL);
+        Product product = null;
+
+        PreparedStatement ps = conn.prepareStatement(
+                "SELECT id, name, price FROM products WHERE id = ?");
+        ps.setString(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            product = new Product(rs.getString("id"),
+                    rs.getString("name"),
+                    rs.getBigDecimal("price"));
+        }
+
+        if (product.getPrice().compareTo(new BigDecimal("1000000")) > 0) {
+            product.applyDiscount(new BigDecimal("0.15"));
+        }
+
+        resp.setContentType("text/html;charset=UTF-8");
+        resp.getWriter().print("&lt;html&gt;&lt;h1&gt;" + product.getName()
+                + "&lt;/h1&gt;&lt;p&gt;" + product.getPrice() + "&lt;/p&gt;&lt;/html&gt;");
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقض</th><th>توضیح</th></tr>
+  <tr><td><strong>SRP</strong></td><td>سه مسئولیت کاملاً متفاوت در یک کلاس</td></tr>
+  <tr><td><strong>تست‌ناپذیری</strong></td><td>برای تست تخفیف باید Servlet و دیتابیس بالا بیاید</td></tr>
+  <tr><td><strong>تغییر پرهزینه</strong></td><td>عوض کردن قالب HTML یعنی دست‌زدن به کلاس</td></tr>
+  <tr><td><strong>نشت دامنه در نمایش</strong></td><td>منطق «تخفیف ۱۵٪» فقط در Java است؛ View هیچ اطلاعی ندارد</td></tr>
+  <tr><td><strong>امنیت</strong></td><td>مقادیر بدون escape در HTML درج می‌شوند (XSS)</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: سه نقش مجزا</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">سه اصل بنیادین MVC</span>
+۱) <strong>جدایی مسئولیت</strong> — هر نقش یک دلیل برای تغییر دارد.<br>
+۲) <strong>جریان رویدادمحور</strong> — View رویداد را به Controller می‌دهد، Controller Model را تغییر می‌دهد.<br>
+۳) <strong>اشاره‌گر به داده</strong> — Model مستقیماً View را باخبر می‌کند و Controller در مسیر نیست.
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    U["کاربر"] -->|"کلیک / تایپ"| V["View"]
+    V -->|"رویداد: onAddToCart"| C["Controller"]
+    C -->|"cart.add(product)"| M["Model"]
+    M -->|"تغییر وضعیت + notify"| V
+    C -->|"redirect یا نام View"| V
+    M --> DB[("Database / Storage")]
+
+    style U fill:#78350f,stroke:#fbbf24,color:#fff
+    style V fill:#0f766e,stroke:#14b8a6,color:#fff
+    style C fill:#115e59,stroke:#2dd4bf,color:#fff
+    style M fill:#134e4a,stroke:#5eead4,color:#fff
+    style DB fill:#1c1917,stroke:#a8a29e,color:#fff</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">مهم‌ترین نکته‌ی MVC</span>
+پیکان <code>Model → View</code> یعنی Model، View را می‌شناسد و به آن اطلاع می‌دهد.
+در MVC کلاسیک (مثل Smalltalk و ASP.NET) این پیکان وجود دارد؛ در بسیاری از پیاده‌سازی‌های امروزی
+این پیکان حذف شده و به آن <strong>MVP</strong> یا <strong>MVVM</strong> می‌گویند.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>ساختار معماری: اجزای MVC</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نوع MVC</th><th>روابط</th><th>نمونه</th></tr>
+  <tr><td><strong>MVC کلاسیک</strong></td><td>Model، View را مستقیم صدا می‌زند (Observer)</td><td>Smalltalk، ASP.NET MVC قدیمی</td></tr>
+  <tr><td><strong>MVC با Push</strong></td><td>Controller خروجی View را به View می‌دهد</td><td>Django، Rails، Laravel</td></tr>
+  <tr><td><strong>MVC با Pull</strong></td><td>View داده را از Model می‌کشد</td><td>Angular، Struts</td></tr>
+</table>
+</div>
+
+<p>سه نقش و دقیقاً کاری که هرکدام انجام می‌دهند:</p>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph CTRL["Controller — ورودی و تصمیم"]
+        C1["دریافت درخواست / رویداد"]
+        C2["اعتبارسنجی شکل داده"]
+        C3["انتخاب View یا Redirect"]
+    end
+
+    subgraph MODEL["Model — داده و قوانین"]
+        M1["Entityها و وضعیت"]
+        M2["قواعد کسب‌وکار"]
+        M3["اعلان تغییر به Observerها"]
+    end
+
+    subgraph VIEW["View — نمایش"]
+        V1["قالب / Template"]
+        V2["خواندن وضعیت Model"]
+        V3["تولید رویداد به Controller"]
+    end
+
+    C1 --> C2 --> C3
+    C3 --> MODEL
+    MODEL -->|notify| VIEW
+    VIEW -->|event| CTRL
+
+    style CTRL fill:#0f766e,stroke:#14b8a6,color:#fff
+    style MODEL fill:#134e4a,stroke:#5eead4,color:#fff
+    style VIEW fill:#115e59,stroke:#2dd4bf,color:#fff</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">مرز درست را نگه دارید</span>
+View فقط باید <strong>نمایش</strong> بدهد. اگر داخل قالب بنویسید
+<code>if (user.isVip()) price = price * 0.9</code>، منطق کسب‌وکار را به سمت نمایش برده‌اید و MVC شکسته است.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    autonumber
+    actor U as کاربر
+    participant V as View
+    participant C as Controller
+    participant M as Model
+    participant D as دیتابیس
+
+    U->>V: کلیک «افزودن به سبد»
+    V->>C: رویداد addToCart(productId)
+    C->>C: اعتبارسنجی شناسه
+    C->>M: cart.add(productId)
+    M->>D: خواندن قیمت محصول
+    D-->>M: قیمت و موجودی
+    M->>M: به‌روزرسانی مجموع سبد
+    M-->>V: notify تغییر وضعیت
+    V-->>U: نمایش سبد جدید</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>چرخه‌ی کامل یک درخواست در MVC:
+
+  ۱) User → View          : یک رویداد تولید می‌کند
+  ۲) View → Controller    : رویداد را با اطلاعات لازم ارسال می‌کند
+  ۳) Controller → Model   : دستور «این عمل را انجام بده» می‌دهد
+  ۴) Model → Database     : در صورت نیاز داده را می‌خواند/می‌نویسد
+  ۵) Model → Model        : قواعد کسب‌وکار را اعمال می‌کند
+  ۶) Model → View         : وضعیت جدید را اعلام می‌کند
+  ۷) View → User          : نتیجه را نمایش می‌دهد
+
+نکته: Controller در گام ۶ دخالتی ندارد. این همان تفاوت اصلی MVC با MVP است.</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">قانون جریان یک‌طرفه</span>
+داده هرگز نباید از <code>View</code> به <code>Model</code> به‌صورت مستقیم برود.
+همیشه مسیر <strong>View → Controller → Model</strong> را حفظ کنید تا اعتبارسنجی حذف نشود.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>shop-mvc/
+├── src/main/java/com/app/shop/
+│   ├── model/                        ← نقش MODEL
+│   │   ├── entity/
+│   │   │   ├── Product.java
+│   │   │   └── Cart.java
+│   │   ├── repository/
+│   │   │   └── ProductRepository.java
+│   │   └── observer/
+│   │       └── CartListener.java
+│   │
+│   ├── controller/                   ← نقش CONTROLLER
+│   │   ├── ProductController.java
+│   │   ├── CartController.java
+│   │   └── advice/GlobalExceptionHandler.java
+│   │
+│   └── view/                         ← نقش VIEW
+│       ├── ProductListView.java
+│       ├── CartView.java
+│       └── template/product-list.html
+│
+└── src/test/java/com/app/shop/
+    ├── controller/ProductControllerTest.java
+    └── model/CartTest.java</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">سه ساختار رایج پوشه‌بندی</span>
+<strong>۱) بر اساس نقش (MVC خالص)</strong>: <code>model/</code>، <code>view/</code>، <code>controller/</code> —
+دقیقاً همان چیزی که MVC می‌گوید.<br>
+<strong>۲) بر اساس فیچر</strong>: <code>product/</code> و داخل آن <code>model/</code>، <code>view/</code>، <code>controller/</code> —
+برای تیم‌های بزرگ‌تر بهتر است.<br>
+<strong>۳) ترکیبی (پیشنهاد ما)</strong>: Feature-Based با پوشه‌های نقش درون هر فیچر.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>مثال عملی کامل: فروشگاه اینترنتی</h2>
+
+<ul class="kl-check">
+  <li>کاربر فهرست محصولات را می‌بیند و یک محصول را به سبد اضافه می‌کند.</li>
+  <li>سیستم موجودی را بررسی و قیمت را از دیتابیس می‌خواند.</li>
+  <li>تخفیف اعمال و مجموع سبد محاسبه می‌شود.</li>
+  <li>سبد به‌روزرسانی شده نمایش داده می‌شود.</li>
+</ul>
+
+<pre class="kl-code" data-lang="text"><code>سناریو: کاربر محصول ۵ را به سبد اضافه می‌کند
+
+  Controller: CartController.addToCart(productId = "5")
+      ↓
+  Model: Cart.add(Product)
+      ├─ قاعده: اگر موجودی کافی نبود → StockException
+      ├─ قاعده: بیش از ۱۰ قلم یک محصول → محدودیت
+      └─ نتیجه: مجموع سبد به‌روز شد
+      ↓
+  View: CartView دوباره رسم می‌شود (سبد جدید + پیام خطا در صورت شکست)
+
+نکته: Controller هیچ if مربوط به موجودی ندارد.
+تمام قواعد در Model (Cart) زندگی می‌کنند.</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">نمونه‌ی اشتباه رایج</span>
+اگر <code>CartController</code> خودش بررسی کند «آیا موجودی هست؟»، یک بار در Controller و یک بار
+در Model این قانون نوشته می‌شود. به این می‌گویند <strong>تکرار منطق</strong> و در بلندمدت
+دو نسخه‌ی ناسازگار از قانون خواهید داشت.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>بخش Model</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.shop.model;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/** نقش MODEL: داده + قواعد کسب‌وکار. هیچ وابستگی‌ای به UI یا دیتابیس ندارد. */
+public final class Cart {
+
+    private final List&lt;CartLine&gt; lines = new ArrayList&lt;&gt;();
+    private final List&lt;CartListener&gt; listeners = new ArrayList&lt;&gt;();
+    private BigDecimal total = BigDecimal.ZERO;
+
+    public void add(CartListener listener) {
+        listeners.add(listener);
+    }
+
+    private void notifyChanged() {
+        listeners.forEach(CartListener::onCartChanged);
+    }
+
+    /** قانون: حداکثر ۱۰ قلم از هر محصول. */
+    private static final int MAX_PER_PRODUCT = 10;
+
+    public void addItem(Product product, int quantity) {
+        if (quantity &lt;= 0) {
+            throw new IllegalArgumentException("تعداد باید مثبت باشد");
+        }
+        if (quantity &gt; MAX_PER_PRODUCT) {
+            throw new CartLimitException(
+                    "حداکثر " + MAX_PER_PRODUCT + " قلم از هر محصول مجاز است");
+        }
+        if (product.stock() &lt; quantity) {
+            throw new StockException("موجودی " + product.name() + " کافی نیست");
+        }
+
+        lines.stream()
+                .filter(l -&gt; l.productId().equals(product.id()))
+                .findFirst()
+                .ifPresentOrElse(
+                        existing -&gt; lines.set(lines.indexOf(existing),
+                                new CartLine(product, existing.quantity() + quantity)),
+                        () -&gt; lines.add(new CartLine(product, quantity)));
+
+        recalculate();
+        notifyChanged();
+    }
+
+    public void removeItem(String productId) {
+        boolean removed = lines.removeIf(l -&gt; l.productId().equals(productId));
+        if (!removed) {
+            throw new CartLineNotFoundException(productId);
+        }
+        recalculate();
+        notifyChanged();
+    }
+
+    /** قانون: برای سفارش بالای ۵ میلیون، ۵٪ تخفیف کل. */
+    private void recalculate() {
+        total = lines.stream()
+                .map(CartLine::subtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (total.compareTo(new BigDecimal("5000000")) &gt; 0) {
+            total = total.multiply(new BigDecimal("0.95"));
+        }
+    }
+
+    public BigDecimal total() {
+        return total;
+    }
+
+    public List&lt;CartLine&gt; lines() {
+        return Collections.unmodifiableList(lines);
+    }
+
+    public boolean isEmpty() {
+        return lines.isEmpty();
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.shop.model;
+
+import java.math.BigDecimal;
+
+/** مقدار شیئی: قیمت و موجودی با خود محصول یکی است. */
+public record Product(String id, String name, BigDecimal price, int stock) {
+
+    public Product {
+        if (price == null || price.signum() &lt; 0) {
+            throw new IllegalArgumentException("قیمت نامعتبر است: " + name);
+        }
+        if (stock &lt; 0) {
+            throw new IllegalArgumentException("موجودی نامعتبر است: " + name);
+        }
+    }
+}
+</code></pre>
+
+<h3>بخش Controller</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.shop.controller;
+
+import java.util.List;
+
+/** نقش CONTROLLER: فقط ورودی را می‌گیرد، به Model دستور می‌دهد، خروجی را برمی‌گرداند. */
+public class CartController {
+
+    private final ProductRepository productRepository;
+    private final Cart cart;
+
+    public CartController(ProductRepository productRepository, Cart cart) {
+        this.productRepository = productRepository;
+        this.cart = cart;
+    }
+
+    public CartView addToCart(String productId, int quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -&gt; new ProductNotFoundException(productId));
+
+        cart.addItem(product, quantity);
+
+        return CartView.from(cart);
+    }
+
+    public CartView removeFromCart(String productId) {
+        cart.removeItem(productId);
+        return CartView.from(cart);
+    }
+
+    public List&lt;ProductView&gt; listProducts(String query) {
+        return productRepository.search(query).stream()
+                .map(ProductView::from)
+                .toList();
+    }
+}
+</code></pre>
+
+<h3>بخش View</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.shop.controller;
+
+import java.math.BigDecimal;
+import java.util.List;
+import com.app.shop.model.Cart;
+
+/**
+ * نقش VIEW: مدل نمایشی برای قالب. هیچ منطق کسب‌وکاری اینجا نیست،
+ * فقط تبدیل داده‌ی Model به ساختار قابل نمایش.
+ */
+public record CartView(String productId, String title,
+                       String formattedTotal, boolean empty) {
+
+    public static CartView from(Cart cart) {
+        return new CartView(
+                null,
+                "سبد خرید شما",
+                format(cart.total()),
+                cart.isEmpty());
+    }
+
+    /** فقط قالب‌بندی نمایشی — نه محاسبه‌ی قیمت. */
+    private static String format(BigDecimal amount) {
+        return String.format("%,d ریال", amount.longValue());
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی پیاده‌سازی</span>
+قانون تخفیف در <code>Cart</code> (Model) است، نه در <code>CartView</code> (View).
+View فقط عدد آماده را می‌گیرد و قالب‌بندی می‌کند. اگر فردا نرخ مالیات عوض شود، فقط
+<code>Cart</code> تغییر می‌کند و View دست‌نخورده می‌ماند.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>MVC در Spring و اندروید</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اکوسیستم</th><th>Model</th><th>View</th><th>Controller</th></tr>
+  <tr><td><strong>Spring MVC</strong></td><td>Entity/Service</td><td>Thymeleaf یا JSON</td><td><code>@Controller</code> / <code>@RestController</code></td></tr>
+  <tr><td><strong>Rails</strong></td><td>ActiveRecord</td><td>ERB / Slim</td><td>ActionController</td></tr>
+  <tr><td><strong>Django</strong></td><td>Model (ORM)</td><td>Template</td><td>View function</td></tr>
+  <tr><td><strong>ASP.NET Core</strong></td><td>Entity / EF Core</td><td>Razor</td><td>Controller class</td></tr>
+  <tr><td><strong>Android (کلاسیک)</strong></td><td>Entity + Repository</td><td>Activity/Fragment</td><td>Presenter (در MVP)</td></tr>
+  <tr><td><strong>Angular</strong></td><td>Service/Store</td><td>Component template</td><td>Component class</td></tr>
+  <tr><td><strong>Flutter</strong></td><td>Model</td><td>Widget</td><td>setState / Provider</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>// Spring MVC — هر نقش با annotation خودش مشخص می‌شود
+@RestController
+@RequestMapping("/api/cart")
+public class CartRestController {
+
+    private final CartService cartService;
+
+    @PostMapping("/items")
+    public ResponseEntity&lt;CartResponse&gt; add(@RequestBody AddItemRequest request) {
+        CartResponse response = cartService.addItem(
+                request.productId(), request.quantity());
+        return ResponseEntity.ok(response);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">در اندروید کدام نقش کجاست؟</span>
+در اندروید کلاسیک با Fragments، <code>Activity</code> نقش <strong>View</strong> را دارد و
+<strong>Presenter</strong> نقش <strong>Controller</strong> را. چون Activity نمی‌تواند به‌راحتی
+تست شود، معماری MVP این‌جا محبوب‌تر شد و با <code>ViewModel</code> به MVVM رسیدیم.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مزایا</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>جداسازی واضح مسئولیت‌ها</strong></td><td>سه نقش با سه دلیل تغییر مشخص</td></tr>
+  <tr><td>۲</td><td><strong>تست‌پذیری هر نقش</strong></td><td>Model بدون UI، View بدون منطق، Controller به‌تنهایی</td></tr>
+  <tr><td>۴</td><td><strong>پشتیبانی چند نمایش</strong></td><td>یک Model، چند View (وب، موبایل، PDF، ایمیل)</td></tr>
+  <tr><td>۴</td><td><strong>استفاده‌ی مؤثر از تیم‌ها</strong></td><td>تیم UI و تیم داده موازی کار می‌کنند</td></tr>
+  <tr><td>۵</td><td><strong>پشتیبانی از ابزارها</strong></td><td>تقریباً همه‌ی Framework وب MVC را دارند</td></tr>
+  <tr><td>۶</td><td><strong>استاندارد و زبان مشترک</strong></td><td>مفهومی که همه‌ی توسعه‌دهندگان می‌فهمند</td></tr>
+  <tr><td>۷</td><td><strong>نگهداشت آسان‌تر</strong></td><td>پیدا کردن محل یک باگ ساده‌تر است</td></tr>
+  <tr><td>۸</td><td><strong>کاهش باگ‌های امنیتی</strong></td><td>خروجی از یک نقطه کنترل می‌شود (escape و اعتبارسنجی)</td></tr>
+  <tr><td>۹</td><td><strong>مهاجرت آسان بین پلتفرم‌ها</strong></td><td>انتقال منطق از وب به موبایل بدون بازنویسی</td></tr>
+  <tr><td>۱۰</td><td><strong>منحنی یادگیری کوتاه</strong></td><td>بیشتر کتاب‌ها، دوره‌ها و مصاحبه‌ها درباره‌ی آن هستند</td></tr>
+  <tr><td>۱۱</td><td><strong>مناسب برای صفحات با عملیات یک‌طرفه</strong></td><td>اکثر CRUDها دقیقاً با الگوی MVC جور هستند</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>معایب</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>Controller های حجیم</strong></td><td>به‌سرعت به دسته‌ای از متدهای مشابه تبدیل می‌شود</td></tr>
+  <tr><td>۲</td><td><strong>کوپل شدن Model به View</strong></td><td>Observer وابستگی دوطرفه ایجاد می‌کند</td></tr>
+  <tr><td>۳</td><td><strong>مشکل Testability در دنیای واقعی</strong></td><td>به‌خاطر وابستگی به View، تست Controller سخت است</td></tr>
+  <tr><td>۴</td><td><strong>دوره‌ی به‌روزرسانی طولانی</strong></td><td>هر تغییر در View به مسیر کامل نیاز دارد</td></tr>
+  <tr><td>۵</td><td><strong>Overkill برای صفحات ساده</strong></td><td>یک صفحه‌ی ساده ۳ کلاس و ۳ فایل لازم دارد</td></tr>
+  <tr><td>۶</td><td><strong>پیچیدگی در صفحات با وضعیت پیچیده</strong></td><td>مدیریت هم‌زمان چند View سخت می‌شود</td></tr>
+  <tr><td>۷</td><td><strong>مشکل Data Binding</strong></td><td>برای فرم‌های پیچیده نیاز به فریم‌ورک اضافه است</td></tr>
+  <tr><td>۸</td><td><strong>نه مناسب برای رویدادمحور</strong></td><td>جریان پس‌رو (View به Model) طبیعی نیست</td></tr>
+  <tr><td>۹</td><td><strong>افزونگی در پروژه‌های کوچک</strong></td><td>بیشتر تیم‌ها ترجیح می‌دهند ساده‌تر بنویسند</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مشکل اصلی: جریان در یک جهت نیست</span>
+مدل کلاسیک MVC با داده‌های دوحالته (two-way data binding) سازگار نیست. به همین دلیل
+MVVM جایگزین آن شد. اگر اپلیکیشن شما state پیچیده دارد، MVVM انتخاب بهتری است.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">موارد مناسب</span>
+<ul>
+  <li><strong>وب‌اپلیکیشن‌های CRUD</strong> با چند فرم و صفحه‌ی ساده</li>
+  <li>پروژه‌هایی که <strong>فقط یک نوع رابط کاربری</strong> دارند</li>
+  <li>تیم‌هایی که به دنبال <strong>سادگی و در دسترس بودن</strong> هستند</li>
+  <li>پروژه‌هایی که <strong>منطق ساده‌ی کسب‌وکار</strong> دارند</li>
+  <li>زمانی که <strong>تیم با MVC آشناست</strong> و سرعت تحویل اولویت دارد</li>
+  <li>سامانه‌های داخلی و <strong>پنل‌های مدیریتی</strong></li>
+  <li>پروژه‌های <strong>چندکلاینته</strong> که منطق مشترک دارند</li>
+  <li>موقعی که <strong>اکوسیستم قوی</strong> (Spring، Rails، Django) در دسترس است</li>
+</ul>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی سرانگشتی</span>
+اگر جریان کار شما «کاربر → سرور → دیتابیس → نمایش» است، MVC کافی است.
+اگر جریان شما «رویداد → چند واکنش ناهمگام → به‌روزرسانی وضعیت UI» است، MVVM بهتر است.
+</div>
+</section>
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">موارد نامناسب</span>
+<ul>
+  <li><strong>وضعیت پیچیده‌ی UI</strong> با جریان داده‌ی دوحالته (MVVM بهتر است)</li>
+  <li>اپلیکیشن‌های <strong>رویدادمحور</strong> و بازی‌مانند با حلقه‌ی فریم</li>
+  <li><strong>صفحه‌های بیش از حد پویا</strong> که به‌روزرسانی جزئی نیاز دارند</li>
+  <li>پروژه‌های <strong>تیم‌محور بزرگ</strong> که هم‌زمان چند نفر روی یک صفحه کار می‌کنند</li>
+  <li>پروژه‌های <strong>بسیار کوچک</strong> که MVC برایشان سنگین است</li>
+  <li>سیستم‌هایی با <strong>دامنه‌ی پیچیده</strong> (به‌جایش Clean/Onion)</li>
+  <li><strong>سیستم‌های یکپارچه‌سازی</strong> با جریان‌های ناهمگام سنگین</li>
+  <li>زمانی که فقط <strong>یک صفحه‌ی استاتیک</strong> لازم است</li>
+</ul>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز شما</th><th>الگوی مناسب‌تر</th></tr>
+  <tr><td>دوحالته بودن داده با UI</td><td><strong>MVVM</strong></td></tr>
+  <tr><td>منطق کسب‌وکار پیچیده و جدا از UI</td><td><strong>MVP</strong> یا <strong>Clean Architecture</strong></td></tr>
+  <tr><td>یک جریان یک‌طرفه‌ی قابل پیش‌بینی</td><td><strong>MVI</strong></td></tr>
+  <tr><td>واکنش به رویدادها</td><td><strong>Event-Driven</strong></td></tr>
+  <tr><td>تیم‌های مستقل با deploy جدا</td><td><strong>Microservices</strong></td></tr>
+  <tr><td>کد قابل استفاده‌ی مجدد در چند کلاینت</td><td><strong>Repository + Service Layer</strong></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    MVC["MVC — Model ←→ View، Controller وسط"]
+    MVP["MVP — Presenter ←→ View، Model غیرفعال"]
+    MVVM["MVVM — ViewModel ←→ View، Model غیرفعال"]
+    MVI["MVI — Intent → State → View"]
+
+    MVC ---|"View مستقیم Model را می‌بیند"| MVP
+    MVP ---|"نمایش به ViewModel منتقل می‌شود"| MVVM
+    MVVM ---|"جریان رویداد یک‌طرفه"| MVI
+
+    style MVC fill:#0f766e,stroke:#14b8a6,color:#fff
+    style MVP fill:#115e59,stroke:#2dd4bf,color:#fff
+    style MVVM fill:#134e4a,stroke:#5eead4,color:#fff
+    style MVI fill:#78350f,stroke:#fbbf24,color:#fff</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>معیار</th><th>MVC</th><th>MVP</th><th>MVVM</th><th>MVI</th></tr>
+  <tr><td>محور کنترل</td><td>Controller</td><td>Presenter</td><td>ViewModel</td><td>Reducer + Store</td></tr>
+  <tr><td>View به Model</td><td>✅ دسترسی مستقیم</td><td>❌</td><td>❌</td><td>❌</td></tr>
+  <tr><td>جریان داده</td><td>دوطرفه</td><td>یک‌طرفه</td><td>دوطرفه</td><td>یک‌طرفه</td></tr>
+  <tr><td>مناسب اندروید</td><td>⚠️</td><td>✅ قدیمی</td><td>✅ محبوب</td><td>✅ مدرن</td></tr>
+  <tr><td>مناسب وب</td><td>✅ محبوب</td><td>⚠️</td><td>⚠️</td><td>⚠️</td></tr>
+  <tr><td>تست View</td><td>⚠️ سخت</td><td>✅ ساده</td><td>✅ ساده</td><td>✅ خیلی ساده</td></tr>
+  <tr><td>سازگار با پلتفرم</td><td>✅</td><td>⚠️</td><td>✅</td><td>✅</td></tr>
+  <tr><td>پیچیدگی</td><td>متوسط</td><td>متوسط</td><td>متوسط</td><td>زیاد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">جمع‌بندی مقایسه</span>
+همه‌ی این الگوها یک هدف دارند: <strong>جدا کردن منطق کسب‌وکار از نمایش</strong>.
+تفاوت در این است که <strong>چه کسی جریان داده را می‌کشد</strong> و
+<strong>آیا View اجازه‌ی دیدن Model را دارد یا نه</strong>.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اصل SOLID</th><th>نمود در MVC</th><th>مثال</th></tr>
+  <tr><td><strong>S — Single Responsibility</strong></td><td>هر سه نقش یک دلیل تغییر</td><td>تغییر فقط UI نباید Model را لمس کند</td></tr>
+  <tr><td><strong>O — Open/Closed</strong></td><td>افزودن View جدید بدون تغییر Model</td><td>افزودن قالب ایمیل کنار قالب وب</td></tr>
+  <tr><td><strong>L — Liskov</strong></td><td>هر View باید قرارداد رندر را رعایت کند</td><td>قالب HTML و قالب PDF جایگزین‌پذیر</td></tr>
+  <tr><td><strong>I — Interface Segregation</strong></td><td>Interface کوچک برای هر نقش</td><td><code>CartView</code> جدا از <code>ProductView</code></td></tr>
+  <tr><td><strong>D — Dependency Inversion</strong></td><td>Model به Repository وابسته است، نه به JDBC</td><td>تست Model با Fake Repository</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی مهم</span>
+MVC به‌صورت طبیعی <strong>SRP</strong> را تقویت می‌کند، اما <strong>ISP</strong> را ضعیف می‌کند:
+یک Controller معمولاً همه‌ی مسیرهای یک Resource را می‌گیرد (مثلاً همه‌ی متدهای Cart). برای
+رعایت بهتر ISP، Controllerها را به‌اندازه‌ی یک Use Case بشکنید.
+</div>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>نقش در MVC</th><th>محل استفاده</th></tr>
+  <tr><td><strong>Observer</strong></td><td>اعلام تغییر Model به View</td><td>مکانیزم اصلی MVC کلاسیک</td></tr>
+  <tr><td><strong>Composite</strong></td><td>View می‌تواند شامل View دیگر باشد</td><td>قالب‌های تودرتو</td></tr>
+  <tr><td><strong>Strategy</strong></td><td>انتخاب قالب متفاوت برای کاربران مختلف</td><td>View Factory</td></tr>
+  <tr><td><strong>Template Method</strong></td><td>ساختار ثابت مرحله‌های یک درخواست</td><td>قالب HTTP</td></tr>
+  <tr><td><strong>Adapter</strong></td><td>تبدیل Model به مدل نمایشی</td><td>مرز Controller ↔ View</td></tr>
+  <tr><td><strong>Command</strong></td><td>هر action کاربر یک Command</td><td>پشتیبانی از Undo/Redo</td></tr>
+  <tr><td><strong>Factory</strong></td><td>ساخت View مناسب برای هر فرمت</td><td>انتخاب HTML/PDF/JSON</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">الگوی واقعاً مرتبط</span>
+اگر قرار است MVC را در پروژه‌ای جدی پیاده کنید، <strong>Observer</strong> و
+<strong>Strategy</strong> واقعاً به کارتان می‌آیند. بقیه را فقط در صورت نیاز واقعی اضافه کنید.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+خبر خوب: در MVC، <strong>Model را می‌توان کاملاً مستقل تست کرد</strong>، چون به چیزی جز Repository وابسته نیست.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.shop.model;
+
+import java.math.BigDecimal;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class CartTest {
+
+    private final Product laptop = new Product("p-1", "لپ‌تاپ",
+            new BigDecimal("25000000"), 5);
+
+    @Test
+    @DisplayName("محصول باید به سبد اضافه و مجموع محاسبه شود")
+    void addsProductAndCalculatesTotal() {
+        Cart cart = new Cart();
+
+        cart.addItem(laptop, 2);
+
+        assertThat(cart.lines()).hasSize(1);
+        assertThat(cart.total()).isEqualByComparingTo("50000000");
+    }
+
+    @Test
+    @DisplayName("خرید بالای ۵ میلیون باید ۵٪ تخفیف بگیرد")
+    void appliesBulkDiscount() {
+        Cart cart = new Cart();
+
+        cart.addItem(laptop, 1);
+
+        assertThat(cart.total()).isEqualByComparingTo("23750000");
+    }
+
+    @Test
+    @DisplayName("افزودن بیش از موجودی باید رد شود")
+    void rejectsQuantityAboveStock() {
+        Cart cart = new Cart();
+
+        assertThatThrownBy(() -&gt; cart.addItem(laptop, 6))
+                .isInstanceOf(StockException.class)
+                .hasMessageContaining("موجودی");
+    }
+
+    @Test
+    @DisplayName("حداکثر ۱۰ قلم از هر محصول")
+    void rejectsMoreThanTenUnits() {
+        Cart cart = new Cart();
+        Product abundant = new Product("p-2", "خودکار",
+                new BigDecimal("1000"), 100);
+
+        assertThatThrownBy(() -&gt; cart.addItem(abundant, 11))
+                .isInstanceOf(CartLimitException.class);
+    }
+
+    @Test
+    @DisplayName("افزودن همان محصول باید مقدار را جمع کند")
+    void mergesSameProduct() {
+        Cart cart = new Cart();
+
+        cart.addItem(laptop, 1);
+        cart.addItem(laptop, 1);
+
+        assertThat(cart.lines()).hasSize(1);
+        assertThat(cart.lines().getFirst().quantity()).isEqualTo(2);
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقش</th><th>روش تست</th><th>چه‌چیزی تست می‌شود</th></tr>
+  <tr><td><strong>Model</strong></td><td>Unit خالص با Fake Repository</td><td>تمام قوانین کسب‌وکار — سریع و قطعی</td></tr>
+  <tr><td><strong>Controller</strong></td><td>Unit با Mock Model یا <code>@WebMvcTest</code></td><td>نگاشت درخواست به پاسخ</td></tr>
+  <tr><td><strong>View</strong></td><td>Snapshot / رندر HTML</td><td>قالب خروجی نهایی</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">مزیت عملی MVC</span>
+تست <code>CartTest</code> بالا <strong>هیچ Spring Context، هیچ دیتابیس و هیچ Mock</strong> لازم ندارد.
+اجرای کل تست‌ها زیر یک ثانیه طول می‌کشد. این یکی از بزرگ‌ترین دستاوردهای جداسازی نقش‌هاست.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>اشتباه</th><th>نشانه</th><th>راه‌حل</th></tr>
+  <tr><td>۱</td><td><strong>منطق کسب‌وکار در View</strong></td><td><code>if</code> داخل قالب HTML</td><td>انتقال قانون به Model</td></tr>
+  <tr><td>۲</td><td><strong>Controller چاق</strong></td><td>متدهای ۵۰ خطی با منطق</td><td>انتقال به Service/Model</td></tr>
+  <tr><td>۳</td><td><strong>Model با setterهای عمومی</strong></td><td><code>setPrice()</code> بدون اعتبارسنجی</td><td>مقدار شیئی یا متدهای دامنه</td></tr>
+  <tr><td>۴</td><td><strong>View مستقیم به دیتابیس</strong></td><td>Query در فایل قالب</td><td>فقط Model دسترسی داشته باشد</td></tr>
+  <tr><td>۵</td><td><strong>دوره‌ی به‌روزرسانی طولانی</strong></td><td>Model، View و Controller همزمان تغییر می‌کنند</td><td>تغییر جداگانه‌ی هر نقش</td></tr>
+  <tr><td>۶</td><td><strong>انتخاب نادرست EL/ORM</strong></td><td>استفاده از ORM در View</td><td>ORM فقط در Model</td></tr>
+  <tr><td>۷</td><td><strong>استفاده از Session برای وضعیت</strong></td><td>داده کسب‌وکار در Session</td><td>فقط داده‌ی موقت UI</td></tr>
+  <tr><td>۸</td><td><strong>اعتبارسنجی فقط سمت کلاینت</strong></td><td>کنترل فقط در View</td><td>اعتبارسنجی در Model/Controller</td></tr>
+  <tr><td>۹</td><td><strong>تست E2E فقط</strong></td><td>همه‌ی تست‌ها از UI</td><td>تست واحد Model</td></tr>
+  <tr><td>۱۰</td><td><strong>Model با وابستگی به Framework</strong></td><td><code>@Entity</code> در کلاس دامنه</td><td>جدا کردن مدل ORM</td></tr>
+  <tr><td>۱۱</td><td><strong>MVC برای همه‌چیز</strong></td><td>MVC برای یک تابع ساده</td><td>از سادگی شروع کنید</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">اشتباه مرگبار: قانون در دو جا</span>
+بزرگ‌ترین خطر MVC این است که یک قانون را در <code>Controller</code> برای اعتبارسنجی سریع
+و همان قانون را در <code>Model</code> برای اطمینان بنویسید. اگر یکی از آن‌ها تغییر کند،
+سیستم ناسازگار می‌شود. <strong>قانون را فقط یک‌جا بنویسید: Model.</strong>
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱) Spring Boot — سیستم مدیریت محتوا</h3>
+<p>
+رایج‌ترین کاربرد MVC در دنیای واقعی: وب‌اپلیکیشن‌های <strong>Spring MVC</strong>.
+در این پروژه‌ها Model معمولاً ترکیبی از JPA Entity و Service است، View یک قالب Thymeleaf
+و Controller یک کلاس با <code>@RequestMapping</code>. نمونه‌های شناخته‌شده مثل
+پنل‌های مدیریتی داخلی، فروشگاه‌های اینترنتی و سیستم‌های رزرو آنلاین، همگی با همین
+الگو ساخته شده‌اند و سال‌ها بدون مشکل توسعه یافته‌اند.
+</p>
+
+<h3>۲) Django و Rails — توسعه‌ی سریع وب</h3>
+<p>
+در <strong>Django</strong>، مدل‌ها با ORM خود در فایل <code>models.py</code> تعریف می‌شوند،
+قالب‌ها در <code>templates/</code> و توابع نمایش (کنترلرها) در <code>views.py</code>.
+همین ساختار باعث شده تیم‌های کوچک بتوانند در چند هفته یک محصول کامل بسازند.
+<strong>Rails</strong> با قرارداد <code>Model-View-Controller</code> و <code>ActiveRecord</code>
+همین الگو را با کمترین کد ممکن پیاده کرده است.
+</p>
+
+<h3>۳) ASP.NET Core MVC — سیستم‌های سازمانی مایکروسافتی</h3>
+<p>
+در <code>ASP.NET Core MVC</code>، کنترلرها از <code>IActionResult</code> استفاده می‌کنند و
+قالب‌های Razor دارای <strong>View Tag Helper</strong> هستند. مدل داده با Entity Framework
+مدیریت می‌شود و قوانین کسب‌وکار در سرویس‌های جدا قرار می‌گیرند. این ترکیب در
+سامانه‌های بانکی و بیمه‌ای رایج است.
+</p>
+
+<h3>۴) اپلیکیشن اندروید با معماری MVC کلاسیک</h3>
+<p>
+در سال‌های اولیه‌ی اندروید، <code>Activity</code> نقش View و Controller را همزمان بر عهده
+می‌گرفت و منطق در آن کلاس‌ها بود. این سبک برای اپلیکیشن‌های ساده مشکلی نداشت، اما
+با رشد پروژه به <strong>مخلوط شدن نقش‌ها</strong> رسید و دلیل اصلی ظهور MVP و سپس MVVM شد.
+درس مهم: <strong>MVC برای اپلیکیشن‌های کوچک اندروید کار می‌کند، اما به‌سرعت به مرز خود می‌رسد.</strong>
+</p>
+
+<h3>۵) پنل‌های مدیریت داخلی</h3>
+<p>
+داشبوردهای داخلی بهترین نمونه‌ی MVC هستند: چند فرم ساده، جدول‌های خواندنی و عملیات CRUD.
+در این پروژه‌ها معمولاً <strong>Domain پیچیده نیست</strong> و MVC با کمترین کد ممکن
+همه‌ی نیازها را پوشش می‌دهد. برای همین استفاده از معماری‌های سنگین‌تر، فقط
+هزینه‌ی بی‌دلیل است.
+</p>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئله</th><th>علت</th><th>راه‌حل</th></tr>
+  <tr><td>نمایش داده در گام آخر</td><td>پردازش View پس از ساخت HTML</td><td>آماده‌سازی داده قبل از Controller</td></tr>
+  <tr><td>N+1 در لیست محصولات</td><td>برای هر ردیف یک Query</td><td>خواندن همه در یک کوئری یا Eager Loading</td></tr>
+  <tr><td>تأخیر در اعلان Observer</td><td>تعداد زیاد listenerها</td><td>ادغام اعلان‌ها یا استفاده از State</td></tr>
+  <tr><td>بارگذاری بیش از حد داده</td><td>ارسال کل Model به لایه‌ی View</td><td>استفاده از DTO مخصوص هر صفحه</td></tr>
+  <tr><td>رندر کند قالب</td><td>حلقه‌های پیچیده در موتور قالب</td><td>پیش‌محاسبه در Model</td></tr>
+  <tr><td>حجم بالای Session</td><td>نگه‌داری Object کامل در Session</td><td>فقط شناسه در Session</td></tr>
+  <tr><td>سربار فراخوانی رویداد</td><td>رویداد برای هر تغییر جزئی</td><td>به‌روزرسانی دسته‌ای</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>بد — اعلان در هر تغییر:
+
+  addItem()   -> notifyListeners()
+  addItem()   -> notifyListeners()
+  removeItem()-> notifyListeners()
+  // ۳ بار رندر قالب
+
+بهتر — یک اعلان در پایان عملیات:
+
+  beginBatch();
+  addItem();
+  addItem();
+  removeItem();
+  commitBatch();  // فقط یک notifyListeners()
+
+اگر UI شما ساده است، اجرای render را debounce کنید.</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">مزیت پنهان MVC</span>
+چون Model از UI جداست، می‌توانید <strong>خروجی دقیقاً مشابه در سه فرمت</strong> تولید کنید و
+در صورت نیاز فقط لایه‌ی View را عوض کنید — بدون تغییر منطق و بدون ریسک باگ.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Junior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱ — MVC چیست؟</span>
+الگوی معماری که برنامه را به سه نقش تقسیم می‌کند: Model (داده و منطق)، View (نمایش)
+و Controller (ورودی و تصمیم‌گیری).
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲ — وظیفه‌ی هر نقش چیست؟</span>
+Model داده و قوانین را نگه می‌دارد، View خروجی را نمایش می‌دهد، Controller رویدادها را دریافت
+و به Model فرمان می‌دهد و View مناسب را انتخاب می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۳ — MVC را چه کسی معرفی کرد؟</span>
+Trygve Reenskaug در سال ۱۹۷۹ برای سیستم Smalltalk-80 در دانشگاه NTNU نروژ.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۴ — تفاوت MVC و سه‌لایه‌ای چیست؟</span>
+سه‌لایه‌ای (3-Tier) درباره‌ی <strong>محیط‌های اجرایی</strong> صحبت می‌کند (کلاینت، سرور، دیتابیس)؛
+MVC درباره‌ی <strong>مسئولیت‌های داخل یک برنامه</strong> صحبت می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۵ — تفاوت MVC و لایه‌بندی چیست؟</span>
+در لایه‌بندی، همه‌ی منطق در یک لایه (Service) است. در MVC، منطق داخل Model توزیع می‌شود و
+View و Controller نقش‌های جدا دارند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۶ — MVC با چه Frameworkهایی یکپارچه شده است؟</span>
+Spring MVC، ASP.NET Core MVC، Rails، Django، Struts، Sinatra و Phoenix.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۷ — MVC یک Design Pattern است یا Architecture؟</span>
+MVC یک <strong>الگو</strong> در سطح معماری است؛ یعنی ساختار کلی نرم‌افزار را تعیین می‌کند،
+نه جزئیات یک کلاس را.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۸ — چه چیزی نباید در View باشد؟</span>
+منطق کسب‌وکار، دسترسی مستقیم به دیتابیس و تصمیم‌گیری. View فقط باید داده را نمایش دهد
+و رویداد تولید کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۹ — Controller باید چه کارهایی انجام ندهد؟</span>
+نباید منطق کسب‌وکار بنویسد، نباید مستقیم به دیتابیس وصل شود، و نباید خودش داده را
+قالب‌بندی کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۰ — تفاوت MVC و MVP چیست؟</span>
+در MVC، Model مستقیماً View را صدا می‌زند؛ در MVP، Presenter وضعیت را به View منتقل می‌کند
+و Model اصلاً از وجود View بی‌خبر است.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Mid</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۱ — MVC کلاسیک با MVC مدرن چه تفاوتی دارد؟</span>
+در MVC کلاسیک، Model با استفاده از Observer، View را مستقیم به‌روزرسانی می‌کند.
+در MVC مدرن (Push/Pull)، Controller یا خودش خروجی View را می‌سازد یا View داده را از Model می‌کشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۲ — مشکل اصلی MVC در اندروید چیست؟</span>
+اینکه <code>Activity</code> هم‌زمان نقش View و Controller را بر عهده می‌گیرد و
+تست واحد آن تقریباً غیرممکن است. به همین دلیل MVP و MVVM جایگزین شدند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۳ — چرا برای یک صفحه‌ی ساده MVC استفاده نمی‌کنیم؟</span>
+چون برای هر صفحه باید سه کلاس، سه فایل و قرارداد بین آن‌ها بسازید، در حالی که یک تابع
+ساده همان کار را انجام می‌دهد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۴ — چگونه از تکرار منطق جلوگیری کنیم؟</span>
+قانون را فقط در Model بنویسید. اگر برای اعتبارسنجی سریع در Controller هم لازم دارید،
+فقط به متد Model تکیه کنید، نه به بازنویسی قانون.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۵ — تفاوت MVC و MVVM چیست؟</span>
+MVVM برای پلتفرم‌هایی با <strong>دوحالته‌سازی داده</strong> طراحی شده: ViewModel وضعیت را
+نگه می‌دارد و تغییرات به‌صورت خودکار به View منعکس می‌شود. MVC این قابلیت را ندارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۶ — چطور Controller را قابل تست کنیم؟</span>
+با تزریق وابستگی و Mock کردن Model؛ یا در Spring با تست <code>@WebMvcTest</code> که
+لایه‌ی داده را کاملاً کنار می‌گذارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۷ — آیا مدل در MVC باید مستقل از دیتابیس باشد؟</span>
+در MVC کلاسیک الزامی نیست، اما بهترین حالت این است که مدل دامنه مستقل باشد و مدل ORM
+جداگانه تعریف شود؛ وگرنه تست و مهاجرت سخت می‌شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۸ — چه زمانی به جای MVC از MVI استفاده کنیم؟</span>
+وقتی جریان داده پیچیده است و می‌خواهید همه‌ی تغییرات از یک نقطه (Intent → State) عبور کنند؛
+این کار تست، دیباگ و پیش‌بینی رفتار را آسان‌تر می‌کند.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Senior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۹ — مهم‌ترین محدودیت نظری MVC چیست؟</span>
+چرخه‌ی <strong>Update</strong> در MVC مشکل‌ساز است: وقتی چند منبع داده با هم تغییر می‌کنند،
+View نمی‌تواند بفهمد کدام تغییر باید رندر شود. این دلیل اصلی ظهور MVVM و MVI است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲۰ — MVC در معماری میکروسرویس کجا قرار می‌گیرد؟</span>
+MVC در لایه‌ی <strong>داخلی هر سرویس</strong> قرار می‌گیرد، نه در سطح معماری کلان.
+معماری کلان را Microservices تعیین می‌کند و MVC فقط نحوه‌ی پیاده‌سازی لایه‌ی ارائه در هر سرویس است.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پرسش‌های پرتکرار</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱) تفاوت MVC و سه‌لایه‌ای (3-Tier) چیست؟</span>
+سه‌لایه‌ای درباره‌ی <strong>محل استقرار</strong> صحبت می‌کند (کلاینت/سرور/DB)؛ MVC درباره‌ی
+<strong>مسئولیت کد در یک برنامه</strong>. یک سیستم می‌تواند هم‌زمان هر دو باشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۲) آیا MVC خودش یک لایه‌بندی است؟</span>
+می‌توان MVC را نوعی لایه‌بندی دانست، اما تفاوت مهمی دارد: در MVC هر لایه <strong>مسئولیت معنایی</strong>
+دارد، در حالی که در لایه‌بندی کلاسیک لایه‌ها صرفاً بر اساس نوع کار تقسیم می‌شوند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۳) چرا MVC در اندروید منسوخ شد؟</span>
+به‌خاطر دو محدودیت: Activity به‌سختی قابل تست است و سیستم بدون چرخه‌ی حیات، MVC را
+ناکارآمد می‌کند. MVVM این دو مشکل را حل می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۴) آیا می‌توان MVC و MVVM را ترکیب کرد؟</span>
+بله و این کار رایج است: در پروژه‌ی اندروید، لایه‌ی داده با Repository و لایه‌ی UI با
+MVVM و کنترلرهای Activity از اصول MVC الهام گرفته‌اند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۵) بهترین Framework برای MVC در Java چیست؟</span>
+Spring MVC محبوب‌ترین گزینه است، اما Struts و JSF هم وجود دارند. اگر تازه‌کار هستید،
+Spring به‌دلیل مستندات و اکوسیستم، گزینه‌ی منطقی است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۶) تفاوت Model و Entity چیست؟</span>
+Entity فقط داده را نگه می‌دارد (Getter/Setter)، اما Model می‌تواند شامل قواعد کسب‌وکار،
+اعلان تغییر و تعامل با دیتابیس باشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۷) چرا MVC باعث ساده‌تر شدن کد می‌شود؟</span>
+چون هر بخش را جداگانه می‌خوانید و تغییر می‌دهید. به‌جای خواندن یک فایل ۱۰۰۰ خطی،
+سه فایل کوچک و مشخص دارید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۸) چطور Controller را نازک نگه داریم؟</span>
+با انتقال منطق به یک لایه‌ی Service بین Controller و Model. Controller فقط سه کار می‌کند:
+دریافت ورودی، صدا زدن Service، برگرداندن خروجی.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۹) آیا MVC برای API هم مناسب است؟</span>
+بله، اما در API معمولاً Controller نقش View را هم بر عهده می‌گیرد (چون JSON خروجی است
+و قالب ثابتی وجود دارد). به همین دلیل بسیاری REST APIها عملاً از MVC استفاده نمی‌کنند
+و فقط از لایه‌بندی ساده بهره می‌گیرند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۰) تفاوت MVC و Facade چیست؟</span>
+MVC یک الگوی ساختاری برای تقسیم مسئولیت‌ها در کل سیستم است؛ Facade یک الگوی ساختاری
+برای ساده کردن API یک زیرسیستم. Facade ممکن است داخل یک لایه‌ی MVC استفاده شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۱) آیا باید برای هر صفحه یک Controller بسازم؟</span>
+نه. بهتر است Controller را به‌اندازه‌ی یک Resource یا Use Case بشکنید و متدهای آن را کوتاه نگه دارید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۲) MVC چه تفاوتی با MVVM در عمل دارد؟</span>
+در MVVM، ViewModel یک کلاس کاملاً مستقل و قابل تست است و View فقط به آن گوش می‌دهد.
+در MVC، View مستقیماً با Model درگیر است و همین، تست را سخت می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۳) آیا تست View در MVC ارزش دارد؟</span>
+معمولاً نه، مگر اینکه قالب پیچیده باشد یا مشکل امنیتی داشته باشد. تست Model و Controller
+مهم‌تر است؛ تست View بیشتر ارزش نگهداری دارد تا ارزش تست.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۴) چطور از انتقال منطق به View جلوگیری کنم؟</span>
+در Code Review، هر شرطی که در قالب نوشته می‌شود را رد کنید. قالب فقط باید حلقه و
+نمایش داشته باشد؛ تمام تصمیم‌ها باید قبلاً در Model گرفته شده باشند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۵) آیا MVC برای پروژه‌ی دانشگاهی مناسب است؟</span>
+بله، دقیقاً برای همین سطح از پروژه‌ها ایده‌آل است: ساختار را آموزش می‌دهد و
+بدون پیچیدگی اضافه، جداسازی واقعی ایجاد می‌کند.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>خلاصه</th></tr>
+  <tr><td>تعریف</td><td>تقسیم برنامه به Model، View و Controller</td></tr>
+  <tr><td>معرف</td><td>Trygve Reenskaug، سال ۱۹۷۹، Smalltalk-80</td></tr>
+  <tr><td>Model</td><td>داده + قوانین کسب‌وکار + اعلان تغییر</td></tr>
+  <tr><td>View</td><td>نمایش داده و تولید رویداد</td></tr>
+  <tr><td>Controller</td><td>دریافت رویداد، انتخاب پاسخ</td></tr>
+  <tr><td>جریان</td><td>View → Controller → Model → View</td></tr>
+  <tr><td>ممنوعیت</td><td>منطق در View، SQL در Controller، HTML در Model</td></tr>
+  <tr><td>مزیت اصلی</td><td>جدایی سه دلیل تغییر</td></tr>
+  <tr><td>عیب اصلی</td><td>تست View سخت، چرخه‌ی update ضعیف</td></tr>
+  <tr><td>بهترین برای</td><td>وب CRUD، سیستم‌های داخلی، تیم کوچک</td></tr>
+  <tr><td>نامناسب برای</td><td>UI پیچیده، وضعیت دوحالته، اپ موبایل بزرگ</td></tr>
+  <tr><td>جایگزین موبایل</td><td>MVVM یا MVI</td></tr>
+  <tr><td>جایگزین دامنه‌ی پیچیده</td><td>Clean Architecture / Onion</td></tr>
+  <tr><td>الگوی کلیدی</td><td>Observer + Adapter + Strategy</td></tr>
+  <tr><td>قانون طلایی</td><td>View هرگز مستقیم به دیتابیس وصل نمی‌شود</td></tr>
+  <tr><td>ابزار تست</td><td>JUnit 5، AssertJ، MockMvc</td></tr>
+  <tr><td>معیار موفقیت</td><td>Model بدون هیچ وابستگی بیرونی تست می‌شود</td></tr>
+  <tr><td>سیگنال هشدار</td><td>Controller با بیش از ۱۵ متد، قالب پر از شرط</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله برای به‌خاطر سپردن</span>
+<strong>MVC یعنی داده، نمایش و کنترل را از هم جدا کن و بگذار هر کدام کار خودش را بکند.</strong>
+اگر این را نگه دارید، بقیه‌ی جزئیات را می‌توانید خودتان بازسازی کنید.
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>هدف</th><th>تمرین پیشنهادی</th></tr>
+  <tr><td>۱ — هفته‌ی اول</td><td>فهم سه نقش و جریان داده</td><td>یک وب‌اپلیکیشن ساده با Spring MVC</td></tr>
+  <tr><td>۲ — هفته‌ی دوم</td><td>انتقال منطق از Controller به Model</td><td>بازسازی یک CRUD که منطقش در Controller است</td></tr>
+  <tr><td>۳ — هفته‌ی سوم</td><td>تست واحد Model</td><td>نوشتن ۱۰ تست خالص برای قوانین سبد خرید</td></tr>
+  <tr><td>۴ — هفته‌ی چهارم</td><td>درک تفاوت MVC و MVP</td><td>مقایسه‌ی عملی: پیاده‌سازی یک صفحه با هر دو الگو</td></tr>
+  <tr><td>۵ — ماه دوم</td><td>آشنایی با MVVM</td><td>ساخت یک ViewModel در اندروید و مقایسه با Activity</td></tr>
+  <tr><td>۶ — ماه سوم</td><td>انتخاب معماری برای پروژه‌ی واقعی</td><td>تحلیل یک اپ موجود و بازنویسی آن با معماری مناسب</td></tr>
+  <tr><td>۷ — ماه چهارم</td><td>تعمیق به معماری‌های پیشرفته</td><td>مطالعه‌ی سری ۱۴ مقاله‌ای و انتخاب مستند</td></tr>
+</table>
+</div>
+
+<h3>جمع‌بندی</h3>
+<p>
+<strong>MVC</strong> الگویی است که بیش از چهار دهه عمر دارد و هنوز هم پایه‌ی بیشتر
+فریم‌ورک‌های وب دنیاست. نکته‌ی مهم این است که <strong>MVC را نباید با هر اپلیکیشنی تطبیق داد</strong>.
+این الگو برای صفحات با جریان یک‌طرفه عالی است، اما وقتی وضعیت UI پیچیده می‌شود،
+MVVM یا MVI انتخاب بهتری هستند.
+</p>
+<p>
+درس اصلی که از MVC باید بگیرید این است: <strong>جدا کردن منطق کسب‌وکار از نمایش،
+بزرگ‌ترین دستاورد است</strong> — حتی اگر خود الگو را کنار بگذارید، این اصل باقی می‌ماند.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله پنجمین عضو سری «معماری‌های نرم‌افزاری» است. اکنون شما هم معماری‌های
+ساختاری (Clean، Onion، Hexagonal، Layered) را می‌شناسید و هم الگوهای تقسیم
+مسئولیت (MVC). مقاله‌ی بعدی به MVP می‌پردازد و نشان می‌دهد چرا این الگو برای
+اپلیکیشن‌های موبایل ساخته شد.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی همه‌چیز در یک کلاس است</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">MVC چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: سه نقش مجزا</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای MVC</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: فروشگاه اینترنتی</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">MVC در Spring و اندروید</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با MVC و معماری‌های مشابه</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی همه‌چیز در یک کلاس است</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">MVC چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: سه نقش مجزا</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای MVC</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: فروشگاه اینترنتی</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">MVC در Spring و اندروید</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با MVC و معماری‌های مشابه</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

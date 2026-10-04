@@ -1,0 +1,3107 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Driven Architecture چیست؟ آموزش کامل Event-Driven با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله معماری رویدادمحور را کامل یاد می‌گیرید: رویداد دامنه، انتشار و مصرف، الگوی Outbox، تحویل دقیقاً یک‌بار، Saga، پیاده‌سازی کامل Java 21 با Kafka، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="Event Driven Architecture, EDA, رویداد محور, Domain Event, Event Sourcing, Outbox Pattern, Kafka, Saga, Java, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, message broker">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Event Driven Architecture چیست؟ آموزش کامل Event-Driven با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله معماری رویدادمحور را کامل یاد می‌گیرید: رویداد دامنه، انتشار و مصرف، الگوی Outbox، تحویل دقیقاً یک‌بار، Saga، پیاده‌سازی کامل Java 21 با Kafka، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/event-driven-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/event-driven-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Event Driven Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Event Driven Architecture چیست؟ آموزش کامل Event-Driven با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="رویداد دامنه، Outbox، تحویل دقیقاً یک‌بار، Saga و پیاده‌سازی Java 21 با Kafka و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Event Driven Architecture چیست؟ آموزش کامل Event-Driven با مثال و ساختار پروژه",
+    "description": "در این مقاله معماری رویدادمحور را کامل یاد می‌گیرید: رویداد دامنه، انتشار و مصرف، الگوی Outbox، تحویل دقیقاً یک‌بار، Saga، پیاده‌سازی کامل Java 21 با Kafka، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/event-driven-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/event-driven-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Event Driven Architecture, Domain Event, Outbox Pattern, Kafka, Saga, Event Sourcing",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Event Driven Architecture", "item": "https://haedarfarhani.github.io/My-Articles/articles/event-driven-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Event Driven Architecture</span>؛ سیستمی که با «اتفاق‌ها» حرف می‌زند
+          </h1>
+
+          <p class="hero-lead">
+            به‌جای اینکه سرویس‌ها همدیگر را صدا بزنند، <strong>رویداد منتشر می‌کنند و
+            هرکس خواست گوش می‌دهد</strong>. در این راهنما از تفاوت رویداد و فراخوانی تا
+            <code>Outbox</code>، تحویل دقیقاً یک‌بار، <code>Saga</code> و
+            <code>Event Sourcing</code> را بررسی می‌کنیم و یک پیاده‌سازی کامل با
+            <code>Java 21</code> و <code>Kafka</code> می‌سازیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۶۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: پیشرفته (Java 21 + Kafka)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Event_Driven</span>
+            <span class="post-tag">#Domain_Event</span>
+            <span class="post-tag">#Outbox</span>
+            <span class="post-tag">#Kafka</span>
+            <span class="post-tag">#Saga</span>
+            <span class="post-tag">#Java</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: زنجیره‌ای که شکستن می‌خورد</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>EDA چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: رویداد به‌جای فراخوانی</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>انواع رویداد و قرارداد پیام</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>ساختار معماری</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>مثال عملی کامل: ثبت سفارش</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>الگوی Outbox و تحویل دقیقاً یک‌بار</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: زنجیره‌ای که شکستن می‌خورد</h2>
+
+<p>
+یک سیستم فروش را در نظر بگیرید که وقتی سفارش ثبت می‌شود، این اتفاق‌ها باید بیفتد:
+</p>
+
+<ol>
+<li>ثبت سفارش در دیتابیس</li>
+<li>کم‌شدن موجودی انبار</li>
+<li>رزرو وقت ارسال</li>
+<li>ارسال ایمیل تأیید</li>
+<li>ساخت فاکتور</li>
+<li>به‌روزرسانی امتیاز وفاداری مشتری</li>
+<li>ثبت در گزارش فروش روزانه</li>
+</ol>
+
+<p>
+روش ساده این است: از هر سرویسی که لازم داری <strong>صدا بزن</strong>.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>OrderService.placeOrder():
+    save(order)                    ← دیتابیس
+    inventory.reserve(...)         ← HTTP به سرویس انبار    ⏱ ۸۰ms
+    shipping.book(...)             ← HTTP به سرویس ارسال    ⏱ ۱۲۰ms
+    email.send(...)                ← HTTP به سرویس ایمیل    ⏱ ۴۰ms
+    billing.createInvoice(...)     ← HTTP به سرویس مالی     ⏱ ۹۰ms
+    loyalty.addPoints(...)         ← HTTP به سرویس مشتری    ⏱ ۵۰ms
+    analytics.track(...)           ← HTTP به سرویس گزارش    ⏱ ۶۰ms
+
+زمان کل: ۴۴۰ms + ۶ نقطه‌ی شکست</code></pre>
+
+<p>
+حالا سرویس ایمیل ۳ ثانیه کند می‌شود. چه اتفاقی می‌افتد؟
+</p>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">زنجیره‌ی شکننده</span>
+سفارش ثبت می‌شود ✅
+  ← ایمیل timeout می‌شود ❌
+  ← استثنا پرتاب می‌شود
+  ← تراکنش rollback می‌شود
+  ← سفارش از بین می‌رود، اما ایمیل نیمه‌ارسال شده
+  ← موجودی انبار کم شده ولی سفارشی وجود ندارد
+  ← مشتری پول کم کرده و سفارشی ندارد
+</div>
+
+<p>
+این یک نمونه‌ی کوچک است. در واقعیت، هر فراخوانی <code>timeout</code> یا
+<code>500</code> یک حالت ناسازگار می‌سازد که بازگرداندن آن سخت است.
+</p>
+
+<h3>راه‌حل: بگذارید اتفاق بیفتد و بعداً واکنش نشان دهید</h3>
+
+<pre class="kl-code" data-lang="text"><code>OrderService.placeOrder():
+    save(order)                    ← فقط همین، در یک تراکنش
+    outbox.save(OrderPlaced event)  ← رویداد در همان تراکنش
+    return 201                      ← ۱۲ms
+
+--- بعداً، ناهمگام، مستقل از هم ---
+سرویس انبار   OrderPlaced → کم کردن موجودی
+سرویس ارسال   OrderPlaced → رزرو وقت
+سرویس ایمیل   OrderPlaced → ارسال ایمیل
+سرویس مالی    OrderPlaced → ساخت فاکتور
+سرویس گزارش   OrderPlaced → ثبت در گزارش
+
+اگر ایمیل خراب شود:
+  ← فقط ایمیل اثر می‌گیرد
+  ← سفارش سالم است
+  ← پیام دوباره تلاش می‌شود (retry)</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تغییر ذهنیت</span>
+از «وقتی سفارش ثبت شد، ایمیل بفرست» به «وقتی سفارش ثبت شد، <strong>بگو که ثبت شد</strong>؛
+هرکس به این خبر نیاز دارد، خودش می‌آید و می‌گیرد.» این جمله کل تفاوت است.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+ایده‌ی EDA ریشه‌ای قدیمی دارد که به دهه‌ی ۱۹۸۰ برمی‌گردد، اما محبوبیت امروزی‌اش از
+سال ۲۰۰۰ به بعد است.
+</p>
+
+<table>
+<thead>
+<tr><th>بازه</th><th>رویداد</th><th>تأثیر بر EDA</th></tr>
+</thead>
+<tbody>
+<tr><td>۱۹۷۰–۱۹۸۰</td><td>مقاله‌ی <em>Event Sourcing</em> ایوانز و مقالات اولیه‌ی Pub/Sub</td><td>معرفی ایده‌ی نگهداری رویداد به‌جای وضعیت</td></tr>
+<tr><td>۱۹۸۰–۱۹۹۰</td><td>سیستم‌های CORBA و Tuxedo</td><td>تلاش برای یکپارچگی در مقیاس بزرگ (شکست خورد)</td></tr>
+<tr><td>۱۹۹۰–۲۰۰۰</td><td>ActiveMQ، JMS استاندارد می‌شود</td><td>زیرساخت قابل اتکا برای پیام‌رسانی فرایندی</td></tr>
+<tr><td>۲۰۰۷–۲۰۱۲</td><td>LinkedIn می‌کافکا، RabbitMQ، Amazon SQS</td><td><strong>زیرساخت ارزان و مقیاس‌پذیر</strong>؛ نقطه‌ی عطف واقعی</td></tr>
+<tr><td>۲۰۱۳–۲۰۱۸</td><td>موج میکروسرویس، Martin Fowler درباره‌ی Event Notification</td><td>EDA به الگوی پذیرفته‌شده در سازمان‌ها تبدیل می‌شود</td></tr>
+<tr><td>۲۰۱۹–اکنون</td><td>CloudEvents، AsyncAPI، Debezium</td><td>استانداردسازی پیام و پایش جریان رویداد</td></tr>
+</tbody>
+</table>
+
+<h3>سه موج فکری</h3>
+
+<h3>موج اول — Pub/Sub عمومی</h3>
+<p>
+پیام را در یک صف عمومی می‌اندازید و هرکس خواست می‌خواند. مشکل: اگر دو مصرف‌کننده بخواهند
+مستقل مقیاس بگیرند، باید دو نسخه از پیام داشته باشید. راه‌حل: موضوعات (Topics).
+</p>
+
+<h3>موج دوم — Event Notification</h3>
+<p>
+هر مصرف‌کننده فقط <strong>اعلان</strong> می‌گیرد و اگر داده لازم داشت، خودش
+می‌پرسد. مزیت: پیام کوچک و مصرف‌کننده‌ها مستقل. عیب: یک round-trip اضافه و دو منبع حقیقت.
+</p>
+
+<h3>موج سوم — Event Carrying State Transfer</h3>
+<p>
+داده در خود پیام می‌آید و مصرف‌کننده لازم نیست چیزی بپرسد. مزیت: مصرف سریع. عیب: کوپل
+بیشتر و ریسک داده‌ی کهنه.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>کدام موج را انتخاب کنیم؟
+
+  پیام کوچک (فقط شناسه + مقدار)          → ECST  ✅ پیشنهاد ما
+  پیام بزرگ (کل مدل)                     → ECST
+  فقط «اتفاق افتاد» بدون داده            → Notification
+  داده حجیم، حتماً به‌روز                 → Notification (با cache)
+
+قاعده: تا می‌توانید داده را در پیام ببرید، از رفت‌وبرگشت شبکه پرهیز کنید.</code></pre>
+
+<h3>چرا دقیقاً حالا؟</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>زیرساخت ارزان</strong>: یک topicset مدیریت‌شده حالا هزینه‌ای معادل یک VPS است</li>
+<li><strong>تله‌تراشی</strong>: سرویس‌ها به هر تیم اجازه می‌دهند مستقل مستقر شوند</li>
+<li><strong>الگوی CQRS + Event Sourcing</strong> که بدون پیام‌رسان ممکن نبود</li>
+<li><strong>داده‌های حجم بالا و جریانی</strong>: لاگ، کلیک، IoT، معاملات</li>
+<li><strong>واکنش‌پذیری و مقیاس مستقل</strong>: یک مصرف‌کننده‌ی سنگین، بقیه را کند نمی‌کند</li>
+</ul>
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>EDA چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تعریف</span>
+معماری رویدادمحور یعنی اجزای سیستم به‌جای اینکه یکدیگر را مستقیم صدا بزنند،
+<strong>رویدادهایی را منتشر می‌کنند که در دامنه اتفاق افتاده</strong> و اجزای دیگر
+هرکس به آن‌ها نیاز داشت، به‌صورت مستقل گوش می‌دهند.
+</div>
+
+<p>
+سه تعریف کلیدی که نباید اشتباه شوند:
+</p>
+
+<table>
+<thead>
+<tr><th>اصطلاح</th><th>معنا</th><th>مثال</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Event</strong></td><td>یک اتفاق قطعی که در گذشته افتاده</td><td><code>OrderPlaced</code></td></tr>
+<tr><td><strong>Producer</strong></td><td>تولیدکننده‌ی رویداد</td><td>سرویس سفارش</td></tr>
+<tr><td><strong>Consumer</strong></td><td>مصرف‌کننده‌ای که به رویداد گوش می‌دهد</td><td>سرویس انبار</td></tr>
+<tr><td><strong>Broker</strong></td><td>واسط ذخیره و تحویل پیام</td><td>Kafka، RabbitMQ</td></tr>
+<tr><td><strong>Topic</strong></td><td>کانال دسته‌بندی رویدادها</td><td><code>orders</code></td></tr>
+<tr><td><strong>Subscription</strong></td><td>اشتراک یک گروه در یک topic</td><td><code>inventory-service</code></td></tr>
+<tr><td><strong>Partition</strong></td><td>بخش مرتب و پایدار یک topic</td><td>۱۲ پارتیشن</td></tr>
+</tbody>
+</table>
+
+<h3>سه ویژگی که EDA را متمایز می‌کند</h3>
+
+<ol>
+<li><strong>غیرهمگام بودن</strong> — تولیدکننده منتظر جواب نمی‌ماند</li>
+<li><strong>عدم آگاهی از مصرف‌کننده</strong> — تولیدکننده اصلاً نمی‌داند چه کسی گوش می‌دهد</li>
+<li><strong>استقلال زمانی</strong> — رویداد ممکن است دقیقه‌ها بعد پردازش شود</li>
+</ol>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph S["سیستم رویدادمحور"]
+        P["Producer<br/>سرویس سفارش"]
+        B["Broker<br/>Kafka Topic: orders"]
+        C1["Consumer<br/>انبار"]
+        C2["Consumer<br/>ارسال"]
+        C3["Consumer<br/>اعلان"]
+        C4["Consumer<br/>گزارش"]
+        P -->|"publish OrderPlaced"| B
+        B -->|"subscribe"| C1
+        B -->|"subscribe"| C2
+        B -->|"subscribe"| C3
+        B -->|"subscribe"| C4
+    end
+
+    style P fill:#0f766e,color:#fff,stroke:#0f766e
+    style B fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<h3>EDA یعنی همه‌چیز رویداد است؟</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ برداشت اشتباه: هیچ سرویسی هرگز دیگری را صدا نمی‌زند
+✅ واقعیت: EDA یعنی «کوپل» کم می‌شود، نه «صفر»
+
+همیشه باید دو سؤال بپرسید:
+  ۱. آیا مصرف‌کننده نتیجه را همین الان لازم دارد؟
+        بله → فراخوانی همگام (RPC)
+        نه  → رویداد
+
+  ۲. آیا اگر مصرف‌کننده خراب شود، سرویس من باید هم بماند؟
+        بله → رویداد + تحمل خطا
+        نه  → تراکنش مشترک</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">قاعده‌ی طلایی</span>
+<strong>رویداد برای «اتفاقی که افتاد» است، فراخوانی برای «کاری که باید انجام شود».</strong>
+اگر کاربر منتظر جواب بمیرد، RPC. اگر کار در پس‌زمینه انجام می‌شود، رویداد.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<h3>۱. کوپل سه‌طرفه</h3>
+
+<pre class="kl-code" data-lang="text"><code>سرویس سفارش به ۶ سرویس وابسته است.
+هر سرویس هم به ۵ سرویس دیگر.
+
+تعداد کل وابستگی‌ها: ۴۲
+اگر سرویس ارسال API‌اش را عوض کند:
+  → ۸ سرویس باید تغییر کنند
+  → ۸ تیم باید هماهنگ کنند
+  → ۸ استقرار باید هماهنگ شود</code></pre>
+
+<h3>۲. بن‌بست و انتشار خرابی (Cascading Failure)</h3>
+
+<pre class="kl-code" data-lang="text"><code>سرویس پیامک ۳ ثانیه کند شد
+  ← سرویس اعلان کند شد
+    ← سرویس سفارش کند شد
+      ← سرویس جست‌وجو کند شد
+        ← کل سایت کند شد
+
+یک قطعه‌ی کوچک، همه را از کار انداخت.</code></pre>
+
+<h3>۳. داده ناسازگار از عملیات طولانی</h3>
+
+<pre class="kl-code" data-lang="sql"><code>-- عملیات طولانی در یک تراکنش:
+BEGIN;
+  INSERT INTO orders ...;
+  UPDATE inventory SET qty = qty - 1 ...;
+  UPDATE users SET points = points + 50 ...;
+  INSERT INTO audit_log ...;
+  UPDATE analytics_daily SET total = total + 1500000 ...;
+  -- اگر هر کدام fail شود، همه rollback می‌شود
+  -- و کاربر ۳۰ ثانیه منتظر می‌ماند
+COMMIT;</code></pre>
+
+<p>
+پایگاه داده شما برای نگه‌داشتن یک تراکنش طولانی ساخته نشده. قفل‌ها طولانی نگه داشته
+می‌شوند و مقیاس‌پذیری می‌میرد.
+</p>
+
+<h3>۴. واکنش‌ناپذیری</h3>
+
+<pre class="kl-code" data-lang="text"><code>تیم محصول: «می‌خواهیم بعد از هر خرید، پیامک تشکر بفرستید»
+تیم: باید سرویس سفارش را تغییر دهیم
+
+تیم محصول: «و امتیاز وفاداری هم اضافه کنید»
+تیم: دوباره سرویس سفارش را تغییر دهیم
+
+تیم محصول: «و اگر خرید بالای ۱۰ میلیون بود، تماس بگیرید»
+تیم: باز هم سرویس سفارش
+
+← ۳ درخواست مستقل، ۳ استقرار، ۳ بار ریسک در سرویس حیاتی</code></pre>
+
+<h3>۵. جریان کار (Workflow) غیرقابل ردیابی</h3>
+
+<pre class="kl-code" data-lang="text"><code>سفارش #۱۲۳۴۵ ثبت شد اما فاکتور ندارد.
+چرا؟
+
+برای فهمیدن باید این را دنبال کنید:
+  log سرویس سفارش
+  log سرویس انبار
+  log سرویس مالی
+  ۴ سرویس × ۳ نسخه مستقر = ۱۲ جای مختلف برای جست‌وجو</code></pre>
+
+<h3>۶. مشکل ناهمگامی</h3>
+
+<p>
+در EDA شما باید تصمیم بگیرید وقتی مصرف‌کننده خطا داد چه می‌کنید. اگر این تصمیم را
+از قبل نگیرید، کاربر می‌بیند که سفارش ثبت شد ولی ایمیلی نرسید — بدون هیچ توضیحی.
+</p>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: رویداد به‌جای فراخوانی</h2>
+
+<h3>مقایسه‌ی دو سبک</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph Push["سبک Push — فراخوانی مستقیم"]
+        A1["OrderService"] -->|"HTTP POST /reserve"| B1["Inventory"]
+        A1 -->|"HTTP POST /book"| B2["Shipping"]
+        A1 -->|"HTTP POST /send"| B3["Email"]
+        A1 -.->|"خرابی B3 همه را خراب می‌کند"| B3
+    end
+
+    subgraph Pull["سبک Pull — انتشار رویداد"]
+        A2["OrderService"] -->|"publish OrderPlaced"| Q[("Broker")]
+        Q --> C1["Inventory"]
+        Q --> C2["Shipping"]
+        Q --> C3["Email"]
+        C3 -.->|"خرابی: فقط ایمیل"| X["DLQ"]
+    end
+
+    style Push fill:#7f1d1d,color:#fff,stroke:#7f1d1d
+    style Q fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+
+<h3>سه سبک پیام و تفاوتشان</h3>
+
+<table>
+<thead>
+<tr><th>سبک</th><th>Producer چه می‌داند؟</th><th>مزیت</th><th>عیب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Event Notification</strong></td><td>فقط «چه اتفاقی افتاد»</td><td>مصرف‌کننده مستقل؛ داده همیشه تازه</td><td>مصرف‌کننده باید بپرسد (round-trip)</td></tr>
+<tr><td><strong>Event-Carrying State Transfer</strong></td><td>داده‌ی کامل</td><td>یک‌بار پیام، سریع</td><td>کوپل بیشتر؛ داده ممکن است کهنه شود</td></tr>
+<tr><td><strong>Command</strong></td><td>دستور + شناسه هدف</td><td>مقصد مشخص است</td><td>Producer به وجود مقصد وابسته می‌شود</td></tr>
+</tbody>
+</table>
+
+<h3>قواعد طلایی نام‌گذاری و طراحی رویداد</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>نام با گذشته</strong>: <code>OrderPlaced</code>، نه <code>PlaceOrder</code></li>
+<li><strong>یک رویداد = یک واقعیت</strong>، نه یک درخواست</li>
+<li><strong>بدون فعل</strong>: <code>OrderCreated</code> بهتر از <code>CreateOrder</code></li>
+<li><strong>نام گذشته در نام</strong>: <code>PaymentFailed</code> نه <code>FailPayment</code></li>
+<li><strong>محدود (Small)</strong>: هرچه کوچک‌تر، نسخه‌بندی آسان‌تر</li>
+<li><strong>غیرقابل تغییر (Immutable)</strong>: نسخه‌ی قدیمی باید سال‌ها قابل پردازش باشد</li>
+<li><strong>بدون داده حساس</strong>: رمز، توکن و اطلاعات شخصی در رویداد نرود</li>
+</ul>
+</div>
+
+<h3>ساختار پیام استاندارد</h3>
+
+<pre class="kl-code" data-lang="json"><code>{
+  "specVersion": "1.0",
+  "type": "com.shop.order.v1.OrderPlaced",
+  "source": "shop/order-service",
+  "id": "3f8a1c2e-9d4b-4f1a-8e2c-7b6d5a4f3e21",
+  "time": "2026-10-04T12:34:56.789Z",
+  "subject": "order/12345",
+  "dataContentType": "application/json",
+  "data": {
+    "orderId": "12345",
+    "customerId": "c-987",
+    "total": 4500000,
+    "currency": "IRR",
+    "lineCount": 3,
+    "requiresApproval": false
+  },
+  "metadata": {
+    "correlationId": "req-5a1b",
+    "causationId": "cmd-7710",
+    "aggregateType": "Order",
+    "aggregateId": "12345",
+    "tenantId": "shop-1"
+  }
+}</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چرا فیلدهای Metadata مهم‌اند</span>
+<code>correlationId</code> مسیر یک درخواست کاربر را در کل سیستم دنبال می‌کند (برای ردیابی).
+<code>causationId</code> می‌گوید این رویداد نتیجه‌ی کدام دستور بوده (برای زنجیره‌ی علت).
+<code>id</code> شناسه‌ی یکتای رویداد است و برای <strong>حذف تکرار (idempotency)</strong> استفاده
+می‌شود. این سه فیلد، تفاوت بین یک سیستم قابل ردیابی و یک کابوس عملیاتی است.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>انواع رویداد و قرارداد پیام</h2>
+
+<h3>سه دسته‌ی رویداد</h3>
+
+<table>
+<thead>
+<tr><th>نوع</th><th>منبع</th><th>مثال</th><th>مصرف‌کننده</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Domain Event</strong></td><td>مدل دامنه</td><td><code>OrderPlaced</code>، <code>PaymentCaptured</code></td><td>همان سرویس یا داخلی</td></tr>
+<tr><td><strong>Integration Event</strong></td><td>مرز سرویس</td><td><code>shop.order.v1.OrderPlaced</code></td><td>سرویس‌های دیگر</td></tr>
+<tr><td><strong>System Event</strong></td><td>زیرساخت</td><td><code>OrderTimedOut</code>، <code>CacheEvicted</code></td><td>زیرساخت و پایش</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">قانون مهم</span>
+<strong>Integration Event را عمومی نکنید.</strong> وقتی رویداد منتشر کردید، قرارداد آن
+تا ابد باقی می‌ماند. اگر مخاطبان را از قبل مشخص نکنید، این سه اتفاق می‌افتد: کسی رویداد را
+که نباید مصرف کند مصرف می‌کند، یکی از رفتارها را عوض می‌کند و شما نمی‌دانید، یا یکی از
+رفتارها را عوض می‌کند و شما خراب می‌شوید.
+</div>
+
+<h3>قرارداد رویداد (Event Contract)</h3>
+
+<pre class="kl-code" data-lang="text"><code>قرارداد صریح بگویید:
+
+  نام:         com.shop.order.v1.OrderPlaced
+  معنا:        سفارش با موفقیت ثبت شد
+  فرستنده:     سرویس سفارش
+  مصرف‌کنندگان مجاز: انبار، ارسال، مالی، اعلان
+  داده:        orderId، customerId، total، currency، lineCount
+  تضمین:       فقط یک‌بار تولید می‌شود، حداقل یک‌بار تحویل می‌شود
+  نسخه:        تغییر داده = نسخه‌ی جدید؛ فیلد حذف‌شونده نیست</code></pre>
+
+<h3>قواعد سازگاری رویداد (Backward Compatibility)</h3>
+
+<table>
+<thead>
+<tr><th>تغییر</th><th>سازگار است؟</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>افزودن فیلد جدید</td><td>✅ بله</td><td>مصرف‌کننده‌های قدیمی فیلد را نمی‌بینند</td></tr>
+<tr><td>حذف فیلد</td><td>❌ نه</td><td>مصرف‌کننده‌ی قدیمی می‌شکند</td></tr>
+<tr><td>تغییر نوع فیلد</td><td>❌ نه</td><td>شکست در deserialization</td></tr>
+<tr><td>تغییر معنای فیلد</td><td><strong>❌ هرگز</strong></td><td>بدترین حالت: بی‌صدا خراب می‌شود</td></tr>
+<tr><td>تغییر نام فیلد</td><td>❌ نه</td><td>معادل حذف + افزودن</td></tr>
+<tr><td>تغییر مقادیر مجاز enum</td><td>⚠️ با احتیاط</td><td>مقدار جدید = نسخه‌ی جدید</td></tr>
+<tr><td>افزودن رویداد جدید</td><td>✅ بله</td><td>مصرف‌کننده‌های قدیمی بی‌تفاوت‌اند</td></tr>
+</tbody>
+</table>
+
+<h3>حذف فیلد بدون شکستن — تکنیک عملی</h3>
+
+<pre class="kl-code" data-lang="java"><code>// مرحله ۱: فیلد را حذف نکن، فقط متوقفش کن
+public record OrderPlacedV2(
+        String orderId,
+        String customerId,
+        BigDecimal total,
+        Currency currency,
+        @Deprecated String legacyCode   // ← دیگر پر نمی‌شود
+) {}
+
+// مرحله ۲: بعد از یک دوره‌ی کامل (مثلاً دو ماه)، فیلد را حذف کن
+public record OrderPlacedV3(
+        String orderId,
+        String customerId,
+        BigDecimal total,
+        Currency currency
+) {}</code></pre>
+
+<h3>نسخه‌بندی در نام</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ com.shop.OrderPlaced          ← نسخه ندارد، بعداً گیر می‌کنید
+✅ com.shop.order.v1.OrderPlaced ← نسخه در نام، شفاف
+
+قانون: نسخه در مسیر (package)، نه در نام کلاس
+  ← چون کلاس Java خودش نسخه ندارد ولی بسته می‌تواند داشته باشد</code></pre>
+
+<h3>حذف تکرار (Idempotency)</h3>
+
+<pre class="kl-code" data-lang="java"><code>/**
+ * مصرف‌کننده باید idem potent باشد:
+ * پردازش دو بار همان پیام، همان نتیجه را بدهد.
+ */
+@Component
+class InventoryEventHandler {
+
+    private final ProcessedEventStore store;
+    private final StockService stock;
+
+    InventoryEventHandler(ProcessedEventStore store, StockService stock) {
+        this.store = store;
+        this.stock = stock;
+    }
+
+    @EventListener
+    @Transactional
+    void on(OrderPlaced event) {
+        if (store.wasProcessed(event.eventId())) {
+            return;                        // ← قبلاً پردازش شده
+        }
+
+        stock.reserve(event.productId(), event.quantity());
+        store.markProcessed(event.eventId());   // ← در همان تراکنش
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چرا idempotency اجتناب‌ناپذیر است</span>
+هیچ پیام‌رسانی تحویل «دقیقاً یک‌بار» نمی‌دهد. کمینه‌ی واقعی «حداقل یک‌بار» است، پس
+مصرف‌کننده ممکن است هر پیام را دو بار ببیند. اگر مصرف‌کننده idem potent نباشد، موجودی
+انبار را دو بار کم می‌کند.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>ساختار معماری</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph Core["هسته‌ی سرویس — بدون پیام‌رسان"]
+        API["Controller"]
+        APP["Application Service"]
+        DOM["Domain Model"]
+        OUTBOX[("جدول outbox")]
+        API --> APP --> DOM
+        APP -->|"ثبت در"| OUTBOX
+    end
+
+    Relay["Relay / Poller<br/>خواندن outbox و انتشار"]
+    Broker[("Message Broker<br/>Kafka")]
+
+    subgraph Cons["مصرف‌کننده‌ها"]
+        C1["سرویس انبار"]
+        C2["سرویس ارسال"]
+        C3["سرویس اعلان"]
+    end
+
+    DLQ[("Dead Letter Queue")]
+
+    OUTBOX --> Relay --> Broker
+    Broker --> C1
+    Broker --> C2
+    Broker --> C3
+    C1 -.->|"خطای مکرر"| DLQ
+    C2 -.->|"خطای مکرر"| DLQ
+    C3 -.->|"خطای مکرر"| DLQ
+
+    style OUTBOX fill:#0f766e,color:#fff,stroke:#0f766e
+    style Broker fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<h3>اجزای سیستم رویدادمحور</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱. Producer (تولیدکننده)
+   هسته‌ی سرویس. رویداد را تولید می‌کند و در همان تراکنش ذخیره می‌کند.
+   هیچ‌چیز درباره‌ی Broker نمی‌داند.
+
+۲. Outbox (صندوق خروج)
+   جدولی در همان دیتابیس که رویداد را در همان تراکنش کسب‌وکار نگه می‌دارد.
+   ← تضمین «یا هر دو، یا هیچ‌کدام»
+
+۳. Relay (رله)
+   پروسه‌ای که outbox را می‌خواند و به Broker منتشر می‌کند،
+   سپس علامت «منتشر شد» می‌زند.
+
+۴. Broker (واسط پیام)
+   ذخیره‌سازی پایدار پیام + تحویل به مصرف‌کننده‌ها.
+   Kafka، RabbitMQ، NATS، SQS.
+
+۵. Consumer (مصرف‌کننده)
+   گوش می‌دهد، اعتبارسنجی می‌کند، idem potent است، و تأیید (ack) می‌کند.
+
+۶. DLQ (صف مرده)
+   پیام‌هایی که چند بار شکست خورده‌اند، برای بررسی انسانی.</code></pre>
+
+<h3>دو پیکربندی کلیدی Broker</h3>
+
+<table>
+<thead>
+<tr><th>تنظیم</th><th>Kafka</th><th>RabbitMQ</th><th>اثر</th></tr>
+</thead>
+<tbody>
+<tr><td>تضمین ترتیب</td><td>به‌ازای کلید (partition)</td><td>به‌ازای صف</td><td>رویدادهای یک موجودی، ترتیب دارند</td></tr>
+<tr><td>تحویل</td><td>تا پیش از ack در لاگ</td><td>تا پیش از ack در صف</td><td>حداقل یک‌بار</td></tr>
+<tr><td>گروه مصرف‌کننده</td><td>هر گروه کل پیام را می‌گیرد</td><td>هر صف یک مصرف‌کننده</td><td>فانزی‌تیک در مصرف</td></tr>
+<tr><td>نگه‌داشت</td><td>بر اساس زمان/حجم</td><td>تا ack</td><td>بازپخش و دیباگ</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">کلید پارتیشن — نکته‌ی ظریف</span>
+برای اینکه ترتیب رویدادهای یک سفارش حفظ شود، همیشه <code>orderId</code> را به‌عنوان
+<strong>کلید پارتیشن</strong> استفاده کنید. این کار تضمین می‌کند دو رویداد یک سفارش
+همیشه در یک پارتیشن و پشت‌سرهم برسند. اگر کلید نداشته باشید، سفارش ۱۰۰ ممکن است بعد از
+سفارش ۱۰۱ برسد.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>جریان داده (Data Flow)</h2>
+
+<h3>جریان کامل ثبت سفارش</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant U as کاربر
+    participant OS as OrderService
+    participant DB as دیتابیس
+    participant R as OutboxRelay
+    participant K as Kafka
+    participant INV as InventoryService
+    participant SH as ShippingService
+    participant NL as NotificationService
+
+    U->>OS: POST /orders
+    OS->>DB: BEGIN
+    OS->>DB: INSERT INTO orders
+    OS->>DB: INSERT INTO outbox_events (OrderPlaced)
+    OS->>DB: COMMIT
+    OS-->>U: 201 Created (۱۵ms)
+
+    Note over R,K: بعداً، ناهمگام
+    R->>DB: SELECT * FROM outbox_events WHERE published=false
+    R->>K: publish OrderPlaced (key=orderId)
+    R->>DB: UPDATE published=true
+
+    par سه مصرف‌کننده‌ی مستقل
+        K->>INV: OrderPlaced
+        INV->>INV: کم کردن موجودی
+        INV-->>K: ack
+    and
+        K->>SH: OrderPlaced
+        SH->>SH: رزرو ارسال
+        SH-->>K: ack
+    and
+        K->>NL: OrderPlaced
+        NL->>NL: ارسال ایمیل
+        NL-->>K: ack
+    end
+
+    Note over INV,K: اگر INV خطا دهد → retry → DLQ</code></pre>
+
+<h3>جریان خطا و تلاش مجدد</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant K as Kafka
+    participant C as Consumer
+    participant D as DLQ
+
+    K->>C: پیام
+    C->>C: پردازش
+    C--xK: خطا (تلاش ۱)
+    K->>C: پیام دوباره (تلاش ۲)
+    C--xK: خطا (تلاش ۲)
+    K->>C: پیام دوباره (تلاش ۳)
+    C--xK: خطا (تلاش ۳)
+    K->>D: انتقال به صف مرده
+    Note over D: نیاز به بررسی انسانی</code></pre>
+
+<h3>قواعد جریان داده</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>تولید رویداد در همان تراکنش</strong> کسب‌وکار، نه قبل یا بعد از آن</li>
+<li><strong>هر مصرف‌کننده idem potent است</strong>، چون تحویل حداقل یک‌بار است</li>
+<li><strong>پیام‌های شکست‌خورده به DLQ می‌روند</strong>، نه اینکه بی‌نهایت retry شوند</li>
+<li><strong>ترتیب فقط به‌ازای کلید</strong> تضمین می‌شود (مثلاً <code>orderId</code>)</li>
+<li><strong>هیچ مصرف‌کننده‌ای نباید پیام را بین دو سرویس پاس بدهد</strong> مگر با دلیل روشن</li>
+<li><strong>Schema را قبل از انتشار تعریف کنید</strong> و آن را در مخزن کد نگه دارید</li>
+<li><strong>نسخه‌ی مصرف‌کننده همیشه &lt;= نسخه‌ی تولیدکننده</strong> است</li>
+</ul>
+</div>
+
+<h3>ترتیب کارها در یک مصرف‌کننده</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱. دریافت پیام
+۲. بررسی schema (نسخه پشتیبانی می‌شود؟)
+۳. بررسی تکراری بودن (eventId قبلاً پردازش شده؟)  ← اگر آری، ack و تمام
+۴. اعتبارسنجی محتوای پیام
+۵. اجرای منطق کسب‌وکار در یک تراکنش محلی
+۶. ثبت eventId به‌عنوان پردازش‌شده (در همان تراکنش!)
+۷. ack به Broker
+۸. در صورت خطا: rollback + نمایش به Broker برای retry</code></pre>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>shop-platform/
+├── pom.xml
+│
+├── order-service/
+│   └── src/
+│       ├── main/java/com/shop/order/
+│       │   ├── api/
+│       │   │   ├── OrderController.java
+│       │   │   └── PlaceOrderRequest.java
+│       │   ├── domain/
+│       │   │   ├── Order.java
+│       │   │   ├── OrderService.java
+│       │   │   └── event/
+│       │   │       └── OrderPlaced.java        ← Domain Event
+│       │   ├── application/
+│       │   │   ├── PlaceOrderUseCase.java
+│       │   │   └── EventRecorder.java          ← Port
+│       │   ├── integration/
+│       │   │   ├── event/
+│       │   │   │   ├── OrderPlacedV1.java      ← Integration Event
+│       │   │   │   └── OrderEventMapper.java   ← Domain → Integration
+│       │   │   ├── outbox/
+│       │   │   │   ├── OutboxEvent.java        ← مدل جدول
+│       │   │   │   ├── OutboxEventRepository.java
+│       │   │   │   ├── OutboxRelay.java        ← @Scheduled
+│       │   │   │   └── KafkaEventPublisher.java
+│       │   │   └── config/
+│       │   │       └── KafkaTopicsConfig.java
+│       │   └── resources/
+│       │       ├── application.yml
+│       │       └── db/migration/
+│       │           ├── V1__orders.sql
+│       │           └── V2__outbox.sql
+│       └── test/java/com/shop/order/
+│           ├── domain/OrderServiceTest.java
+│           └── integration/OrderFlowTest.java
+│
+├── inventory-service/
+│   └── src/main/java/com/shop/inventory/
+│       ├── api/
+│       ├── domain/
+│       ├── integration/event/
+│       │   ├── OrderPlacedV1.java       ← ← نسخه‌ی محلی خودش
+│       │   ├── ProcessedEventStore.java
+│       │   └── EventHandler.java
+│       └── resources/
+│
+├── contracts/                      ← قراردادهای مشترک
+│   └── src/main/java/com/shop/contracts/
+│       └── order/v1/
+│           ├── OrderPlaced.java
+│           └── schema.json
+│
+└── docker-compose.yml</code></pre>
+
+<h3>چرا قراردادها در یک ماژول مشترک؟</h3>
+
+<pre class="kl-code" data-lang="text"><code>اگر هر سرویس نسخه‌ی خودش از قرارداد را داشته باشد:
+  ← تغییر یک قرارداد = تغییر در ۵ ماژول
+  ← ناسازگاری نسخه‌ها
+
+اگر یک ماژول مشترک باشد (contracts/):
+  ← یک تغییر، یک جا
+  ← نسخه‌بندی در مسیر package
+  ← اما: دقت کنید که Domain Event مشترک نشود
+  ← Integration Event یکسان است، مدل دامنه‌ی هر سرویس متفاوت می‌ماند</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">مرز باریک ماژول قرارداد</span>
+ماژول <code>contracts/</code> فقط شامل <strong>Integration Event</strong> است، نه مدل
+دامنه. یعنی <code>OrderPlaced</code> بله، ولی کلاس <code>Order</code> با تمام قواعدش نه.
+اگر مدل دامنه را مشترک کنید، مستقلی سرویس‌ها را از دست داده‌اید.
+</div>
+
+<h3>Migration جدول outbox</h3>
+
+<pre class="kl-code" data-lang="sql"><code>CREATE TABLE outbox_events (
+    id              UUID PRIMARY KEY,
+    aggregate_type  VARCHAR(100)  NOT NULL,
+    aggregate_id    VARCHAR(100)  NOT NULL,
+    event_type      VARCHAR(200)  NOT NULL,
+    event_key       VARCHAR(100)  NOT NULL,
+    payload         JSONB         NOT NULL,
+    correlation_id  VARCHAR(100),
+    created_at      TIMESTAMPTZ   NOT NULL DEFAULT now(),
+    published_at    TIMESTAMPTZ,
+    attempts        INT           NOT NULL DEFAULT 0,
+    last_error      TEXT
+);
+
+-- ایندکس برای relay
+CREATE INDEX idx_outbox_unpublished
+    ON outbox_events (created_at)
+    WHERE published_at IS NULL;
+
+-- ایندکس برای idempotency در مصرف‌کننده
+CREATE TABLE processed_events (
+    event_id     UUID PRIMARY KEY,
+    consumer     VARCHAR(100) NOT NULL,
+    processed_at TIMESTAMPTZ  NOT NULL DEFAULT now()
+);</code></pre>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>مثال عملی کامل: ثبت سفارش</h2>
+
+<p>
+در این بخش یک جریان کامل ثبت سفارش را می‌سازیم — از Domain Event تا رسیدن پیام به
+مصرف‌کننده.
+</p>
+
+<h3>Domain Event — اتفاقی که در دامنه افتاد</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain.event;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
+
+/**
+ * رویداد دامنه: در داخل سرویس سفارش مصرف می‌شود.
+ * هیچ جزئیات زیرساختی ندارد و هرگز از مرز سرویس بیرون نمی‌رود.
+ */
+public record OrderPlaced(
+        String orderId,
+        String customerId,
+        BigDecimal total,
+        List&lt;OrderLineInfo&gt; lines,
+        Instant occurredAt
+) {
+    public record OrderLineInfo(String productId, int quantity) {}
+}
+</code></pre>
+
+<h3>Integration Event — قرارداد عمومی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.contracts.order.v1;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
+
+/**
+ * قرارداد عمومی برای همه‌ی سرویس‌ها.
+ * این رکورد «شکننده‌ترین» چیز در سیستم است — با دقت تغییرش دهید.
+ *
+ * نسخه: 1.0
+ * معنا: سفارش با موفقیت ثبت و ذخیره شد
+ */
+public record OrderPlacedV1(
+        String eventId,
+        String eventType,
+        Instant occurredAt,
+        String correlationId,
+        String orderId,
+        String customerId,
+        BigDecimal total,
+        String currency,
+        int lineCount,
+        List&lt;Line&gt; lines
+) {
+    public static final String TYPE = "com.shop.order.v1.OrderPlaced";
+
+    public record Line(String productId, int quantity) {}
+}
+</code></pre>
+
+<h3>نگاشت Domain Event به Integration Event</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.event;
+
+import com.shop.contracts.order.v1.OrderPlacedV1;
+import com.shop.order.domain.event.OrderPlaced;
+
+import java.util.UUID;
+
+public final class OrderEventMapper {
+
+    private OrderEventMapper() {}
+
+    public static OrderPlacedV1 toIntegration(
+            OrderPlaced domainEvent, String correlationId) {
+
+        return new OrderPlacedV1(
+                UUID.randomUUID().toString(),
+                OrderPlacedV1.TYPE,
+                domainEvent.occurredAt(),
+                correlationId,
+                domainEvent.orderId(),
+                domainEvent.customerId(),
+                domainEvent.total(),
+                "IRR",
+                domainEvent.lines().size(),
+                domainEvent.lines().stream()
+                        .map(l -&gt; new OrderPlacedV1.Line(
+                                l.productId(), l.quantity()))
+                        .toList());
+    }
+}
+</code></pre>
+
+<h3>ثبت رویداد در Outbox</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.application;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shop.order.integration.outbox.OutboxEvent;
+import com.shop.order.integration.outbox.OutboxEventRepository;
+import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+
+@Component
+public class EventRecorder {
+
+    private final OutboxEventRepository repository;
+    private final ObjectMapper mapper;
+
+    public EventRecorder(OutboxEventRepository repository, ObjectMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
+
+    /**
+     * این متد باید در همان تراکنشی صدا زده شود
+     * که تغییرات کسب‌وکار را ذخیره می‌کند.
+     */
+    public void record(Object event, String aggregateType,
+                       String aggregateId, String eventKey,
+                       String correlationId) {
+        try {
+            repository.save(OutboxEvent.pending(
+                    UUID.randomUUID().toString(),
+                    aggregateType,
+                    aggregateId,
+                    eventTypeOf(event),
+                    eventKey,
+                    mapper.writeValueAsString(event),
+                    correlationId,
+                    Instant.now()));
+        } catch (Exception e) {
+            throw new IllegalStateException("ثبت رویداد در outbox ناموفق بود", e);
+        }
+    }
+
+    private String eventTypeOf(Object event) {
+        return switch (event) {
+            case com.shop.contracts.order.v1.OrderPlacedV1 e -> e.eventType();
+            default -> event.getClass().getSimpleName();
+        };
+    }
+}
+</code></pre>
+
+<h3>مدل Outbox</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.outbox;
+
+import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.UUID;
+
+@Entity
+@Table(name = "outbox_events")
+public class OutboxEvent {
+
+    @Id
+    @Column(columnDefinition = "uuid")
+    private UUID id;
+
+    @Column(name = "aggregate_type", nullable = false, length = 100)
+    private String aggregateType;
+
+    @Column(name = "aggregate_id", nullable = false, length = 100)
+    private String aggregateId;
+
+    @Column(name = "event_type", nullable = false, length = 200)
+    private String eventType;
+
+    @Column(name = "event_key", nullable = false, length = 100)
+    private String eventKey;
+
+    @Column(nullable = false, columnDefinition = "jsonb")
+    private String payload;
+
+    @Column(name = "correlation_id", length = 100)
+    private String correlationId;
+
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
+
+    @Column(name = "published_at")
+    private Instant publishedAt;
+
+    @Column(nullable = false)
+    private int attempts;
+
+    @Column(name = "last_error", columnDefinition = "text")
+    private String lastError;
+
+    protected OutboxEvent() {}
+
+    public static OutboxEvent pending(UUID id, String aggregateType, String aggregateId,
+                                      String eventType, String eventKey,
+                                      String payload, String correlationId,
+                                      Instant createdAt) {
+        OutboxEvent e = new OutboxEvent();
+        e.id = id;
+        e.aggregateType = aggregateType;
+        e.aggregateId = aggregateId;
+        e.eventType = eventType;
+        e.eventKey = eventKey;
+        e.payload = payload;
+        e.correlationId = correlationId;
+        e.createdAt = createdAt;
+        e.attempts = 0;
+        return e;
+    }
+
+    public void markPublished() {
+        this.publishedAt = Instant.now();
+        this.lastError = null;
+    }
+
+    public void markFailed(String error) {
+        this.attempts++;
+        this.lastError = error;
+    }
+
+    public UUID id()                 { return id; }
+    public String eventType()        { return eventType; }
+    public String eventKey()         { return eventKey; }
+    public String payload()          { return payload; }
+    public int attempts()            { return attempts; }
+    public boolean isPublished()     { return publishedAt != null; }
+}
+</code></pre>
+
+<h3>Use Case — نقطه‌ی اتصال همه‌چیز</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.application;
+
+import com.shop.order.domain.*;
+import org.slf4j.MDC;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class PlaceOrderUseCase {
+
+    private final OrderRepository orders;
+    private final EventRecorder events;
+
+    public PlaceOrderUseCase(OrderRepository orders, EventRecorder events) {
+        this.orders = orders;
+        this.events = events;
+    }
+
+    @Transactional                                   // ← یک تراکنش
+    public String place(String customerId, List&lt;LineInput&gt; lines,
+                        String correlationId) {
+
+        MDC.put("correlationId", correlationId);       // ← برای ردیابی لاگ
+
+        Order order = Order.create(UUID.randomUUID().toString(), customerId);
+
+        for (LineInput line : lines) {
+            order.addLine(line.productId(), line.quantity(), line.unitPrice());
+        }
+
+        order.place();
+        orders.save(order);
+
+        // ── رویداد دامنه ──
+        var domainEvent = new OrderPlaced(
+                order.id(),
+                order.customerId(),
+                order.total(),
+                order.lines().stream()
+                        .map(l -&gt; new OrderPlaced.OrderLineInfo(
+                                l.productId(), l.quantity()))
+                        .toList(),
+                java.time.Instant.now());
+
+        // ── تبدیل به قرارداد عمومی ──
+        var integrationEvent = OrderEventMapper.toIntegration(domainEvent, correlationId);
+
+        // ── ثبت در همان تراکنش ← تضمین اتمیک بودن ──
+        events.record(integrationEvent, "Order", order.id(),
+                      order.id(), correlationId);        // key = orderId
+
+        return order.id();
+    }
+
+    public record LineInput(String productId, int quantity, BigDecimal unitPrice) {}
+}
+</code></pre>
+
+<h3>مصرف‌کننده — سرویس انبار</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.inventory.integration.event;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shop.contracts.order.v1.OrderPlacedV1;
+import com.shop.inventory.domain.StockService;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+@Component
+public class OrderPlacedHandler {
+
+    private static final int MAX_ATTEMPTS = 5;
+
+    private final StockService stock;
+    private final ProcessedEventStore processed;
+    private final ObjectMapper mapper;
+
+    public OrderPlacedHandler(StockService stock,
+                              ProcessedEventStore processed,
+                              ObjectMapper mapper) {
+        this.stock = stock;
+        this.processed = processed;
+        this.mapper = mapper;
+    }
+
+    @KafkaListener(
+            topics = "orders",
+            groupId = "inventory-service",
+            concurrency = "3")
+    @Transactional
+    public void on(ConsumerRecord&lt;String, String&gt; record) {
+
+        OrderPlacedV1 event = deserialize(record.value());
+
+        // ۱. حذف تکرار
+        if (processed.wasProcessed(event.eventId(), "inventory-service")) {
+            return;
+        }
+
+        // ۲. اعتبارسنجی
+        validate(event);
+
+        // ۳. منطق کسب‌وکار
+        for (OrderPlacedV1.Line line : event.lines()) {
+            stock.reserve(line.productId(), line.quantity(), event.orderId());
+        }
+
+        // ۴. ثبت در همان تراکنش ← اتمیک با منطق بالا
+        processed.markProcessed(event.eventId(), "inventory-service");
+    }
+
+    private OrderPlacedV1 deserialize(String json) {
+        try {
+            return mapper.readValue(json, OrderPlacedV1.class);
+        } catch (Exception e) {
+            throw new NonRetryableException("پیام نامعتبر است: " + e.getMessage());
+        }
+    }
+
+    private void validate(OrderPlacedV1 event) {
+        if (event.eventId() == null || event.orderId() == null) {
+            throw new NonRetryableException("فیلدهای اجباری وجود ندارد");
+        }
+        if (event.lines() == null || event.lines().isEmpty()) {
+            throw new NonRetryableException("سفارش بدون خطا معتبر نیست");
+        }
+    }
+}
+</code></pre>
+
+<h3>ذخیره‌ی رویداد پردازش‌شده</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.inventory.integration.event;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class ProcessedEventStore {
+
+    private final JdbcTemplate jdbc;
+
+    public ProcessedEventStore(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
+
+    public boolean wasProcessed(String eventId, String consumer) {
+        Integer count = jdbc.queryForObject(
+                "SELECT count(*) FROM processed_events "
+                        + "WHERE event_id = ? AND consumer = ?",
+                Integer.class, eventId, consumer);
+        return count != null && count > 0;
+    }
+
+    public void markProcessed(String eventId, String consumer) {
+        // ON CONFLICT DO NOTHING → در برابر تلاش هم‌زمان مقاوم است
+        jdbc.update("INSERT INTO processed_events (event_id, consumer) "
+                + "VALUES (?, ?) ON CONFLICT (event_id) DO NOTHING",
+                eventId, consumer);
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>Relay — از جدول به Broker</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.outbox;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * وظیفه: خواندن رویدادهای منتشرنشده از outbox و ارسال به Kafka.
+ * اگر این سرویس بمیرد، رویدادها در outbox می‌مانند و بعد از راه‌اندازی مجدد
+ * دوباره منتشر می‌شوند. ← این همان چیزی است که تحویل «حداقل یک‌بار» را تضمین می‌کند.
+ */
+@Component
+public class OutboxRelay {
+
+    private static final Logger log = LoggerFactory.getLogger(OutboxRelay.class);
+    private static final int MAX_ATTEMPTS = 10;
+
+    private final OutboxEventRepository repository;
+    private final KafkaTemplate&lt;String, String> kafka;
+    private final String topic;
+
+    public OutboxRelay(OutboxEventRepository repository,
+                       KafkaTemplate&lt;String, String&gt; kafka,
+                       @Value("${app.outbox.topic}") String topic) {
+        this.repository = repository;
+        this.kafka = kafka;
+        this.topic = topic;
+    }
+
+    @Scheduled(fixedDelayString = "${app.outbox.interval:1000}")
+    @Transactional
+    public void publishPending() {
+        var batch = repository.findUnpublished(PageRequest.of(0, 100));
+
+        for (OutboxEvent event : batch) {
+            try {
+                // key = eventKey → تضمین ترتیب به‌ازای موجودی
+                kafka.send(topic, event.eventKey(), event.payload())
+                        .get(5, java.util.concurrent.TimeUnit.SECONDS);
+
+                event.markPublished();
+                log.info("منتشر شد: {} [{}]", event.eventType(), event.id());
+
+            } catch (Exception e) {
+                event.markFailed(e.getMessage());
+                log.warn("انتشار ناموفق: {} تلاش {}",
+                        event.eventType(), event.attempts());
+
+                if (event.attempts() >= MAX_ATTEMPTS) {
+                    // دیگر تلاش نکن؛ به تیم عملیات اطلاع بده
+                    log.error("رویداد به سقف تلاش رسید: {}", event.id());
+                }
+            }
+        }
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.outbox;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
+
+@Repository
+public interface OutboxEventRepository extends JpaRepository&lt;OutboxEvent, UUID&gt; {
+
+    @Query("""
+            SELECT e FROM OutboxEvent e
+            WHERE e.publishedAt IS NULL
+            ORDER BY e.createdAt ASC
+            """)
+    List&lt;OutboxEvent&gt; findUnpublished(Pageable pageable);
+}
+</code></pre>
+
+<h3>پیکربندی Kafka</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.config;
+
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.TopicBuilder;
+
+@Configuration
+public class KafkaTopicsConfig {
+
+    @Bean
+    public NewTopic ordersTopic() {
+        return TopicBuilder.name("orders")
+                .partitions(12)                       // ← ۱۲ پارتیشن = موازی‌سازی
+                .replicas(3)                          // ← سه کپی برای تحمل خرابی
+                .config("retention.ms", "604800000")  // ← ۷ روز نگه‌داشت
+                .config("cleanup.policy", "delete")
+                .build();
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="yaml"><code># application.yml — producer
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all                     # ← انتظار برای تأیید همه‌ی replicaها
+      retries: 3
+      properties:
+        enable.idempotence: true   # ← جلوگیری از تولید تکراری
+        max.in.flight.requests.per.connection: 5
+    consumer:
+      group-id: ${SERVICE_NAME:order-service}
+      auto-offset-reset: earliest
+      enable-auto-commit: false   # ← ما خودمان ack می‌کنیم
+      properties:
+        isolation.level: read_committed
+
+app:
+  outbox:
+    topic: orders
+    interval: 1000</code></pre>
+
+<h3>پیکربندی سمت مصرف‌کننده</h3>
+
+<pre class="kl-code" data-lang="yaml"><code>spring:
+  kafka:
+    consumer:
+      group-id: inventory-service    # ← هر سرویس گروه خودش
+      max-poll-records: 50           # ← بچ کوچکتر = سریع‌تر ack
+      properties:
+        max.poll.interval.ms: 300000 # ← ۵ دقیقه برای پردازش یک بچ
+    listener:
+      ack-mode: manual              # ← تأیید دستی پس از تراکنش موفق
+      concurrency: 3                # ← سه ترد مصرف‌کننده</code></pre>
+
+<h3>تبدیل خطا به سیاست تلاش مجدد</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.inventory.integration.event;
+
+/** خطایی که با retry حل نمی‌شود؛ باید سریع به DLQ برود. */
+public class NonRetryableException extends RuntimeException {
+    public NonRetryableException(String message) {
+        super(message);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.inventory.integration.config;
+
+import com.shop.inventory.integration.event.NonRetryableException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.util.backoff.FixedBackOff;
+
+@Configuration
+public class KafkaErrorHandlingConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(KafkaErrorHandlingConfig.class);
+
+    @Bean
+    public DefaultErrorHandler kafkaErrorHandler(
+            DeadLetterPublishingRecoverer recoverer) {
+
+        // ۳ تلاش با فاصله‌ی ۲ ثانیه
+        var backOff = new FixedBackOff(2000L, 3L);
+
+        var handler = new DefaultErrorHandler(recoverer, backOff);
+
+        // خطای غیرقابل تلاش → بلافاصله DLQ
+        handler.addNotRetryableExceptions(NonRetryableException.class);
+
+        // ثبت لاگ برای هر تلاش ناموفق
+        handler.setRetryListeners((record, ex, attempt) ->
+                log.warn("تلاش {} ناموفق برای {}: {}",
+                        attempt, record.topic(), ex.getMessage()));
+
+        return handler;
+    }
+}
+</code></pre>
+
+<h3>پیکربندی مصرف‌کننده با مدیریت خطا</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.inventory.integration.config;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shop.contracts.order.v1.OrderPlacedV1;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
+
+@Configuration
+public class InventoryKafkaConfig {
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory&lt;String, OrderPlacedV1&gt;
+            orderPlacedContainerFactory(
+                    ConsumerFactory&lt;String, OrderPlacedV1&gt; consumerFactory) {
+
+        var factory = new ConcurrentKafkaListenerContainerFactory&lt;String, OrderPlacedV1&gt;();
+        factory.setConsumerFactory(consumerFactory);
+        factory.setConcurrency(3);
+
+        // تأیید پس از پردازش موفق
+        factory.getContainerProperties()
+               .setAckMode(ContainerProperties.AckMode.RECORD);
+
+        return factory;
+    }
+
+    @Bean
+    public org.springframework.kafka.support.serializer.JsonDeserializer&lt;OrderPlacedV1&gt;
+            orderPlacedDeserializer(ObjectMapper mapper) {
+        return new JsonDeserializer&lt;&gt;(OrderPlacedV1.class, mapper, false);
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>الگوی Outbox و تحویل دقیقاً یک‌بار</h2>
+
+<h3>مسئله‌ای که Outbox حل می‌کند</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ روش غلط: انتشار قبل از تراکنش
+
+  BEGIN
+    save(order)
+    kafka.send(OrderPlaced)     ← ارسال می‌شود
+  COMMIT                        ← ←← اینجا خطا! تراکنش برگشت
+
+  نتیجه: رویدادی در صف برای سفارشی که وجود ندارد 💀
+
+
+❌ روش غلط: انتشار بعد از تراکنش
+
+  BEGIN
+    save(order)
+  COMMIT
+  kafka.send(OrderPlaced)     ← ←← اینجا خطا! شبکه قطع
+
+  نتیجه: سفارش ذخیره شده ولی هیچ‌کس خبردار نشد 💀
+
+
+✅ روش درست: Outbox
+
+  BEGIN
+    save(order)
+    INSERT INTO outbox_events (OrderPlaced)
+  COMMIT                        ← یا هر دو ذخیره می‌شوند، یا هیچ‌کدام
+
+  نتیجه: هیچ حالت ناسازگاری وجود ندارد ✅</code></pre>
+
+<h3>چهار سطح تضمین تحویل</h3>
+
+<table>
+<thead>
+<tr><th>سطح</th><th>معنا</th><th>امکان‌پذیر؟</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>حداقل یک‌بار</strong> (At-least-once)</td><td>پیام حتماً می‌رسد، ممکن است تکرار شود</td><td>✅ استاندارد صنعت</td></tr>
+<tr><td><strong>حداکثر یک‌بار</strong> (At-most-once)</td><td>پیام حداکثر یک‌بار می‌رسد، ممکن است گم شود</td><td>✅ ولی داده را گم می‌کند</td></tr>
+<tr><td><strong>دقیقاً یک‌بار</strong> (Exactly-once)</td><td>دقیقاً یک‌بار می‌رسد</td><td>⚠️ فقط در محدوده‌ی یک سیستم</td></tr>
+<tr><td><strong>تقریباً یک‌بار</strong> (Effectively-once)</td><td>تکرار ممکن است ولی اثرش نمایی نیست</td><td>✅ <strong>هدف عملی ما</strong></td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">توضیح دقیق</span>
+<strong>Exactly-once</strong> در سطح شبکه در واقع ناممکن است چون نتیجه‌ی ack هنوز به تولیدکننده
+نرسیده است. چیزی که به‌دست می‌آید <strong>Effectively-once</strong> است: پیام ممکن است دو
+بار برسد، اما مصرف‌کننده‌ی <em>idempotent</em> باعث می‌شود اثر نهایی یکی باشد.
+</div>
+
+<h3>سه راه رسیدن به Effectively-once</h3>
+
+<table>
+<thead>
+<tr><th>روش</th><th>پیاده‌سازی</th><th>مزیت</th><th>عیب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>جدول پردازش‌شده</strong></td><td>ثبت <code>eventId</code> در همان تراکنش منطق</td><td>ساده و مطمئن</td><td>یک جدول اضافه</td></tr>
+<tr><td><strong>Natural Idempotency</strong></td><td>کلید یکتا روی داده (مثلاً <code>orderId</code>)</td><td>بدون جدول</td><td>همیشه ممکن نیست</td></tr>
+<tr><td><strong>تجمیع در Broker</strong></td><td>Kafka idempotent producer + transactions</td><td>بدون کد اضافه</td><td>محدود به همان پارتیشن</td></tr>
+</tbody>
+</table>
+
+<h3>Outbox در کنار گزینه‌های دیگر</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱. Dual Write (نوشتن دوگانه)
+   ← ساده ولی ناسازگار ✅❌
+
+۲. Outbox Pattern ✅
+   ← مطمئن، نیاز به جدول و relay
+
+۳. CDC با Debezium
+   ← خواندن log دیتابیس به‌جای outbox
+   ← نیازمند logical replication
+   ← سریع‌تر ولی پیچیده‌تر
+
+۴. Broker به‌عنوان ذخیره‌ی رویداد (Event Store)
+   ← با Event Sourcing یکی می‌شود
+   ← پرهزینه‌تر
+
+انتخاب معمول: ۲ برای اکثر پروژه‌ها</code></pre>
+
+<h3>پاکسازی Outbox</h3>
+
+<pre class="kl-code" data-lang="java"><code>/** حذف دوره‌ای رویدادهای منتشر‌شده تا جدول بزرگ نشود. */
+@Component
+public class OutboxCleaner {
+
+    private static final Logger log = LoggerFactory.getLogger(OutboxCleaner.class);
+
+    private final JdbcTemplate jdbc;
+    private final Duration retention = Duration.ofDays(7);
+
+    @Scheduled(cron = "0 0 3 * * *")            // هر روز ساعت ۳ صبح
+    public void purgePublished() {
+        int deleted = jdbc.update(
+                "DELETE FROM outbox_events "
+                        + "WHERE published_at IS NOT NULL "
+                        + "AND published_at &lt; now() - ?",
+                retention);
+        log.info("پاکسازی outbox: {} رکورد حذف شد", deleted);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">هشدار</span>
+جدول outbox اگر پاک نشود، به‌سرعت بزرگ می‌شود و کوئری relay کند می‌گردد. ایندکس
+<code>WHERE published_at IS NULL</code> بسیار مهم است و باید از ابتدا وجود داشته باشد.
+</div>
+</section>
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>مزایا</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>کاهش شدید کوپل</strong></td><td>تولیدکننده نمی‌داند چه کسی گوش می‌دهد؛ افزودن مصرف‌کننده‌ی جدید هیچ تغییری در تولیدکننده نمی‌دهد</td></tr>
+<tr><td>۲</td><td><strong>افزودن قابلیت بدون استقرار تولیدکننده</strong></td><td>یک مصرف‌کننده‌ی جدید فقط subscribe می‌کند؛ سرویس مرجع دست‌نخورده می‌ماند</td></tr>
+<tr><td>۳</td><td><strong>مقیاس مستقل هر مصرف‌کننده</strong></td><td>گزارش‌گیری سنگین روی سرویس گزارش است، نه روی سرویس سفارش</td></tr>
+<tr><td>۴</td><td><strong>تحمل خرابی</strong></td><td>خرابی یک مصرف‌کننده، سرویس تولیدکننده را از کار نمی‌اندازد</td></tr>
+<tr><td>۵</td><td><strong>پاسخ سریع کاربر</strong></td><td>درخواست در چند میلی‌ثانیه برمی‌گردد؛ کار سنگین بعداً انجام می‌شود</td></tr>
+<tr><td>۶</td><td><strong>لاگ ممیزی طبیعی</strong></td><td>جریان رویدادها یک تاریخچه‌ی کامل از همه‌ی اتفاقات است</td></tr>
+<tr><td>۷</td><td><strong>قابلیت استفاده‌ی مجدد</strong></td><td>یک رویداد سفارش می‌تواند هم‌زمان به ۵ مصرف‌کننده برسد</td></tr>
+<tr><td>۸</td><td><strong>بازپخش و رفع اشکال</strong></td><td>با تغییر offset می‌توانید یک رویداد را دوباره پردازش کنید</td></tr>
+<tr><td>۹</td><td><strong>مرزهای تیمی روشن</strong></td><td>هر تیم رویداد خودش را منتشر و مصرف می‌کند</td></tr>
+<tr><td>۱۰</td><td><strong>انعطاف در مسیر داده</strong></td><td>می‌توانید همان رویداد را به انبار داده، سرچ، یا موبایل بدهید</td></tr>
+<tr><td>۱۱</td><td><strong>مناسب داده‌های جریانی</strong></td><td>IoT، لاگ، کلیک، معاملات مالی</td></tr>
+<tr><td>۱۲</td><td><strong>کاهش فشار روی دیتابیس</strong></td><td>کارهای سنگین از تراکنش اصلی بیرون منتقل می‌شوند</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">بزرگ‌ترین مزیت</span>
+«افزودن قابلیت بدون استقرار تولیدکننده» — این یعنی یک تیم می‌تواند هر روز قابلیت جدید
+اضافه کند بدون اینکه سرویس حیاتی سفارش را مستقر کند. در سیستم‌های فراخوانی، هر قابلیت
+جدید یعنی یک استقرار پرریسک.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>معایب</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>نبود ترتیب تضمین‌شده</strong></td><td>رویدادها می‌توانند خارج از ترتیب برسند؛ مدیریت آن سخت است</td></tr>
+<tr><td>۲</td><td><strong>ناهمگامی و ابهام</strong></td><td>کاربر نمی‌داند نتیجه چه شد؛ باید رابط کاربری برای وضعیت بسازید</td></tr>
+<tr><td>۳</td><td><strong>سختی ردیابی</strong></td><td>یک درخواست از ۱۰ سرویس رد می‌شود؛ ابزار ردیابی توزیع‌شده لازم است</td></tr>
+<tr><td>۴</td><td><strong>تأخیر پنهان</strong></td><td>رویداد ۵ ثانیه دیرتر می‌رسد و کاربر می‌پرسد چرا؟</td></tr>
+<tr><td>۵</td><td><strong>دشواری تست یکپارچه</strong></td><td>تست کردن یک جریان چندمرحله‌ای نیازمند زیرساخت کامل است</td></tr>
+<tr><td>۶</td><td><strong>نیاز به زیرساخت Broker</strong></td><td>راه‌اندازی و نگه‌داری Kafka یک کار جدی است</td></tr>
+<tr><td>۷</td><td><strong>پیام تکراری</strong></td><td>تحویل حداقل یک‌بار یعنی کد مصرف‌کننده باید idem potent باشد</td></tr>
+<tr><td>۸</td><td><strong>پیام از دست رفته در DLQ</strong></td><td>اگر DLQ را پایش نکنید، هیچ‌کس نمی‌فهمد چه چیزی شکست خورده</td></tr>
+<tr><td>۹</td><td><strong>سازگاری رویداد دشوار</strong></td><td>قرارداد شکننده است و تغییرش تیم‌های دیگر را می‌شکند</td></tr>
+<tr><td>۱۰</td><td><strong>سختی عیب‌یابی</strong></td><td>خطا می‌تواند در هر ۱۰ سرویس باشد؛ یافتنش زمان‌بر است</td></tr>
+<tr><td>۱۱</td><td><strong>منابع مصرفی</strong></td><td>هر پیام کپی و ذخیره می‌شود؛ در حجم بالا هزینه دارد</td></tr>
+<tr><td>۱۲</td><td><strong>پیچیدگی مفهومی</strong></td><td>تیم باید سه چیز را هم‌زمان بفهمد: کار، رویداد، ناهمگامی</td></tr>
+</tbody>
+</table>
+
+<h3>سربسته‌ی « eventual consistency »</h3>
+
+<pre class="kl-code" data-lang="text"><code>یعنی چه؟
+  نوشتن در تک‌میلی‌ثانیه دیده نمی‌شود.
+  کاربر ممکن است خرید کند ولی موجودی را هنوز نبیند.
+
+برای چه کاری خوب است؟
+  ✅ شمارنده‌ی بازدید
+  ✅ ارسال ایمیل و اعلان
+  ✅ گزارش و آمار
+  ✅ به‌روزرسانی انبار
+  ✅ پردازش تصویر
+
+برای چه کاری بد است؟
+  ❌ موجودی حساب بانکی
+  ❌ موجودی کیف پول
+  ❔ رزرو جا (نیازمند قفل و تأیید فوری)
+
+اگر کاربر باید «الان» نتیجه را ببیند، EDA انتخاب اشتباهی است.</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">صادق باشیم</span>
+بیشتر شکست‌های EDA از پیچیدگی مفهومی می‌آید، نه از خود Broker. تیمی که نمی‌داند
+مصرف‌کننده دقیقاً چه می‌کند، با اطمینان کاذب وارد پروژه می‌شود. EDA یک تعهد
+معماری است، نه فقط یک ابزار.
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-check">
+<ul>
+<li><strong>واکنش‌های جانبی زیاد</strong> دارید (ایمیل، اعلان، گزارش، امتیاز)</li>
+<li><strong>نمی‌خواهید هر قابلیت جدید</strong> سرویس مرجع را تغییر دهد</li>
+<li><strong>مقیاس‌پذیری نامتوازن</strong> دارید (یک مصرف‌کننده سنگین، بقیه سبک)</li>
+<li><strong>دسترسی به سرویس بیرونی</strong> غیرقابل اتکا دارید</li>
+<li><strong>پردازش بلادرنگ جریانی</strong> لازم دارید (لاگ، IoT، معاملات)</li>
+<li><strong>لاگ ممیزی</strong> لازم دارید</li>
+<li><strong>تیم‌های مستقل</strong> باید روی قابلیت‌های موازی کار کنند</li>
+<li><strong>مسیر مهاجرت به Microservices</strong> را می‌خواهید باز کنید</li>
+<li><strong>مصرف‌کننده‌های مختلفی</strong> برای یک رویداد دارید (مانیتورینگ، تحلیل، انبار داده)</li>
+<li><strong>عملیات طولانی</strong> نباید کاربر را منتظر نگه دارد</li>
+</ul>
+</div>
+
+<h3>مثال‌های مناسب</h3>
+
+<pre class="kl-code" data-lang="text"><code>✅ پرداخت آنلاین      → تأیید پرداخت → صدور فاکتور، کم‌شدن موجودی، پیامک
+✅ فروشگاه اینترنتی    → ثبت سفارش → انبار، ارسال، امتیاز، تحلیل
+✅ پیام‌رسان            → پیام جدید → نوتیفیکیشن، الگوریتم، آمار
+✅ بازی آنلاین          → بازیکن آنلاین → آمار، رتبه‌بندی، اعلان
+✅ سامانه‌ی بانکی       → تراکنش → دفتر کل، گزارش، پایش تقلب
+✅ اینترنت اشیا         → سنسور → تحلیل، هشدار، داشبورد
+✅ ایمیل انبوه          → ثبت‌نام → صف ارسال، آمار تحویل
+✅ پلتفرم ویدیو          → آپلود → پردازش، CDN، آمار بازدید</code></pre>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>چه زمانی استفاده نکنیم؟</h2>
+
+<table>
+<thead>
+<tr><th>وضعیت</th><th>چرا مناسب نیست؟</th><th>جایگزین</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>کاربر منتظر نتیجه می‌ماند</strong></td><td>ناهمگامی تجربه‌ی کاربری را خراب می‌کند</td><td>فراخوانی همگام RPC</td></tr>
+<tr><td><strong>نیاز به سازگاری فوری</strong> (موجودی حساب)</td><td>سازگاری نهایی با کسب‌وکار نمی‌خواند</td><td>تراکنش پایگاه داده</td></tr>
+<tr><td><strong>جریان کار پیچیده و طولانی</strong></td><td>ردیابی و عیب‌یابی بسیار سخت می‌شود</td><td>موتور Workflow (Camunda، Temporal)</td></tr>
+<tr><td><strong>تیم کوچک و کم‌تجربه</strong></td><td>منحنی یادگیری بالا</td><td>فراخوانی مستقیم ساده</td></tr>
+<tr><td><strong>تعداد مصرف‌کننده کم</strong> (یکی)</td><td>پیچیدگی اضافه بدون فایده</td><td>تماس مستقیم</td></tr>
+<tr><td><strong>فقط انتقال داده بین دو سرویس</strong></td><td>EDA برای جریان رویداد است، نه برای query</td><td>REST یا gRPC</td></tr>
+<tr><td><strong>نبود زیرساخت</strong></td><td>نگه‌داری Broker کار بزرگی است</td><td>جدول پیام در همان دیتابیس</td></tr>
+<tr><td><strong>نیاز به تراکنش بین سرویس‌ها</strong></td><td>EDA ذاتاً این را ندارد</td><td>سازوکار ۲PC یا Saga با دقت</td></tr>
+<tr><td><strong>پروژه‌ی ۲ هفته‌ای</strong></td><td>زمان راه‌اندازی زیرساخت بیشتر از کل پروژه است</td><td>مونولیث ساده</td></tr>
+<tr><td><strong>سیستم با پیکربندی ثابت</strong></td><td>انعطاف EDA لازم نیست</td><td>کد ساده و صریح</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">راه میانه: Outbox بدون Broker</span>
+اگر EDA کامل برایتان زیاد است ولی از مشکل آن می‌ترسید، می‌توانید فقط از
+<strong>الگوی Outbox</strong> استفاده کنید و رویدادها را در جدول بخوانید و با
+<code>@Scheduled</code> پردازش کنید. سود اصلی را می‌گیرید (اتمیک بودن) بدون سربار
+زیرساخت Broker.
+</div>
+
+<h3>نحوه‌ی شروع محتاطانه</h3>
+
+<pre class="kl-code" data-lang="text"><code>گام ۱: یک فرایند کاملاً مشخص را انتخاب کنید
+      (مثلاً «ارسال ایمیل تأیید سفارش»)
+
+گام ۲: ابتدا فراخوانی همگام، اما با Outbox
+      ← سازگاری به دست آمده، هنوز Broker ندارید
+
+گام ۳: در یک مصرف‌کننده (مثلاً اعلان) جداسازی کنید
+
+گام ۴: وقتی تیم مسلط شد، مصرف‌کننده‌ی دوم را اضافه کنید
+
+گام ۵: حالا که ارزش را دیده‌اید، زیرساخت را جدی کنید</code></pre>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<table>
+<thead>
+<tr><th>اصل</th><th>نام</th><th>نمود در EDA</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>S</strong></td><td>Single Responsibility</td><td>هر مصرف‌کننده یک وظیفه دارد؛ ایمیل یک کار، انبار یک کار</td></tr>
+<tr><td><strong>O</strong></td><td>Open/Closed</td><td>مصرف‌کننده‌ی جدید = کد جدید، بدون تغییر تولیدکننده</td></tr>
+<tr><td><strong>L</strong></td><td>Liskov Substitution</td><td>هر Broker قابل جایگزینی با هر Broker دیگر</td></tr>
+<tr><td><strong>I</strong></td><td>Interface Segregation</td><td>هر مصرف‌کننده فقط رویدادهای خودش را می‌گیرد</td></tr>
+<tr><td><strong>D</strong></td><td>Dependency Inversion</td><td>هسته‌ی سرویس به Broker وابسته نیست؛ فقط به یک Interface</td></tr>
+</tbody>
+</table>
+
+<h3>D — مهم‌ترین اصل در EDA</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ✅ هسته‌ی دامنه هیچ چیزی درباره‌ی Kafka نمی‌داند
+package com.shop.order.application;
+
+/** Port — در لایه‌ی application تعریف شده، نه در زیرساخت */
+public interface EventRecorder {
+    void record(Object event, String type, String id,
+                String key, String correlationId);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>// ✅ Adapter — در زیرساخت
+package com.shop.order.integration.outbox;
+
+@Component
+public class OutboxEventRecorder implements EventRecorder {
+
+    private final OutboxEventRepository repository;
+    private final ObjectMapper mapper;
+
+    @Override
+    @Transactional
+    public void record(Object event, String type, String id,
+                       String key, String correlationId) {
+        try {
+            repository.save(OutboxEvent.pending(
+                    UUID.randomUUID().toString(), type, type, type,
+                    key, mapper.writeValueAsString(event),
+                    correlationId, Instant.now()));
+        } catch (Exception e) {
+            throw new IllegalStateException("ثبت رویداد ناموفق", e);
+        }
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چرا این حیاتی است</span>
+تست <code>PlaceOrderUseCase</code> با یک <code>InMemoryEventRecorder</code> کار می‌کند و
+نه Broker می‌خواهد نه دیتابیس. اگر <code>EventRecorder</code> را در زیرساخت تعریف
+کرده بودید، این تست ممکن نبود.
+</div>
+
+<h3>S — یک کار در هر سرویس</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ سرویس کاربر — همه‌ی کارها
+   ثبت کاربر + ارسال ایمیل + آمار + پاداش
+
+✅ سه سرویس مستقل
+   سرویس کاربر      → UserRegistered منتشر می‌کند
+   سرویس اعلان      → UserRegistered را مصرف می‌کند
+   سرویس آمار       → UserRegistered را مصرف می‌کند
+
+هرکدام یک مسئولیت، مستقل از دیگری قابل تغییر</code></pre>
+
+<h3>O — باز شدن بدون تغییر</h3>
+
+<pre class="kl-code" data-lang="text"><code>امروز: سرویس سفارش OrderPlaced منتشر می‌کند
+       مصرف‌کننده‌ها: انبار، ارسال
+
+فردا: تیم تحلیل می‌خواهد نرخ تبدیل را حساب کند
+      ← فقط یک سرویس جدید + یک subscribe
+      ← سرویس سفارش: صفر تغییر
+      ← هیچ استقرار مجددی از سرویس حیاتی</code></pre>
+
+<h3>I — جداسازی قرارداد</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ یک قرارداد بزرگ برای همه
+   OrderServiceEvent { order, customer, payment, shipping, invoice, ... }
+   ← هر تغییر، همه‌ی مصرف‌کننده‌ها را می‌شکند
+
+✅ چند قرارداد کوچک و دقیق
+   OrderPlaced, OrderPaid, OrderShipped, OrderDelivered, OrderCancelled
+   ← هر مصرف‌کننده فقط چیزی را می‌گیرد که واقعاً لازم دارد</code></pre>
+</section>
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>نقش در EDA</th><th>نمود در این مقاله</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Observer</strong></td><td><strong>الگوی اصلی</strong> — انتشار و گوش دادن</td><td>Producer و Consumer</td></tr>
+<tr><td><strong>Publish/Subscribe</strong></td><td>الگوی بنیادی معماری</td><td>رویداد در Broker بدون آدرس‌دهی</td></tr>
+<tr><td><strong>Mediator</strong></td><td>جدا کردن تولیدکننده از مصرف‌کننده</td><td>Broker به‌عنوان واسط</td></tr>
+<tr><td><strong>Event Sourcing</strong></td><td>نگهداری رویدادها به‌جای وضعیت</td><td>Event Store</td></tr>
+<tr><td><strong>Transactional Outbox</strong></td><td><strong>الگوی حیاتی</strong> — تضمین اتمیک بودن</td><td><code>EventRecorder</code> + <code>OutboxRelay</code></td></tr>
+<tr><td><strong>Saga</strong></td><td>مدیریت تراکنش توزیع‌شده</td><td>جبران به‌جای Rollback</td></tr>
+<tr><td><strong>Anti-Corruption Layer</strong></td><td>محافظت از مدل در برابر قرارداد بیرونی</td><td>تبدیل قرارداد به مدل داخلی در مصرف‌کننده</td></tr>
+<tr><td><strong>Idempotent Consumer</strong></td><td>تحمل پیام تکراری</td><td><code>ProcessedEventStore</code></td></tr>
+<tr><td><strong>Dead Letter Queue</strong></td><td>نگه‌داری پیام‌های شکست‌خورده</td><td><code>DeadLetterPublishingRecoverer</code></td></tr>
+<tr><td><strong>Circuit Breaker</strong></td><td>توقف موقت فراخوانی شکسته</td><td>در کنار RPC، نه در خود EDA</td></tr>
+<tr><td><strong>Repository</strong></td><td>نگهداری وضعیت از رویدادها</td><td>EventStore به‌عنوان منبع حقیقت</td></tr>
+<tr><td><strong>Retry + Backoff</strong></td><td>تلاش مجدد با فاصله‌ی فزاینده</td><td><code>FixedBackOff</code></td></tr>
+</tbody>
+</table>
+
+<h3>Saga — تراکنش توزیع‌شده بدون Rollback</h3>
+
+<pre class="kl-code" data-lang="text"><code>سناریو: ثبت سفارش شامل کم‌کردن موجودی و پرداخت
+
+❌ 2PC (دو فاز کامیت) — با Microservices کار نمی‌کند
+   فاز ۱: همه «آماده؟»  → فاز ۲: همه «بزن!»
+   مشکل: اگر یکی در فاز ۲ بمیرد، بقیه منتظر می‌مانند
+         و منابع قفل می‌شوند
+
+✅ Saga — هر مرحله تراکنش محلی + رویداد جبرانی
+
+مرحله ۱: ثبت سفارش              → OrderPlaced
+مرحله ۲: رزرو موجودی            → StockReserved
+مرحله ۳: پرداخت                 → PaymentCaptured
+مرحله ۴: تأیید                  → OrderConfirmed
+
+اگر مرحله ۳ شکست خورد:
+  → رویداد جبرانی StockReleaseRequested
+  → موجودی آزاد می‌شود
+  → سفارش به وضعیت REJECTED می‌رود
+
+← به‌جای برگرداندن، <strong>جبران</strong> می‌کنیم</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>/** رویداد جبرانی — نام آن باید صریح باشد */
+public record StockReleaseRequested(
+        String eventId,
+        String orderId,
+        String reason,
+        Instant occurredAt
+) {}
+</code></pre>
+
+<h3>دو نوع Saga</h3>
+
+<table>
+<thead>
+<tr><th>نوع</th><th>اجرا</th><th>مزیت</th><th>عیب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Choreography</strong></td><td>هر سرویس به رویداد بعدی گوش می‌دهد</td><td>ساده و غیرمتمرکز</td><td>جریان گم می‌شود</td></tr>
+<tr><td><strong>Orchestration</strong></td><td>یک سرویس مرکزی ترتیب می‌دهد</td><td>جریان قابل مشاهده</td><td>نقطه‌ی شکست مرکزی</td></tr>
+</tbody>
+</table>
+
+<h3>Choreography — نمونه</h3>
+
+<pre class="kl-code" data-lang="text"><code>OrderService   ──OrderPlaced──▶
+Inventory       ──StockReserved──▶
+Payment         ──PaymentCaptured──▶
+OrderService    ──OrderConfirmed──▶
+
+هر سرویس فقط دو چیز می‌داند: چه رویدادی می‌گیرد، چه رویدادی می‌دهد.
+ساده است ولی وقتی ۵ مرحله شود، فهم جریان سخت می‌شود.</code></pre>
+
+<h3>Orchestration — نمونه</h3>
+
+<pre class="kl-code" data-lang="java"><code>@Component
+public class CheckoutSaga {
+
+    private final InventoryApi inventory;
+    private final PaymentApi payment;
+    private final OrderRepository orders;
+
+    @EventListener
+    @Transactional
+    public void on(OrderPlaced event) {
+        try {
+            inventory.reserve(event.orderId(), event.lines());
+            payment.capture(event.orderId(), event.total());
+
+            orders.confirm(event.orderId());
+            events.publish(new OrderConfirmed(event.orderId()));
+
+        } catch (InsufficientStockException e) {
+            // جبران مرحله‌ی قبل
+            payment.refund(event.orderId());
+            orders.reject(event.orderId(), "موجودی ناکافی");
+            events.publish(new OrderRejected(event.orderId(), e.getMessage()));
+
+        } catch (PaymentException e) {
+            inventory.release(event.orderId());
+            orders.reject(event.orderId(), "پرداخت ناموفق");
+            events.publish(new OrderRejected(event.orderId(), e.getMessage()));
+        }
+    }
+}
+</code></pre>
+
+<h3>Idempotent Consumer — الگوی کلیدی</h3>
+
+<pre class="kl-code" data-lang="java"><code>@EventListener
+@Transactional
+public void on(OrderPlacedV1 event) {
+
+    // گام ۱: بررسی تکرار — در همان تراکنش
+    if (processed.wasProcessed(event.eventId())) {
+        log.info("پیام تکراری نادیده گرفته شد: {}", event.eventId());
+        return;
+    }
+
+    // گام ۲: منطق کسب‌وکار
+    for (var line : event.lines()) {
+        stock.reserve(line.productId(), line.quantity());
+    }
+
+    // گام ۳: ثبت — اگر این شکست بخورد، منطق بالا هم rollback می‌شود
+    processed.markProcessed(event.eventId());
+}
+</code></pre>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+تست سیستم رویدادمحور سه سطح دارد: تست واحد (بدون Broker)، تست یکپارچه (با Broker
+واقعی) و تست انتها‌به‌انتها.
+</p>
+
+<h3>سطح ۱ — تست واحد با ثبت‌کننده‌ی حافظه‌ای</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.application;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/** ثبت‌کننده‌ی حافظه‌ای: هیچ Broker و دیتابیسی لازم نیست. */
+public class InMemoryEventRecorder implements EventRecorder {
+
+    private final List&lt;RecordedEvent&gt; recorded = new ArrayList&lt;&gt;();
+
+    @Override
+    public void record(Object event, String type, String id,
+                       String key, String correlationId) {
+        recorded.add(new RecordedEvent(event, type, id, key, correlationId));
+    }
+
+    public List&lt;RecordedEvent&gt; recorded() {
+        return List.copyOf(recorded);
+    }
+
+    public List&lt;RecordedEvent&gt; ofType(String type) {
+        return recorded.stream()
+                .filter(e -&gt; e.type().equals(type))
+                .toList();
+    }
+
+    public void clear() {
+        recorded.clear();
+    }
+
+    public record RecordedEvent(Object event, String type, String id,
+                                String key, String correlationId) {}
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.application;
+
+import com.shop.contracts.order.v1.OrderPlacedV1;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+
+@DisplayName("ثبت سفارش و تولید رویداد")
+class PlaceOrderUseCaseTest {
+
+    private PlaceOrderUseCase useCase;
+    private InMemoryEventRecorder events;
+
+    @BeforeEach
+    void setUp() {
+        events = new InMemoryEventRecorder();
+        useCase = new PlaceOrderUseCase(new InMemoryOrderRepository(), events);
+    }
+
+    @Test
+    @DisplayName("سفارش معتبر، یک رویداد OrderPlaced تولید می‌کند")
+    void validOrderRaisesEvent() {
+        String orderId = useCase.place("c-1",
+                List.of(new PlaceOrderUseCase.LineInput(
+                        "p-1", 2, new BigDecimal("150000"))),
+                "corr-123");
+
+        assertThat(events.recorded()).hasSize(1);
+        assertThat(events.recorded().get(0).type())
+                .isEqualTo(OrderPlacedV1.TYPE);
+    }
+
+    @Test
+    @DisplayName("کلید پارتیشن برابر شناسه‌ی سفارش است")
+    void eventKeyIsOrderId() {
+        String orderId = useCase.place("c-1",
+                List.of(new PlaceOrderUseCase.LineInput(
+                        "p-1", 1, new BigDecimal("1000"))),
+                "corr-1");
+
+        assertThat(events.recorded().get(0).key()).isEqualTo(orderId);
+    }
+
+    @Test
+    @DisplayName("correlationId در رویداد منتقل می‌شود")
+    void correlationIdPropagates() {
+        useCase.place("c-1",
+                List.of(new PlaceOrderUseCase.LineInput(
+                        "p-1", 1, new BigDecimal("1000"))),
+                "corr-abc");
+
+        assertThat(events.recorded().get(0).correlationId())
+                .isEqualTo("corr-abc");
+    }
+
+    @Test
+    @DisplayName("سفارش نامعتبر هیچ رویدادی تولید نمی‌کند")
+    void invalidOrderRaisesNoEvent() {
+        assertThatThrownBy(() -> useCase.place("c-1", List.of(), "corr-2"))
+                .isInstanceOf(OrderError.class);
+
+        assertThat(events.recorded()).isEmpty();
+    }
+}
+</code></pre>
+
+<h3>سطح ۲ — تست مصرف‌کننده با Broker واقعی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.inventory.integration.event;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.RecordMessageListenerContainer;
+import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.kafka.test.utils.ConsumerTestUtils;
+import org.springframework.kafka.test.utils.EmbeddedKafkaBroker;
+
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.*;
+
+@SpringBootTest
+@EmbeddedKafka(partitions = 1, topics = "orders",
+        brokerProperties = {
+                "listeners=PLAINTEXT://localhost:0",
+                "port=0"
+        })
+@DisplayName("مصرف‌کننده‌ی OrderPlaced")
+class OrderPlacedHandlerIntegrationTest {
+
+    @Autowired EmbeddedKafkaBroker broker;
+    @Autowired OrderPlacedHandler handler;
+    @Autowired StockService stock;
+    @Autowired ProcessedEventStore processed;
+
+    @Test
+    @DisplayName("رویداد معتبر، موجودی را کم می‌کند")
+    void consumesValidEvent() {
+        var event = validEvent("evt-1", "order-1", 3);
+
+        handler.on(new ConsumerRecord&lt;&gt;("orders", 0, "order-1",
+                null, json(event)));
+
+        assertThat(stock.available("p-1")).isEqualTo(7);   // ۱۰ − ۳
+    }
+
+    @Test
+    @DisplayName("پیام تکراری، موجودی را دوباره کم نمی‌کند")
+    void ignoresDuplicateMessage() {
+        var event = validEvent("evt-2", "order-2", 3);
+        var record = new ConsumerRecord&lt;&gt;("orders", 0, "order-2",
+                null, json(event));
+
+        handler.on(record);
+        handler.on(record);                              // ← دوباره
+
+        assertThat(stock.available("p-1")).isEqualTo(7);   // هنوز ۷
+    }
+
+    @Test
+    @DisplayName("موجودی ناکافی، استثنا می‌دهد و وضعیت پردازش ثبت نمی‌شود")
+    void insufficientStockDoesNotMarkProcessed() {
+        var event = validEvent("evt-3", "order-3", 100);
+
+        assertThatThrownBy(() -> handler.on(new ConsumerRecord&lt;&gt;(
+                "orders", 0, "order-3", null, json(event))))
+                .isInstanceOf(InsufficientStockException.class);
+
+        assertThat(processed.wasProcessed("evt-3")).isFalse();
+    }
+
+    @Test
+    @DisplayName("پیام نامعتبر، استثنای غیرقابل تلاش می‌دهد")
+    void invalidPayloadIsNotRetryable() {
+        assertThatThrownBy(() -> handler.on(new ConsumerRecord&lt;&gt;(
+                "orders", 0, "k", null, "{ broken json")))
+                .isInstanceOf(NonRetryableException.class);
+    }
+}
+</code></pre>
+
+<h3>سطح ۳ — تست جریان کامل با In-Memory Event Bus</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+
+/**
+ * جریان کامل: ثبت سفارش ← انتشار رویداد ← اثر در سرویس انبار
+ * با یک Event Bus حافظه‌ای به‌جای Kafka.
+ */
+@SpringBootTest
+@Import(TestEventBusConfiguration.class)
+@DisplayName("جریان ثبت سفارش تا کم‌شدن موجودی")
+class OrderToInventoryFlowTest {
+
+    @Autowired OrderController orders;
+    @Autowired StockView stock;
+    @Autowired TestEventBus bus;
+
+    @Test
+    @DisplayName("ثبت سفارش موجودی را کم می‌کند")
+    void placingOrderReducesStock() {
+        int before = stock.available("p-1");
+
+        var response = orders.place(
+                new PlaceOrderRequest("c-1",
+                        List.of(new LineRequest("p-1", 2, "150000"))));
+
+        assertThat(response.getStatusCode()).isEqualTo(201);
+        assertThat(stock.available("p-1")).isEqualTo(before - 2);
+    }
+
+    @Test
+    @DisplayName("اگر مصرف‌کننده شکست بخورد، سفارش همچنان ثبت می‌شود")
+    void orderSucceedsEvenIfConsumerFails() {
+        bus.failNext("inventory-service");
+
+        var response = orders.place(
+                new PlaceOrderRequest("c-1",
+                        List.of(new LineRequest("p-1", 1, "150000"))));
+
+        // سفارش ثبت شده، فقط موجودی به‌روز نشده
+        assertThat(response.getStatusCode()).isEqualTo(201);
+        assertThat(bus.failures()).hasSize(1);
+    }
+}
+</code></pre>
+
+<h3>راهبرد تست در جدول</h3>
+
+<table>
+<thead>
+<tr><th>نوع تست</th><th>سرعت</th><th>چه چیزی را می‌سنجد</th><th>چند بار</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد</td><td>&lt; ۱ ثانیه</td><td>منطق، تولید رویداد، بدون زیرساخت</td><td>هر commit</td></tr>
+<tr><td>یکپارچه</td><td>۵ تا ۳۰ ثانیه</td><td>سریال‌سازی، قرارداد، تکرار</td><td>هر commit</td></tr>
+<tr><td>انتها‌به‌انتها</td><td>دقیقه</td><td>کل جریان با Broker واقعی</td><td>هر شب</td></tr>
+<tr><td>تحمیل خطا</td><td>دقیقه</td><td>مصرف‌کننده خراب، DLQ، بازپخش</td><td>هفتگی</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی طلایی</span>
+منطق کسب‌وکار مصرف‌کننده باید در سطح «تست واحد» باشد. تست‌های یکپارچه فقط
+زیرساخت (سریال‌سازی، تأیید، تحویل) را می‌سنجند. اگر منطق در تست یکپارچه باشد، بازخورد
+شما کند می‌شود.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>اشتباه</th><th>چرا اشتباه است؟</th><th>راه درست</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td>انتشار رویداد خارج از تراکنش</td><td>حالت ناسازگار ایجاد می‌کند</td><td>Outbox در همان تراکنش</td></tr>
+<tr><td>۲</td><td>مصرف‌کننده‌ی غیر idempotent</td><td>پیام تکراری، اثر تکراری</td><td>جدول پردازش‌شده</td></tr>
+<tr><td>۳</td><td>نداشتن کلید پارتیشن</td><td>ترتیب رویدادهای یک موجودی به هم می‌ریزد</td><td>کلید = شناسه‌ی موجودی</td></tr>
+<tr><td>۴</td><td>قرارداد شکننده</td><td>هر تغییر، همه‌ی تیم‌ها را می‌شکند</td><td>فیلد اضافه کن، حذف نکن</td></tr>
+<tr><td>۵</td><td>نداشتن DLQ یا پایش نکردن آن</td><td>خطاها بی‌صدا گم می‌شوند</td><td>DLQ + هشدار خودکار</td></tr>
+<tr><td>۶</td><td>استفاده از رویداد برای کاری که کاربر منتظرش است</td><td>UX خراب و مبهم</td><td>RPC همگام</td></tr>
+<tr><td>۷</td><td>یک قرارداد بزرگ برای همه‌ی مصرف‌کننده‌ها</td><td>همه به همه وابسته می‌شوند</td><td>رویدادهای کوچک و دقیق</td></tr>
+<tr><td>۸</td><td>نداشتن correlationId</td><td>ردیابی یک درخواست غیرممکن می‌شود</td><td>از ابتدا در پیام</td></tr>
+<tr><td>۹</td><td>پاک نکردن جدول outbox</td><td>بزرگ شدن جدول و کندی relay</td><td>پاکسازی زمان‌بندی‌شده</td></tr>
+<tr><td>۱۰</td><td>بی‌نهایت retry بدون سقف</td><td>پیام هرگز از صف خارج نمی‌شود</td><td>سقف تلاش + DLQ</td></tr>
+<tr><td>۱۱</td><td>نام رویداد با فعل آینده</td><td>معنای رویداد را گمراه‌کننده می‌کند</td><td>همیشه گذشته</td></tr>
+<tr><td>۱۲</td><td>زنجیره‌ی طولانی رویداد (بیش از ۳ پرش)</td><td>عیب‌یابی غیرممکن</td><td>ساده نگه دارید</td></tr>
+</tbody>
+</table>
+
+<h3>نشانه‌های هشدار</h3>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">اگر این‌ها را دیدید، مشکل دارید</span>
+<ul>
+<li><code>kafka.send</code> مستقیم در لایه‌ی سرویس، بدون outbox</li>
+<li>مصرف‌کننده‌ای که <code>ack</code> را قبل از پایان تراکنش می‌زند</li>
+<li>جدولی به نام <code>processed_events</code> که وجود ندارد</li>
+<li><code>DLQ</code> که هیچ‌کس آن را باز نمی‌کند</li>
+<li>رویدادی که بیش از ۲۰ فیلد دارد و همه را می‌خوانند</li>
+<li>زنجیره‌ای که با پنج <code>@EventListener</code> به هم وصل است</li>
+<li>کاربری که می‌گوید «سفارش ثبت شد ولی موجودی کم نشد» و پاسخی وجود ندارد</li>
+</ul>
+</div>
+</section>
+
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱. درگاه پرداخت ایرانیان</h3>
+
+<pre class="kl-code" data-lang="text"><code>جریان کامل پرداخت:
+
+  سرویس سفارش        OrderPlaced
+  سرویس پرداخت       ──▶ PaymentRequested
+  سرویس پرداخت       ──▶ درگاه بانکی (فراخوانی همگام، چون کاربر منتظر است)
+  سرویس پرداخت       ──▶ PaymentCaptured / PaymentFailed
+  سرویس سفارش        PaymentCaptured ──▶ تأیید سفارش
+  سرویس انبار         PaymentCaptured ──▶ رزرو موجودی
+  سرویس اعلان         PaymentCaptured ──▶ پیامک
+  سرویس فاکتور        PaymentCaptured ──▶ ساخت فاکتور
+  سرویس تحلیل         PaymentCaptured ──▶ آمار فروش
+
+نکته: فراخوانی درگاه همگام است چون کاربر منتظر نتیجه می‌ماند
+      بقیه‌ی زنجیره ناهمگام است چون کاربر منتظر آن‌ها نیست
+
+← ترکیب هوشمندانه‌ی هر دو، نه انتخاب یکی</code></pre>
+
+<h3>۲. پلتفرم ویدیو</h3>
+
+<pre class="kl-code" data-lang="text"><code>VideoUploaded
+  ├── سرویس پردازش      → تبدیل به چند کیفیت (طولانی، دقیقه‌ای)
+  ├── سرویس آنتی‌ویروس   → اسکن
+  ├── سرویس CDN          → بارگذاری و انتشار
+  ├── سرویس آمار         → ثبت رویداد
+  └── سرویس اعلان        → «ویدیوی شما آماده است»
+
+نکته: پردازش ویدیو ۳۰ دقیقه طول می‌کشد
+      اگر همگام بود، کاربر ۳۰ دقیقه منتظر می‌ماند
+      ← دقیقاً همان چیزی که EDA حل می‌کند</code></pre>
+
+<h3>۳. سامانه‌ی بانکی با Saga</h3>
+
+<pre class="kl-code" data-lang="text"><code>انتقال وجه بین دو حساب:
+
+  ۱. حساب مبدأ   ──TransferRequested──▶ برداشت
+  ۲. حساب مقصد   ──TransferRequested──▶ واریز
+  ۳. حساب مبدأ   ──TransferCompleted──▶ تأیید نهایی
+
+اگر واریز شکست بخورد:
+  ← رویداد جبرانی: DepositReversalRequested
+  ← مبلغ به حساب مبدأ برمی‌گردد
+  ← ← ← این همان چیزی است که 2PC انجام می‌داد، اما بدون قفل بلندمدت
+
+نکته: سیستم بانکی هرگز از اتمیک بودن کامل استفاده نمی‌کند
+      چون در چند مرکز داده، قفل توزیع‌شده فاجعه‌بار است</code></pre>
+
+<h3>۴. فروشگاه اینترنتی — فروش در ۱۲ ثانیه اوج</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱۲ صبح: ۴۰۰۰ سفارش در ۹۰ ثانیه
+
+ساختار سنتی:
+  OrderService ─▶ Inventory ─▶ Shipping ─▶ Email ─▶ Billing
+  ← زنجیره‌ی ۵ مرحله‌ای که ۴۰۰۰ بار در ثانیه اجرا می‌شود
+  ← گلوگاه: هر مرحله باید ۴۰۰۰ بار مقیاس بگیرد
+
+ساختار رویدادمحور:
+  OrderService ─▶ outbox (یک نوشتن)
+  سپس هر مصرف‌کننده مستقل مقیاس می‌گیرد:
+    سرویس انبار: ۱۲ نمونه
+    سرویس اعلان: ۲ نمونه (لازم نیست بیشتر)
+    سرویس گزارش: ۴ نمونه
+  ← هرکس به اندازه‌ی نیازش
+
+نتیجه: فشار روی سرویس گزارش دیگر به سرویس سفارش منتقل نمی‌شود</code></pre>
+
+<h3>۵. سامانه‌ی پایش سلامت (IoT)</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱۰٬۰۰۰ دستگاه پزشکی، هر ۱ ثانیه یک پیام
+
+  DeviceReading
+    ├── سرویس هشدار      → اگر فشار خون &gt; ۱۸۰، هشدار فوری
+    ├── سرویس انبار داده  → ذخیره در TimescaleDB
+    ├── سرویس گزارش       → محاسبه‌ی روند روزانه
+    └── سرویس داشبورد      → به‌روزرسانی زنده
+
+نکته: هشدار باید &lt; ۱ ثانیه برسد
+      ← مصرف‌کننده‌ی هشدار topic جدا با پارتیشن اختصاصی دارد
+      ← حتی اگر گزارش کند باشد، هشدار به‌موقع می‌رسد
+
+← این «مقیاس مستقل هر مصرف‌کننده» است که در معماری فراخوانی ممکن نبود.</code></pre>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پاسخ کوتاه</span>
+EDA در <em>تأخیر</em> هزینه دارد و در <em>کارایی</em> نه. اگر انتظار پاسخ ۱۰ میلی‌ثانیه‌ای
+داشتید، EDA انتخاب اشتباهی است. اگر می‌خواهید کاربر ۱۰ میلی‌ثانیه منتظر بماند و کار سنگین
+بعداً انجام شود، EDA دقیقاً همان چیزی است که می‌خواهید.
+</div>
+
+<h3>مقایسه‌ی تأخیر</h3>
+
+<table>
+<thead>
+<tr><th>مسیر</th><th>تأخیر معمول</th><th>تأخیر در اوج</th></tr>
+</thead>
+<tbody>
+<tr><td>فراخوانی همگام (۵ سرویس)</td><td>۲۰۰ تا ۵۰۰ms</td><td>۲ تا ۵ ثانیه</td></tr>
+<tr><td>EDA — ثبت در outbox</td><td>۲ تا ۱۰ms</td><td>۵ تا ۲۰ms</td></tr>
+<tr><td>EDA — انتشار توسط relay</td><td>۰ تا ۱۰۰۰ms</td><td>۱ تا ۵ ثانیه</td></tr>
+<tr><td>EDA — تحویل به مصرف‌کننده</td><td>۱ تا ۱۰۰ms</td><td>۰٫۱ تا ۲ ثانیه</td></tr>
+<tr><td>EDA — کل مسیر ناهمگام</td><td><strong>۱ ثانیه تا ۱ دقیقه</strong></td><td>متغیر</td></tr>
+</tbody>
+</table>
+
+<h3>هزینه‌های واقعی</h3>
+
+<table>
+<thead>
+<tr><th>عامل</th><th>هزینه</th><th>قابل بهینه‌سازی؟</th></tr>
+</thead>
+<tbody>
+<tr><td>نوشتن در outbox</td><td>یک INSERT اضافه (~۱ms)</td><td>✅ ایندکس درست</td></tr>
+<tr><td>فضای ذخیره‌سازی Broker</td><td>پیام × تعداد نسخه × نگه‌داشت</td><td>✅ تنظیم retention</td></tr>
+<tr><td>شبکه بین سرویس‌ها</td><td>یک رفت‌وبرگشت برای هر پیام</td><td>✅ batch و فشرده‌سازی</td></tr>
+<tr><td>سریال‌سازی/JSON</td><td>چند ده میکروثانیه</td><td>✅ Avro به‌جای JSON</td></tr>
+<tr><td>جست‌وجوی offset</td><td>خطی، وابسته به حجم</td><td>✅ نگه‌داری state</td></tr>
+</tbody>
+</table>
+
+<h3>بهینه‌سازی‌های عملی</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱. تعداد پارتیشن = موازی‌سازی
+   ۱۲ پارتیشن = ۱۲ مصرف‌کننده‌ی هم‌زمان
+   ۳ پارتیشن با ۱۲ ترد = همان کارایی، ولی ترتیب هر partition جدا
+
+۲. کاهش batch = کاهش تأخیر
+   max.poll.records=50  ← تأخیر کمتر، ack بیشتر
+   max.poll.records=500 ← کارایی بیشتر، تأخیر بیشتر
+
+۳. استفاده از Avro به‌جای JSON
+   JSON:  ۱۲۰۰ بایت برای یک سفارش
+   Avro:   ۳۱۰ بایت  (۷۶٪ کاهش، ۳ تا ۵ برابر سریع‌تر)
+
+۴. فشرده‌سازی
+   lz4: ~۱۰٪ سربار CPU، ~۷۰٪ کاهش شبکه
+
+۵. outbox را ایندکس کنید
+   CREATE INDEX ... WHERE published_at IS NULL
+   ← بدون این، relay به‌مرور کند می‌شود</code></pre>
+
+<h3>اندازه‌گیری واقعی</h3>
+
+<pre class="kl-code" data-lang="text"><code>شاخص‌هایی که باید پایش کنید:
+
+  producer_lag          ← فاصله‌ی زمانی تولید تا مصرف (مهم‌ترین)
+  consumer_lag          ← چند پیام خوانده‌نشده
+  outbox_pending_count  ← رویدادهای منتشرنشده
+  dlq_size              ← پیام‌های مرده
+  end_to_end_latency    ← از تولید تا اثر نهایی
+
+قاعده: اگر end_to_end_latency از بودجه‌ی کسب‌وکار بیشتر شد، مشکل را پیدا کنید.
+      حدس نزنید — lag را ببینید.</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">دام عملکردی</span>
+افزایش بی‌رویه‌ی تعداد رویداد. اگر هر تغییر وضعیت کوچک یک رویداد تولید کند، در یک
+جریان پرتراکنش ممکن است روزی ۱۰۰ میلیون پیام تولید کنید. قبل از افزودن هر رویداد
+بپرسید: «آیا واقعاً کسی به این اطلاع نیاز دارد؟»
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<h3>سطح Junior (۱ تا ۱۰)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱ — Event Driven Architecture چیست؟</span>
+معماری‌ای که اجزا به‌جای صدا زدن یکدیگر، رویدادهایی را که در دامنه اتفاق افتاده منتشر
+می‌کنند و هر جزء‌ای که لازم دارد، مستقل به آن‌ها گوش می‌دهد. ویژگی اصلی: ناهمگامی و
+نبود آگاهی تولیدکننده از مصرف‌کننده.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۲ — تفاوت رویداد و فراخوانی چیست؟</span>
+فراخوانی یعنی «این کار را انجام بده» و منتظر جواب می‌مانیم؛ کوپل مستقیم دارد. رویداد
+یعنی «این اتفاق افتاد» و هرکس خواست واکنش نشان می‌دهد؛ کوپل ندارد. اگر کاربر منتظر
+نتیجه بماند، فراخوانی؛ اگر کار در پس‌زمینه باشد، رویداد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۳ — چهار مؤلفه‌ی اصلی EDA چیست؟</span>
+Producer (تولیدکننده‌ی رویداد)، Broker (واسط ذخیره و تحویل)، Topic (کانال دسته‌بندی)
+و Consumer (مصرف‌کننده). بین Producer و Broker معمولاً یک Outbox هم هست برای تضمین
+اتمیک بودن.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۴ — رویداد دامنه چیست؟</span>
+رویدادی که در مدل کسب‌وکار اتفاق افتاده و گذشته است؛ مثل <code>OrderPlaced</code>.
+تفاوتش با پیام سیستمی این است که پیام سیستمی درباره‌ی اطلاع‌رسانی است و وابستگی
+ایجاد می‌کند، ولی Domain Event درباره‌ی تغییر وضعیت است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۵ — چرا نام رویداد باید با گذشته باشد؟</span>
+چون رویداد یعنی اتفاقی که افتاده. نام با گذشته (مثل <code>PaymentCaptured</code>)
+جلوی اشتباه رایج را می‌گیرد: کسی که فکر می‌کند رویداد یک دستور است و کاری انجام
+نمی‌دهد چون «هنوز نیفتاده».
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۶ — Broker چه کاری انجام می‌دهد؟</span>
+پیام را ذخیره می‌کند، بین چند مصرف‌کننده توزیع می‌کند، تحویل را مدیریت می‌کند و
+تلاش مجدد و صف مرده را فراهم می‌کند. Kafka و RabbitMQ نمونه‌های رایج هستند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۷ — سازگاری نهایی (Eventual Consistency) یعنی چه؟</span>
+یعنی سیستم در یک لحظه ممکن است داده‌ی کهنه نشان دهد، ولی اگر مدتی صبر کنید و نوشتن
+جدیدی انجام نشود، همه‌جا به یک وضعیت می‌رسند. برای شمارنده و اعلان مناسب است، برای
+موجودی حساب بانکی نه.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۸ — چه زمانی باید از فراخوانی استفاده کرد؟</span>
+وقتی کاربر منتظر نتیجه می‌ماند (مثل ثبت‌نام با ایمیل تأیید که باید بدانیم موفق بوده یا
+نه)، و وقتی نیاز به سازگاری فوری دارید (موجودی حساب). رویداد برای کارهای پس‌زمینه و
+واکنش‌های جانبی است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۹ — Topic چیست؟</span>
+کانال دسته‌بندی رویدادهای هم‌نوع. مثلاً topic به نام <code>orders</code> که همه‌ی
+رویدادهای سفارش به آن می‌روند. مصرف‌کننده‌ها به topic مربوطه subscribe می‌شوند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۰ — مصرف‌کننده چه کارهایی باید انجام دهد؟</span>
+دریافت، بررسی نسخه‌ی schema، بررسی تکراری نبودن، اعتبارسنجی، اجرای منطق در یک
+تراکنش محلی، ثبت eventId و در پایان تأیید به Broker.
+</div>
+
+<h3>سطح Mid (۱۱ تا ۱۷)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۱ — چرا انتشار مستقیم رویداد قبل از تراکنش کار نمی‌کند؟</span>
+چون اگر رویداد ارسال شود و تراکنش بعداً شکست بخورد، رویدادی برای چیزی که ذخیره
+نشده منتشر شده. اگر بعد از تراکنش بفرستید و ارسال شکست بخورد، داده ذخیره شده ولی
+کسی خبردار نشده. Outbox هر دو را حل می‌کند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۲ — الگوی Outbox چطور کار می‌کند؟</span>
+رویداد در یک جدول کنار داده‌ی کسب‌وکار و در <strong>همان تراکنش</strong> ذخیره
+می‌شود. یک پروسه‌ی جدا (relay) رویدادهای منتشرنشده را می‌خواند و به Broker می‌فرستد و
+سپس علامت می‌زند. نتیجه: یا هر دو ذخیره می‌شوند یا هیچ‌کدام.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۳ — idempotency چیست و چرا ضروری است؟</span>
+یعنی پردازش دو بار همان پیام، همان اثر را داشته باشد. ضروری است چون هیچ پیام‌رسانی
+تحویل «دقیقاً یک‌بار» نمی‌دهد؛ کمینه‌ی واقعی «حداقل یک‌بار» است و مصرف‌کننده هر پیام
+را ممکن است دوباره ببیند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۴ — چگونه مصرف‌کننده را idempotent می‌کنید؟</span>
+با جدول <code>processed_events</code>: قبل از پردازش بررسی می‌کنید eventId دیده شده یا
+نه، و پس از پردازش آن را ثبت می‌کنید — در همان تراکنش منطق، تا اتمیک باشد. روش‌های
+دیگر: کلید یکتای طبیعی روی داده، یا قابلیت idempotent در Broker.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۵ — DLQ چیست و چه زمانی لازم است؟</span>
+Dead Letter Queue، صفی برای پیام‌هایی که پس از چند تلاش ناموفق به DLQ می‌روند. بدون
+آن، پیام یا بی‌نهایت retry می‌شود (و منابع را می‌بلعد) یا بی‌صدا گم می‌شود. مهم‌تر از
+خود DLQ، پایش و هشدار روی آن است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۶ — چطور ترتیب رویدادها را حفظ می‌کنید؟</span>
+با استفاده از یک کلید مشخص (مثلاً <code>orderId</code>) هنگام انتشار. در Kafka،
+رویدادهای با کلید یکسان همیشه در یک پارتیشن می‌روند و ترتیبشان حفظ می‌شود. بدون کلید،
+ترتیب تضمین نمی‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۷ — رویداد را چطور نسخه‌بندی می‌کنید؟</span>
+در مسیر package: <code>com.shop.order.v1.OrderPlaced</code>. قواعد سازگاری: افزودن فیلد
+مجاز است، حذف یا تغییر نوع فیلد مجاز نیست. برای تغییرات ناسازگار، نسخه‌ی جدید
+می‌سازید و نسخه‌ی قدیمی را مدتی نگه می‌دارید.
+</div>
+
+<h3>سطح Senior (۱۸ تا ۲۰)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۸ — Saga چیست و چه جایگزینی برای تراکنش توزیع‌شده؟</span>
+الگویی برای هماهنگی عملیات در چند سرویس که به‌جای Rollback، از عملیات جبرانی استفاده
+می‌کند. دو نوع دارد: Choreography (هر سرویس به رویداد بعدی گوش می‌دهد) و
+Orchestration (یک سرویس مرکزی ترتیب می‌دهد). جایگزین کم‌کاربردی برای 2PC است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۹ — چگونه یک جریان EDA را عیب‌یابی می‌کنید؟</span>
+با سه ابزار: (۱) <code>correlationId</code> که از درخواست کاربر تا هر سرویس
+منتشر می‌شود؛ (۲) ثبت <code>eventId</code> در لاگ هر مصرف‌کننده؛ (۳) ابزارهای
+ردیابی توزیع‌شده مثل Jaeger. پیام‌های مانده در DLQ را با replay در محیط تست بررسی
+می‌کنید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۲۰ — چگونه در یک سازمان بزرگ EDA را معرفی می‌کنید؟</span>
+تدریجی و با یک جریان مشخص شروع می‌کنید (مثلاً اعلان سفارش). اول Outbox را بدون Broker
+به کار می‌برید تا سازگاری به دست آید، سپس یک مصرف‌کننده را جدا می‌کنید، و وقتی تیم
+مسلط شد زیرساخت را جدی می‌کنید. مهم: ابزار پایش (lag و DLQ) را از روز اول بسازید وگرنه
+دیده‌اید شدید.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا EDA یعنی همه‌چیز ناهمگام باشد؟</span>
+نه. بهترین سیستم‌ها ترکیبی هستند: کاری که کاربر منتظرش است همگام، و کار پس‌زمینه‌ای
+رویدادمحور. درگاه پرداخت را همگام صدا بزنید ولی فاکتور و اعلان را با رویداد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">تفاوت Event Driven و Event Sourcing چیست؟</span>
+EDA درباره‌ی <em>الگوی ارتباط</em> است: چطور اجزا با هم حرف می‌زنند. Event Sourcing
+درباره‌ی <em>ذخیره‌سازی</em> است: به‌جای نگه‌داشتن وضعیت فعلی، رویدادها را نگه می‌دارید
+و وضعیت را از آن‌ها می‌سازید. می‌توانید یکی بدون دیگری داشته باشید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا Kafka همان Broker است؟</span>
+Kafka یک پیاده‌سازی است، نه خود مفهوم. Brokerهای دیگر RabbitMQ، NATS، AWS SQS و
+Azure Service Bus هم هستند. انتخاب بین آن‌ها بیشتر به نیاز شما به ترتیب، حجم و مدل
+مصرف بستگی دارد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا Outbox خودش یک anti-pattern نیست؟</span>
+نه، یک راه‌حل شناخته‌شده و پذیرفته‌شده برای مسئله‌ی «دو نوشتن». نقطه‌ی ضعفش این است که
+رویداد یک‌بار دیرتر منتشر می‌شود (به اندازه‌ی فاصله‌ی polling) و یک جدول اضافه می‌کند.
+برای اکثر سیستم‌ها این هزینه ناچیز است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چطور رویداد تکراری را تشخیص دهم؟</span>
+هر رویداد باید یک <code>eventId</code> یکتا داشته باشد. مصرف‌کننده آن را در یک جدول
+با قید یکتا ثبت می‌کند و قبل از پردازش بررسی می‌کند. ثبت باید در همان تراکنش منطق
+باشد تا در صورت rollback دوباره پردازش شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا پیام‌ها باید کوچک باشند؟</span>
+بله، تا حد ممکن. پیام بزرگ یعنی مصرف‌کننده به داده‌ای وابسته می‌شود که شاید به آن نیاز
+نداشته باشد، سریال‌سازی کند می‌شود و نسخه‌بندی‌اش سخت است. اگر داده زیاد است، فقط
+شناسه بفرستید و اجازه دهید مصرف‌کننده بپرسد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">مصرف‌کننده‌ی کند چه مشکلی ایجاد می‌کند؟</span>
+اگر پارتیشن اشغال شود، مصرف‌کننده‌های پشت آن صف می‌کنند و lag بالا می‌رود. راه‌حل:
+افزایش concurrency مصرف‌کننده، یا کاهش بار آن با تقسیم کار.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا می‌توان چند سرویس یک topic را مصرف کنند؟</span>
+بله، ولی هرکدام باید گروه مصرف‌کننده‌ی (consumer group) متفاوت داشته باشند تا هر پیام
+را یکی از آن‌ها بگیرد. اگر گروه یکسان باشد، کار بین اعضای همان گروه تقسیم می‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چطور رویدادهای قدیمی را دوباره پردازش کنم؟</span>
+در Kafka با تغییر offset گروه به نقطه‌ی قبلی. اما حواستان باشد که این کار همه‌ی
+مصرف‌کننده‌های آن گروه را تحت تأثیر قرار می‌دهد؛ معمولاً یک گروه موقت با شناسه‌ی دیگر
+می‌سازید و پیام‌ها را به یک topic دیگر هدایت می‌کنید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا EDA برای اپ موبایل مناسب است؟</span>
+برای همگام‌سازی آفلاین، بله. یک لایه‌ی sync می‌تواند تغییرات محلی را به‌صورت رویداد
+بفرستد و سرور تغییرات را برگرداند. ولی هسته‌ی منطق برنامه معمولاً بهتر است ساده بماند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">Event Notification یا Event Carrying State Transfer؟</span>
+اگر مصرف‌کننده داده‌ی تازه لازم دارد، Notification بهتر است. اگر داده در پیام آمده و
+تازگی آن مهم نیست، ECST سریع‌تر است و یک رفت‌وبرگشت شبکه را حذف می‌کند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چقدر طول می‌کشد تا راه بیفتد؟</span>
+برای یک تیم مسلط: ۲ تا ۴ هفته. برای تیم تازه‌کار: ۲ تا ۳ ماه. بیشترین وقت صرف
+درک مفاهیم تحویل، idempotency و عیب‌یابی می‌شود، نه در کد زدن.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا به DevOps نیاز دارد؟</span>
+بله. EDA بدون پایش، یعنی سیستمی که خراب می‌شود و شما نمی‌دانید. داشبورد lag، هشدار
+DLQ و ردیابی توزیع‌شده بخشی از معماری است، نه ابزار جانبی.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چطور بین سرویس‌ها قرارداد را مدیریت کنم؟</span>
+یک ماژول یا مخزن جدا برای قراردادها بسازید و نسخه‌بندی را در مسیر package بگذارید.
+فقط Integration Event را مشترک کنید، نه مدل دامنه را.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">مهم‌ترین توصیه برای شروع چیست؟</span>
+با یک جریان کاملاً مشخص شروع کنید، همه‌چیز را ناگهانی رویدادمحور نکنید. و از روز اول
+پایش lag و DLQ را بسازید، حتی اگر سیستم کوچک است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">اگر کاربر از «هنوز در حال پردازش است» شکایت کرد چه؟</span>
+این یک مسئله‌ی تجربه‌ی کاربری است، نه یک اشکال. راه‌حل‌ها: نمایش وضعیت پیشرفت، ارسال
+اعلان push پس از پایان، یا بهینه‌سازی زمان پردازش. معمولاً ترکیب اول و دوم کافی است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چه زمانی باید از EDA دست بکشیم؟</span>
+وقتی پیچیدگی‌ای که اضافه کرده‌اید از مشکلی که حل کرده بیشتر شده و تیم نتواند جریان
+را در ذهن نگه دارد. یا وقتی کاربر نتیجه را «همین الان» لازم دارد و سازگاری نهایی
+قابل قبول نیست.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<table>
+<thead>
+<tr><th>مفهوم</th><th>یک‌خطی</th><th>قانون طلایی</th></tr>
+</thead>
+<tbody>
+<tr><td>EDA</td><td>ارتباط با رویداد به‌جای فراخوانی</td><td>کاربر منتظر؟ فراخوانی؛ وگرنه رویداد</td></tr>
+<tr><td>Event</td><td>اتفاق قطعی در گذشته</td><td>نام همیشه با گذشته</td></tr>
+<tr><td>Producer</td><td>منتشرکننده</td><td>از مصرف‌کننده بی‌خبر</td></tr>
+<tr><td>Consumer</td><td>گوش‌دهنده</td><td>idempotent باشد</td></tr>
+<tr><td>Broker</td><td>واسط ذخیره و تحویل</td><td>ذخیره‌سازی پایدار</td></tr>
+<tr><td>Topic</td><td>کانال رویداد</td><td>یک نوع رویداد = یک topic</td></tr>
+<tr><td>Partition</td><td>بخش مرتب</td><td>کلید = موجودی = ترتیب</td></tr>
+<tr><td>Consumer Group</td><td>گروه مصرف مستقل</td><td>هر سرویس گروه خودش</td></tr>
+<tr><td>Domain Event</td><td>رویداد داخل دامنه</td><td>از مرز سرویس بیرون نرود</td></tr>
+<tr><td>Integration Event</td><td>قرارداد بین سرویس‌ها</td><td>فقط مخاطبان مشخص</td></tr>
+<tr><td>Outbox</td><td>جدول رویداد کنار داده</td><td>همان تراکنش</td></tr>
+<tr><td>Relay</td><td>خواندن outbox و انتشار</td><td>قابل اجرای مجدد</td></tr>
+<tr><td>Idempotency</td><td>اثر یکسان با پردازش دوباره</td><td>جدول processed_events</td></tr>
+<tr><td>eventId</td><td>شناسه‌ی یکتای رویداد</td><td>کلید حذف تکرار</td></tr>
+<tr><td>correlationId</td><td>ردیابی یک درخواست</td><td>از رابط کاربری تا هر سرویس</td></tr>
+<tr><td>DLQ</td><td>صف پیام‌های شکست‌خورده</td><td>باید پایش شود</td></tr>
+<tr><td>Retry + Backoff</td><td>تلاش مجدد با فاصله</td><td>سقف تلاش داشته باشد</td></tr>
+<tr><td>At-least-once</td><td>حداقل یک‌بار</td><td>استاندارد واقعی</td></tr>
+<tr><td>Effectively-once</td><td>تقریباً یک‌بار</td><td>هدف عملی با idempotency</td></tr>
+<tr><td>Saga</td><td>هماهنگی چند مرحله‌ای</td><td>جبران به‌جای Rollback</td></tr>
+<tr><td>Choreography</td><td>هماهنگی غیرمتمرکز</td><td>ساده ولی گم می‌شود</td></tr>
+<tr><td>Orchestration</td><td>هماهنگی مرکزی</td><td>قابل مشاهده ولی نقطه‌ی شکست</td></tr>
+<tr><td>Eventual Consistency</td><td>همگرایی با تأخیر</td><td>برای پول مناسب نیست</td></tr>
+<tr><td>سازگاری قرارداد</td><td>اضافه کن، حذف نکن</td><td>تغییر نوع = نسخه‌ی جدید</td></tr>
+<tr><td>Schema Version</td><td>نسخه در مسیر package</td><td>مصرف‌کننده همیشه قدیمی‌تر</td></tr>
+<tr><td>consumer_lag</td><td>پیام‌های خوانده‌نشده</td><td>مهم‌ترین شاخص سلامت</td></tr>
+<tr><td>lag چند زیاد است؟</td><td>بسته به بودجه‌ی کسب‌وکار</td><td>بیش از ۱ دقیقه = هشدار</td></tr>
+<tr><td>نشانه‌ی خطا</td><td>ack قبل از تراکنش</td><td>ممکن است پیام گم شود</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">خلاصه در ۱۰ ثانیه</span>
+EDA = «به‌جای اینکه صدا بزنی، بگو چه اتفاقی افتاد؛ هرکس خواست گوش می‌دهد. پیام را
+در همان تراکنش ذخیره کن (Outbox)، مصرف‌کننده را idempotent بنویس، و lag و DLQ را
+پایش کن.»
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<h3>Roadmap یادگیری</h3>
+
+<table>
+<thead>
+<tr><th>مرحله</th><th>مدت</th><th>هدف</th><th>تمرین</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>۱. مفاهیم</strong></td><td>۱ هفته</td><td>رویداد، broker، topic، مصرف</td><td>یک topic بسازید و پیام بفرستید</td></tr>
+<tr><td><strong>۲. Outbox</strong></td><td>۲ هفته</td><td>تضمین اتمیک بودن</td><td>پیاده‌سازی کامل relay با تست</td></tr>
+<tr><td><strong>۳. مصرف امن</strong></td><td>۲ هفته</td><td>idempotency، DLQ، retry</td><td>مصرف‌کننده‌ی مقاوم با تست تکرار</td></tr>
+<tr><td><strong>۴. قرارداد</strong></td><td>۲ هفته</td><td>نسخه‌بندی و سازگاری</td><td>تعریف schema و تست سازگاری</td></tr>
+<tr><td><strong>۵. پایش</strong></td><td>۲ هفته</td><td>lag، DLQ، ردیابی</td><td>داشبورد Grafana برای lag</td></tr>
+<tr><td><strong>۶. پیشرفته</strong></td><td>۴ هفته</td><td>Saga، Event Sourcing</td><td>پیاده‌سازی یک جریان با جبران</td></tr>
+</tbody>
+</table>
+
+<h3>منابع پیشنهادی</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>مستندات Apache Kafka</strong> — بخش طراحی برای درک عمیق partitioning</li>
+<li><strong>مستندات CloudEvents</strong> — استاندارد پیام</li>
+<li><strong>مستندات AsyncAPI</strong> — توصیف قرارداد رویداد به‌صورت کد</li>
+<li><strong>مقاله‌ی Transactional Outbox</strong> در وبلاگ Chris Richardson</li>
+<li><strong>مستندات Debezium</strong> — برای CDC به‌عنون جایگزین outbox</li>
+<li><strong>Debian/Confluent tutorials</strong> — تمرین عملی رایگان</li>
+</ul>
+</div>
+
+<h3>جمع‌بندی</h3>
+
+<p>
+<strong>Event Driven Architecture</strong> قدرتمندترین و در عین حال خطرناک‌ترین
+معماری این سری است. قدرتمند است چون کوپل را کم می‌کند و کاربر را منتظر نمی‌گذارد؛
+خطرناک است چون سیستم را از حالت قابل ردیابی خارج می‌کند.
+</p>
+
+<p>
+تفاوت یک پیاده‌سازی خوب از یک پیاده‌سازی بد، در چهار چیز خلاصه می‌شود:
+<strong>Outbox</strong> برای اتمیک بودن، <strong>idempotency</strong> برای تحمل
+تکرار، <strong>DLQ</strong> برای نداشتن پیام گم‌شده، و <strong>پایش lag</strong>
+برای دیدن آنچه در جریان است. اگر این چهار را دارید، EDA شما قابل اعتماد است.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله دوازدهمین عضو سری «معماری‌های نرم‌افزاری» است. اکنون الگوهای رابط کاربری
+(MVC، MVP، MVVM، MVI)، الگوهای معماری (Clean، Onion، Hexagonal، Layered، Repository،
+DDD)، ساختار کد (Feature Based) و ارتباط بین سرویس‌ها (Event Driven) را پوشش
+داده‌ایم. دو مقاله‌ی پایانی سری: <strong>CQRS</strong> و <strong>Microservices</strong>.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: زنجیره‌ای که شکستن می‌خورد</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">EDA چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: رویداد به‌جای فراخوانی</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">انواع رویداد و قرارداد پیام</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">ساختار معماری</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: ثبت سفارش</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">الگوی Outbox</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: زنجیره‌ای که شکستن می‌خورد</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">EDA چیست؟ (تعریف دقیق)</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: رویداد به‌جای فراخوانی</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">انواع رویداد و قرارداد پیام</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">ساختار معماری</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: ثبت سفارش</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">الگوی Outbox</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

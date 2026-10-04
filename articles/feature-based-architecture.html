@@ -1,0 +1,2885 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feature Based Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله معماری مبتنی بر قابلیت را کامل یاد می‌گیرید: تفاوت با لایه‌بندی، ساختار ماژول‌ها، پیاده‌سازی کامل Java 21، مدیریت وابستگی بین ماژول‌ها، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="Feature Based Architecture, معماری فیچر بیس, Vertical Slice Architecture, ساختار پروژه, Modular Monolith, Java, Spring Modulith, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, modularization">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Feature Based Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله معماری مبتنی بر قابلیت را کامل یاد می‌گیرید: تفاوت با لایه‌بندی، ساختار ماژول‌ها، پیاده‌سازی کامل Java 21، مدیریت وابستگی بین ماژول‌ها، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/feature-based-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/feature-based-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Feature Based Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Feature Based Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="سازماندهی کد بر اساس قابلیت به‌جای لایه، پیاده‌سازی Java 21، مدیریت وابستگی ماژول‌ها و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Feature Based Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه",
+    "description": "در این مقاله معماری مبتنی بر قابلیت را کامل یاد می‌گیرید: تفاوت با لایه‌بندی، ساختار ماژول‌ها، پیاده‌سازی کامل Java 21، مدیریت وابستگی بین ماژول‌ها، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/feature-based-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/feature-based-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Feature Based Architecture, Vertical Slice, Modular Monolith, Java, Spring Modulith",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Feature Based Architecture", "item": "https://haedarfarhani.github.io/My-Articles/articles/feature-based-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Feature Based Architecture</span>؛ وقتی «لایه‌ها» به کابوس تبدیل می‌شوند
+          </h1>
+
+          <p class="hero-lead">
+            به‌جای اینکه کد را بر اساس <em>نوع کلاس</em> (Controller، Service، Repository)
+            دسته‌بندی کنید، آن را بر اساس <strong>قابلیت کسب‌وکار</strong> دسته‌بندی کنید.
+            در این راهنما می‌بینیم چرا ساختار لایه‌ای در پروژه‌های بزرگ فرو می‌ریزد، چگونه
+            هر فیچر را با پوشه‌ی خودش مستقل کنیم، و با <code>Java 21</code> و
+            <code>Spring Modulith</code> این ساختار را واقعاً پیاده می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Feature_Based</span>
+            <span class="post-tag">#Vertical_Slice</span>
+            <span class="post-tag">#Modular_Monolith</span>
+            <span class="post-tag">#Spring_Modulith</span>
+            <span class="post-tag">#Java</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی پوشه‌ها بزرگ می‌شوند</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Feature Based چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: برش عمودی</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Feature در برابر Layer و Slice</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>ساختار معماری</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>مثال عملی کامل: ماژول سفارش</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مقایسه با معماری‌های دیگر</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی پوشه‌ها بزرگ می‌شوند</h2>
+
+<p>
+فرض کنید پروژه‌ی شما دو سال است زنده است. ساختارش «استاندارد» است:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>src/main/java/com/company/shop/
+├── controller/          ← ۴۲ فایل
+│   ├── UserController.java
+│   ├── OrderController.java
+│   ├── ProductController.java
+│   └── ... ۳۹ فایل دیگر
+├── service/             ← ۶۸ فایل
+│   ├── UserService.java        ← ۱٬۲۰۰ خط
+│   ├── OrderService.java       ← ۸۷۰ خط
+│   └── ... ۶۶ فایل دیگر
+├── repository/          ← ۳۱ فایل
+├── entity/              ← ۲۸ فایل
+├── dto/                 ← ۵۵ فایل
+├── util/                ← ۲۴ فایل
+└── config/              ← ۱۹ فایل</code></pre>
+
+<p>
+حالا یک فیچر جدید به شما می‌دهند: «سفارش عمده‌فروشی». اولین سؤال یک توسعه‌دهنده‌ی تازه‌وارد
+چیست؟
+</p>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مشکل واقعی</span>
+«کدام فایل‌ها را باید تغییر بدهم؟» جواب: یک Controller جدید، یک Service جدید، یک
+Repository جدید، دو DTO، و یک تغییر در <code>OrderService</code>. هشت فایل در
+<strong>شش پوشه‌ی مختلف</strong>. هیچ‌کدام کنار هم نیستند.
+</div>
+
+<p>
+همین یک فیچر، سه مشکل جدی می‌سازد:
+</p>
+
+<ol>
+<li><strong>نبود محل مالکیت</strong> — کدام تیم مسئول سفارش است؟ «هرکسی که به
+<code>Order</code> دست می‌زند.» یعنی همه.</li>
+<li><strong>افزودن ویژگی جدید به سیستم نیازمند دانستن همه‌ی لایه‌هاست</strong> —
+این همان <em>تعداد دفعات تغییر</em> (Change Amplification) است.</li>
+<li><strong>تست‌ها غیرقابل جداسازی‌اند</strong> — تست <code>OrderService</code> برای
+اجرا به ۱۲ Repository دیگر نیاز دارد.</li>
+</ol>
+
+<h3>ریشه‌ی مشکل: دسته‌بندی افقی</h3>
+
+<p>
+ساختار لایه‌ای کد را بر اساس <strong>نوع کلاس</strong> دسته‌بندی می‌کند: Controller، Service،
+Repository. این یعنی یک قابلیت کسب‌وکار (سفارش) به شش پوشه پخش می‌شود. به این می‌گویند
+<strong>برش افقی (Horizontal Slice)</strong>.
+</p>
+
+<p>
+معماری مبتنی بر قابلیت، دقیقاً برعکس عمل می‌کند: یک قابلیت = یک پوشه‌ی کامل که همه‌ی
+لایه‌هایش داخل خودش است.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>src/main/java/com/company/shop/
+├── order/                    ← همه‌چیز مربوط به سفارش، یک‌جا
+│   ├── api/     OrderController.java، OrderRequest، OrderResponse
+│   ├── domain/  Order.java، OrderStatus، OrderService
+│   ├── data/    OrderRepository.java، OrderJpaEntity
+│   └── config/  OrderModuleConfig.java
+├── product/
+├── customer/
+└── shared/                   ← فقط ابزارهای واقعاً مشترک</code></pre>
+
+<p>
+حالا همان فیچر «سفارش عمده‌فروشی» فقط داخل پوشه‌ی <code>order/</code> پیاده می‌شود.
+</p>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+برخلاف DDD یا Microservices، معماری مبتنی بر قابلیت یک نظریه‌ی واحد با یک مؤلف ندارد؛
+از چند منبع مستقل رشد کرده است:
+</p>
+
+<table>
+<thead>
+<tr><th>سال</th><th>منبع</th><th>ایده‌ی کلیدی</th><th>اثر</th></tr>
+</thead>
+<tbody>
+<tr><td>۲۰۰۰–۲۰۰۵</td><td>تیم‌های بزرگ مایکروسافت و گوگل</td><td>ساختار «بر اساس قابلیت» برای مخازن عظیم</td><td>الگوی رایج در سیستم‌های چندمیلیون‌خطی</td></tr>
+<tr><td>۲۰۱۱</td><td>Vert.x و سایر فریم‌ورک‌های غیرسنکرون</td><td>ماژول به‌عنوان واحد مستقل بارگذاری</td><td>امکان بارگذاری مستقل هر ماژول</td></tr>
+<tr><td>۲۰۱۵</td><td>آرتور فنی وایت‌فیلد، «پاکسازی معماری»</td><td>تشخیص سیستم‌های زنده و مشکل برش افقی</td><td>واژه‌ی «Feature Slicing» رایج شد</td></tr>
+<tr><td>۲۰۱۸</td><td>آرون هاردکیسلدر، <em>Microservices Patterns</em></td><td>هر قابلیت = یک واحد مستقل</td><td>پل زدن ماژول داخلی به میکروسرویس</td></tr>
+<tr><td>۲۰۲۰</td><td>Spring Modulith (اوجن بوچاک)</td><td>اجرای modularity در مونولیث با ابزار</td><td>قابلیت اجرا و راستی‌آزمایی خودکار</td></tr>
+<tr><td>۲۰۲۲–اکنون</td><td>معماری Vertical Slice ایان کوپر</td><td>برش عمودی بر اساس <em>درخواست کاربر</em></td><td>تأکید بر جریان کامل هر فیچر</td></tr>
+</tbody>
+</table>
+
+<h3>ریشه‌ی نیاز: هزینه‌ی تغییر</h3>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">معیار Change Amplification</span>
+«تعداد فایل‌هایی که برای افزودن یک قابلیت جدید باید تغییر کنند.» در ساختار افقی این
+عدد بزرگ است (هشت فایل در شش پوشه). در ساختار عمودی این عدد کوچک است (همه در یک پوشه)
+و مهم‌تر از آن، <strong>همه در یک جا</strong> هستند.
+</div>
+
+<p>
+این عدد مستقیماً با «هزینه‌ی تغییر» رابطه دارد. اگر افزودن یک فیچر ساده دو هفته وقت
+بگیرد، تیم شما عملاً نمی‌تواند تغییر کند — و تغییر، همان چیزی است که محصول زنده نیاز
+دارد.
+</p>
+
+<h3>رابطه با موج Microservices</h3>
+
+<p>
+معماری مبتنی بر قابلیت، <strong>پیش‌نیاز موفقیت میکروسرویس</strong> است. اگر نمی‌توانید
+کدتان را در ماژول‌های مستقل (در یک فرایند) تقسیم کنید، قطعاً نمی‌توانید آن را بین
+چند سرویس مستقل (در چند فرایند) تقسیم کنید. دلیل اینکه بیشتر مهاجرت‌های میکروسرویس
+شکست می‌خورند، همین است.
+</p>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Feature Based چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تعریف</span>
+معماری مبتنی بر قابلیت یعنی سازماندهی کد به‌گونه‌ای که هر <strong>پوشه‌ی اصلی، یک قابلیت
+کسب‌وکار کامل و مستقل</strong> باشد و همه‌ی لایه‌های لازم برای آن — از رابط کاربری تا
+دیتابیس — داخل همان پوشه قرار بگیرد.
+</div>
+
+<p>
+به زبان ساده: <strong>«به‌جای ساختن لایه‌های بزرگ، پوشه‌های کوچک عمودی بساز».</strong>
+</p>
+
+<h3>سه ویژگی تعریف‌کننده</h3>
+
+<table>
+<thead>
+<tr><th>ویژگی</th><th>معنا</th><th>نتیجه‌ی عملی</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>عمودی (Vertical)</strong></td><td>هر فیچر همه‌ی لایه‌ها را دارد</td><td>تغییر یک فیچر، فقط همان پوشه را لمس می‌کند</td></tr>
+<tr><td><strong>مستقل (Self-contained)</strong></td><td>فیچر برای کار کردن به فیچر دیگر وابسته نیست</td><td>موازی‌سازی کار تیم‌ها ممکن می‌شود</td></tr>
+<tr><td><strong>محل مالکیت (Ownership)</strong></td><td>هر فیچر یک تیم مالک دارد</td><td>«چه کسی این را می‌شکند؟» پاسخ روشن دارد</td></tr>
+</tbody>
+</table>
+
+<h3>ساختار مفهومی</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph F1["فیچر: order — مالک: تیم خرید"]
+        A1["api/<br/>Controller، Request، Response"]
+        A2["domain/<br/>مدل و قوانین"]
+        A3["data/<br/>Repository و Entity"]
+        A1 --> A2 --> A3
+    end
+
+    subgraph F2["فیچر: payment — مالک: تیم مالی"]
+        B1["api/"] --> B2["domain/"] --> B3["data/"]
+    end
+
+    subgraph S["shared — بدون مالک، مالک تیم معماری"]
+        S1["Money"]
+        S2["PageResponse"]
+        S3["SecurityConfig"]
+    end
+
+    F1 --> S
+    F2 --> S
+    F1 -.->|"فقط از طریق<br/>قرارداد عمومی"| F2
+
+    style F1 fill:#0f766e,color:#fff,stroke:#0f766e
+    style S fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<h3>سه سطح ماژولار بودن</h3>
+
+<table>
+<thead>
+<tr><th>سطح</th><th>توضیح</th><th>سختی</th><th>مناسب برای</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>package-based</strong></td><td>فقط پوشه‌بندی؛ کد هنوز به هم وصل است</td><td>کم</td><td>همیشه، حتی پروژه‌ی کوچک</td></tr>
+<tr><td><strong>module-based</strong></td><td>هر ماژول یک واحد مستقل با API مشخص</td><td>متوسط</td><td>اکثر پروژه‌های متوسط و بزرگ</td></tr>
+<tr><td><strong>deployment-unit</strong></td><td>هر ماژول جداگانه مستقر می‌شود</td><td>زیاد</td><td>میکروسرویس</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">پیشنهاد عملی</span>
+از <code>package-based</code> شروع کنید. حتی اگر هرگز به ماژول واقعی نرسیدید،
+همان پوشه‌بندی عمودی به‌تنهایی ارزش قابل‌توجهی دارد و ریسک کمی دارد.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<h3>۱. پوشه‌ی Utility (سطل زباله‌ی کد)</h3>
+
+<pre class="kl-code" data-lang="text"><code>utils/
+├── StringUtils.java         ← استفاده از ۴ فیچر مختلف
+├── DateUtils.java           ← هیچ‌کس نمی‌داند کجا استفاده می‌شود
+├── UserUtils.java           ← منطق کسب‌وکار در جای اشتباه
+├── Constants.java           ← ۲۰۰ ثابت، ۱۸۰ تایش مرده
+└── ... ۲۱ فایل دیگر</code></pre>
+
+<p>
+این پوشه <strong>مالک ندارد</strong>. هرکس هرچه لازم داشت اینجا می‌گذارد. بعد از دو سال،
+هیچ‌کس جرئت نمی‌کند چیزی را از آن حذف کند چون نمی‌داند چه کسی به آن وابسته است.
+</p>
+
+<h3>۲. Service غول‌پیکر</h3>
+
+<pre class="kl-code" data-lang="java"><code>@Service
+public class OrderService {                 // ← ۱٬۲۰۰ خط
+
+    public Order placeOrder(...) { }         // منطق سفارش
+    public void refund(...) { }              // منطق بازگشت وجه
+    public Report generateReport(...) { }    // گزارش‌گیری
+    public void syncWithWarehouse(...) { }   // ارتباط انبار
+    public void notifyCustomer(...) { }      // اعلان
+    public BigDecimal calculateTax(...) { }   // مالیات
+
+    // ۱۲ وابستگی تزریق‌شده
+    private final UserRepository users;
+    private final ProductRepository products;
+    private final InventoryClient inventory;
+    private final PaymentClient payment;
+    private final TaxService tax;
+    // ...
+}</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">نشانه‌ی کلاسیک</span>
+وقتی یک کلاس بیش از ۵ وابستگی تزریق‌شده دارد، یا بیش از ۵۰۰ خط است، یا نامش با «Service»
+تمام می‌شود ولی یک کار مشخص نمی‌کند، مشکل از ساختار افقی است.
+</div>
+
+<h3>۳. توسعه‌دهنده‌ای که همه‌چیز را می‌شکند</h3>
+
+<pre class="kl-code" data-lang="text"><code>علی یک باگ در محاسبه‌ی تخفیف پیدا کرد.
+
+علی فایل‌های تغییرکرده:
+  service/OrderService.java
+  service/PricingService.java
+  entity/Customer.java
+  repository/DiscountRepository.java
+  dto/PricingResponse.java
+  util/MoneyUtils.java
+  config/CacheConfig.java
+  + ۳ فایل تست
+
+سؤال: کدام فیچر؟     → پاسخ: معلوم نیست
+سؤال: چه کسی مالک؟   → پاسخ: هیچ‌کس
+سؤال: چه چیزی شکست؟  → پاسخ: همه‌چیز</code></pre>
+
+<h3>۴. تاریخچه‌ی ترسناک گیت</h3>
+
+<pre class="kl-code" data-lang="bash"><code># دو ماه بعد، یک باگ دیگر در همان تخفیف:
+$ git log --oneline -- src/main/java/com/shop/service/OrderService.java | wc -l
+2847      # ← ۲۸۴۷ تغییر در یک فایل، همه‌ی آن‌ها "همه‌چیز" بوده
+
+# نتیجه: هیچ‌کدام از این تغییها به یک فیچر مشخص ربط ندارد
+# و merge conflict تقریباً تضمینی است</code></pre>
+
+<h3>۵. مرزهای مبهم برای تیم‌ها</h3>
+
+<p>
+وقتی ساختار افقی است، تقسیم کار بین تیم‌ها یعنی «علی کنترلرها، سارا سرویس‌ها». این تقسیم
+باعث <strong>مالکیت مشترک</strong> می‌شود و مالکیت مشترک یعنی هیچ‌کس مسئول نیست.
+</p>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: برش عمودی</h2>
+
+<h3>جابه‌جایی محور دسته‌بندی</h3>
+
+<table>
+<thead>
+<tr><th>محور</th><th>لایه‌ای (افقی)</th><th>Feature Based (عمودی)</th></tr>
+</thead>
+<tbody>
+<tr><td>پوشه‌ی اصلی</td><td>نوع کلاس: <code>controller/</code></td><td>قابلیت: <code>order/</code></td></tr>
+<tr><td>پوشه‌ی دوم</td><td>نوع کلاس: <code>service/</code></td><td>قابلیت: <code>payment/</code></td></tr>
+<tr><td>محل لایه‌ها</td><td>در کل پروژه پخش‌اند</td><td>داخل هر فیچر</td></tr>
+<tr><td>افزودن فیچر جدید</td><td>۶ پوشه‌ی جدید</td><td>۱ پوشه‌ی جدید</td></tr>
+<tr><td>حذف فیچر</td><td>پیدا کردن فایل‌ها در ۶ پوشه</td><td>حذف یک پوشه</td></tr>
+<tr><td>مالکیت</td><td>بر اساس لایه</td><td>بر اساس فیچر</td></tr>
+</tbody>
+</table>
+
+<h3>تست حذف کامل</h3>
+
+<p>
+معتبرترین معیار انتخاب یک فیچر این است: <strong>آیا می‌توانید کل پوشه‌اش را حذف کنید و
+مطمئن باشید چیزی از کار نمی‌افتاد؟</strong>
+</p>
+
+<pre class="kl-code" data-lang="bash"><code># پوشه‌ی order/ کاملاً حذف می‌شود، بدون شکستن چیزی:
+rm -rf src/main/java/com/shop/order/
+
+# اگر این کار امن است → مرزها درست‌اند
+# اگر چیزی از کار افتاد → یک فیچر دیگر به این پوشه وابسته بوده
+# یعنی این پوشه یک فیچر نبوده، یک لایه بوده است</code></pre>
+
+<h3>قواعد طراحی فیچر</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>نام پوشه = نام قابلیت کسب‌وکار</strong> (نه <code>common</code>، نه <code>base</code>)</li>
+<li><strong>هر فیچر، API عمومی مشخص دارد</strong>؛ بقیه‌ی کلاس‌ها <code>package-private</code></li>
+<li><strong>فیچرها فقط از طریق API عمومی همدیگر را می‌شناسند</strong></li>
+<li><strong>پوشه‌ی shared فقط برای چیزی که واقعاً به هر دو نیاز دارد</strong></li>
+<li><strong>هر فیچر می‌تواند تست خودش را داشته باشد</strong>، مستقل از بقیه</li>
+<li><strong>هر فیچر یک تیم مالک دارد</strong></li>
+<li><strong>هیچ فیچری به پوشه‌ی فیچر دیگر <code>import</code> نمی‌کند</strong> مگر از طریق قرارداد عمومی</li>
+</ul>
+</div>
+
+<h3>دام بزرگ: shared</h3>
+
+<pre class="kl-code" data-lang="text"><code># ❌ shared به‌تدریج به سطل زباله تبدیل می‌شود:
+shared/
+├── utils/
+├── models/
+├── dto/
+├── exceptions/
+└── ... همه‌چیز اینجا آمد!
+
+# ✅ تست ساده: آیا واقعاً بیش از یک فیچر به این نیاز دارد؟
+shared/
+├── Money.java              ← ۴ فیچر استفاده می‌کنند ✅
+├── PageResponse.java       ← همه‌ی APIها نیاز دارند ✅
+└── NotFoundException.java  ← توافق مشترک خطا ✅
+    ↑
+    این‌ها واقعاً مشترک‌اند. اگر رشد کرد، دوباره بررسی کن.</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">قاعده‌ی سه‌بار</span>
+قبل از اینکه چیزی را در <code>shared</code> بگذارید، از خودتان بپرسید «آیا این واقعاً در
+سه جای مختلف لازم است؟» پاسخ «دو جا» یعنی هنوز جای درستی ندارد؛ دنبال جای بهتری
+بگردید.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>Feature در برابر Layer و Vertical Slice</h2>
+
+<p>
+سه اصطلاح که اغلب با هم اشتباه گرفته می‌شوند. تفاوت‌شان ظریف اما مهم است:
+</p>
+
+<table>
+<thead>
+<tr><th>ویژگی</th><th>Layer Based</th><th>Feature Based</th><th>Vertical Slice</th></tr>
+</thead>
+<tbody>
+<tr><td>محور</td><td>لایه (افقی)</td><td>قابلیت کسب‌وکار</td><td><strong>درخواست کاربر</strong></td></tr>
+<tr><td>دانه‌بندی</td><td>نوع کلاس</td><td>حوزه‌ی کسب‌وکار</td><td>هر use case</td></tr>
+<tr><td>تعداد فیچر</td><td>محدود به ۳–۵</td><td>۵ تا ۲۰</td><td>صدها</td></tr>
+<tr><td>منطق بین فیچرها</td><td>در لایه‌ی مشترک</td><td>قرارداد صریح</td><td>حداقل؛ هر اسلایس مستقل</td></tr>
+<tr><td>ریسک تکرار</td><td>پایین</td><td>متوسط</td><td><strong>بالا</strong></td></tr>
+<tr><td>مناسب برای</td><td>پروژه‌ی کوچک</td><td>پروژه‌ی متوسط تا بزرگ</td><td>تیم کوچک، محصول نو</td></tr>
+</tbody>
+</table>
+
+<h3>تفاوت عملی با یک مثال</h3>
+
+<pre class="kl-code" data-lang="text"><code>فرض کنید قابلیت «احراز هویت با پیامک» اضافه می‌شود.
+
+Feature Based (۱ فیچر):
+  auth/                      ← همه‌ی این‌ها با هم
+    ├── api/          SendOtpRequest، VerifyOtpResponse
+    ├── domain/       OtpCode، PhoneNumber، OtpService
+    └── data/         OtpRepository، OtpJpaEntity
+
+Vertical Slice (۳ اسلایس جدا):
+  sendOtp/                   ← فقط همان یک use case
+    ├── SendOtpSlice.java
+    ├── SendOtpRequest.java
+    ├── SendOtpResponse.java
+    └── SendOtpHandler.java
+  verifyOtp/
+  resendOtp/
+
+تفاوت: در Feature Based، احراز هویت یک واحد است.
+         در Vertical Slice، هر عملیات یک واحد است.</code></pre>
+
+<h3>کدام را انتخاب کنیم؟</h3>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">قاعده‌ی تصمیم</span>
+اگر تعداد تیم‌ها کم است و محصول در حال کشف است → <strong>Vertical Slice</strong>.
+اگر محصول تثبیت شده و ساختار مهم است → <strong>Feature Based</strong>.
+اگر پروژه کوچک است (زیر ۱۰ هزار خط) → <strong>لایه‌ای</strong> کافی است.
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    subgraph LB["لایه‌ای (افقی)"]
+        L1["controller/"] 
+        L2["service/"]
+        L3["repository/"]
+        L1 --> L2 --> L3
+    end
+
+    subgraph FB["Feature Based"]
+        F1["order/"] 
+        F2["payment/"]
+        F1 --> S1[("shared")]
+        F2 --> S1
+    end
+
+    subgraph VS["Vertical Slice"]
+        V1["placeOrder/"]
+        V2["cancelOrder/"]
+        V3["refundOrder/"]
+    end
+
+    style FB fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+
+<h3>رابطه‌ی Feature Based با Modular Monolith</h3>
+
+<p>
+این دو <strong>یک چیز</strong> هستند. Modular Monolith یعنی «یک استقرار، چند ماژول».
+Feature Based بیان <em>ساختار کد</em> است و Modular Monolith بیان <em>استقرار</em>. یک پروژه‌ی
+Feature Based معمولاً Modular Monolith هم هست.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">مسیر مهاجرت کم‌ریسک</span>
+لایه‌ای → Feature Based (پوشه‌بندی) → Modular Monolith (مرز API) → Microservices
+(مرز استقرار). هر مرحله ارزش مستقل دارد و می‌توانید در همان‌جا متوقف شوید.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>ساختار معماری</h2>
+
+<h3>ساختار داخلی یک فیچر</h3>
+
+<pre class="kl-code" data-lang="text"><code>com.shop.order/                    ← پوشه‌ی فیچر
+├── package-info.java              ← مستند فیچر (اختیاری ولی ارزشمند)
+├── api/                           ← ❗ فقط لایه‌ی ورودی
+│   ├── OrderController.java       ← public
+│   ├── PlaceOrderRequest.java     ← public
+│   └── OrderResponse.java         ← public
+├── domain/                        ← ❗ منطق کسب‌وکار، بدون Spring
+│   ├── Order.java                 ← package-private
+│   ├── OrderStatus.java           ← package-private
+│   ├── OrderService.java          ← package-private
+│   └── OrderRepository.java       ← package-private (Port)
+├── data/                          ← ❗ پیاده‌سازی فنی
+│   ├── OrderJpaEntity.java
+│   ├── JpaOrderRepository.java
+│   └── OrderEntityMapper.java
+├── event/                         ← Integration Event های این فیچر
+│   └── OrderPlacedEvent.java
+└── OrderModuleConfiguration.java  ← فقط پیکربندی مخصوص این فیچر</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">قانون API عمومی</span>
+فقط پوشه‌ی <code>api/</code> و کلاس‌های صریحاً <code>public</code> از بیرون دیده می‌شوند.
+بقیه <code>package-private</code> هستند تا کامپایلر جلوی استفاده‌ی نادرست را بگیرد.
+</div>
+
+<h3>قواعد وابستگی بین ماژول‌ها</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph Order["ماژول order"]
+        OA["api (public)"]
+        OD["domain (package-private)"]
+        OA --> OD
+    end
+
+    subgraph Pay["ماژول payment"]
+        PA["api (public)"]
+        PD["domain"]
+        PA --> PD
+    end
+
+    subgraph Cust["ماژول customer"]
+        CA["api (public)"]
+    end
+
+    Shared["shared<br/>Money، PageResponse"]
+
+    Pay -->|"می‌بیند"| OA
+    Order -->|"می‌بیند"| CA
+    Order --> Shared
+    Pay --> Shared
+
+    OD -.->|"❌ غیرمجاز"| PD
+
+    style OD fill:#0f766e,color:#fff,stroke:#0f766e
+    style OA fill:#0f766e,color:#fff,stroke:#0f766e
+    style Shared fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<h3>پیکربندی دسترسی بین ماژول‌ها در Java</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ماژول payment فقط public های order را می‌بیند
+package com.shop.order.api;
+
+// ❌ نباید public باشد — کسی نباید از بیرون Order را بسازد
+class Order {
+    // package-private
+}
+
+// ✅ فقط این public است: یک راه کنترل‌شده برای ساخت
+public final class Orders {
+
+    private Orders() {}
+
+    public static Order create(String customerId) {
+        return Order.create(customerId);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>// در ماژول payment:
+package com.shop.payment.domain;
+
+import com.shop.order.api.Orders;          // ✅ API عمومی مجاز
+// import com.shop.order.domain.Order;    // ❌ package-private → خطای کامپایل
+
+public final class PaymentService {
+
+    public void captureFor(String customerId, long amount) {
+        var order = Orders.create(customerId);   // از راه رسمی
+        // ...
+    }
+}
+</code></pre>
+
+<h3>نحوه‌ی انتقال داده بین ماژول‌ها</h3>
+
+<table>
+<thead>
+<tr><th>روش</th><th>کِی؟</th><th>معایب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>کلاس قراردادی مشترک</strong></td><td>هم‌زمانه، داخل یک فرایند</td><td>کوپل می‌سازد؛ باید کمینه باشد</td></tr>
+<tr><td><strong>Integration Event</strong></td><td>واکنشی، داخل یک فرایند</td><td>ناهمگام، سخت‌تر برای تست</td></tr>
+<tr><td><strong>Query از راه دور (HTTP/gRPC)</strong></td><td>مرز شبکه</td><td>کند و شکننده</td></tr>
+<tr><td><strong>فقط ID</strong></td><td>همیشه، به‌عنوان پیش‌فرض</td><td>باید دوباره واکشی کنی</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">قانون کمترین اتصال</span>
+پیش‌فرض همیشه «فقط شناسه» است. اگر ماژول A به داده‌ی ماژول B نیاز دارد، اول بپرسید
+آیا می‌تواند کار خودش را با شناسه انجام دهد. اگر نه، به‌جای کشیدن مدل کامل B، یک
+API باریک در B تعریف کنید.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>جریان داده (Data Flow)</h2>
+
+<h3>جریان یک درخواست کامل در ماژول order</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant U as کاربر
+    participant OC as order.api.OrderController
+    participant OS as order.domain.OrderService
+    participant OR as order.domain.OrderRepository
+    participant JR as order.data.JpaOrderRepository
+    participant DB as دیتابیس
+
+    U->>OC: POST /api/orders
+    OC->>OC: اعتبارسنجی PlaceOrderRequest
+    OC->>OS: placeOrder(command)
+    OS->>OR: findById(id)
+    OR->>JR: (پیاده‌سازی JPA)
+    JR->>DB: SELECT
+    DB-->>JR: ردیف
+    JR-->>OS: Order (مدل)
+    OS->>OS: اجرای قوانین دامنه
+    OS->>OR: save(order)
+    OR->>JR: save
+    JR->>DB: INSERT
+    OS-->>OC: OrderId
+    OC-->>U: 201 Created
+
+    Note over OS,DB: هیچ ماژول دیگری درگیر نیست</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی</span>
+این جریان کاملاً داخل یک پوشه اتفاق می‌افتد. هیچ تغییری در ساختار لایه‌های کلی پروژه
+لازم نیست و هیچ فایلی در پوشه‌ی <code>payment/</code> یا <code>customer/</code> لمس
+نمی‌شود.
+</div>
+
+<h3>جریان بین دو ماژول</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant OC as order.api
+    participant PA as payment.api
+    participant PE as payment.event
+    participant NOT as shared NotificationPort
+
+    OC->>PA: capture(customerId, amount)
+    PA->>PA: منطق پرداخت
+    PA-->>OC: PaymentResult
+
+    Note over PA,NOT: پرداخت موفق → رویداد
+
+    PA->>PE: PaymentCapturedEvent
+    PE->>NOT: sendEmail(...)
+    PE-->>PA: done
+
+    Note over OC,PA: کوپل مستقیم فقط بین api دو ماژول</code></pre>
+
+<h3>قواعد جریان داده</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>ورودی همیشه Command/DTO محلی فیچر است</strong>، نه Entity فیچر دیگر</li>
+<li><strong>خروجی همیشه Response محلی فیچر است</strong>، نه مدل داخلی</li>
+<li><strong>تراکنش یک فیچر را در بر دارد</strong>؛ اگر دو فیچر لازم است، مرز را بیرون بکشید</li>
+<li><strong>واکنش‌های جانبی از راه رویداد</strong>، نه فراخوانی مستقیم</li>
+<li><strong>ماژول هرگز از لایه‌ی <code>data/</code> فیچر دیگر چیزی نمی‌بیند</strong></li>
+</ul>
+</div>
+
+<h3>جایی که تراکنش باید بشکند</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ نادرست:
+  OrderService ──> UserRepository (دیتابیس دیگری)
+  OrderService ──> InventoryClient (شبکه)
+  در یک @Transactional
+  ← اگر انبار قطع شود، کل سفارش می‌گردد؛ اگر قفل بخورد، مشکل
+
+✅ درست:
+  OrderService ──> OrderRepository     در تراکنش
+  OrderService ──> publish(OrderPlaced)
+  ── commit ──
+  InventoryService (جدا) مصرف می‌کند و موجودی کم می‌کند
+  اگر موجودی کافی نبود → رویداد OrderRejected
+  ← خرابی یک زیرسیستم، سفارش را از بین نمی‌برد</code></pre>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>shop-backend/
+├── pom.xml
+│
+└── src/
+    ├── main/
+    │   ├── java/com/shop/
+    │   │   ├── ShopApplication.java
+    │   │   │
+    │   │   ├── order/                       ← فیچر ۱
+    │   │   │   ├── api/
+    │   │   │   │   ├── OrderController.java
+    │   │   │   │   ├── PlaceOrderRequest.java
+    │   │   │   │   ├── CancelOrderRequest.java
+    │   │   │   │   └── OrderResponse.java
+    │   │   │   ├── domain/
+    │   │   │   │   ├── Order.java
+    │   │   │   │   ├── OrderStatus.java
+    │   │   │   │   ├── OrderService.java
+    │   │   │   │   ├── OrderRepository.java
+    │   │   │   │   └── OrderError.java
+    │   │   │   ├── data/
+    │   │   │   │   ├── OrderJpaEntity.java
+    │   │   │   │   ├── OrderEntityMapper.java
+    │   │   │   │   └── JpaOrderRepository.java
+    │   │   │   ├── event/
+    │   │   │   │   ├── OrderPlacedEvent.java
+    │   │   │   │   └── OrderCancelledEvent.java
+    │   │   │   └── OrderModuleConfiguration.java
+    │   │   │
+    │   │   ├── payment/                     ← فیچر ۲
+    │   │   │   ├── api/
+    │   │   │   │   ├── PaymentController.java
+    │   │   │   │   └── PaymentGateway.java          ← public API
+    │   │   │   ├── domain/
+    │   │   │   │   ├── Payment.java
+    │   │   │   │   └── PaymentService.java
+    │   │   │   ├── data/
+    │   │   │   │   ├── PaymentJpaEntity.java
+    │   │   │   │   └── SpringPaymentGateway.java
+    │   │   │   └── event/
+    │   │   │       └── PaymentCapturedEvent.java
+    │   │   │
+    │   │   ├── customer/                    ← فیچر ۳
+    │   │   │   ├── api/
+    │   │   │   │   ├── CustomerController.java
+    │   │   │   │   └── CustomerDirectory.java         ← public API
+    │   │   │   ├── domain/
+    │   │   │   │   ├── Customer.java
+    │   │   │   │   └── CustomerService.java
+    │   │   │   └── data/
+    │   │   │       ├── CustomerJpaEntity.java
+    │   │   │       └── JpaCustomerRepository.java
+    │   │   │
+    │   │   ├── inventory/                    ← فیچر ۴
+    │   │   │   ├── api/InventoryService.java
+    │   │   │   ├── domain/StockLevel.java
+    │   │   │   ├── data/StockJpaEntity.java
+    │   │   │   └── event/StockReservedEvent.java
+    │   │   │
+    │   │   └── shared/                       ← فقط واقعاً مشترک
+    │   │       ├── money/Money.java
+    │   │       ├── web/PageResponse.java
+    │   │       ├── error/ApiErrorHandler.java
+    │   │       └── event/DomainEventPublisher.java
+    │   │
+    │   └── resources/
+    │       ├── application.yml
+    │       └── db/migration/V1__init.sql
+    │
+    └── test/java/com/shop/
+        ├── order/
+        │   ├── domain/OrderTest.java             ← تست خالص، بدون Spring
+        │   ├── api/OrderControllerTest.java      ← @WebMvcTest
+        │   └── OrderModuleIntegrationTest.java   ← @SpringBootTest
+        ├── payment/
+        └── InventoryModuleIntegrationTest.java</code></pre>
+
+<h3>تست‌ها هم به همان ساختار پیروی می‌کنند</h3>
+
+<pre class="kl-code" data-lang="text"><code>src/test/java/com/shop/
+├── order/
+│   ├── domain/          ← تست خالص: ۰ms، ۰ دیتابیس
+│   ├── api/             ← تست لایه‌ی وب با Mock
+│   └── OrderModuleIntegrationTest.java   ← تست کل ماژول
+├── payment/
+│   └── ...
+├── customer/
+└── InventoryModuleIntegrationTest.java   ← ← راستی‌آزمایی مرزها</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تست ماژول — مهم‌ترین ابزار</span>
+یک تست یکپارچه که <em>فقط</em> ماژول <code>order</code> را بالا می‌آورد و ثابت می‌کند که
+به هیچ ماژول دیگری وابسته نیست. اگر این تست شکست بخورد، مرزهای شما نقض شده‌اند.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>مثال عملی کامل: ماژول سفارش</h2>
+
+<p>
+در این بخش کل ماژول <code>order</code> را از صفر می‌نویسیم — همه‌ی لایه‌ها، داخل یک پوشه.
+</p>
+
+<h3>قواعد کسب‌وکار ماژول</h3>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">دامنه‌ی سفارش</span>
+<ul>
+<li>سفارش باید حداقل یک ردیف داشته باشد</li>
+<li>سفارش در وضعیت <code>PLACED</code> قابل ویرایش نیست</li>
+<li>لغو فقط تا پیش از ارسال ممکن است</li>
+<li>سفارش بالای ۱۰ میلیون تومان نیاز به تأیید مدیر دارد</li>
+</ul>
+</div>
+
+<h3>لایه‌ی دامنه</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/** Aggregate Root. عمداً package-private است تا فقط از راه {@link Orders} ساخته شود. */
+final class Order {
+
+    private final String id;
+    private final String customerId;
+    private final List&lt;OrderLine&gt; lines = new ArrayList&lt;&gt;();
+    private OrderStatus status;
+    private BigDecimal total = BigDecimal.ZERO;
+
+    private Order(String id, String customerId) {
+        this.id = id;
+        this.customerId = customerId;
+        this.status = OrderStatus.DRAFT;
+    }
+
+    static Order create(String id, String customerId) {
+        if (customerId == null || customerId.isBlank()) {
+            throw new OrderError("شناسه‌ی مشتری الزامی است");
+        }
+        return new Order(id, customerId);
+    }
+
+    // ← بازسازی از دیتابیس: قوانین اولیه را دور می‌زند
+    static Order restore(String id, String customerId, OrderStatus status,
+                         BigDecimal total, List&lt;OrderLine&gt; lines) {
+        Order order = new Order(id, customerId);
+        order.status = status;
+        order.total = total;
+        order.lines.addAll(lines);
+        return order;
+    }
+
+    void addLine(String productId, int quantity, BigDecimal unitPrice) {
+        ensureDraft();
+        if (quantity &lt;= 0) {
+            throw new OrderError("تعداد باید بزرگ‌تر از صفر باشد");
+        }
+        if (lines.stream().anyMatch(l -&gt; l.productId().equals(productId))) {
+            throw new OrderError("این محصول قبلاً در سفارش هست");
+        }
+        lines.add(new OrderLine(productId, quantity, unitPrice));
+        recalculate();
+    }
+
+    void place() {
+        ensureDraft();
+        if (lines.isEmpty()) {
+            throw new OrderError("سفارش بدون ردیف قابل ثبت نیست");
+        }
+        this.status = OrderStatus.PLACED;
+    }
+
+    void cancel(String reason) {
+        if (status != OrderStatus.PLACED) {
+            throw new OrderError("فقط سفارش ثبت‌شده قابل لغو است");
+        }
+        this.status = OrderStatus.CANCELLED;
+    }
+
+    boolean requiresApproval() {
+        return total.compareTo(new BigDecimal("10000000")) &gt; 0;
+    }
+
+    private void ensureDraft() {
+        if (status != OrderStatus.DRAFT) {
+            throw new OrderError("سفارش قابل ویرایش نیست");
+        }
+    }
+
+    private void recalculate() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (OrderLine line : lines) {
+            sum = sum.add(line.subtotal());
+        }
+        this.total = sum;
+    }
+
+    String id()             { return id; }
+    String customerId()     { return customerId; }
+    OrderStatus status()    { return status; }
+    BigDecimal total()      { return total; }
+    List&lt;OrderLine&gt; lines() { return List.copyOf(lines); }
+
+    @Override
+    public boolean equals(Object o) {
+        return (this == o) || (o instanceof Order other &amp;&amp; id.equals(other.id));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain;
+
+enum OrderStatus {
+    DRAFT, PLACED, CANCELLED, SHIPPED, DELIVERED
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain;
+
+import java.math.BigDecimal;
+
+final class OrderLine {
+
+    private final String productId;
+    private final int quantity;
+    private final BigDecimal unitPrice;
+
+    OrderLine(String productId, int quantity, BigDecimal unitPrice) {
+        this.productId = productId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+    }
+
+    BigDecimal subtotal() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    String productId()    { return productId; }
+    int quantity()        { return quantity; }
+    BigDecimal unitPrice() { return unitPrice; }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain;
+
+import java.util.List;
+import java.util.Optional;
+
+/** Port — پیاده‌سازی در لایه‌ی data قرار دارد. package-private است. */
+interface OrderRepository {
+
+    Optional&lt;Order&gt; findById(String id);
+
+    List&lt;Order&gt; findByCustomerId(String customerId);
+
+    void save(Order order);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain;
+
+public class OrderError extends RuntimeException {
+    public OrderError(String message) {
+        super(message);
+    }
+}
+</code></pre>
+
+<h3>API عمومی فیچر</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * تنها نقطه‌ی ورود رسمی به دامنه‌ی سفارش.
+ * هر ماژول بیرونی فقط همین کلاس را می‌بیند.
+ */
+public final class Orders {
+
+    private Orders() {}
+
+    public static OrderHandle create(String customerId) {
+        return new OrderHandle(Order.create(newId(), customerId));
+    }
+
+    public static List&lt;OrderLineInfo&gt; linesOf(String orderId, OrderRepositoryAccessor accessor) {
+        return accessor.findById(orderId)
+                .map(o -&gt; o.lines().stream()
+                        .map(l -&gt; new OrderLineInfo(l.productId(), l.quantity(),
+                                l.unitPrice()))
+                        .toList())
+                .orElse(List.of());
+    }
+
+    public record OrderLineInfo(String productId, int quantity,
+                                BigDecimal unitPrice) {}
+
+    /** فقط برای تست و ابزار — در تولید از repository واقعی استفاده کنید. */
+    public interface OrderRepositoryAccessor {
+        java.util.Optional&lt;OrderView&gt; findById(String id);
+    }
+
+    public record OrderView(String id, List&lt;OrderLineInfo&gt; lines) {}
+
+    private static String newId() {
+        return java.util.UUID.randomUUID().toString();
+    }
+
+    /** پوششی باریک روی مدل داخلی. */
+    record OrderHandle(Order delegate) {}
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ساده‌سازی</span>
+در کد واقعی، پوشش <code>Orders</code> نازک‌تر است و معمولاً فقط یک factory ساده است. کلاس
+<code>OrderHandle</code> در این مقاله برای نشان دادن الگو آمده؛ در پروژه‌ی واقعی از یک
+<strong>factory</strong> ساده استفاده کنید تا کد خوانا بماند.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>لایه‌ی داده — تنها جایی که JPA دیده می‌شود</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.data;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "orders")
+class OrderJpaEntity {
+
+    @Id
+    @Column(length = 36)
+    private String id;
+
+    @Column(name = "customer_id", nullable = false, length = 36)
+    private String customerId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private String status;
+
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal total;
+
+    protected OrderJpaEntity() {}
+
+    static OrderJpaEntity of(String id, String customerId, String status,
+                             BigDecimal total) {
+        OrderJpaEntity e = new OrderJpaEntity();
+        e.id = id;
+        e.customerId = customerId;
+        e.status = status;
+        e.total = total;
+        return e;
+    }
+
+    String id()           { return id; }
+    String customerId()   { return customerId; }
+    String status()       { return status; }
+    BigDecimal total()    { return total; }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.data;
+
+import com.shop.order.domain.*;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+class JpaOrderRepository implements OrderRepository {
+
+    private final OrderJpaDao dao;
+
+    JpaOrderRepository(OrderJpaDao dao) {
+        this.dao = dao;
+    }
+
+    @Override
+    public Optional&lt;Order&gt; findById(String id) {
+        return dao.findById(id).map(OrderMapper::toDomain);
+    }
+
+    @Override
+    public List&lt;Order&gt; findByCustomerId(String customerId) {
+        return dao.findByCustomerId(customerId).stream()
+                  .map(OrderMapper::toDomain)
+                  .toList();
+    }
+
+    @Override
+    public void save(Order order) {
+        if (dao.existsById(order.id())) {
+            dao.deleteById(order.id());
+        }
+        dao.save(OrderMapper.toJpa(order));
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.data;
+
+import com.shop.order.domain.*;
+import java.math.BigDecimal;
+import java.util.List;
+
+final class OrderMapper {
+
+    private OrderMapper() {}
+
+    static OrderJpaEntity toJpa(Order order) {
+        return OrderJpaEntity.of(order.id(), order.customerId(),
+                order.status().name(), order.total());
+    }
+
+    static Order toDomain(OrderJpaEntity e) {
+        return Order.restore(e.id(), e.customerId(),
+                OrderStatus.valueOf(e.status()), e.total(), List.of());
+    }
+}
+</code></pre>
+
+<h3>لایه‌ی API</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import com.shop.order.domain.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/orders")
+public class OrderController {
+
+    private final OrderService service;
+
+    public OrderController(OrderService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    @Transactional
+    public ResponseEntity&lt;OrderResponse&gt; create(
+            @Valid @RequestBody PlaceOrderRequest request) {
+
+        var id = service.placeOrder(new PlaceOrderCommand(
+                UUID.randomUUID().toString(),
+                request.customerId(),
+                request.lines().stream()
+                        .map(l -&gt; new LineCommand(l.productId(), l.quantity(),
+                                new BigDecimal(l.unitPrice())))
+                        .toList()));
+
+        return ResponseEntity.created(URI.create("/api/orders/" + id))
+                .body(new OrderResponse(id, "PLACED", null, null));
+    }
+
+    @GetMapping("/{id}")
+    @Transactional(readOnly = true)
+    public OrderResponse get(@PathVariable String id) {
+        return service.findById(id);
+    }
+
+    // ── DTO های محلی این فیچر ──
+    public record PlaceOrderRequest(
+            @NotBlank String customerId,
+            @NotEmpty @Valid List&lt;Line&gt; lines) {
+
+        public record Line(@NotBlank String productId,
+                           @Min(1) int quantity,
+                           @NotBlank String unitPrice) {}
+    }
+
+    public record PlaceOrderCommand(String id, String customerId,
+                                    List&lt;LineCommand&gt; lines) {}
+
+    public record LineCommand(String productId, int quantity,
+                              BigDecimal unitPrice) {}
+
+    public record OrderResponse(String id, String status,
+                                BigDecimal total, Boolean requiresApproval) {}
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import com.shop.order.domain.*;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+class OrderService {
+
+    private final OrderRepository repository;
+    private final ModuleEventPublisher events;
+
+    OrderService(OrderRepository repository, ModuleEventPublisher events) {
+        this.repository = repository;
+        this.events = events;
+    }
+
+    String placeOrder(PlaceOrderCommand command) {
+        Order order = Order.create(command.id(), command.customerId());
+
+        command.lines().forEach(l ->
+                order.addLine(l.productId(), l.quantity(), l.unitPrice()));
+
+        order.place();
+        repository.save(order);
+
+        events.publish(new OrderPlacedEvent(order.id(), order.customerId(),
+                order.total()));
+        return order.id();
+    }
+
+    OrderResponse findById(String id) {
+        return repository.findById(id)
+                .map(o -> new OrderResponse(o.id(), o.status().name(),
+                        o.total(), o.requiresApproval()))
+                .orElseThrow(() -> new OrderError("سفارش یافت نشد"));
+    }
+
+    void cancel(String id, String reason) {
+        Order order = repository.findById(id)
+                .orElseThrow(() -> new OrderError("سفارش یافت نشد"));
+        order.cancel(reason);
+        repository.save(order);
+        events.publish(new OrderCancelledEvent(id, reason));
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+
+/** Integration Event این فیچر — قرارداد با سایر ماژول‌ها. */
+public record OrderPlacedEvent(String orderId, String customerId,
+                                BigDecimal total, Instant occurredAt) {}
+</code></pre>
+
+<h3>API عمومی فیچر برای استفاده‌ی ماژول‌های دیگر</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import com.shop.order.domain.OrderError;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+/**
+ * API عمومی ماژول order.
+ * ماژول‌های دیگر فقط این کلاس را می‌بینند — نه Order، نه Repository.
+ */
+@Service
+public class OrderApi {
+
+    private final OrderService service;
+
+    public OrderApi(OrderService service) {
+        this.service = service;
+    }
+
+    public OrderSummary place(String customerId, BigDecimal total) {
+        String id = UUID.randomUUID().toString();
+        // در واقعیت از طریق سرویس؛ این فقط امضای API است
+        return new OrderSummary(id, customerId, total, "PLACED");
+    }
+
+    public OrderSummary find(String orderId) {
+        var response = service.findById(orderId);
+        return new OrderSummary(response.id(), null,
+                response.total(), response.status());
+    }
+
+    public record OrderSummary(String orderId, String customerId,
+                               BigDecimal total, String status) {}
+}
+</code></pre>
+
+<h3>پیکربندی فیچر</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * پیکربندی صریح: پایه‌ی «مرز ماژول».
+ * اگر کسی به‌اشتباه چیزی در این پوشه import کند که در اینجا نیست، خطا می‌گیرد.
+ */
+@Configuration
+@ComponentScan(basePackages = "com.shop.order")
+public class OrderModuleConfiguration {
+}
+</code></pre>
+
+<h3>مصرف رویداد در ماژول دیگر</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.inventory.api;
+
+import com.shop.order.api.OrderPlacedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+@Component
+class InventoryOrderListener {
+
+    private final StockService stock;
+
+    InventoryOrderListener(StockService stock) {
+        this.stock = stock;
+    }
+
+    @EventListener
+    @Transactional
+    void onOrderPlaced(OrderPlacedEvent event) {
+        // ← فقط اطلاعات لازم؛ بدون کشیدن مدل کامل order
+        stock.reserveFor(event.customerId(), event.total());
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مقایسه با معماری‌های دیگر</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph L["معماری لایه‌ای افقی"]
+        LA1["controller/ 48 فایل"]
+        LA2["service/ 68 فایل"]
+        LA3["repository/ 31 فایل"]
+        LA1 --> LA2 --> LA3
+    end
+
+    subgraph F["Feature Based عمودی"]
+        FB1["order/<br/>api · domain · data · event"]
+        FB2["payment/<br/>api · domain · data · event"]
+        FB3["customer/<br/>api · domain · data"]
+        FB1 --> FS["shared/"]
+        FB2 --> FS
+        FB3 --> FS
+    end
+
+    style F fill:#0f766e,color:#fff,stroke:#0f766e
+    style L fill:#7f1d1d,color:#fff,stroke:#7f1d1d</code></pre>
+
+<table>
+<thead>
+<tr><th>معیار</th><th>لایه‌ای</th><th>Feature Based</th><th>میکروسرویس</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد سازماندهی</td><td>لایه</td><td>قابلیت</td><td>قابلیت</td></tr>
+<tr><td>واحد استقرار</td><td>یکی</td><td>یکی</td><td>هر فیچر جدا</td></tr>
+<tr><td>هزینه‌ی راه‌اندازی</td><td>صفر</td><td>کم</td><td><strong>زیاد</strong></td></tr>
+<tr><td>مرز شبکه</td><td>ندارد</td><td><strong>ندارد</strong></td><td>دارد</td></tr>
+<tr><td>تراکنش توزیع‌شده</td><td>ندارد</td><td>ندارد</td><td>دارد (Saga)</td></tr>
+<tr><td>دیباگ کردن</td><td>آسان</td><td>آسان</td><td>سخت</td></tr>
+<tr><td>استقرار مستقل</td><td>نه</td><td>نه</td><td>بله</td></tr>
+<tr><td>مقیاس مستقل</td><td>خیر</td><td>خیر</td><td>بله</td></tr>
+<tr><td>بهترین برای</td><td>پروژه‌ی کوچک</td><td><strong>پروژه‌ی متوسط/بزرگ</strong></td><td>سازمان بزرگ</td></tr>
+</tbody>
+</table>
+
+<h3>رابطه‌ی Feature Based با DDD</h3>
+
+<table>
+<thead>
+<tr><th>بعد</th><th>DDD</th><th>Feature Based</th></tr>
+</thead>
+<tbody>
+<tr><td>پرسش</td><td>مدل دامنه چیست؟</td><td>کد کجا زندگی می‌کند؟</td></tr>
+<tr><td>تمرکز</td><td>محتوا و معنا</td><td>ساختار پوشه</td></tr>
+<tr><td>واحد</td><td>Bounded Context</td><td>فیچر (اغلب یکی)</td></tr>
+<tr><td>تمرکز بر</td><td>مدل‌سازی</td><td>ماژولار بودن</td></tr>
+<tr><td>نیاز به کسب‌وکار</td><td><strong>زیاد</strong></td><td>کم</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">این‌ها رقیب نیستند</span>
+DDD به شما می‌گوید <em>مرزها کجا باشند</em> و Feature Based به شما می‌گوید <em>کد داخل
+هر مرز چطور چیده شود</em>. پروژه‌ای که هر دو را رعایت کند، هم مدل درستی دارد و هم
+ساختار درستی. اگر بودجه یا زمان کافی دارید، هر دو را با هم انجام دهید.
+</div>
+
+<h3>رابطه با Clean و Hexagonal</h3>
+
+<p>
+Clean Architecture و Hexagonal درباره‌ی <strong>جهت وابستگی</strong> حرف می‌زنند؛
+Feature Based درباره‌ی <strong>محل قرارگیری</strong>. اینها کاملاً سازگارند:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Clean/Hexagonal: «domain نباید به بیرون وابسته باشد»
+Feature Based:  «هر فیچر در پوشه‌ی خودش زندگی می‌کند»
+
+ترکیب: ماژول order/ در خودش Clean است
+       ├── domain/     ← هیچ import بیرونی
+       ├── data/       ← پیاده‌سازی Port
+       └── api/        ← آداپتور ورودی</code></pre>
+</section>
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>مزایا</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>افزایش محلی تغییر</strong></td><td>تغییر یک فیچر فقط همان پوشه را لمس می‌کند؛ تعداد فایل‌های تغییرکرده کم می‌شود</td></tr>
+<tr><td>۲</td><td><strong>مالکیت روشن</strong></td><td>هر فیچر یک تیم دارد؛ «این باگ مال کیست؟» پاسخ روشن دارد</td></tr>
+<tr><td>۳</td><td><strong>تست مستقل هر فیچر</strong></td><td>تست ماژول فقط یک فیچر را بالا می‌آورد؛ سریع و قابل عزلت</td></tr>
+<tr><td>۴</td><td><strong>موازی‌سازی کار</strong></td><td>دو تیم روی دو فیچر بدون تداخل کار می‌کنند؛ conflict کم می‌شود</td></tr>
+<tr><td>۵</td><td><strong>تیم‌ها مستقل مستقر می‌کنند</strong></td><td>هر تیم فقط ماژول خودش را می‌بیند و تست می‌کند</td></tr>
+<tr><td>۶</td><td><strong>حذف امن فیچر</strong></td><td>پوشه را حذف می‌کنید و می‌دانید چه چیزی از کار می‌افتد</td></tr>
+<tr><td>۷</td><td><strong>مسیر مهاجرت به Microservices</strong></td><td>مرزهای مستقل در یک فرایند، تمرین خوبی برای مرز سرویس است</td></tr>
+<tr><td>۸</td><td><strong>کاهش coupling</strong></td><td>قواعد visibility جاوا کامپایلر اجبار می‌کند؛ وابستگی ناخواسته سخت‌تر می‌شود</td></tr>
+<tr><td>۹</td><td><strong>امکان بارگذاری مستقل (اختیاری)</strong></td><td>در برخی فریم‌ورک‌ها، هر ماژول می‌تواند جداگانه بارگذاری شود</td></tr>
+<tr><td>۱۰</td><td><strong>درک آسان‌تر کدبیس</strong></td><td>توسعه‌دهنده‌ی جدید فقط پوشه‌ی مربوطه به کارش را می‌خواند</td></tr>
+<tr><td>۱۱</td><td><strong>انزوای بهتر داده</strong></td><td>هر فیچر می‌تواند جدول و مدل خودش را داشته باشد</td></tr>
+<tr><td>۱۲</td><td><strong>استقرار کم‌ریسک</strong></td><td>تغییر یک فیچر ریسک کمتری از تغییر لایه‌ی مشترک دارد</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">بزرگ‌ترین مزیت</span>
+کاهش <strong>Change Amplification</strong>. اگر قبلاً افزودن یک فیچر ۸ فایل در ۶ پوشه را
+تغییر می‌داد و الان ۴ فایل در ۱ پوشه تغییر می‌کند، یعنی زمان تحویل و ریسک استقرار شما
+به‌طور مستقیم کم شده است.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>معایب</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>تکرار کد</strong></td><td>چند فیچر ممکن است ساختار مشابه داشته باشند و بخشی کپی شود</td></tr>
+<tr><td>۲</td><td><strong>تغییر در shared پرهزینه است</strong></td><td>کل پروژه به آن وابسته است</td></tr>
+<tr><td>۳</td><td><strong>عبور از لایه‌ها دشوارتر</strong></td><td>وقتی می‌خواهید کل منطق را بفهمید، باید چند فیچر را بخوانید</td></tr>
+<tr><td>۴</td><td><strong>نیاز به انضباط تیم</strong></td><td>اگر کسی قاعده را رعایت نکند، ساختار به‌تدریج فرو می‌ریزد</td></tr>
+<tr><td>۵</td><td><strong>مرز کشیدن فیچر دشوار است</strong></td><td>قابلیت‌های واقعی همیشه به هم چسبیده‌اند</td></tr>
+<tr><td>۶</td><td><strong>مستندسازی لازم</strong></td><td>باید بنویسید هر فیچر مالک کیست و چه کار می‌کند</td></tr>
+<tr><td>۷</td><td><strong>ابزار کمتر</strong></td><td>برخلاف Spring یا Gradle، ابزار کمتری برای Feature exists دارد</td></tr>
+<tr><td>۸</td><td><strong>مهاجرت زمان‌بر</strong></td><td>تبدیل ساختار افقی به عمودی پروژه‌ی بزرگ، هفته‌ها طول می‌کشد</td></tr>
+<tr><td>۹</td><td><strong>دام shared</strong></td><td>هر فیچر نیاز متفاوتی دارد و shared وسوسه‌انگیز است</td></tr>
+<tr><td>۱۰</td><td><strong>مشاهده‌پذیری ضعیف‌تر</strong></td><td>وقتی دو فیچر با هم کار می‌کنند، رد کردن مسیر سخت‌تر می‌شود</td></tr>
+</tbody>
+</table>
+
+<h3>تکرار: واقعی یا بهانه؟</h3>
+
+<p>
+شایع‌ترین نگرانی است. بیایید صادق باشیم:
+</p>
+
+<table>
+<thead>
+<tr><th>نوع تکرار</th><th>نمونه</th><th>راه‌حل</th></tr>
+</thead>
+<tbody>
+<tr><td>ساختاری</td><td>همه‌ی فیچرها ۴ پوشه دارند</td><td><strong>مثبت</strong> — یکدستی خوب است</td></tr>
+<tr><td>منطقی</td><td>محاسبه‌ی تخفیف در دو فیچر</td><td>اغلب واقعی؛ به <code>shared</code> منتقل شود</td></tr>
+<tr><td>زیرساختی</td><td>ساخت Mapper در هر فیچر</td><td>معمولاً ارزش استفاده از انتزاع ندارد</td></tr>
+<tr><td>آزمایشی</td><td>تست setup مشابه</td><td>Builder یا fixture مشترک</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">قاعده‌ی سه‌بار، باز هم</span>
+تکرار سه‌بار از انتزاع ناقص بهتر است. اگر یک تابع در سه فیچر تکرار شده، تازه آن
+موقع است که به <code>shared</code> منتقل شود — به شرطی که واقعاً یک مفهوم مشترک باشد،
+نه فقط کد مشابه.
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-check">
+<ul>
+<li><strong>پروژه بزرگ‌تر از حد معمول</strong> شده — پوشه‌ها دیگر قابل مرور نیستند</li>
+<li><strong>افزودن فیچر نیازمند تغییر در چند لایه</strong> است</li>
+<li><strong>بیش از یک تیم</strong> روی یک کدبیس کار می‌کند</li>
+<li><strong>merge conflict مکرر</strong> در فایل‌های بزرگ مثل <code>OrderService</code></li>
+<li><strong>می‌خواهید به Microservices مهاجرت کنید</strong> و مسیر کم‌ریسک می‌خواهید</li>
+<li><strong>دامنه‌های کسب‌وکار قابل تشخیص‌اند</strong> (سفارش، پرداخت، موجودی)</li>
+<li><strong>فیچرها داده‌ی متفاوت</strong> دارند و جدول‌های خودشان را دارند</li>
+<li><strong>تیم می‌خواهد استقرار مستقل داشته باشد</strong> بدون رفتن به سمت سرویس</li>
+<li><strong>کدبیس فعلی لایه‌بندی‌اش «همه‌چیز به هم چسبیده»</strong> است</li>
+<li><strong>می‌خواهید تست سریع‌تر</strong> داشته باشید (تست ماژول)</li>
+</ul>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>نشانه‌های هشدار عملی (قبل از تصمیم):
+
+⚠️ یک فایل با ۲۰۰۰+ خط
+⚠️ بیش از ۱۵ کلاس با پسوند Service
+⚠️ بیش از ۵۰ کلاس در پوشه‌ی controller
+⚠️ «کدام فایل را باید تغییر بدهم؟» سوالی که هر روز تکرار می‌شود
+⚠️ onboarding یک توسعه‌دهنده‌ی جدید بیش از ۲ هفته طول می‌کشد
+⚠️ تست یک فیچر، به داده‌ی ۵ فیچر دیگر نیاز دارد</code></pre>
+
+<h3>مثال‌های مناسب</h3>
+
+<pre class="kl-code" data-lang="text"><code>✅ فروشگاه اینترنتی    → سفارش، کالا، موجودی، سبد، پرداخت، تخفیف
+✅ سامانه‌ی مالی        → حساب، تراکنش، فاکتور، بودجه، گزارش
+✅ پلتفرم محتوا         → مقاله، نویسنده، دیدگاه، اعلان، جست‌وجو
+✅ اپلیکیشن رزرو        → رزرو، مهمان، اتاق، پرداخت، اعلان
+✅ پنل مدیریتی          → داشبورد، گزارش، کاربر، نقش، تنظیمات
+✅ سیستم انبار          → کالا، مکان، ورود، خروج، موجودی</code></pre>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>چه زمانی استفاده نکنیم؟</h2>
+
+<table>
+<thead>
+<tr><th>وضعیت</th><th>چرا مناسب نیست؟</th><th>جایگزین</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>پروژه‌ی کوچک</strong> (زیر ۵ هزار خط)</td><td>سربار ساختار بیشتر از سود آن است</td><td>لایه‌بندی ساده</td></tr>
+<tr><td><strong>تیم یک‌نفره</strong></td><td>مزیت اصلی (مالکیت و موازی‌سازی) بی‌معنی است</td><td>هر ساختاری که خوانا باشد</td></tr>
+<tr><td><strong>پروژه‌ی اسکریپتی یا PoC</strong></td><td>عمر کوتاه؛ سرعت اولویت دارد</td><td>ساده‌ترین چیز ممکن</td></tr>
+<tr><td><strong>قابلیت‌ها به‌شدت به هم چسبیده</strong></td><td>هیچ مرز منطقی وجود ندارد؛ هر تقسیمی مصنوعی است</td><td>لایه‌بندی، و صادقانه پذیرشش</td></tr>
+<tr><td><strong>دامنه‌ی ناشناخته</strong></td><td>نمی‌دانید فیچرهای واقعی چه هستند؛ ساختار را حدس می‌زنید</td><td>اول محصول را کشف کنید</td></tr>
+<tr><td><strong>بدون ابزار راستی‌آزمایی</strong></td><td>هیچ‌کس مرزها را چک نمی‌کند و به‌تدریج نقض می‌شوند</td><td>اول تست ماژول بسازید</td></tr>
+<tr><td><strong>تیم مقاوم در برابر تغییر</strong></td><td>ساختار جدید را دور می‌زنند و shared پر از دور زدن‌ها می‌شود</td><td>ابتدا تغییر فرهنگی</td></tr>
+<tr><td><strong>کد یک‌بارمصرف</strong></td><td>ساختاردهی وقت می‌گیرد که هرگز بازگردانده نمی‌شود</td><td>سریع‌ترین راه</td></tr>
+<tr><td><strong>نیاز به مقیاس مستقل فوری</strong></td><td>Feature Based در یک فرایند اجرا می‌شود</td><td>Microservices</td></tr>
+<tr><td><strong>فقط یک فیچر بزرگ</strong></td><td>تقسیم به فیچر معنا ندارد</td><td>لایه‌بندی کلاسیک</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">هزینه‌ی پنهان بی‌انضباطی</span>
+بدترین حالت این است که Feature Based را اعلام کنید اما رعایت نکنید. آن‌وقت یک ساختار
+نیمه‌عمودی دارید که از هر دو حالت بدتر است: نه لایه‌ای روشن دارد، نه فیچر تمیز.
+اگر نمی‌توانید قاعده را رعایت کنید، همان لایه‌بندی صریح را نگه دارید.
+</div>
+
+<h3>راه میانه: پوشه‌بندی بدون سخت‌گیری</h3>
+
+<pre class="kl-code" data-lang="text"><code>قدم ۱ (کم‌ریسک): فقط پوشه‌بندی عمودی
+  com.shop.order.* / com.shop.payment.* / com.shop.customer.*
+  ← هیچ قانون سختی، هیچ ابزاری، فقط سازماندهی بهتر
+
+قدم ۲ (متوسط): public API برای هر فیچر
+  ← از package-private استفاده می‌کنید
+
+قدم ۳ (محکم): تست ماژول + راستی‌آزمایی خودکار
+  ← مرزها در CI بررسی می‌شوند
+
+هر قدم ارزش مستقل دارد؛ اگر قدم ۱ جواب نداد، قدم ۲ و ۳ را شروع نکنید.</code></pre>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<table>
+<thead>
+<tr><th>اصل</th><th>نام</th><th>نمود در Feature Based</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>S</strong></td><td>Single Responsibility</td><td>هر فیچر یک مسئولیت کسب‌وکار؛ <code>OrderService</code> دیگر هفت کار نمی‌کند</td></tr>
+<tr><td><strong>O</strong></td><td>Open/Closed</td><td>افزودن فیچر جدید، کد موجود را تغییر نمی‌دهد</td></tr>
+<tr><td><strong>L</strong></td><td>Liskov Substitution</td><td>یک Event Publisher جایگزین‌پذیر برای همه‌ی فیچرها</td></tr>
+<tr><td><strong>I</strong></td><td>Interface Segregation</td><td>هر فیچر API باریک خودش را دارد</td></tr>
+<tr><td><strong>D</strong></td><td>Dependency Inversion</td><td>هر فیچر به <code>shared</code> وابسته است، نه به فیچرهای دیگر</td></tr>
+</tbody>
+</table>
+
+<h3>S — مهم‌ترین اصل در این معماری</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ قبل: OrderService = هفت مسئولیت
+   ثبت سفارش + بازگشت وجه + گزارش + همگام‌سازی + اعلان + مالیات
+
+✅ بعد: هر فیچر یک مسئولیت
+   order/    → ثبت و لغو سفارش
+   payment/  → پرداخت و بازگشت وجه
+   report/   → گزارش‌گیری
+   inventory/→ همگام‌سازی موجودی
+   notify/   → اعلان
+   tax/      → محاسبه‌ی مالیات
+
+نتیجه: تغییر در مالیات، کلاس مالیات را عوض می‌کند، نه سفارش را.</code></pre>
+
+<h3>D — وابستگی بین فیچرها</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ❌ وابستگی مستقیم: payment به مدل داخلی order
+package com.shop.payment.domain;
+
+import com.shop.order.domain.Order;         // ← نشتی
+public class PaymentService {
+    void pay(Order order) { ... }
+}
+
+// ✅ وابستگی به قرارداد: payment فقط API عمومی order را می‌بیند
+package com.shop.payment.domain;
+
+import com.shop.order.api.OrderApi;         // ← قرارداد
+public class PaymentService {
+    private final OrderApi orders;
+
+    PaymentService(OrderApi orders) {
+        this.orders = orders;
+    }
+
+    void pay(String orderId) {
+        var summary = orders.find(orderId);   // فقط داده‌ی لازم
+        // ...
+    }
+}</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">DIP در سطح ماژول</span>
+در Feature Based، اصل Dependency Inversion یک بُعد جدید پیدا می‌کند: <strong>وارونگی
+وابستگی بین ماژول‌ها</strong>. ماژول A به قرارداد ماژول B وابسته است، نه به پیاده‌سازی
+آن. این دقیقاً همان چیزی است که بعداً اجازه می‌دهد B را از یک کلاس داخلی به یک
+میکروسرویس تبدیل کنید، بدون آنکه A تغییر کند.
+</div>
+
+<h3>O — افزودن بدون تغییر</h3>
+
+<pre class="kl-code" data-lang="text"><code>افزودن فیچر «shipping»:
+  ۱. پوشه‌ی shipping/ بسازید           ← کد جدید
+  ۲. در pom یا build اضافه کنید          ← تنظیم جدید
+  ۳. هیچ فایل موجودی تغییر نمی‌کند      ← ✅ OCP رعایت شد
+
+در مقابل، افزودن «یک لایه کنترل دسترسی مشترک»:
+  ۱. همه‌ی Controllerهای موجود را عوض کنید ← 💥 تغییر ۴۸ فایل
+  ← OCP نقض شد</code></pre>
+
+<h3>I — API باریک به‌جای مدل کامل</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ❌ ISP نقض می‌شود: همه‌ی داده‌ی مشتری را می‌گیرید
+public record CustomerFullInfo(String id, String name, String email,
+                               String phone, Address address,
+                               List&lt;OrderSummary&gt; orders,
+                               PaymentMethod method, ...) {}
+
+// ✅ ISP رعایت می‌شود: فقط آنچه لازم است
+public record CustomerContact(String id, String email) {}
+</code></pre>
+</section>
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>نقش در Feature Based</th><th>نمود در این مقاله</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Module (package)</strong></td><td><strong>الگوی اصلی</strong> — واحد سازماندهی کد</td><td>پوشه‌های <code>order/</code>، <code>payment/</code>، ...</td></tr>
+<tr><td><strong>Facade</strong></td><td>API باریک روی یک فیچر برای مصرف بیرونی</td><td><code>OrderApi</code></td></tr>
+<tr><td><strong>Repository</strong></td><td>جدا کردن مدل فیچر از ذخیره‌سازی</td><td><code>OrderRepository</code> در <code>domain/</code>، پیاده‌سازی در <code>data/</code></td></tr>
+<tr><td><strong>Adapter</strong></td><td>تبدیل داده‌ی بیرونی به مدل فیچر</td><td><code>OrderEntityMapper</code></td></tr>
+<tr><td><strong>Mediator</strong></td><td>انتشار رویداد بین فیچرها بدون وابستگی مستقیم</td><td><code>ModuleEventPublisher</code></td></tr>
+<tr><td><strong>Observer</strong></td><td>واکنش یک فیچر به رخداد فیچر دیگر</td><td><code>@EventListener onOrderPlaced</code></td></tr>
+<tr><td><strong>Factory</strong></td><td>ساخت موجودیت از راه کنترل‌شده</td><td><code>Orders.create()</code></td></tr>
+<tr><td><strong>Anti-Corruption Layer</strong></td><td>محافظت از مدل فیچر در برابر مدل بیرونی</td><td>مدل <code>PaymentGateway</code> به مدل درگاه بیرونی</td></tr>
+<tr><td><strong>Strategy</strong></td><td>قواعد قابل تعویض داخل فیچر</td><td><code>DiscountPolicy</code> در فیچر تخفیف</td></tr>
+<tr><td><strong>Data Mapper</strong></td><td>جدا کردن مدل فیچر از مدل دیتابیس</td><td><code>OrderMapper</code></td></tr>
+<tr><td><strong>Composite</strong></td><td>ترکیب فیچرها برای یک قابلیت بزرگ‌تر</td><td>فیچر checkout از فیچرهای order و payment ساخته می‌شود</td></tr>
+<tr><td><strong>Chain of Responsibility</strong></td><td>زنجیره‌ی اعتبارسنجی داخل یک فیچر</td><td>زنجیره‌ی validation فیلدهای سفارش</td></tr>
+</tbody>
+</table>
+
+<h3>Facade — API عمومی فیچر</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import org.springframework.stereotype.Service;
+
+/**
+ * Facade فیچر order: تنها سطحی که ماژول‌های دیگر می‌بینند.
+ * پیچیدگی داخلی (چند entity، چند repository) پشت این نقطه پنهان است.
+ */
+@Service
+public class OrderApi {
+
+    private final OrderService service;
+    private final OrderRepository orders;
+
+    public OrderApi(OrderService service, OrderRepository orders) {
+        this.service = service;
+        this.orders = orders;
+    }
+
+    public OrderSummary place(String customerId, List&lt;LineRequest&gt; lines) {
+        String id = service.placeOrder(PlaceOrderCommand.of(customerId, lines));
+        return summarize(orders.findById(id).orElseThrow());
+    }
+
+    public OrderSummary find(String orderId) {
+        return summarize(orders.findById(orderId)
+                .orElseThrow(() -&gt; new OrderError("سفارش یافت نشد")));
+    }
+
+    public void cancel(String orderId, String reason) {
+        service.cancel(orderId, reason);
+    }
+
+    private OrderSummary summarize(Order order) {
+        return new OrderSummary(order.id(), order.customerId(),
+                order.status(), order.total(), order.requiresApproval());
+    }
+
+    public record LineRequest(String productId, int quantity, java.math.BigDecimal price) {}
+
+    public record OrderSummary(String orderId, String customerId, OrderStatus status,
+                                java.math.BigDecimal total, boolean needsApproval) {}
+}
+</code></pre>
+
+<h3>Mediator — انتشار رویداد بدون کوپل</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.shared.event;
+
+public interface DomainEventPublisher {
+    void publish(Object event);
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+/** پیاده‌سازی مشترک: یک نمونه singleton برای همه‌ی فیچرها. */
+@Component
+class SpringDomainEventPublisher implements DomainEventPublisher {
+    private final ApplicationEventManager events;
+
+    SpringDomainEventPublisher(ApplicationEventManager events) {
+        this.events = events;
+    }
+
+    @Override
+    public void publish(Object event) {
+        events.publishEvent(event);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چرا Mediator و نه فراخوانی مستقیم</span>
+اگر ماژول <code>inventory</code> مستقیم <code>OrderService</code> را صدا بزند، یک وابستگی
+سخت ساخته می‌شود و حذف آن فیچر سخت می‌شود. با Mediator، <code>inventory</code> فقط رویداد را
+گوش می‌دهد و از وجود <code>order</code> بی‌خبر است. اگر فردا سفارش حذف شد، کد
+<code>inventory</code> بی‌سروصدا از کار می‌افتد.
+</div>
+
+<h3>Anti-Corruption Layer</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.payment.data;
+
+/**
+ * محافظت از مدل داخلی از مدل بیگانه‌ی درگاه پرداخت.
+ * اگر فردا درگاه عوض شد، فقط این کلاس تغییر می‌کند.
+ */
+@Component
+class ZarinpalGateway implements PaymentGateway {
+
+    private final ZarinpalClient client;      // ← مدل بیرونی
+
+    @Override
+    public Receipt capture(CaptureCommand command) {
+        // مدل بیگانه در همین‌جا ترجمه می‌شود
+        var request = new ZarinpalRequest(command.referenceId(),
+                command.amount().toPlainString());
+
+        var response = client.requestPayment(request);
+
+        if (response.status() != 100) {          // ← کد بیگانه
+            throw new PaymentFailed("پرداخت ناموفق: " + response.message());
+        }
+
+        return new Receipt(response.authority(), response.amount());  // ← مدل داخلی
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+بزرگ‌ترین سود عملی Feature Based، امکان <strong>تست مستقل هر فیچر</strong> است. سه سطح
+تست برای هر فیچر:
+</p>
+
+<h3>سطح ۱ — تست خالص دامنه (بدون Spring)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.domain;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+
+@DisplayName("مدل دامنه‌ی Order")
+class OrderTest {
+
+    private static final BigDecimal PRICE = new BigDecimal("150000");
+
+    private Order newOrder() {
+        return Order.create("order-1", "customer-1");
+    }
+
+    @Test
+    @DisplayName("سفارش جدید در وضعیت DRAFT است")
+    void startsAsDraft() {
+        assertThat(newOrder().status()).isEqualTo(OrderStatus.DRAFT);
+    }
+
+    @Test
+    @DisplayName("افزودن ردیف مجموع را به‌روز می‌کند")
+    void addingLineUpdatesTotal() {
+        Order order = newOrder();
+        assertThat(order.total()).isEqualByComparingTo("0");
+    }
+
+    @Test
+    @DisplayName("سفارش خالی قابل ثبت نیست")
+    void emptyOrderCannotBePlaced() {
+        Order order = newOrder();
+        assertThatThrownBy(order::place)
+                .isInstanceOf(OrderError.class);
+    }
+
+    @Test
+    @DisplayName("محصول تکراری پذیرفته نمی‌شود")
+    void duplicateProductRejected() {
+        Order order = newOrder();
+        order.addLine("p1", 1, PRICE);
+
+        assertThatThrownBy(() -&gt; order.addLine("p1", 2, PRICE))
+                .isInstanceOf(OrderError.class);
+    }
+
+    @Test
+    @DisplayName("سفارش ثبت‌شده قابل ویرایش نیست")
+    void placedOrderIsNotEditable() {
+        Order order = newOrder();
+        order.addLine("p1", 1, PRICE);
+        order.place();
+
+        assertThatThrownBy(() -&gt; order.addLine("p2", 1, PRICE))
+                .isInstanceOf(OrderError.class);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی مهم</span>
+تست دامنه در پوشه‌ی <code>order/domain/</code> قرار دارد و <strong>هیچ import از
+<code>Spring</code> ندارد</strong>. اگر این تست کند شد یا نیازمند دیتابیس شد، یعنی مرز
+لایه‌ها در فیچر شکسته است.
+</div>
+
+<h3>سطح ۲ — تست لایه‌ی API</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(OrderController.class)     // ← فقط همین فیچر بالا می‌آید
+class OrderControllerTest {
+
+    @Autowired MockMvc mvc;
+
+    @MockitoBean OrderService service;    // ← وابستگی درون‌فیچری، جعل می‌شود
+
+    @Test
+    void returns201WhenOrderPlaced() throws Exception {
+        when(service.placeOrder(any())).thenReturn("order-1");
+
+        mvc.perform(post("/api/orders")
+                        .contentType("application/json")
+                        .content("""
+                            {"customerId":"c1","lines":[
+                              {"productId":"p1","quantity":2,"unitPrice":"150000"}]}"""))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location",
+                        "http://localhost/api/orders/order-1"));
+    }
+
+    @Test
+    void returns422WhenDomainRuleFails() throws Exception {
+        when(service.placeOrder(any()))
+                .thenThrow(new OrderError("سفارش بدون ردیف قابل ثبت نیست"));
+
+        mvc.perform(post("/api/orders")
+                        .contentType("application/json")
+                        .content("""
+                            {"customerId":"c1","lines":[]}"""))
+                .andExpect(status().isUnprocessableEntity());
+    }
+}
+</code></pre>
+
+<h3>سطح ۳ — تست ماژول (راستی‌آزمایی مرز)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.assertj.core.api.Assertions.*;
+
+/**
+ * این تست ثابت می‌کند ماژول order بدون هیچ ماژول دیگری کار می‌کند.
+ * اگر شکست بخورد، یکی از مرزهای ماژول نقض شده است.
+ */
+@SpringBootTest
+@DisplayName("مرزهای ماژول order")
+class OrderModuleBoundaryTest {
+
+    @Autowired OrderApi api;
+
+    @Test
+    @DisplayName("ماژول order بدون سرویس‌های خارجی کار می‌کند")
+    void worksWithoutOtherModules() {
+        var summary = api.place("customer-1", List.of(
+                new OrderApi.LineRequest("p1", 2, new BigDecimal("150000"))));
+
+        assertThat(summary.status()).isEqualTo("PLACED");
+        assertThat(summary.total()).isEqualByComparingTo("300000");
+    }
+}
+</code></pre>
+
+<h3>راستی‌آزمایی خودکار مرزها با ArchUnit</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop;
+
+import com.tngtech.archunit.junit.AnalyzeClasses;
+import com.tngtech.archunit.core.importer.ImportOption;
+import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
+import org.junit.jupiter.api.Test;
+
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+
+@AnalyzeClasses(packages = "com.shop", importOptions = ImportOption.DoNotIncludeTests.class)
+class ArchitectureRulesTest {
+
+    // ── قاعده ۱: هیچ فیچری نباید به فیچر دیگر وابسته باشد ──
+    @Test
+    void modulesAreIndependent() {
+        ArchRule rule = noClasses()
+                .that().resideInAPackage("..order..")
+                .should().dependOnClassesThat().resideInAPackage("..payment..")
+                .because("ماژول‌ها باید مستقل باشند");
+
+        rule.check(new ClassFileImporter().importPackages("com.shop"));
+    }
+
+    // ── قاعده ۲: domain نباید به داده وابسته باشد ──
+    @Test
+    void domainIsFreeOfDataLayer() {
+        ArchRule rule = noClasses()
+                .that().resideInAPackage("..domain..")
+                .should().dependOnClassesThat().resideInAPackage("..data..")
+                .because("لایه‌ی داده باید به دامنه وابسته باشد، نه برعکس");
+
+        rule.check(new ClassFileImporter().importPackages("com.shop"));
+    }
+
+    // ── قاعده ۳: domain نباید به Spring وابسته باشد ──
+    @Test
+    void domainHasNoFrameworkDependency() {
+        ArchRule rule = noClasses()
+                .that().resideInAPackage("..domain..")
+                .should().dependOnClassesThat().resideInAnyPackage(
+                        "org.springframework..", "jakarta.persistence..")
+                .because("مدل دامنه باید خالص باشد");
+
+        rule.check(new ClassFileImporter().importPackages("com.shop"));
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چرا این مهم‌ترین بخش است</span>
+تست ماژول، تنها چیزی است که <em>ساختار Feature Based را تضمین می‌کند</em>. بدون آن،
+این معماری فقط یک قرارداد شفاهی است که با اولین deadline تنها می‌شود.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>اشتباه</th><th>چرا اشتباه است؟</th><th>راه درست</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td>پوشه‌های عمودی با نام‌های عمومی (<code>feature1</code>)</td><td>هیچ اطلاعاتی درباره‌ی محتوا نمی‌دهد</td><td>نام قابلیت کسب‌وکار</td></tr>
+<tr><td>۲</td><td>ساختن پوشه‌ی <code>common</code> به‌ازای هر کلاس تکراری</td><td><code>common</code> تبدیل به سطل زباله می‌شود</td><td>تکرار سه‌بار؛ تا قبل از آن تکرار کن</td></tr>
+<tr><td>۳</td><td>همه‌ی کلاس‌ها <code>public</code> در فیچر</td><td>مرز فیچر فقط یک قرارداد ذهنی می‌شود</td><td>فقط <code>api/</code> عمومی باشد</td></tr>
+<tr><td>۴</td><td>استفاده‌ی مستقیم از Entity فیچر دیگر</td><td>مرز تراکنش و کوپل را می‌شکند</td><td>API یا Integration Event</td></tr>
+<tr><td>۵</td><td>یک پوشه برای همه‌ی «مدل‌ها» در ریشه‌ی پروژه</td><td>دقیقاً همان ساختار افقی با اسم جدید</td><td>مدل هر فیچر داخل خودش</td></tr>
+<tr><td>۶</td><td>لایه‌بندی عمودی در عمق با پوشه‌های بسیار ریز</td><td>ناوبری را سخت می‌کند</td><td>حداکثر ۴–۵ زیرپوشه در هر فیچر</td></tr>
+<tr><td>۷</td><td>انجام تراکنش روی دو فیچر</td><td>مرز تراکنش نقض می‌شود؛ غیرقابل تفکیک بعداً</td><td>هر فیچر تراکنش خودش</td></tr>
+<tr><td>۸</td><td><code>shared</code> وابسته به یک فیچر خاص</td><td>جهت وابستگی معکوس می‌شود</td><td><code>shared</code> هیچ وابستگی‌ای به فیچرها ندارد</td></tr>
+<tr><td>۹</td><td>ادعای Feature Based بدون تست مرز</td><td>ساختار به‌تدریج فرو می‌ریزد</td><td>ArchUnit یا تست ماژول</td></tr>
+<tr><td>۱۰</td><td>تقسیم فیچرها بر اساس جدول دیتابیس</td><td>ساختار برای تغییر مدل نامناسب است</td><td>بر اساس قابلیت کسب‌وکار</td></tr>
+<tr><td>۱۱</td><td>بیش از ۲۰ فیچر</td><td>مدیریت سخت می‌شود؛ فیچرها ریز و بی‌معنا</td><td>ادغام فیچرهای مرتبط</td></tr>
+<tr><td>۱۲</td><td>مهاجرت بدون حذف لایه‌های قدیمی</td><td>دو ساختار موازی، هر دو نیمه‌کاره</td><td>مهاجرت تدریجی با حذف هم‌زمان</td></tr>
+</tbody>
+</table>
+
+<h3>نشانه‌های هشدار در کدبیس</h3>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">اگر این‌ها را دیدید، بازگشت به رویه‌ی قبلی شده</span>
+<ul>
+<li>پوشه‌ی <code>order/</code> که فایل‌هایش در کل پروژه پخش‌اند</li>
+<li>پوشه‌ی <code>shared/</code> بیش از ۳۰ فایل</li>
+<li>فیچری که بیش از ۱۰ فایل دارد که هیچ‌کدام به فیچر مربوط نیست</li>
+<li>یک پوشه به نام <code>legacy/</code> که «فعلاً» باقی مانده</li>
+<li>ایمپورت مستقیم <code>..otherfeature.domain..</code></li>
+<li>تست ماژول که برای اجرا نیاز به بالا آمدن کل سیستم دارد</li>
+</ul>
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱. فروشگاه اینترنتی با ۶ فیچر</h3>
+
+<pre class="kl-code" data-lang="text"><code>com.shop/
+├── catalog/          ← محصولات، دسته‌بندی، جست‌وجو، تصویر
+├── pricing/          ← قیمت‌گذاری، تخفیف، کمپین، مالیات
+├── cart/             ← سبد خرید، اعلان موجودی، ادغام آیتم‌ها
+├── order/            ← ثبت، لغو، وضعیت، تاریخچه
+├── payment/          ← درگاه، پرداخت، بازگشت وجه
+└── notification/     ← ایمیل، پیامک، اعلان درون‌برنامه‌ای
+
+shared/
+├── money/            Money، Currency
+├── error/            ApiError، GlobalExceptionHandler
+├── web/              PageResponse، PageRequest
+└── event/            DomainEvent، DomainEventPublisher
+
+← ۶ فیچر، هرکدام با API مستقل، یک استقرار، یک دیتابیس (فعلاً)</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نتیجه‌ی عملی</span>
+تیم پرداخت ۴ نفره بود و ماهی ۶۰ تغییر می‌داد. بعد از جداسازی فیچر payment، هیچ‌کدام از
+آن ۶۰ تغییر نیاز به استقرار مجدد فیچر order نداشت و تعداد merge conflict با تیم سفارش
+از ماهی ۲۰ به صفر رسید.
+</div>
+
+<h3>۲. پلتفرم آموزش آنلاین — دو تیم، مرز روشن</h3>
+
+<pre class="kl-code" data-lang="text"><code>تیم A (۵ نفر): content
+  ├── lesson/      درس، ویدیو، متن
+  ├── quiz/        آزمون، سوال، پاسخ
+  └── progress/    پیشرفت کاربر
+
+تیم B (۴ نفر): commerce
+  ├── enrollment/  ثبت‌نام
+  ├── payment/     شهریه
+  └── certificate/ گواهی
+
+رابط بین دو تیم (فقط ۲ نقطه):
+  EnrollmentCompleted ──→ ProgressContext.resetForNewCourse()
+  EnrollmentPaid     ──→ IssueCertificateCommand</code></pre>
+
+<p>
+نکته: هیچ‌یک از این دو تیم <strong>کد</strong> یکدیگر را تغییر نمی‌دهد. این یعنی یک تیم
+می‌تواند روزی ۵ بار و تیم دیگر هفته‌ای یک بار مستقر کند.
+</p>
+
+<h3>۳. سامانه‌ی مالی سازمانی</h3>
+
+<pre class="kl-code" data-lang="text"><code>com.finance/
+├── ledger/         ← دفتر کل (هر حساب یک تراکنش، بدون aggregate بزرگ)
+├── budget/         ← بودجه، تخصیص، انتقال
+├── invoice/        ← فاکتور، صورت‌حساب، مالیات
+├── approval/       ← گردش تأیید
+└── reconciliation/ ← مغایرت‌گیری بانکی
+
+نکته‌ی کلیدی:
+  invoice/ به ledger/ وابسته است، اما نه به budget/
+  approval/ هیچ وابستگی به هیچ فیچر دیگری ندارد
+  ← وابستگی‌ها یک DAG هستند، نه یک درهم‌تنیده</code></pre>
+
+<h3>۴. اپلیکیشن رزرو — جداسازی فیچر پرریسک</h3>
+
+<pre class="kl-code" data-lang="text"><code>فیچر booking/ (ریسک بالا، تغییر زیاد)
+فیچر payment/ (ریسک بالا، وابسته به درگاه بیرونی)
+فیچر notification/ (ریسک کم، تغییر زیاد)
+
+چرا جداسازی مهم بود؟
+  ← تیم notification هفته‌ای ۴۰ تغییر داشت
+  ← اگر داخل booking بود، هر تغییر اعلان = ریسک روی منطق رزرو
+  ← جداسازی کردن یعنی: ریسک اعلان از ریسک رزرو جدا شد
+
+الگوی مورد استفاده:
+  booking/ ──BookingConfirmed──→ notification/
+  booking/ ──PaymentRequired───→ payment/
+  payment/ ──PaymentSucceeded──→ booking/ (→ IssueVoucher)</code></pre>
+
+<h3>۵. مهاجرت تدریجی یک کدبیس ۱۲ ساله</h3>
+
+<pre class="kl-code" data-lang="text"><code>وضعیت اولیه:
+  controller/ ۴۸ · service/ ۶۸ · repository/ ۳۱ · entity/ ۲۸
+
+برنامه‌ی ۶ ماهه:
+  ماه ۱: فقط package-by-feature برای پوشه‌ها، بدون تغییر هیچ کدی
+         (IDE refactor فقط، رفتار یکسان)
+  ماه ۲–۳: استخراج فیچر payment (بیشترین کوپل با بیرون)
+  ماه ۴: استخراج فیچر catalog (کم‌ریسک‌ترین)
+  ماه ۵: تست مرز با ArchUnit در CI
+  ماه ۶: حذف پوشه‌های افقی باقی‌مانده
+
+نتیجه:
+  controller/ ۰ · service/ ۶ · repository/ ۳
+  ← کاهش ۹۰٪ در حجم لایه‌های افقی</code></pre>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پاسخ کوتاه</span>
+سازماندهی پوشه‌ها <strong>هیچ اثری بر کارایی زمان اجرا ندارد</strong>. Feature Based یک
+تصمیم سازماندهی کد است، نه یک تصمیم اجرایی. نام پوشه در bytecode وجود ندارد.
+</div>
+
+<table>
+<thead>
+<tr><th>عامل</th><th>زمان اجرا</th><th>تحت تأثیر Feature Based؟</th></tr>
+</thead>
+<tbody>
+<tr><td>ساختار پوشه</td><td>۰</td><td>❌ هیچ اثری</td></tr>
+<tr><td>بارگذاری کلاس</td><td>میکروثانیه</td><td>فقط اگر به lazy loading تکیه کنید</td></tr>
+<tr><td>مدیریت Connection</td><td>میلی‌ثانیه</td><td>اگر ماژول‌ها connection جدا داشته باشند</td></tr>
+<tr><td>کش داده</td><td>میلی‌ثانیه</td><td>اگر cache در سطح فیچر باشد</td></tr>
+<tr><td>پیمایش گراف وابستگی</td><td>ثانیه (build)</td><td>✅ کامپایل بهتر</td></tr>
+<tr><td>بارگذاری مجدد در dev</td><td>ثانیه</td><td>✅ با DevTools بهتر</td></tr>
+</tbody>
+</table>
+
+<h3>جایی که واقعاً تفاوت می‌کند: زمان توسعه</h3>
+
+<pre class="kl-code" data-lang="text"><code>سناریو: افزودن قابلیت «لغو سفارش»
+
+لایه‌ای:
+  files touched:      ۷
+  folders touched:    ۴
+  modules affected:   ۲ (build کل پروژه)
+  full test run:      ۴۲ دقیقه
+
+Feature Based:
+  files touched:      ۳
+  folders touched:    ۱
+  modules affected:   ۱
+  module test run:    ۸ ثانیه
+  full test run:      (فقط در CI لازم)
+
+← ۳۱۴ برابر سریع‌تر در چرخه‌ی بازخورد محلی</code></pre>
+
+<h3>اثر جانبی: کامپایل موازی</h3>
+
+<p>
+Gradle/Maven با پوشه‌بندی عمودی بهتر کار می‌کنند چون می‌توانند کلاس‌های مرتبط با یک فیچر
+را به‌عنوان یک واحد کامپایل کنند. در پروژه‌های بزرگ این یعنی کاهش واقعی زمان build.
+</p>
+
+<h3>ریسک‌های عملکردی که باید مراقبشان باشید</h3>
+
+<table>
+<thead>
+<tr><th>ریسک</th><th>چه اتفاقی می‌افتد؟</th><th>راه جلوگیری</th></tr>
+</thead>
+<tbody>
+<tr><td>ماژول‌های زیاد، bean زیاد</td><td>زمان startup بالا</td><td>اگر ماژول لازم نیست، <code>@ConditionalOnProperty</code></td></tr>
+<tr><td>اسکن پکیج کل پروژه</td><td>کندی startup</td><td>اسکن را به ماژول‌ها محدود کنید</td></tr>
+<tr><td>کش فیچرمحور</td><td>داده‌ی کهنه هنگام تغییر فیچر</td><td>اعتبارسنجی کش در تست ماژول</td></tr>
+<tr><td>کوپل از راه shared</td><td>shared سنگین می‌شود</td><td>تست مرز، shared را محدود نگه می‌دارد</td></tr>
+<tr><td>تعداد زیاد تراکنش کوتاه</td><td>فشار روی دیتابیس</td><td>یک transaction برای یک use case</td></tr>
+<tr><td>فراخوانی بین فیچرها در حلقه</td><td>N+1 در سطح ماژول</td><td>رویداد به‌جای فراخوانی</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">پیشنهاد عملی</span>
+اگر تیم شما نگران کارایی است، یک تست کارایی واقعی بنویسید: زمان یک درخواست کامل از
+ابتدا تا انتها را قبل و بعد از مهاجرت اندازه بگیرید. در ۹۰٪ موارد تفاوت در حد نوسان
+طبیعی است. اندازه‌گیری کنید، فرض نکنید.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<h3>سطح Junior (۱ تا ۱۰)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱ — Feature Based Architecture چیست؟</span>
+سازماندهی کد به‌گونه‌ای که هر پوشه‌ی اصلی یک قابلیت کسب‌وکار کامل باشد و همه‌ی لایه‌های
+لازم (API، دامنه، داده، تست) داخل همان پوشه قرار بگیرد. یعنی ساختار عمودی به‌جای افقی.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۲ — تفاوت پوشه‌بندی لایه‌ای و فیچرمحور چیست؟</span>
+لایه‌ای: پوشه‌ها بر اساس نوع کلاس (controller، service، repository). فیچرمحور: پوشه‌ها
+بر اساس قابلیت (order، payment). در لایه‌ای یک فیچر در چند پوشه پخش است؛ در فیچرمحور
+همه در یک پوشه.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۳ — یک فیچر خوب چه ویژگی‌هایی دارد؟</span>
+نامش یک قابلیت کسب‌وکار است، همه‌ی لایه‌های لازم را دارد، API عمومی مشخص دارد، و
+می‌توان آن را مستقل از بقیه تست کرد. مهم‌تر: اگر کل پوشه را حذف کنید، فقط همان قابلیت
+از کار بیفتد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۴ — «برش عمودی» یعنی چه؟</span>
+یعنی کد به‌جای برش افقی (لایه‌ها)، عمودی بریده شود: هر ستون عمودی یک قابلیت کامل از
+رابط کاربری تا دیتابیس است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۵ — پوشه‌ی shared چه زمانی مجاز است؟</span>
+فقط وقتی یک مفهوم واقعاً در حداقل سه فیچر مختلف استفاده می‌شود (مثل <code>Money</code> یا
+<code>PageResponse</code>). اگر فقط دو جا لازم است، هنوز جای درستی ندارد؛ در یکی از
+همان دو فیچر یا جای دوم بماند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۶ — چطور مرز یک فیچر را تعیین می‌کنید؟</span>
+از زبان کسب‌وکار شروع کنید: یک قابلیت قابل توضیح به کاربر. سپس تست کنید: آیا می‌توان
+پوشه را کامل حذف کرد بدون آسیب به چیز دیگری؟ اگر نه، مرز جابه‌جا است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۷ — چرا visibility جاوا در این معماری مهم است؟</span>
+چون کامپایلر وابستگی ناخواسته را می‌گیرد. اگر کلاس‌های داخل فیچر
+<code>package-private</code> باشند، هر کامپایل ناموفق وابستگی غیرمجاز را نشان می‌دهد.
+این یعنی مرز بدون قوانین کتبی هم اجبار می‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۸ — چه چیزی در پوشه‌ی فیچر قرار نمی‌گیرد؟</span>
+کدی که به هیچ قابلیت مشخصی تعلق ندارد. هر چیزی که نتوانید به یک قابلیت کسب‌وکار
+نسبت دهید، یا به <code>shared</code> تعلق دارد یا در جای درستی نیست.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۹ — تفاوت Feature Based و Vertical Slice چیست؟</span>
+دانه‌بندی فرق دارد: Feature Based در سطح حوزه‌ی کسب‌وکار است (فیچر «سفارش»)،
+Vertical Slice در سطح هر درخواست کاربر (اسلایس «ثبت سفارش»، «لغو سفارش»). Vertical
+Slice ریزدانه‌تر و کم‌ریسک‌تر است ولی ریسک تکرار بیشتری دارد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۰ — تست ماژول چه چیزی را تضمین می‌کند؟</span>
+اینکه فیچر بدون بقیه‌ی سیستم کار می‌کند. اگر تست ماژول بدون بالا آمدن فیچرهای دیگر
+پاس شود، مرزهای ماژولار سالم‌اند. اگر شکست بخورد، یک وابستگی غیرمجاز وجود دارد.
+</div>
+
+<h3>سطح Mid (۱۱ تا ۱۷)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۱ — چگونه از بازگشت به ساختار افقی جلوگیری می‌کنید؟</span>
+سه ابزار: (۱) تست ماژول در هر commit؛ (۲) ArchUnit برای بررسی خودکار قواعد وابستگی؛
+(۳) بازبینی کد با تمرکز بر اینکه کلاس جدید در پوشه‌ی درست قرار گرفته. ابزار بدون
+بازبینی انسانی کافی نیست.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۲ — چگونه کد موجود را به این ساختار مهاجرت می‌دهید؟</span>
+مرحله‌ای و بدون تغییر رفتار: (۱) فقط package-by-feature با refactor ابزار IDE؛
+(۲) استخراج فیچرهای مستقل‌تر؛ (۳) تعیین API عمومی؛ (۴) افزودن تست ماژول؛
+(۵) حذف لایه‌های افقی باقی‌مانده. هر مرحله را می‌توان متوقف کرد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۳ — فیچرها چطور با هم ارتباط بگیرند؟</span>
+به ترتیب اولویت: (۱) فقط شناسه؛ (۲) API عمومی یکدیگر؛ (۳) کلاس قراردادی مشترک در
+<code>shared</code>؛ (۴) Integration Event برای واکنش ناهمگام. فراخوانی مستقیم مدل داخلی
+دیگر فیچر، گزینه‌ی نادرست است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۴ — چه زمانی تکرار کد بین فیچرها قابل قبول است؟</span>
+تا سه بار. تکرار از انتزاع ناقص بهتر است چون انتزاع بد، وابستگی مصنوعی می‌سازد. اگر
+تکرار سه‌بار شد، بررسی کنید که آیا واقعاً یک مفهوم مشترک است یا فقط کد شبیه.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۵ — تفاوت Modular Monolith و Feature Based چیست؟</span>
+Feature Based درباره‌ی <em>ساختار کد</em> است و Modular Monolith درباره‌ی
+<em>استقرار</em>. یک پروژه‌ی Feature Based معمولاً Modular Monolith هم هست: یک فرایند،
+چند ماژول مستقل در کد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۶ — Feature Based چه رابطه‌ای با DDD دارد؟</span>
+مکمل‌اند. DDD می‌گوید مرزها کجا باشند (Bounded Context) و Feature Based می‌گوید کد
+داخل هر مرز چطور چیده شود. پروژه‌ای که هر دو را رعایت کند، هم مدل درست دارد و هم
+ساختار درست.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۷ — چطور یک فیچر را «API عمومی» می‌کنید؟</span>
+فقط کلاس‌های <code>api/</code> را <code>public</code> می‌کنید و بقیه را
+<code>package-private</code>. اگر فیچر دیگری به چیزی بیرون از <code>api/</code>
+نیاز داشت، آن API باید گسترده شود — نه اینکه visibility کلاس داخلی عوض شود.
+</div>
+
+<h3>سطح Senior (۱۸ تا ۲۰)</h3>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۸ — Feature Based چه تأثیری بر عملکرد دارد؟</span>
+در زمان اجرا هیچ اثری ندارد؛ نام پوشه در bytecode نیست. تأثیر واقعی روی چرخه‌ی
+توسعه است: زمان build، زمان اجرای تست محلی و کاهش conflict. کامپایل موازی هم بهتر
+کار می‌کند چون کلاس‌های هر فیچر یک واحد هستند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۱۹ — چه زمانی Feature Based اشتباه است؟</span>
+وقتی قابلیت‌ها به‌شدت به هم چسبیده‌اند و هیچ مرز منطقی وجود ندارد؛ وقتی تیم یک‌نفره
+است؛ وقتی پروژه اسکریپتی یا کمتر از ۵ هزار خط است؛ یا وقتی دامنه هنوز کشف نشده و
+نمی‌دانید فیچرهای واقعی چه هستند. در این حالت‌ها هزینه بیشتر از سود است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">سؤال ۲۰ — چگونه یک تیم بزرگ را به رعایت این ساختار متقاعد می‌کنید؟</span>
+با ابزار، نه با شعار: اول یک فیچر را کامل به‌عنوان نمونه مهاجرت دهید و نتیجه را نشان
+دهید (زمان تست، کاهش conflict)، سپس تست مرز را در CI اجباری کنید، و در نهایت
+قاعده‌ی «کلاس جدید فقط در فیچر» را در PR template و بازبینی کد نهادینه کنید. ساختار
+بدون اجبار خودکار، بعد از دو ماه فرو می‌ریزد.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا این فقط یک تغییر نام پوشه است؟</span>
+نه. اگر فقط پوشه‌ها را جابه‌جا کنید و همه‌چیز <code>public</code> بماند، فقط مسیر
+عوض شده. ارزش واقعی در سه چیز است: قاعده‌ی visibility، تست ماژول، و API عمومی.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا با Feature Based نیاز به DDD دارم؟</span>
+نه. DDD مدل‌سازی دامنه است و به دانش کسب‌وکار نیاز دارد؛ Feature Based فقط ساختار کد.
+می‌توانید Feature Based را بدون DDD و حتی در یک پروژه‌ی ساده اجرا کنید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا Feature Based همان Modular Monolith است؟</span>
+نه، یکی نیستند ولی معمولاً با هم می‌آیند. Feature Based ساختار کد است،
+Modular Monolith نحوه‌ی استقرار. یک Modular Monolith معمولاً Feature Based هم هست.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چند فیچر برای یک پروژه مناسب است؟</span>
+بین ۵ تا ۲۰. کمتر از ۵ یعنی تفاوت چندانی با لایه‌بندی ندارد. بیشتر از ۲۰ یعنی فیچرها
+ریز و بی‌معنا می‌شوند و مدیریت سخت می‌شود.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا هر فیچر باید دیتابیس خودش را داشته باشد؟</span>
+نه. این تصمیم جداست. جداسازی <em>کد</em> را بدون جداسازی دیتابیس هم می‌توان انجام داد.
+جداسازی دیتابیس معمولاً قدم بعدی و پرهزینه‌تر است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">اگر دو تیم مجبور به تغییر یک فیچر شدند چه؟</span>
+این نشانه‌ی مرز اشتباه است: آن فیچر باید به دو فیچر تقسیم شود. اگر نمی‌شود، حداقل
+بخش مشترک را به <code>shared</code> منتقل کنید و مالکیت آن را مشخص کنید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا Feature Based سرعت توسعه را کم می‌کند؟</span>
+در ابتدا بله، چون مرزها را باید فکر کنید. اما زمان بازخورد (build و تست) به‌شدت کم
+می‌شود. در پروژه‌های بلندمدت، سرعت کل بیشتر است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">بهترین ابزار راستی‌آزمایی چیست؟</span>
+<strong>ArchUnit</strong> در تست، برای بررسی خودکار قواعد وابستگی و visibility. مکمل
+خوبی هم <code>Spring Modulith</code> است که تست ماژول و مستندسازی را خودکار می‌کند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا در اندروید هم کاربرد دارد؟</span>
+بله، به‌شکل package-by-feature که در پروژه‌های بزرگ اندروید استاندارد عملی است:
+<code>feature/order/</code> شامل UI، ViewModel، Repository و مدل خودش.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چطور فیچرها را با هم ترکیب کنم؟</span>
+اگر دو فیچر همیشه با هم تغییر می‌کنند، یک فیچر هستند. اگر فقط گاهی، جدا نگه دارید و
+با رویداد یا API عمومی وصل کنید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا پوشه‌ی <code>shared</code> اجتناب‌ناپذیر نیست؟</span>
+کاملاً می‌توان بدون آن کار کرد، به قیمت تکرار بیشتر. خیلی از تیم‌ها ترجیح می‌دهند
+فیچرها کاملاً مستقل باشند و هرچه لازم دارند را خودشان داشته باشند.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">چگونه تشخیص دهم فیچرهایم بیش از حد بزرگ‌اند؟</span>
+وقتی یک پوشه بیش از ۲۰ کلاس دارد، وقتی چند تیم داخل آن کار می‌کنند، یا وقتی تست
+ماژولش کند است چون همه‌چیز را بالا می‌آورد.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا کد نوشتن را سخت‌تر می‌کند؟</span>
+اول کمی سخت‌تر است چون باید مرز فیچر را رعایت کنید. اما تغییر دادن کد را به‌مراتب
+آسان‌تر می‌کند، چون همه‌چیز مربوط در یک جاست.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">ارتباطش با Microservices چیست؟</span>
+Feature Based پیش‌نیاز آن است. اگر نمی‌توانید کدتان را در یک فرایند به ماژول‌های
+مستقل تقسیم کنید، به میکروسرویس مهاجرت نکنید — شکست می‌خورید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">آیا می‌توانم ترکیبی از لایه و فیچر داشته باشم؟</span>
+در حین مهاجرت، بله و این طبیعی است. حالت پایدار بهتر است یکی از دو باشد؛ ساختار
+نیمه‌کاره از هر دو بدتر است.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">مهم‌ترین توصیه برای شروع چیست؟</span>
+فقط پوشه‌بندی را انجام دهید، بدون قوانین سخت. این کم‌ریسک‌ترین قدم با بیشترین
+فایده است. اگر جواب داد، قدم بعدی را بردارید.
+</div>
+
+<div class="kl-box kl-h">
+<span class="kl-h">اگر تیمم مقاومت می‌کند چه کنم؟</span>
+مسئله را با عدد نشان دهید، نه با نظر: زمان merge conflict، زمان تست، و زمان onboarding
+را قبل و بعد اندازه بگیرید. مقاومت معمولاً از ترس تغییر است، نه از بی‌اعتمادی
+به فناوری.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<table>
+<thead>
+<tr><th>مفهوم</th><th>یک‌خطی</th><th>قانون طلایی</th></tr>
+</thead>
+<tbody>
+<tr><td>Feature</td><td>پوشه‌ی یک قابلیت کسب‌وکار</td><td>نام از زبان کسب‌وکار</td></tr>
+<tr><td>لایه‌ای (افقی)</td><td>دسته‌بندی بر اساس نوع کلاس</td><td>پرهزینه در پروژه‌ی بزرگ</td></tr>
+<tr><td>عمودی</td><td>همه‌ی لایه‌ها در یک پوشه</td><td>تغییر یک فیچر = یک پوشه</td></tr>
+<tr><td>Vertical Slice</td><td>واحد = هر درخواست کاربر</td><td>ریزدانه‌تر از Feature</td></tr>
+<tr><td>api/</td><td>فقط چیزی که بیرون می‌بینند</td><td>تنها پوشه‌ی public</td></tr>
+<tr><td>domain/</td><td>منطق کسب‌وکار فیچر</td><td>بدون Spring و JPA</td></tr>
+<tr><td>data/</td><td>پیاده‌سازی ذخیره‌سازی</td><td>تنها جایی که JPA دیده می‌شود</td></tr>
+<tr><td>event/</td><td>رویدادهای فیچر</td><td>قرارداد با ماژول‌های دیگر</td></tr>
+<tr><td>shared</td><td>مفهوم واقعاً مشترک</td><td>قاعده‌ی سه‌بار</td></tr>
+<tr><td>API عمومی</td><td>راه کنترل‌شده‌ی دسترسی</td><td>فیچر دیگر فقط این را می‌بیند</td></tr>
+<tr><td>Integration Event</td><td>پیام بین ماژول‌ها</td><td>بدون کوپل مستقیم</td></tr>
+<tr><td>مرز تراکنش</td><td>هر فیچر تراکنش خودش</td><td>دو فیچر = دو تراکنش</td></tr>
+<tr><td>تست ماژول</td><td>فیچر بدون بقیه کار می‌کند؟</td><td>پرچم قرمز مرزها</td></tr>
+<tr><td>ArchUnit</td><td>بررسی خودکار قواعد</td><td>ساختار را در CI قفل می‌کند</td></tr>
+<tr><td>package-private</td><td>محدود کردن دسترسی</td><td>کامپایلر مرز را اجرا می‌کند</td></tr>
+<tr><td>تست حذف</td><td>حذف کل پوشه</td><td>معیار نهایی درستی مرز</td></tr>
+<tr><td>تکرار</td><td>کد مشابه بین فیچرها</td><td>تا سه‌بار، بعد استخراج</td></tr>
+<tr><td>Modular Monolith</td><td>یک استقرار، چند ماژول</td><td>مرحله‌ی بعد Feature Based</td></tr>
+<tr><td>Microservices</td><td>هر فیچر جدا مستقر</td><td>فقط بعد از بلوغ ماژول‌ها</td></tr>
+<tr><td>S</td><td>مسئولیت واحد</td><td>هر فیچر یک مسئولیت</td></tr>
+<tr><td>O</td><td>باز/بسته</td><td>فیچر جدید = کد جدید</td></tr>
+<tr><td>D</td><td>وارونگی وابستگی</td><td>فیچر به قرارداد، نه پیاده‌سازی</td></tr>
+<tr><td>تأثیر اجرایی</td><td>هیچ</td><td>نام پوشه در bytecode نیست</td></tr>
+<tr><td>تأثیر توسعه‌ای</td><td>زیاد</td><td>چرخه‌ی بازخورد کوتاه‌تر</td></tr>
+<tr><td>نشانه‌ی خطا</td><td><code>shared</code> بزرگ</td><td>مرز را بازبینی کنید</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">خلاصه در ۱۰ ثانیه</span>
+Feature Based = «کد را بر اساس قابلیت کسب‌وکار دسته‌بندی کن، نه بر اساس نوع کلاس؛ هر
+پوشه را مستقل و قابل تست نگه دار؛ و با تست ماژول، مرزها را در CI قفل کن.»
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<h3>Roadmap یادگیری</h3>
+
+<table>
+<thead>
+<tr><th>مرحله</th><th>مدت</th><th>هدف</th><th>تمرین پیشنهادی</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>۱. پوشه‌بندی</strong></td><td>۱ هفته</td><td>تبدیل ساختار افقی به عمودی</td><td>یک پروژه‌ی کوچک را با package-by-feature بازنویسی کنید</td></tr>
+<tr><td><strong>۲. مرزها</strong></td><td>۲ هفته</td><td>visibility و API عمومی</td><td>برای دو فیچر public API طراحی کنید</td></tr>
+<tr><td><strong>۳. تست مرز</strong></td><td>۲ هفته</td><td>تست ماژول و ArchUnit</td><td>قاعده‌ی «domain به data وابسته نیست» را بنویسید</td></tr>
+<tr><td><strong>۴. تعامل</strong></td><td>۲ هفته</td><td>رویداد و API بین فیچرها</td><td>یک جریان checkout با رویداد پیاده کنید</td></tr>
+<tr><td><strong>۵. مهاجرت</strong></td><td>۴+ هفته</td><td>تبدیل کدبیس واقعی</td><td>یک فیچر را کامل مهاجرت دهید و زمان را اندازه بگیرید</td></tr>
+</tbody>
+</table>
+
+<h3>منابع پیشنهادی</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>مستندات Spring Modulith</strong> — بهترین مرجع عملی رایگان برای ماژولار کردن مونولیث</li>
+<li><strong>مستندات ArchUnit</strong> — برای نوشتن قواعد معماری به‌صورت تست</li>
+<li><strong>مقالات آرتور فنی وایت‌فیلد</strong> درباره‌ی معماری پاکسازی‌شده</li>
+<li><strong>مطالب ایان کوپر</strong> درباره‌ی Vertical Slice Architecture</li>
+<li><strong>مستندات jMolecules</strong> — نگاهی عمیق به ماژولار بودن</li>
+</ul>
+</div>
+
+<h3>جمع‌بندی</h3>
+
+<p>
+<strong>Feature Based Architecture</strong> ساده‌ترین معماری این سری با بیشترین بازده
+عملی است. بدون نیاز به دانش دامنه، بدون ابزار پیچیده، و بدون هزینه‌ی زیرساخت.
+</p>
+
+<p>
+بیشترین ارزش آن در یک جمله خلاصه می‌شود: <strong>کد یک قابلیت باید در یک جا باشد</strong>.
+این جمله ساده، زمان تحویل، تعداد conflict، سرعت تست و زمان onboarding را به‌شدت کم
+می‌کند.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله یازدهمین عضو سری «معماری‌های نرم‌افزاری» است. اکنون الگوهای رابط کاربری
+(MVC، MVP، MVVM، MVI)، الگوهای معماری (Clean، Onion، Hexagonal، Layered، Repository،
+DDD) و ساختار کد (Feature Based) را پوشش داده‌اید. در ادامه سری به معماری‌های
+توزیع‌شده می‌رسد: <strong>Event-Driven</strong>، <strong>CQRS</strong> و
+<strong>Microservices</strong>.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی پوشه‌ها بزرگ می‌شوند</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Feature Based چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: برش عمودی</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Feature در برابر Layer و Slice</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">ساختار معماری</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: ماژول سفارش</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مقایسه با معماری‌های دیگر</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی پوشه‌ها بزرگ می‌شوند</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Feature Based چیست؟ (تعریف دقیق)</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: برش عمودی</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Feature در برابر Layer و Slice</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">ساختار معماری</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: ماژول سفارش</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مقایسه با معماری‌های دیگر</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

@@ -22,6 +22,17 @@
 | ۱۰ | Clean Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/clean-architecture.html`](articles/clean-architecture.html) | ~۶۵ دقیقه |
 | ۱۱ | Onion Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/onion-architecture.html`](articles/onion-architecture.html) | ~۵۵ دقیقه |
 | ۱۲ | Hexagonal Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/hexagonal-architecture.html`](articles/hexagonal-architecture.html) | ~۵۵ دقیقه |
+| ۱۳ | Layered Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/layered-architecture.html`](articles/layered-architecture.html) | ~۵۰ دقیقه |
+| ۱۴ | MVC چیست؟ آموزش کامل الگوی Model-View-Controller با مثال و ساختار پروژه | [`articles/mvc-architecture.html`](articles/mvc-architecture.html) | ~۵۵ دقیقه |
+| ۱۵ | MVP چیست؟ آموزش کامل الگوی Model-View-Presenter با مثال و ساختار پروژه | [`articles/mvp-architecture.html`](articles/mvp-architecture.html) | ~۵۵ دقیقه |
+| ۱۶ | MVVM چیست؟ آموزش کامل الگوی Model-View-ViewModel با مثال و ساختار پروژه | [`articles/mvvm-architecture.html`](articles/mvvm-architecture.html) | ~۵۵ دقیقه |
+| ۱۷ | MVI چیست؟ آموزش کامل الگوی Model-View-Intent با مثال و ساختار پروژه | [`articles/mvi-architecture.html`](articles/mvi-architecture.html) | ~۶۰ دقیقه |
+| ۱۸ | Repository Pattern چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/repository-pattern.html`](articles/repository-pattern.html) | ~۶۰ دقیقه |
+| ۱۹ | DDD چیست؟ آموزش کامل Domain-Driven Design با مثال و ساختار پروژه | [`articles/ddd-architecture.html`](articles/ddd-architecture.html) | ~۶۵ دقیقه |
+| ۲۰ | Feature Based Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/feature-based-architecture.html`](articles/feature-based-architecture.html) | ~۵۵ دقیقه |
+| ۲۱ | Event Driven Architecture چیست؟ آموزش کامل Event-Driven با مثال و ساختار پروژه | [`articles/event-driven-architecture.html`](articles/event-driven-architecture.html) | ~۶۰ دقیقه |
+| ۲۲ | CQRS چیست؟ آموزش کامل Command Query Responsibility Segregation با مثال و ساختار پروژه | [`articles/cqrs-architecture.html`](articles/cqrs-architecture.html) | ~۶۰ دقیقه |
+| ۲۳ | Microservices چیست؟ آموزش کامل معماری سرویس‌محور با مثال و ساختار پروژه | [`articles/microservices-architecture.html`](articles/microservices-architecture.html) | ~۶۵ دقیقه |
 
 ## فهرست پروژه‌ها
 
@@ -44,8 +55,19 @@ my-articales/
 ├── .nojekyll                     # جلوگیری از پردازش Jekyll در GitHub Pages
 ├── README.md
 │
-├── articles/                     # فهرست مقالات + ۱۲ مقاله
+├── articles/                     # فهرست مقالات + ۲۲ مقاله
 │   ├── index.html                # جستجو + فیلتر تگ + حالت خالی
+│   ├── microservices-architecture.html
+│   ├── cqrs-architecture.html
+│   ├── event-driven-architecture.html
+│   ├── feature-based-architecture.html
+│   ├── ddd-architecture.html
+│   ├── repository-pattern.html
+│   ├── mvi-architecture.html
+│   ├── mvvm-architecture.html
+│   ├── mvp-architecture.html
+│   ├── mvc-architecture.html
+│   ├── layered-architecture.html
 │   ├── hexagonal-architecture.html
 │   ├── onion-architecture.html
 │   ├── clean-architecture.html
@@ -210,6 +232,91 @@ python -m http.server 8080     # یا: npx serve .
 
 ### مهر ۱۴۰۵
 
+- **مقالهٔ Microservices** — چهاردهمین و آخرین عضو سری؛ راهنمای ۲۶ بخشی معماری
+  سرویس‌محور، از تفاوت Microservices با SOA و Bounded Context تا مرزهای واقعی سرویس و
+  دیتابیس به‌ازای هر سرویس، API Gateway و BFF، Service Discovery و Service Mesh،
+  الگوهای تاب‌آوری (Timeout، Circuit Breaker، Bulkhead، Retry با backoff)، Saga با
+  Choreography و Orchestration و الگوی Outbox برای رفع Dual Write،
+  Idempotent Consumer و چهار سطح تست (واحد، قرارداد، یکپارچه، انتها‌به‌انتها)،
+  مهاجرت تدریجی با Strangler Fig و Canary/Blue-Green، ۱۲ مزیت و ۱۲ عیب، ۱۲
+  اشتباه رایج، ۵ مثال واقعی (آمازون، نتفلیکس، شرکت هواپیمایی، فروشگاه اینترنتی،
+  پرداخت)، Performance، ۲۵ سؤال مصاحبه، ۱۸ FAQ، Cheat Sheet و Roadmap.
+
+- **مقالهٔ CQRS** — سیزدهمین عضو سری؛ راهنمای ۲۶ بخشی جداسازی مدل نوشتن از مدل
+  خواندن، از تضاد بنیادی خواندن و نوشتن تا اصل CQS و چهار سطح CQRS، قواعد طراحی
+  Command و Query، مدل خواندن تخت با فیلدهای محاسبه‌شده، پروژکشن idempotent و
+  مدیریت سازگاری نهایی، بازسازی Read Model و پایش lag، ساختار پروژه‌ی واقعی با
+  جداول جدا، پیاده‌سازی کامل Java 21 (OrderCommandHandler، OrderQueryHandler،
+  OrderViewDocument، OrderSummaryProjector و کنترلرهای جدا)، ۱۲ مزیت و ۱۰ عیب،
+  SOLID، Design Patterns، تست واحد و یکپارچه، ۱۲ اشتباه رایج، ۵ مثال واقعی،
+  Performance، ۲۰ سؤال مصاحبه، ۱۷ FAQ، Cheat Sheet و Roadmap.
+
+- **مقالهٔ Event Driven Architecture** — معماری رویدادمحور، دوازدهمین عضو سری؛ راهنمای
+  ۲۶ بخشی از مشکل زنجیره‌ی شکننده تا سه سبک پیام‌رسانی، Domain Event و Integration Event
+  و قرارداد پیام با CloudEvents، قواعد سازگاری و نسخه‌بندی، الگوی Outbox و چهار سطح
+  تضمین تحویل، idempotency و Dead Letter Queue، Saga با Choreography و Orchestration،
+  ساختار پروژه‌ی واقعی چندسرویسی، پیاده‌سازی کامل Java 21 با Kafka (OutboxEvent،
+  EventRecorder، OutboxRelay، OrderPlacedHandler، پیکربندی producer و consumer و
+  مدیریت خطا)، ۱۲ مزیت و ۱۲ عیب، SOLID، Design Patterns، تست با InMemoryEventRecorder
+  و EmbeddedKafka، ۱۲ اشتباه رایج، ۵ مثال واقعی، Performance، ۲۰ سؤال مصاحبه، ۱۷ FAQ،
+  Cheat Sheet و Roadmap.
+
+- **مقالهٔ Feature Based Architecture** — یازدهمین عضو سری معماری؛ راهنمای ۲۶ بخشی
+  سازماندهی کد بر اساس قابلیت به‌جای لایه، تاریخچه و ریشه‌ی نیاز، برش عمودی در برابر
+  افقی، مقایسه با Vertical Slice و Modular Monolith، قواعد visibility و API عمومی،
+  تعامل بین فیچرها با Integration Event، ساختار پروژه‌ی واقعی شش‌فیچری، پیاده‌سازی
+  کامل Java 21 (Order، OrderService، OrderController، JpaOrderRepository، OrderMapper،
+  OrderApi و OrderModuleConfiguration)، ۱۲ مزیت و ۱۰ عیب، SOLID، Design Patterns،
+  تست ماژول و راستی‌آزمایی مرز با ArchUnit، ۱۲ اشتباه رایج، ۵ مثال واقعی،
+  Performance، ۲۰ سؤال مصاحبه، ۱۷ FAQ، Cheat Sheet و Roadmap.
+
+- **مقالهٔ DDD** — طراحی دامنه‌محور، دهمین عضو سری معماری؛ راهنمای ۲۶ بخشی از تاریخچه‌ی
+  مدل دامنه‌ی کوپر تا Ubiquitous Language ایوانز، تفاوت DDD با لایه‌بندی، مفاهیم Entity و
+  Value Object و Aggregate Root، مرز تراکنش، Domain Service و Domain Event، ساختار لایه‌ها،
+  جریان داده، پیاده‌سازی کامل Java 21 (Order، Money، OrderLine، JPA Entity، EntityMapper،
+  JpaOrderRepository، ApplicationService، Controller و هندلر خطای دامنه)، مقایسه با لایه‌ای و
+  شش‌ضلعی، ۱۳ مزیت و ۱۱ عیب، SOLID، Design Patterns، تست واحد با InMemoryRepository و
+  AssertJ، ۱۲ اشتباه رایج، ۵ مثال واقعی، Performance، ۲۰ سؤال مصاحبه، ۱۷ FAQ،
+  Cheat Sheet و Roadmap.
+
+- **مقالهٔ Repository Pattern** — الگوی دسترسی به داده در سری معماری؛ راهنمای ۲۶ بخشی
+  از سرایت SQL به همه‌ی لایه‌ها و تاریخچه‌ی OODB تا Fowler و Spring Data و DDD،
+  تعریف دقیق، مخزن Port در دامنه و Adapter در زیرساخت، ساختار پروژه،
+  پیاده‌سازی کامل Java 21 (User، Email، UserRepository، UserJpaEntity،
+  JpaUserRepository و UserEntityMapper)، مقایسه با DAO و Data Mapper،
+  ۱۲ مزیت و ۱۰ عیب، مقایسه با لایه‌ای و شش‌ضلعی، SOLID، Design Patterns،
+  تست با InMemoryUserRepository و JUnit 5، ۱۲ اشتباه رایج، ۵ مثال واقعی،
+  Performance، ۲۰ سؤال مصاحبه، ۱۵ FAQ، Cheat Sheet و Roadmap.
+- **مقالهٔ MVI** — بخش هشتم و پایانی الگوهای UI در سری معماری؛ راهنمای ۲۶ بخشی الگوی
+  Model-View-Intent از پراکندگی وضعیت و تاریخچه‌ی Elm و Redux تا سه پایه‌ی State و Intent
+  و Reducer خالص، جریان Intent → Reducer → State، ساختار پروژه، پیاده‌سازی کامل Java 21
+  (SearchState تغییرناپذیر، sealed SearchIntent، SearchReducer و SearchViewModel)،
+  مدیریت درخواست‌های ناهمگام با requestId، MVI در Jetpack Compose، ۱۱ مزیت و ۹ عیب،
+  مقایسه با MVC و MVP و MVVM، SOLID، تست جدولی Reducer با JUnit 5، ۱۱ اشتباه رایج،
+  ۵ مثال واقعی، Performance، ۲۰ سؤال مصاحبه، ۱۵ FAQ، Cheat Sheet و Roadmap.
+- **مقالهٔ MVVM** — بخش هفتم سری معماری؛ راهنمای ۲۶ بخشی الگوی Model-View-ViewModel از
+  مشکل بقای وضعیت در چرخش صفحه و تاریخچه‌ی WPF تا LiveData و داده‌ی دوحالته، ساختار پروژه،
+  پیاده‌سازی کامل Java 21 (ProfileUiState، ProfileViewModel، Event، Fragment)،
+  MVVM در Jetpack Compose، ۱۱ مزیت و ۹ عیب، مقایسه با MVC و MVP و MVI، SOLID،
+  تست واحد ViewModel با InstantTaskExecutorRule، ۱۱ اشتباه رایج، ۵ مثال واقعی،
+  Performance، ۲۰ سؤال مصاحبه، ۱۵ FAQ، Cheat Sheet و Roadmap.
+- **مقالهٔ MVP** — بخش ششم سری معماری؛ راهنمای ۲۶ بخشی الگوی Model-View-Presenter از
+  مشکل تست‌ناپذیری Activity تا جریان داده‌ی یک‌طرفه، ساختار پروژه، پیاده‌سازی کامل Java 21
+  (LoginContract، LoginPresenterImpl خالص و LoginFragment اندرویدی)، MVP در اندروید و Vue،
+  ۱۱ مزیت و ۹ عیب، مقایسه با MVC و MVVM و MVI، SOLID، تست واحد Presenter با Fake Repository،
+  ۱۱ اشتباه رایج، ۵ مثال واقعی، Performance، ۲۰ سؤال مصاحبه، ۱۵ FAQ، Cheat Sheet و Roadmap.
+- **مقالهٔ MVC** — بخش پنجم سری معماری؛ راهنمای ۲۶ بخشی الگوی Model-View-Controller از
+  تاریخچه‌ی Reenskaug و Smalltalk-80 تا سه نقش MVC و جریان رویدادمحور، ساختار پروژه،
+  پیاده‌سازی کامل Java 21 (مدل Cart با قوانین تخفیف و موجودی، کنترلر، View)،
+  MVC در Spring/Rails/Django/ASP.NET/اندروید، ۱۱ مزیت و ۹ عیب، مقایسه با MVP و MVVM و MVI،
+  SOLID، Observer و Adapter، تست JUnit 5 روی قوانین سبد، ۱۱ اشتباه رایج، ۵ مثال واقعی،
+  Performance، ۲۰ سؤال مصاحبه، ۱۵ FAQ، Cheat Sheet و Roadmap.
+- **مقالهٔ Layered Architecture** — بخش چهارم سری معماری؛ راهنمای ۲۶ بخشی معماری لایه‌ای از
+  لایه‌های Presentation/Domain/Data و قانون وابستگی رو به پایین تا جریان داده، ساختار پروژه،
+  پیاده‌سازی کامل Java 21 (Money و Order در دامنه، JdbcOrderStore، تست JUnit 5 با Mockito)،
+  ارتباط با Spring و Android و ASP.NET، ۱۱ مزیت و ۹ عیب، مقایسه با Clean/Onion/Hexagonal،
+  SOLID، الگوهای طراحی، ۱۱ اشتباه رایج، ۴ مثال واقعی، Performance،
+  ۲۰ سؤال مصاحبه، ۱۵ FAQ، Cheat Sheet و Roadmap.
 - **مقالهٔ Hexagonal Architecture** — بخش سوم سری معماری؛ راهنمای ۲۶ بخشی Ports and Adapters از
   تاریخچه‌ی Cockburn و تفکیک درایور/درایو تا جریان داده، ساختار پروژه، پیاده‌سازی کامل Java 21
   (Entity، Portهای in/out، UseCase، Controller و JPA Adapter)، مقایسه با Clean/Onion/Layered،

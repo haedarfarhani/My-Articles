@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microservices چیست؟ آموزش کامل معماری میکروسرویس با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله معماری میکروسرویس را کامل یاد می‌گیرید: تعریف و ویژگی‌ها، تجزیه‌ی دامنه، ارتباط همگام و ناهمگام، داده‌ی جدا، استقرار و مشاهده‌پذیری، پیاده‌سازی Java 21، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="Microservices, میکروسرویس, معماری توزیع‌شده, API Gateway, Service Discovery, Circuit Breaker, Saga, Kubernetes, Docker, Java, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, distributed systems">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Microservices چیست؟ آموزش کامل معماری میکروسرویس با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله معماری میکروسرویس را کامل یاد می‌گیرید: تعریف و ویژگی‌ها، تجزیه‌ی دامنه، ارتباط همگام و ناهمگام، داده‌ی جدا، استقرار و مشاهده‌پذیری، پیاده‌سازی Java 21، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/microservices-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/microservices-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Microservices Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Microservices چیست؟ آموزش کامل معماری میکروسرویس با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="تجزیه‌ی دامنه، API Gateway، Service Discovery، داده‌ی جدا، مشاهده‌پذیری و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Microservices چیست؟ آموزش کامل معماری میکروسرویس با مثال و ساختار پروژه",
+    "description": "در این مقاله معماری میکروسرویس را کامل یاد می‌گیرید: تعریف و ویژگی‌ها، تجزیه‌ی دامنه، ارتباط همگام و ناهمگام، داده‌ی جدا، استقرار و مشاهده‌پذیری، پیاده‌سازی Java 21، مزایا، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/microservices-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/microservices-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Microservices, API Gateway, Service Discovery, Circuit Breaker, Saga, Distributed Systems",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Microservices", "item": "https://haedarfarhani.github.io/My-Articles/articles/microservices-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Microservices</span>؛ وقتی یک برنامه باید یک سازمان باشد
+          </h1>
+
+          <p class="hero-lead">
+            معماری میکروسرویس یعنی <strong>سیستم را به سرویس‌های کوچکِ مستقلِ
+            قابل‌استقرار</strong> بشکنید، هرکدام با داده و تیم خودش. در این راهنما از
+            تجزیه‌ی درست دامنه تا API Gateway، داده‌ی جدا، Saga، مشاهده‌پذیری و
+            <code>Java 21</code> را صادقانه بررسی می‌کنیم — همراه با هزینه‌هایی که
+            معمولاً پنهان می‌مانند.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۶۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: پیشرفته (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Microservices</span>
+            <span class="post-tag">#Distributed_Systems</span>
+            <span class="post-tag">#API_Gateway</span>
+            <span class="post-tag">#Saga</span>
+            <span class="post-tag">#Kubernetes</span>
+            <span class="post-tag">#Java</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی مونولیت به سقف می‌رسد</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Microservices چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: تجزیه‌ی دامنه</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>انواع سرویس و مرزها</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>ساختار معماری</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>مثال عملی کامل: فروشگاه</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>داده‌ی جدا و تراکنش توزیع‌شده</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی مونولیت به سقف می‌رسد</h2>
+
+<p>
+فرض کنید یک فروشگاه اینترنتی دارید که با یک اپلیکیشن ساده شروع کرده. ۱۵۰ هزار خط
+کد، یک تیم، یک مخزن، یک استقرار. سه سال بعد:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>وضعیت امروز:
+  ├── ۲۲ توسعه‌دهنده در یک تیم
+  ├── ۱۲۰ هزار کامنت لاگ در ماه
+  ├── استقرار = ۴۵ دقیقه (build + تست + deploy)
+  ├── «چه کسی می‌دهد؟» — همه، همه‌چیز را می‌توانند بشکنند
+  └── سرعت تحویل = یک قابلیت در ۳ هفته</code></pre>
+
+<p>
+مشکلات واقعی که تیم را فرسوده کرده‌اند:
+</p>
+
+<ol>
+<li><strong>استقرار یک‌طرفه</strong> — هر تغییر کوچک یعنی کل سیستم مستقر شود</li>
+<li><strong>انتظار برای تست</strong> — ۴۵ دقیقه برای فهمیدن اینکه آیا یک خط درست است</li>
+<li><strong>merge conflict دائمی</strong> — همه در یک مخزن، همه در یک شاخه‌ی اصلی</li>
+<li><strong>مقیاس یکسان</strong> — بخش گزارش‌گیری همان منابع بخش سفارش را می‌گیرد</li>
+<li><strong>مالکیت مبهم</strong> — هیچ‌کس نمی‌داند مسئول کدام بخش است</li>
+<li><strong>باگ سراسری</strong> — یک تغییر کوچک می‌تواند کل سیستم را از کار بیندازد</li>
+</ol>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">راه‌حلی که صنعت پذیرفت</span>
+سیستم را به چند سرویس کوچک بشکنید که هرکدام <strong>مستقلاً قابل استقرار</strong>
+باشند، <strong>داده‌ی خودش</strong> را داشته باشند و توسط <strong>تیم خودشان</strong>
+نگهداری شوند.
+</div>
+
+<p>
+این کار باعث می‌شود تیم «فروش» فقط سرویس فروش را مستقر کند، تیم «گزارش» فقط سرویس
+گزارش. یک باگ در فروش، گزارش را از کار نمی‌اندازد.
+</p>
+
+<h3>ولی قیمت دارد</h3>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">هشدار صادقانه</span>
+همین کار، مشکلات جدید و بزرگی می‌سازد: داده‌ها دیگر یک‌جا نیستند، نمی‌توانید یک
+تراکنش روی همه بزنید، عیب‌یابی سخت‌تر شده، و ناگزیر سیستم‌هایی مثل
+API Gateway، Service Discovery، Circuit Breaker و پیام‌رسان لازم می‌شوند.
+اینها همه هزینه‌های واقعی‌اند، نه ترس‌های تئوری.
+</div>
+
+<pre class="kl-code" data-lang="text"><code>سؤال درست این نیست: «میکروسرویس خوب است یا بد؟»
+سؤال درست این است: «آیا هزینه‌ی توزیع‌شده کردن، از ارزشش بیشتر است؟»
+
+برای یک تیم ۵ نفره: تقریباً همیشه نه
+برای یک سازمان ۱۰۰ نفره با ۲۰ تیم: اغلب بله</code></pre>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<table>
+<thead>
+<tr><th>بازه</th><th>رویداد</th><th>تأثیر</th></tr>
+</thead>
+<tbody>
+<tr><td>۱۹۶۰–۱۹۸۰</td><td>ماشین‌های مجزا و main frame</td><td>اولین شکل سیستم‌های توزیع‌شده، گران و شکننده</td></tr>
+<tr><td>۱۹۹۰–۲۰۰۰</td><td>CORBA، EJB، COM+</td><td>تلاش برای یکپارچگی شیء توزیع‌شده؛ پیچیدگی انفجاری</td></tr>
+<tr><td>۲۰۰۰–۲۰۱۰</td><td>SOA و ESB</td><td>یکپارچه‌سازی از راه گذرگاه؛ ESB تبدیل به گلوگاه</td></tr>
+<tr><td>۲۰۱۲</td><td>ویلیام واینر و جیم میک‌براید، «Microservices»</td><td><strong>واژه‌ی Microservices رسماً مطرح شد</strong></td></tr>
+<tr><td>۲۰۱۳–۲۰۱۵</td><td>Docker، سرویس‌های ابری</td><td>زیرساخت ارزان و استاندارد برای اجرای سرویس‌های مستقل</td></tr>
+<tr><td>۲۰۱۴</td><td>اریک ایوانز: «Microservices, a Definition of This New Architectural Term»</td><td>چارچوب نظری: ۹ ویژگی</td></tr>
+<tr><td>۲۰۱۵–اکنون</td><td>Kubernetes، Service Mesh، CloudEvents</td><td>استانداردسازی استقرار، کشف و مشاهده‌پذیری</td></tr>
+<tr><td>۲۰۱۸–اکنون</td><td>واکنش به «میکروسرویس بیش از حد»</td><td>بازگشت به Modular Monolith برای پروژه‌های کوچک و متوسط</td></tr>
+</tbody>
+</table>
+
+<h3>دو موج، دو روایت متفاوت</h3>
+
+<table>
+<thead>
+<tr><th></th><th>موج اول (۲۰۱۲–۲۰۱۷)</th><th>موج دوم (۲۰۱۸–اکنون)</th></tr>
+</thead>
+<tbody>
+<tr><td>روایت</td><td>«همه‌چیز را بشکن»</td><td>«فقط جایی که لازم است»</td></tr>
+<tr><td>اندازه‌ی سرویس</td><td>هرچه کوچک‌تر بهتر</td><td>به اندازه‌ی یک دامنه</td></tr>
+<tr><td>وضعیت داده</td><td>هر سرویس دیتابیس خودش</td><td>معمولاً همین، ولی آگاهانه</td></tr>
+<tr><td>پیش‌فرض</td><td>توزیع‌شده</td><td><strong>مونولیت، مگر دلیل قوی</strong></td></tr>
+<tr><td>پرسش اول</td><td>چطور توزیع کنیم؟</td><td>آیا اصلاً باید توزیع کنیم؟</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">درس موج دوم</span>
+صنعت یاد گرفت که «هر سرویس یک کلمه‌ی کوچک مستقل» یعنی <strong>توزیع بی‌هدف</strong>،
+و این بدتر از مونولیت است. میکروسرویس خوب یعنی <strong>مرز دامنه‌ای معنادار</strong>،
+نه تعداد زیاد سرویس.
+</div>
+
+<h3>ریشه‌ی نیاز: چهار محدودیت واقعی</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>محدودیت سازمانی</strong> — یک مخزن و یک تیم یعنی صف برای تغییر</li>
+<li><strong>محدودیت مقیاس</strong> — یک بخش پرترافیک، کل سیستم را گران می‌کند</li>
+<li><strong>محدودیت فناوری</strong> — زبان‌های مختلف برای بارهای کاری مختلف</li>
+<li><strong>محدودیت مالکیت</strong> — تیم‌های مختلف باید مسئولیت کامل داشته باشند</li>
+</ul>
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Microservices چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تعریف (برگرفته از اریک ایوانز)</span>
+«میکروسرویس یک سبک معماری است که یک برنامه‌ی واحد را به مجموعه‌ای از خدمات کوچکِ
+مستقل تبدیل می‌کند؛ هر خدمت حول یک <strong>حوزه‌ی کسب‌وکار مشخص</strong>،
+مستقلاً قابل استقرار، که ارتباطش با دیگر خدمات از راه API است.»
+</div>
+
+<h3>نه ویژگی که ایوانز فهرست کرد</h3>
+
+<table>
+<thead>
+<tr><th>#</th><th>ویژگی</th><th>معنا</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>تفکیک حول محور کسب‌وکار</strong></td><td>سرویس‌ها بر اساس دامنه ساخته می‌شوند، نه لایه</td></tr>
+<tr><td>۲</td><td><strong>محصول نه پروژه</strong></td><td>هر تیم محصول خودش را می‌سازد، نه اینکه بخشی از پروژه</td></tr>
+<tr><td>۳</td><td><strong>متمرکز بر محصولات نه لایه‌ها</strong></td><td>یک سرویس = همه‌ی لایه‌های یک قابلیت</td></tr>
+<tr><td>۴</td><td><strong>تکامل مستقل</strong></td><td>هر سرویس بدون هماهنگی با دیگری قابل تغییر است</td></tr>
+<tr><td>۵</td><td><strong>استقرار مستقل</strong></td><td>هر سرویس بدون ساخت کل سیستم مستقر می‌شود</td></tr>
+<tr><td>۶</td><td><strong>اختیاری در فناوری</strong></td><td>هر سرویس می‌تواند ابزار مناسب خودش را داشته باشد</td></tr>
+<tr><td>۷</td><td><strong>تفکیک داده</strong></td><td>هر سرویس دیتابیس خودش دارد</td></tr>
+<tr><td>۸</td><td><strong>مسئولیت داده</strong></td><td>مالکیت داده از راه دیتابیس اختصاصی تضمین می‌شود</td></tr>
+<tr><td>۹</td><td><strong>پیام‌محوری</strong></td><td>ارتباط اصلی از راه پیام است، نه تابع فراخوانی</td></tr>
+<tr><td>۱۰</td><td><strong>تکامل طراحی</strong></td><td>تغییر باید شکننده و پرهزینه باشد تا جلوی تصمیم بد گرفته شود</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">نکته</span>
+«اختیاری در فناوری» ویژگی <strong>مفهومی</strong> است نه الزام عملی. بسیاری از
+سازمان‌های موفق عمداً یک فناوری را در همه‌ی سرویس‌ها استاندارد می‌کنند تا هزینه‌ی
+نگهداری پایین بماند. تنوع فناوری، سود کوچک و هزینه‌ی بزرگ دارد.
+</div>
+
+<h3>سه ویژگی غیرقابل مذاکره</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>استقرار مستقل</strong> — اگر سرویس A نمی‌تواند بدون سرویس B مستقر شود، شما microservice ندارید</li>
+<li><strong>مالکیت داده</strong> — اگر همه روی یک دیتابیس مشترک می‌نویسند، مرزها ساختگی‌اند</li>
+<li><strong>مسئولیت تیمی</strong> — اگر یک تیم همه‌ی سرویس‌ها را نگه می‌دارد، توزیع کرده‌اید ولی سود نبرده‌اید</li>
+</ul>
+</div>
+
+<h3>مقایسه‌ی سه سبک</h3>
+
+<table>
+<thead>
+<tr><th>معیار</th><th>مونولیت</th><th>Modular Monolith</th><th>Microservices</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد استقرار</td><td>کل سیستم</td><td>کل سیستم</td><td>هر سرویس</td></tr>
+<tr><td>مرز کد</td><td>لایه‌ها</td><td>ماژول‌ها</td><td>سرویس‌ها</td></tr>
+<tr><td>دیتابیس</td><td>یکی</td><td>یکی (یا چند با ایزوله)</td><td>هر سرویس یکی</td></tr>
+<tr><td>هزینه‌ی راه‌اندازی</td><td><strong>صفر</strong></td><td>کم</td><td><strong>زیاد</strong></td></tr>
+<tr><td>تیم لازم</td><td>۱ تا ۱۰</td><td>۵ تا ۲۰</td><td>۲۰+</td></tr>
+<tr><td>عیب‌یابی</td><td><strong>ساده</strong></td><td>ساده</td><td>سخت</td></tr>
+<tr><td>مقیاس مستقل</td><td>نه</td><td>تا حدی</td><td>بله</td></tr>
+<tr><td>مناسب برای</td><td>شروع و پروژه‌ی کوچک</td><td><strong>اکثر پروژه‌ها</strong></td><td>سازمان بزرگ</td></tr>
+</tbody>
+</table>
+
+<h3>ساختار مفهومی</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    U["کاربر / کلاینت"] --> GW["API Gateway"]
+
+    GW --> S1["سرویس سفارش"]
+    GW --> S2["سرویس کاتالوگ"]
+    GW --> S3["سرویس کاربر"]
+
+    S1 --> DB1[("دیتابیس سفارش")]
+    S2 --> DB2[("دیتابیس کاتالوگ")]
+    S3 --> DB3[("دیتابیس کاربر")]
+
+    S1 -.->|"رویداد"| MQ[("پیام‌رسان")]
+    S2 -.->|"رویداد"| MQ
+    S3 -.->|"رویداد"| MQ
+
+    MQ --> S4["سرویس انبار"]
+    MQ --> S5["سرویس اعلان"]
+    MQ --> S6["سرویس گزارش"]
+
+    S4 --> DB4[("دیتابیس انبار")]
+
+    style GW fill:#334155,color:#fff,stroke:#334155
+    style MQ fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<h3>۱. بن‌بست استقرار</h3>
+
+<pre class="kl-code" data-lang="text"><code>شنبه، ۱۶:۵۸
+  علی یک خط در ماژول «تخفیف» را اشتباه کرد
+  ← merge می‌کند در شاخه‌ی اصلی
+  ← pipeline شروع می‌شود: build (8min) + تست (22min) + deploy (15min)
+  ← علی باید ۴۵ دقیقه منتظر بماند
+  ← اگر تست شکست بخورد، همه‌ی ۲۰ نفر تیم ۴۵ دقیقه معطل‌اند
+
+  ← علی تغییر را انجام می‌دهد، ولی این پنج‌شنبه از دست رفته</code></pre>
+
+<h3>۲. کوپل در زمان استقرار</h3>
+
+<pre class="kl-code" data-lang="text"><code>سرویس A می‌گوید: «فیلد جدیدی به پاسخ اضافه کردم»
+سرویس B می‌گوید: «من آن را لازم دارم»
+
+  A: منتظر B می‌ماند تا مستقر کند     ← A مسدود
+  B: منتظر A می‌ماند تا تست کند       ← B مسدود
+
+← هیچ‌کدام نمی‌تواند جلو برود
+← کمپل در زمان استقرار، ۱۰۰۰ برابر گران‌تر از کوپل در زمان کد</code></pre>
+
+<h3>۳. مقیاس یکسان برای همه</h3>
+
+<pre class="kl-code" data-lang="text"><code>سرویس گزارش روزی ۱۰۰۰ درخواست می‌گیرد، ۲ ثانیه هر کدام
+سرویس سفارش روزی ۱ میلیون درخواست می‌گیرد، ۲۰۰ میلی‌ثانیه هر کدام
+
+  اگر یک سرویس باشند: باید برای اوج گزارش، ۵۰ سرور سفارش هم بخری
+  ← هزینه: ۵۰ × (هزینه‌ی یک سرور غیرضروری)
+
+  اگر جدا باشند: گزارش ۱ سرور، سفارش ۵ سرور</code></pre>
+
+<h3>۴. مالکیت مبهم در مقیاس</h3>
+
+<pre class="kl-code" data-lang="text"><code>سؤال: «این باگ در محاسبه‌ی مالیات کجاست؟»
+پاسخ در مونولیت: «یکی باید پیدا کند» ← ۳ روز
+پاسخ در سرویس: «سرویس مالیات» ← ۳ دقیقه</code></pre>
+
+<h3>۵. شکست سراسری</h3>
+
+<pre class="kl-code" data-lang="text"><code>یک تغییر کوچک در ماژول «جست‌وجو» باعث NullPointerException
+  ← کل اپلیکیشن بالا نمی‌آید
+  ← فروشگاه کاملاً از کار افتاده
+
+در سرویس:
+  یک تغییر کوچک در سرویس «جست‌وجو» باعث خطا
+  ← سرویس جست‌وجو down می‌شود
+  ← بخش جست‌وجوی سایت کار نمی‌کند
+  ← فروشگاه همچنان کار می‌کند</code></pre>
+
+<h3>۶. صف انتظار برای بازبینی</h3>
+
+<pre class="kl-code" data-lang="text"><code>تیم ۲۰ نفره، یک مخزن:
+  ← PR queue: ۴۵ PR باز
+  ← میانگین زمان تا merge: ۲ روز
+  ← هر PR کوچک هم باید بازبینی شود
+
+تیم‌های کوچک‌تر، مخازن جدا:
+  ← PR queue: ۳ PR باز
+  ← میانگین زمان تا merge: ۲ ساعت</code></pre>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: تجزیه‌ی دامنه</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">مهم‌ترین نکته‌ی کل مقاله</span>
+مرز میکروسرویس را <strong>فناوری یا سایز تعیین نمی‌کند</strong>؛ آن را
+<strong>مرز دامنه‌ی کسب‌وکار</strong> تعیین می‌کند. اگر مرز درست نباشد، هر چقدر
+هم زیرساخت خوبی داشته باشید، شکست خواهید خورد.
+</div>
+
+<h3>روش‌های تجزیه</h3>
+
+<table>
+<thead>
+<tr><th>روش</th><th>چطور</th><th>نتیجه</th><th>خطر</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>DDD / Event Storming</strong></td><td>از زبان کسب‌وکار و رویدادها</td><td>مرزهای معنادار</td><td>زمان‌بر</td></tr>
+<tr><td><strong>بر اساس جدول</strong></td><td>هر جدول یک سرویس</td><td>مرزهای فنی، نه کسب‌وکاری</td><td><strong>بالا</strong></td></tr>
+<tr><td><strong>بر اساس لایه</strong></td><td>UI سرویس، بیزنس سرویس، دیتا سرویس</td><td>فاجعه (می‌خواهید همه را دوباره به هم بچسبانید)</td><td><strong>خیلی بالا</strong></td></tr>
+<tr><td><strong>بر اساس تیم</strong></td><td>هر تیم یک سرویس</td><td>با DDD ترکیب می‌شود</td><td>متوسط</td></tr>
+<tr><td><strong>بر اساس الگوی دسترسی</strong></td><td>بخش پرترافیک جدا شود</td><td>مناسب بهینه‌سازی</td><td>کم</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">پرخطاترین تصمیم</span>
+«هر سرویس یک جدول» یا «هر سرویس یک کلمه» — این کار یک سیستم توزیع‌شده با
+ده‌ها سرویس ریز می‌سازد که عملاً یک مونولیت با تأخیر شبکه است. <strong>سرویس
+ریز، سرویس خوب نیست.</strong> اندازه‌ی درست، اندازه‌ای است که یک تیم بتواند
+مالکش باشد.
+</div>
+
+<h3>مثال تجزیه‌ی یک فروشگاه</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ تجزیه‌ی بد (بر اساس لایه):
+  ui-service
+  business-logic-service
+  database-service
+  ← این‌ها باید همیشه با هم تغییر کنند، پس یک سرویس‌اند
+
+❌ تجزیه‌ی بد (بر اساس جدول):
+  order-service       → فقط جدول orders
+  order-item-service  → فقط جدول order_items
+  order-status-service → فقط جدول order_status
+  ← مرز کاملاً مصنوعی؛ ۱۰ سرویس برای یک قابلیت
+
+✅ تجزیه‌ی خوب (بر اساس دامنه):
+  catalog-service     → محصول، دسته، قیمت، موجودی نمایشی
+  order-service       → سفارش، سفارش‌خط، وضعیت، تخفیف
+  payment-service     → پرداخت، تراکنش، بازگشت وجه
+  shipping-service    → ارسال، آدرس، رهگیری
+  customer-service    → کاربر، نشست، آدرس
+  notification-service→ ایمیل، پیامک، اعلان
+
+← هر سرویس یک قابلیت کامل است
+← هر سرویس یک تیم دارد
+← هر سرویس دیتابیس خودش دارد</code></pre>
+
+<h3>تست مرز سرویس</h3>
+
+<pre class="kl-code" data-lang="text"><code>سه سؤال که باید برای هر سرویس بپرسید:
+
+۱. آیا می‌توانم کل سرویس را حذف کنم بدون شکستن قابلیت‌های دیگر؟
+   ❌ نه → هنوز سرویس مستقل نیست
+
+۲. آیا می‌توانم تیمم را بگیرم و مستقل کار کنم؟
+   ❌ نه → مرز تیمی وجود ندارد
+
+۳. آیا می‌توانم این سرویس را ۱۰ برابر پرترافیک کنم بدون تأثیر بر بقیه؟
+   ❌ نه → مقیاس به هم گره خورده</code></pre>
+
+<h3>از مونولیت تا میکروسرویس — مسیر کم‌ریسک</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    A["مونولیت\nهمه‌چیز یک‌جا"] --> B["Modular Monolith\nمرز ماژول، یک استقرار"]
+    B --> C["استخراج سرویس ۱\nپرترافیک‌ترین بخش"]
+    C --> D["سرویس ۲ و ۳\nفقط بخش‌های مستقل"]
+    D --> E["میکروسرویس کامل"]
+
+    style A fill:#7f1d1d,color:#fff,stroke:#7f1d1d
+    style B fill:#a16207,color:#fff,stroke:#a16207
+    style E fill:#0f766e,color:#fff,stroke:#0f766e</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">الگوی Strangler Fig</span>
+به‌جای نوشتن سیستم جدید، سرویس جدید را <strong>کنار</strong> سیستم قدیمی می‌سازید و
+کم‌کم مسیر درخواست‌ها را به آن منتقل می‌کنید. در نهایت سیستم قدیمی بی‌استفاده و حذف
+می‌شود. این تنها راه مهاجرت کم‌ریسک است.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>انواع سرویس و مرزها</h2>
+
+<h3>هفت الگوی رایج سرویس</h3>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>مسئولیت</th><th>نمونه</th><th>مالک داده</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Domain Service</strong></td><td>یک قابلیت کسب‌وکار کامل</td><td><code>order-service</code></td><td>خودش</td></tr>
+<tr><td><strong>Application Service</strong></td><td>هماهنگی بین چند سرویس</td><td><code>checkout-service</code></td><td>معمولاً ندارد</td></tr>
+<tr><td><strong>Capability Service</strong></td><td>یک توانایی عمومی</td><td><code>notification-service</code></td><td>خودش</td></tr>
+<tr><td><strong>Adapter Service</strong></td><td>ترجمه‌ی مدل بیرونی</td><td><code>zarinpal-adapter</code></td><td>خودش</td></tr>
+<tr><td><strong>Event Processor</strong></td><td>مصرف رویداد و تولید خروجی</td><td><code>analytics-processor</code></td><td>خودش</td></tr>
+<tr><td><strong>API Gateway</strong></td><td>ورودی یکپارچه برای کلاینت</td><td><code>api-gateway</code></td><td>ندارد</td></tr>
+<tr><td><strong>BFF (Backend for Frontend)</strong></td><td>API مخصوص هر کلاینت</td><td><code>web-bff</code>، <code>mobile-bff</code></td><td>ندارد</td></tr>
+</tbody>
+</table>
+
+<h3>API Gateway — نقطه‌ی ورود واحد</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    W["کلاینت وب"] --> GW["API Gateway"]
+    M["اپ موبایل"] --> BFF["Mobile BFF"]
+    GW --> S1["order"]
+    GW --> S2["catalog"]
+    GW --> S3["customer"]
+    BFF --> S1
+    BFF --> S3
+    BFF --> S4["search"]
+
+    GW -.->|"مسیریابی، احراز هویت،
+    نرخ‌گیری، بازنویسی"| S1
+
+    style GW fill:#334155,color:#fff,stroke:#334155
+    style BFF fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<div class="kl-check">
+<ul>
+<li><strong>مسیریابی</strong> — نگاشت مسیر به سرویس</li>
+<li><strong>احراز هویت</strong> — توکن را یک‌بار بررسی می‌کند</li>
+<li><strong>نرخ‌گیری</strong> — محدودسازی درخواست برای هر کلاینت</li>
+<li><strong>تجمیع پاسخ</strong> — چند سرویس را یکی می‌کند</li>
+<li><strong>ثبت لاگ یکپارچه</strong> — یک نقطه برای مشاهده‌پذیری</li>
+<li><strong>تبدیل پروتکل</strong> — REST به gRPC</li>
+</ul>
+</div>
+
+<h3>Service Discovery — چطور آدرس سرویس را پیدا کنیم؟</h3>
+
+<table>
+<thead>
+<tr><th>روش</th><th>چطور</th><th>مزیت</th><th>عیب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>DNS</strong></td><td>سرویس‌ها آدرس ثابت دارند</td><td>ساده</td><td>تغییر مقیاس کند دیده می‌شود</td></tr>
+<tr><td><strong>Client-side</strong></td><td>کلاینت خودش فهرست را می‌گیرد</td><td>توزیع بار دقیق</td><td>پیچیدگی در کلاینت</td></tr>
+<tr><td><strong>Sidecar</strong></td><td>پراکسی کنار هر سرویس (Envoy)</td><td>شفاف برای برنامه</td><td>منابع اضافه</td></tr>
+<tr><td><strong>Service Mesh</strong></td><td>لایه‌ی کامل (Istio, Linkerd)</td><td>کنترل متمرکز</td><td><strong>پیچیدگی زیاد</strong></td></tr>
+</tbody>
+</table>
+
+<h3>Circuit Breaker — توقف تماس با سرویس خراب</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open: خطاها از آستانه گذشت
+    Open --> HalfOpen: بعد از زمان انتظار
+    HalfOpen --> Closed: یک درخواست موفق
+    HalfOpen --> Open: دوباره خطا
+    Open --> Open: درخواست فوراً رد می‌شود</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>Closed  (سالم):    همه درخواست‌ها می‌روند، شکست‌ها شمرده می‌شوند
+Open    (باز):     همه درخواست‌ها فوری رد می‌شوند ← سرویس خراب را نجات می‌دهد
+HalfOpen(نیمه‌باز): چند درخواست آزمایشی می‌رود تا ببینیم برگشته یا نه</code></pre>
+
+<h3>چهار الگوی ارتباط بین سرویس‌ها</h3>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>هم‌زمان یا ناهمگام</th><th>نمونه</th><th>مناسب برای</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>REST/gRPC</strong></td><td>هم‌زمان</td><td><code>GET /orders/{id}</code></td><td>وقتی نتیجه را همین الان لازم دارید</td></tr>
+<tr><td><strong>Request-Reply روی صف</strong></td><td>نیمه‌ناهمگام</td><td>پاسخ در topic دیگر</td><td>کار طولانی</td></tr>
+<tr><td><strong>Pub/Sub</strong></td><td>ناهمگام</td><td><code>OrderPlaced</code></td><td>اعلان و واکنش</td></tr>
+<tr><td><strong>Event Sourcing</strong></td><td>ناهمگام</td><td>جریان رویداد</td><td>تگه‌داری تاریخچه</td></tr>
+</tbody>
+</table>
+
+<h3>سازگاری بین سرویس‌ها</h3>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>یکپارچگی</th><th>سرعت</th><th>مناسب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Choreography</strong></td><td>ناهمگام، رویدادمحور</td><td><strong>سریع</strong></td><td>جریان‌های ساده</td></tr>
+<tr><td><strong>Saga</strong></td><td>ناهمگام با جبران</td><td>سریع</td><td>تراکنش چندمرحله‌ای</td></tr>
+<tr><td><strong>2PC</strong></td><td>هم‌زمان، همه‌یا‌هیچ</td><td><strong>کند</strong></td><td>تقریباً هیچ‌جا در MSA</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">قانون مرزها</span>
+مرزهای اصلی یک سرویس:
+<ul>
+<li><strong>API</strong> (هم‌زمان) — برای query و عملیاتی که کاربر منتظرش است</li>
+<li><strong>رویداد</strong> (ناهمگام) — برای اعلان و عملیات پس‌زمینه</li>
+<li><strong>دیتابیس</strong> — فقط خودش دسترسی دارد</li>
+</ul>
+هیچ‌کدام را از مرز رد نکنید.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>ساختار معماری</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph Edge["لایه‌ی لبه"]
+        CL["کلاینت‌ها"]
+        GW["API Gateway"]
+        BFF["BFF موبایل"]
+    end
+
+    subgraph Core["لایه‌ی سرویس"]
+        S1["order-service"]
+        S2["catalog-service"]
+        S3["payment-service"]
+        S4["inventory-service"]
+        S5["notification-service"]
+    end
+
+    subgraph Bus["لایه‌ی ارتباط"]
+        MQ[("پیام‌رسان")]
+        SD["Service Discovery"]
+    end
+
+    subgraph Data["لایه‌ی داده"]
+        D1[("orders-db")]
+        D2[("catalog-db")]
+        D3[("payments-db")]
+        D4[("inventory-db")]
+    end
+
+    subgraph Ops["لایه‌ی عملیات"]
+        OBS["پایش و لاگ مرکزی"]
+        CFG["پیکربندی مرکزی"]
+        SEC["رازها و گواهی"]
+    end
+
+    CL --> GW
+    CL --> BFF
+    GW --> S1
+    GW --> S2
+    BFF --> S1
+    S1 -->|"هم‌زمان"| S3
+    S1 -.->|"رویداد"| MQ
+    S1 -.->|"رویداد"| MQ
+    MQ --> S4
+    MQ --> S5
+    S1 --> D1
+    S2 --> D2
+    S3 --> D3
+    S4 --> D4
+    MQ --> OBS
+
+    style MQ fill:#0f766e,color:#fff,stroke:#0f766e
+    style GW fill:#334155,color:#fff,stroke:#334155</code></pre>
+
+<h3>دو الگوی استقرار</h3>
+
+<table>
+<thead>
+<tr><th></th><th>یک سرویس در هر ماشین</th><th>یک سرویس در هر کانتینر</th></tr>
+</thead>
+<tbody>
+<tr><td>نمونه</td><td>VM</td><td><strong>Kubernetes</strong></td></tr>
+<tr><td>ایزوله‌سازی</td><td>کامل</td><td>نسبی (-namespaces)</td></tr>
+<tr><td>منابع</td><td>دقیق، ولی گران</td><td>اشتراکی، بهینه</td></tr>
+<tr><td>مقیاس</td><td>دقیقه‌ها</td><td><strong>ثانیه‌ها</strong></td></tr>
+<tr><td>استفاده‌ی واقعی</td><td>کم</td><td><strong>غالب</strong></td></tr>
+</tbody>
+</table>
+
+<h3>ساختار هر سرویس (۱ به ۱ با مونولیت خوب)</h3>
+
+<pre class="kl-code" data-lang="text"><code>order-service/
+├── Dockerfile
+├── pom.xml
+├── src/main/java/com/shop/order/
+│   ├── api/          ← REST کنترلرها
+│   ├── application/  ← use case ها
+│   ├── domain/       ← مدل دامنه
+│   ├── data/         ← JPA، مخزن
+│   ├── integration/  ← کلاینت سرویس‌های دیگر + مصرف رویداد
+│   └── config/
+├── src/main/resources/
+│   ├── application.yml
+│   └── db/migration/
+├── src/test/
+└── k8s/
+    ├── deployment.yaml
+    ├── service.yaml
+    └── configmap.yaml
+
+← دقیقاً همان ساختار Feature Based
+← تنها تفاوت: مستقل بودن مخزن و استقرار</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">نکته‌ی کلیدی</span>
+اگر ساختار داخلی یک میکروسرویس را با یک ماژول Feature Based در مونولیت مقایسه کنید،
+تقریباً یکسان‌اند. <strong>تفاوت، در مرز است نه در داخل.</strong> داخل سرویس،
+هنوز همان لایه‌بندی تمیز، همان SOLID و همان تست‌ها را دارید.
+</div>
+
+<h3>استقرار و مقیاس</h3>
+
+<pre class="kl-code" data-lang="yaml"><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 5                      # ← مستقل از سرویس کاتالوگ
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: shop/order-service:1.4.2
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: order-db-secret
+                  key: url
+            - name: PAYMENT_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: service-registry
+                  key: payment-service
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order-service
+  ports:
+    - port: 80
+      targetPort: 8080</code></pre>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>جریان داده (Data Flow)</h2>
+
+<h3>جریان یک سفارش — نمای کامل</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant U as کاربر
+    participant GW as API Gateway
+    participant OS as order-service
+    participant PS as payment-service
+    participant MQ as پیام‌رسان
+    participant IS as inventory-service
+    participant NS as notification-service
+
+    U->>GW: POST /api/orders
+    GW->>GW: احراز هویت + نرخ‌گیری
+    GW->>OS: POST /orders (توکن معتبر)
+
+    OS->>OS: قوانین دامنه
+    OS->>OS: ثبت سفارش + Outbox
+    OS-->>GW: 201 + orderId
+    GW-->>U: 201
+
+    Note over OS,MQ: کاربر منتظر نیست
+    OS->>PS: POST /payments (هم‌زمان، درگاه)
+
+    OS->>MQ: OrderPlaced
+    MQ->>IS: OrderPlaced
+    IS->>IS: کم‌کردن موجودی
+    IS->>MQ: StockReserved / OutOfStock
+
+    MQ->>NS: OrderPlaced
+    NS->>NS: ارسال ایمیل</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چه چیزی هم‌زمان و چه چیزی ناهمگام است</span>
+درگاه پرداخت <strong>هم‌زمان</strong> است چون کاربر منتظر نتیجه می‌ماند (می‌خواهد بداند
+پرداخت شد یا نه). انبار و اعلان <strong>ناهمگام</strong> هستند چون کاربر منتظر آن‌ها
+نیست. این ترکیب، حرفه‌ای‌ترین حالت است.
+</div>
+
+<h3>جریان خطا در سیستم توزیع‌شده</h3>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    participant OS as order-service
+    participant PS as payment-service
+    participant MQ as پیام‌رسان
+    participant IS as inventory-service
+
+    OS->>PS: POST /payments
+    PS--xOS: ۵۰۰ Internal Error
+    Note over OS: Circuit Breaker باز می‌شود
+    OS->>PS: درخواست بعدی → رد فوری (بدون تماس)
+    Note over OS: سفارش در وضعیت PAYMENT_PENDING
+    OS->>MQ: PaymentFailed
+
+    MQ->>IS: PaymentFailed
+    IS->>IS: آزادکردن موجودی رزروشده
+
+    Note over OS,IS: خرابی یک سرویس، بقیه را متوقف نکرد</code></pre>
+
+<h3>چهار نوع خطا در سیستم توزیع‌شده</h3>
+
+<table>
+<thead>
+<tr><th>نوع خطا</th><th>نمونه</th><th>راه‌حل</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>سخت</strong> (Hard failure)</td><td>سرویس ۵۰۰ می‌دهد</td><td>Circuit Breaker، retry با backoff</td></tr>
+<tr><td><strong>نرم</strong> (Soft failure)</td><td>پاسخ کند یا timeout</td><td>timeout کوتاه، fallback</td></tr>
+<tr><td><strong>جزئی</strong> (Partial)</td><td>یکی از سرویس‌های موازی جواب نداد</td><td>پاسخ ناقص با وضعیت مشخص</td></tr>
+<tr><td><strong>تجمیعی</strong> (Transient)</td><td>خطای گذرا هنگام استقرار</td><td>retry فازی + استقرار تدریجی</td></tr>
+</tbody>
+</table>
+
+<h3>قواعد طلایی ارتباط</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>همیشه timeout</strong> داشته باشید — بدون timeout، درخواست بی‌نهایت منتظر می‌ماند</li>
+<li><strong>همیشه retry محدود</strong> با فاصله‌ی فزاینده — نه بی‌نهایت و نه بلافاصله</li>
+<li><strong>همیشه idempotency key</strong> برای عملیات نوشتن — تا retry تکرار ایجاد نکند</li>
+<li><strong>همیشه circuit breaker</strong> برای تماس بیرونی</li>
+<li><strong>همیشه correlationId</strong> بین سرویس‌ها</li>
+<li><strong>هرگز</strong> کلاس پیاده‌سازی سرویس دیگر را صدا نزنید، فقط قراردادش را</li>
+</ul>
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>shop-platform/
+├── docker-compose.yml
+├── services/
+│   ├── api-gateway/
+│   │   ├── src/main/java/com/shop/gateway/
+│   │   │   ├── filter/
+│   │   │   │   ├── CorrelationIdFilter.java
+│   │   │   │   ├── AuthenticationFilter.java
+│   │   │   │   └── RateLimitFilter.java
+│   │   │   ├── route/
+│   │   │   │   └── RouteConfig.java
+│   │   │   └── GatewayApplication.java
+│   │   ├── Dockerfile
+│   │   └── k8s/
+│   │
+│   ├── order-service/
+│   │   ├── src/main/java/com/shop/order/
+│   │   │   ├── api/                 ← کنترلر سفارش
+│   │   │   ├── application/         ← use case ها
+│   │   │   ├── domain/              ← مدل دامنه سفارش
+│   │   │   ├── data/                ← JPA و مخزن
+│   │   │   ├── integration/
+│   │   │   │   ├── client/
+│   │   │   │   │   ├── PaymentClient.java        ← فقط قرارداد
+│   │   │   │   │   └── HttpPaymentClient.java     ← پیاده‌سازی
+│   │   │   │   ├── event/
+│   │   │   │   │   ├── OrderPlacedConsumer.java
+│   │   │   │   │   └── OutboxRelay.java
+│   │   │   │   └── saga/
+│   │   │   │       └── CheckoutSaga.java
+│   │   │   └── config/
+│   │   ├── src/main/resources/
+│   │   │   ├── application.yml
+│   │   │   └── db/migration/V1__orders.sql
+│   │   ├── Dockerfile
+│   │   └── k8s/
+│   │
+│   ├── payment-service/
+│   ├── catalog-service/
+│   ├── inventory-service/
+│   └── notification-service/
+│
+├── contracts/                        ← قرارداد API مشترک
+│   └── src/main/java/com/shop/contracts/
+│       ├── order/v1/
+│       └── payment/v1/
+│
+├── observability/
+│   ├── prometheus.yml
+│   ├── grafana-dashboard.json
+│   └── alert-rules.yml
+│
+└── docs/
+    ├── runbook.md
+    └── architecture-decision-records/</code></pre>
+
+<h3>پیکربندی سرویس</h3>
+
+<pre class="kl-code" data-lang="yaml"><code>spring:
+  application:
+    name: order-service
+
+  datasource:
+    url: ${DB_URL}
+    hikari:
+      maximum-pool-size: 20
+      connection-timeout: 3000
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
+    consumer:
+      group-id: order-service
+    producer:
+      acks: all
+      properties:
+        enable.idempotence: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      payment:
+        sliding-window-size: 20
+        failure-rate-threshold: 50      # ۵۰٪ خطا → باز شدن
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 5
+  timelimiter:
+    instances:
+      payment:
+        timeout-duration: 3s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  tracing:
+    sampling:
+      probability: 0.1                # نمونه‌برداری ۱۰٪
+
+service:
+  payment:
+    base-url: ${PAYMENT_SERVICE_URL}
+  inventory:
+    base-url: ${INVENTORY_SERVICE_URL}</code></pre>
+
+<h3>قرارداد مشترک API</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.contracts.payment.v1;
+
+/**
+ * قرارداد سرویس پرداخت.
+ * نسخه‌بندی در package، تغییر ناسازگار = نسخه‌ی جدید.
+ */
+public interface PaymentApi {
+
+    PaymentResult capture(CaptureRequest request);
+
+    void refund(RefundRequest request);
+
+    record CaptureRequest(
+            String orderId,
+            long amount,
+            String currency,
+            String callbackUrl
+    ) {}
+
+    record PaymentResult(
+            String transactionId,
+            String status,          // CAPTURED | FAILED
+            String referenceCode
+    ) {}
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چرا قرارداد جدا؟</span>
+اگر هر سرویس نسخه‌ی خودش از DTO را داشته باشد، یک تغییر یعنی تغییر در چند مخزن و
+هماهنگی بین تیم‌ها. یک قرارداد مشترک این را به یک تغییر تبدیل می‌کند. البته باید دقت
+کنید فقط DTO مشترک باشد، نه مدل دامنه.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>مثال عملی کامل: فروشگاه</h2>
+
+<p>
+در این بخش یک سرویس واقعی (<code>order-service</code>) را کامل می‌نویسیم، شامل
+تماس با سرویس پرداخت، انتشار رویداد و مصرف آن.
+</p>
+
+<h3>کلاینت سرویس پرداخت — با Circuit Breaker</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.client;
+
+import java.math.BigDecimal;
+
+/** Port: فقط قرارداد. هیچ چیزی درباره‌ی HTTP نمی‌داند. */
+public interface PaymentClient {
+
+    PaymentResult capture(String orderId, BigDecimal amount,
+                          String currency, String callbackUrl);
+
+    void refund(String orderId, BigDecimal amount);
+
+    record PaymentResult(String transactionId, Status status, String referenceCode) {
+        public enum Status { CAPTURED, FAILED }
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.client;
+
+import com.shop.contracts.payment.v1.PaymentApi;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+
+@Component
+class HttpPaymentClient implements PaymentClient {
+
+    private static final Logger log = LoggerFactory.getLogger(HttpPaymentClient.class);
+
+    private final PaymentApi api;
+
+    HttpPaymentClient(PaymentApi api) {
+        this.api = api;
+    }
+
+    @Override
+    @CircuitBreaker(name = "payment", fallbackMethod = "captureFallback")
+    @Retry(name = "payment")
+    public PaymentResult capture(String orderId, BigDecimal amount,
+                                 String currency, String callbackUrl) {
+        var response = api.capture(new PaymentApi.CaptureRequest(
+                orderId, amount.longValue(), currency, callbackUrl));
+
+        return new PaymentResult(response.transactionId(),
+                "CAPTURED".equals(response.status())
+                        ? PaymentResult.Status.CAPTURED
+                        : PaymentResult.Status.FAILED,
+                response.referenceCode());
+    }
+
+    /**
+     * وقتی سرویس پرداخت خراب است، این متد صدا زده می‌شود.
+     * نکته: سفارش نباید خراب شود — فقط در وضعیت انتظار قرار می‌گیرد.
+     */
+    private PaymentResult captureFallback(String orderId, BigDecimal amount,
+                                          String currency, String callbackUrl,
+                                          Throwable cause) {
+        log.warn("درگاه پرداخت در دسترس نیست، سفارش {} در انتظار ماند", orderId);
+        throw new PaymentUnavailableException("سرویس پرداخت موقتاً در دسترس نیست");
+    }
+
+    @Override
+    @CircuitBreaker(name = "payment")
+    public void refund(String orderId, BigDecimal amount) {
+        api.refund(new PaymentApi.RefundRequest(orderId, amount.longValue()));
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.client;
+
+/** خطای بیزینسی: سیستم در حالت عادی نیست. با آن کنار بیایید. */
+public class PaymentUnavailableException extends RuntimeException {
+    public PaymentUnavailableException(String message) {
+        super(message);
+    }
+}
+</code></pre>
+
+<h3>سرویس — هماهنگی پرداخت و ثبت</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import com.shop.order.domain.*;
+import com.shop.order.integration.client.PaymentClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+
+@Service
+public class OrderService {
+
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
+
+    private final OrderRepository orders;
+    private final PaymentClient payments;
+    private final DomainEventPublisher events;
+
+    public OrderService(OrderRepository orders, PaymentClient payments,
+                        DomainEventPublisher events) {
+        this.orders = orders;
+        this.payments = payments;
+        this.events = events;
+    }
+
+    @Transactional
+    public String place(PlaceOrderCommand command, String correlationId) {
+        Order order = Order.create(command.customerId());
+
+        command.lines().forEach(l ->
+                order.addLine(l.productId(), l.quantity(), l.unitPrice()));
+
+        order.place();
+        orders.save(order);
+
+        // رویداد در همان تراکنش ذخیره می‌شود
+        events.record(new OrderPlaced(order.id(), order.customerId(),
+                order.total(), order.lines().size(),
+                Instant.now()), correlationId);
+
+        return order.id();
+    }
+
+    /**
+     * پرداخت در تراکنش جداگانه.
+     * دلیل: تماس شبکه‌ای نباید تراکنش دیتابیس را باز نگه دارد.
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public PaymentOutcome processPayment(String orderId) {
+        Order order = orders.findById(new OrderId(orderId))
+                .orElseThrow(() -&gt; new OrderError("سفارش یافت نشد"));
+
+        try {
+            var result = payments.capture(orderId, order.total(),
+                    "IRR", "https://shop.example/callback");
+
+            order.markPaid(result.transactionId());
+            orders.save(order);
+            return PaymentOutcome.PAID;
+
+        } catch (PaymentUnavailableException e) {
+            // درگاه خراب است: سفارش سالم می‌ماند، بعداً دوباره تلاش می‌شود
+            log.warn("پرداخت سفارش {} به تعویق افتاد", orderId);
+            order.markPaymentPending();
+            orders.save(order);
+            return PaymentOutcome.PENDING;
+
+        } catch (PaymentFailedException e) {
+            order.markPaymentFailed(e.getMessage());
+            orders.save(order);
+            events.record(new PaymentFailed(orderId, e.getMessage(),
+                    Instant.now()), null);
+            return PaymentOutcome.FAILED;
+        }
+    }
+
+    public enum PaymentOutcome { PAID, PENDING, FAILED }
+}
+</code></pre>
+
+<h3>انتشار رویداد با Outbox</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration.event;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+@Component
+public class OutboxRelay {
+
+    private static final Logger log = LoggerFactory.getLogger(OutboxRelay.class);
+    private static final int MAX_ATTEMPTS = 8;
+
+    private final OutboxEventRepository repository;
+    private final KafkaTemplate&lt;String, String&gt; kafka;
+    private final String topic;
+
+    public OutboxRelay(OutboxEventRepository repository,
+                       KafkaTemplate&lt;String, String&gt; kafka,
+                       @Value("${app.outbox.topic}") String topic) {
+        this.repository = repository;
+        this.kafka = kafka;
+        this.topic = topic;
+    }
+
+    @Scheduled(fixedDelayString = "${app.outbox.interval:1000}")
+    @Transactional
+    public void publishPending() {
+        var batch = repository.findUnpublished(PageRequest.of(0, 200));
+
+        for (OutboxEvent event : batch) {
+            try {
+                // کلید = شناسه‌ی سفارش → ترتیب به‌ازای سفارش حفظ می‌شود
+                kafka.send(topic, event.eventKey(), event.payload())
+                        .get(5, java.util.concurrent.TimeUnit.SECONDS);
+                event.markPublished();
+
+            } catch (Exception e) {
+                event.markFailed(e.getMessage());
+                log.warn("انتشار ناموفق ({}): {}",
+                        event.eventType(), e.getMessage());
+            }
+        }
+    }
+}
+</code></pre>
+
+<h3>مصرف رویداد در سرویس انبار</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.inventory.integration;
+
+import com.shop.contracts.order.v1.OrderPlacedV1;
+import com.shop.inventory.domain.StockService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+@Component
+public class OrderPlacedConsumer {
+
+    private static final Logger log = LoggerFactory.getLogger(OrderPlacedConsumer.class);
+
+    private final StockService stock;
+    private final ProcessedEventStore processed;
+
+    public OrderPlacedConsumer(StockService stock, ProcessedEventStore processed) {
+        this.stock = stock;
+        this.processed = processed;
+    }
+
+    @KafkaListener(topics = "orders", groupId = "inventory-service",
+                   concurrency = "4")
+    @Transactional
+    public void on(OrderPlacedV1 event) {
+        // ۱. حذف تکرار
+        if (processed.wasProcessed(event.eventId())) {
+            return;
+        }
+
+        // ۲. منطق کسب‌وکار
+        for (OrderPlacedV1.Line line : event.lines()) {
+            try {
+                stock.reserve(line.productId(), line.quantity(), event.orderId());
+            } catch (InsufficientStockException e) {
+                // ۳. اعلام شکست به سرویس سفارش (جبران)
+                log.warn("موجودی ناکافی برای سفارش {}", event.orderId());
+                stock.release(event.orderId());
+                rejectionPublisher.publish(new OrderRejectedV1(
+                        event.orderId(), "موجودی ناکافی",
+                        java.time.Instant.now()));
+            }
+        }
+
+        // ۴. ثبت در همان تراکنش
+        processed.markProcessed(event.eventId());
+    }
+}
+</code></pre>
+
+<h3>فیلتر correlationId در Gateway</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.gateway.filter;
+
+import org.springframework.core.Ordered;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.util.UUID;
+
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class CorrelationIdFilter implements GlobalFilter {
+
+    private static final String HEADER = "X-Correlation-Id";
+
+    @Override
+    public Mono&lt;Void&gt; filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String correlationId = exchange.getRequest().getHeaders()
+                .getFirst(HEADER);
+
+        if (correlationId == null || correlationId.isBlank()) {
+            correlationId = UUID.randomUUID().toString();
+        }
+
+        exchange.getRequest().mutate()
+                .headers(h -&gt; h.set(HEADER, correlationId))
+                .build();
+
+        return chain.filter(exchange)
+                .doOnSuccess(v -&gt; exchange.getResponse().getHeaders()
+                        .set(HEADER, correlationId));
+    }
+}
+</code></pre>
+
+<h3>اسکریپت راه‌اندازی</h3>
+
+<pre class="kl-code" data-lang="yaml"><code>version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  kafka:
+    image: bitnami/kafka:3.7
+    environment:
+      KAFKA_CFG_NODE_ID: 0
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka:9093
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+    ports:
+      - "9092:9092"
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+
+  order-service:
+    build: ./services/order-service
+    depends_on: [postgres, kafka]
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/orders
+      KAFKA_BROKERS: kafka:9092
+      PAYMENT_SERVICE_URL: http://payment-service:8080
+    ports:
+      - "8081:8080"
+
+  payment-service:
+    build: ./services/payment-service
+    ports:
+      - "8082:8080"
+
+  api-gateway:
+    build: ./services/api-gateway
+    depends_on: [order-service, payment-service]
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:</code></pre>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>نقاط پایش (Micrometer)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.config;
+
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
+
+@Component
+public class ServiceMetrics {
+
+    private final Counter ordersPlaced;
+    private final Counter paymentsFailed;
+    private final Timer paymentCall;
+
+    public ServiceMetrics(MeterRegistry registry) {
+        this.ordersPlaced = Counter.builder("orders.placed")
+                .description("تعداد سفارش‌های ثبت‌شده")
+                .register(registry);
+
+        this.paymentsFailed = Counter.builder("payments.failed")
+                .description("تعداد پرداخت‌های ناموفق")
+                .register(registry);
+
+        this.paymentCall = Timer.builder("payments.call.duration")
+                .description("مدت تماس با سرویس پرداخت")
+                .publishPercentileHistogram()
+                .register(registry);
+    }
+
+    public void recordPlaced() {
+        ordersPlaced.increment();
+    }
+
+    public void recordPaymentFailed() {
+        paymentsFailed.increment();
+    }
+
+    public void recordPaymentCall(long millis) {
+        paymentCall.record(millis, TimeUnit.MILLISECONDS);
+    }
+
+    public void recordPaymentCall(Runnable call) {
+        long start = System.nanoTime();
+        try {
+            call.run();
+        } finally {
+            paymentCall.record(System.nanoTime() - start, TimeUnit.NANOSECONDS);
+        }
+    }
+}
+</code></pre>
+
+<h3>لاگ ساخت‌یافته با traceId</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.config;
+
+import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class CorrelationIdInterceptor implements HandlerInterceptor {
+
+    private static final String HEADER = "X-Correlation-Id";
+    private static final String MDC_KEY = "correlationId";
+
+    @Override
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response, Object handler) {
+        String id = request.getHeader(HEADER);
+        if (id == null || id.isBlank()) {
+            id = java.util.UUID.randomUUID().toString();
+        }
+        MDC.put(MDC_KEY, id);
+        response.setHeader(HEADER, id);
+        return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+                                Object handler, Exception ex) {
+        MDC.remove(MDC_KEY);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="xml"><code><!-- logback-spring.xml -->
+<configuration>
+  <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <includeMdcKeyName>correlationId</includeMdcKeyName>
+      <includeMdcKeyName>traceId</includeMdcKeyName>
+      <includeMdcKeyName>spanId</includeMdcKeyName>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="JSON"/>
+  </root>
+</configuration></code></pre>
+
+<h3>مدیریت نسخه‌ی API</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class ApiVersioningConfig implements WebMvcConfigurer {
+
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        // /api/v1/orders  و  /api/v2/orders هم‌زمان فعال می‌مانند
+        configurer.setUseTrailingSlashMatch(true);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import org.springframework.web.bind.annotation.*;
+
+/** نسخه‌ی اول: قرارداد ثابت. اگر تغییر ناسازگار لازم شد، نسخه‌ی دوم بسازید. */
+@RestController
+@RequestMapping("/api/v1/orders")
+class OrderV1Controller {
+
+    private final OrderService service;
+
+    OrderV1Controller(OrderService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    ResponseEntity&lt;OrderCreatedResponse&gt; create(
+            @RequestBody PlaceOrderRequest request) {
+        String id = service.place(PlaceOrderCommand.from(request), null);
+        return ResponseEntity.created(
+                java.net.URI.create("/api/v1/orders/" + id))
+                .body(new OrderCreatedResponse(id, "PLACED"));
+    }
+
+    @PostMapping("/{id}/payment")
+    PaymentResponse pay(@PathVariable String id) {
+        var outcome = service.processPayment(id);
+        return new PaymentResponse(outcome.name());
+    }
+
+    record PlaceOrderRequest(String customerId, List&lt;Line&gt; lines) {
+        record Line(String productId, int quantity, BigDecimal unitPrice) {}
+    }
+
+    record OrderCreatedResponse(String orderId, String status) {}
+    record PaymentResponse(String outcome) {}
+}
+</code></pre>
+
+<h3>تولید مستندات OpenAPI</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class OpenApiConfig {
+
+    @Bean
+    public OpenAPI orderServiceApi() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Order Service API")
+                        .version("1.0.0")
+                        .description("سرویس سفارش — نسخه‌ی اول"));
+    }
+}
+</code></pre>
+
+<h3>Health Check تفکیک‌شده</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.config;
+
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.stereotype.Component;
+
+/**
+ * Liveness: آیا سرویس زنده است؟
+ * Readiness: آیا سرویس آماده‌ی دریافت ترافیک است؟
+ * این دو نباید یکی باشند — یکی از اشتباهات رایج.
+ */
+@Component("paymentReadiness")
+class PaymentReadinessIndicator implements HealthIndicator {
+
+    private final PaymentClient payments;
+
+    @Override
+    public Health health() {
+        try {
+            payments.healthCheck();
+            return Health.up()
+                    .withDetail("payment", "reachable")
+                    .build();
+        } catch (Exception e) {
+            // سرویس پرداخت خراب است، ولی سرویس سفارش زنده است
+            return Health.down()
+                    .withDetail("payment", "unreachable")
+                    .withDetail("error", e.getMessage())
+                    .build();
+        }
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نکته‌ی مهم درباره‌ی Health Check</span>
+اگر <code>readiness</code> به سلامت سرویس‌های پایین‌دست وابسته باشد، یک سرویس خراب باعث
+می‌شود کل سرویس از لودبالانس خارج شود و طوفان خرابی ایجاد کند. معمولاً بهتر است
+readiness فقط دیتابیس <em>خودت</em> را چک کند و وابستگی‌های بیرونی را با circuit breaker
+مدیریت کنید.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>داده‌ی جدا و تراکنش توزیع‌شده</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">قانون تفکیک داده</span>
+هر سرویس به دیتابیس خودش دسترسی دارد و <strong>هیچ‌کدام به دیتابیس دیگری
+دسترسی ندارد</strong>. این تنها راهی است که «مالکیت داده» واقعاً حفظ شود.
+</div>
+
+<h3>چهار روش نگه‌داری داده</h3>
+
+<table>
+<thead>
+<tr><th>روش</th><th>توضیح</th><th>مزیت</th><th>عیب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>دیتابیس برای هر سرویس</strong></td><td>هر سرویس دیتابیس خودش</td><td>استقلال کامل</td><td>برای داده‌ی مشترک سخت است</td></tr>
+<tr><td><strong>دیتابیس مشترک، اسکیمای جدا</strong></td><td>یک دیتابیس، جدول‌های جدا</td><td>ساده و کارآمد</td><td>مرز ضعیف می‌شود</td></tr>
+<tr><td><strong>دسترسی از راه API</strong></td><td>سرویس A از سرویس B می‌پرسد</td><td>قانون حفظ می‌شود</td><td>یک hop اضافه</td></tr>
+<tr><td><strong>کپی محلی (CQRS)</strong></td><td>Read Model هر سرویس را خودش دارد</td><td>سریع و مستقل</td><td>سازگاری نهایی</td></tr>
+</tbody>
+</table>
+
+<h3>سه راه خواندن داده‌ی سرویس دیگر</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱. API هم‌زمان (ساده ولی کند)
+   OrderService ──HTTP──▶ InventoryService.getStock(sku)
+   ← نتیجه همیشه تازه، ولی یک hop شبکه در مسیر بحرانی
+
+۲. رویداد ناهمگام (سریع ولی کهنه)
+   InventoryService ──StockChanged──▶ MQ ──▶ OrderService
+   ← OrderService نسخه‌ی محلی دارد، ممکن است چند ثانیه کهنه باشد
+
+۳. CQRS (بهترین تعادل)
+   OrderService فقط شناسه‌ی محصول را نگه می‌دارد
+   یک Read Model اختصاصی از رویدادها می‌سازد
+   ← سریع، مستقل، و قابل بازسازی</code></pre>
+
+<h3>تراکنش توزیع‌شده — و چرا کار نمی‌کند</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ 2PC (دو فاز کامیت)
+   سرویس A                سرویس B
+      │ prepare ─────────────▶│
+      │◀──────────── prepare ─│
+      │                      │  ← اگر همین‌جا بمیرد؟
+      │ commit               │  ← A قفل شده، منتظر B
+      │                      │
+   ← بن‌بست، قفل بلندمدت، وابستگی به دسترس‌پذیری همه
+
+✅ Saga
+   مرحله ۱: A تراکنش محلی خودش را commit می‌کند
+   مرحله ۲: رویداد می‌فرستد
+   مرحله ۳: B تراکنش محلی خودش را commit می‌کند
+   اگر مرحله ۳ شکست خورد:
+      ← رویداد جبرانی به A
+      ← A وضعیتش را برمی‌گرداند
+   ← بدون قفل بلندمدت، با پذیرش جبران</code></pre>
+
+<h3>دو الگوی Saga</h3>
+
+<table>
+<thead>
+<tr><th>Choreography</th><th>Orchestration</th></tr>
+</thead>
+<tbody>
+<tr><td>هر سرویس به رویداد بعدی گوش می‌دهد</td><td>یک سرویس مرکزی ترتیب می‌دهد</td></tr>
+<tr><td>غیرمتمرکز، ساده</td><td>متمرکز، قابل مشاهده</td></tr>
+<tr><td>برای ۲ تا ۳ مرحله مناسب</td><td>برای ۵+ مرحله مناسب</td></tr>
+<tr><td>جریان گم می‌شود</td><td>نقطه‌ی شکست مرکزی</td></tr>
+</tbody>
+</table>
+
+<h3>کپی داده بین سرویس‌ها — قواعد</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>فقط داده‌ی لازم</strong> را کپی کنید، نه کل مدل</li>
+<li><strong>کپی محلی باشد</strong>، نه دسترسی مستقیم به دیتابیس دیگری</li>
+<li><strong>کپی همیشه قابل بازسازی</strong> باشد (از رویدادها)</li>
+<li><strong>مالکیت</strong> با سرویس مبدأ است؛ کپی فقط مصرف‌کننده دارد</li>
+<li><strong>تغییر ساختار</strong> کپی باید نسخه‌بندی شود</li>
+</ul>
+</div>
+
+<h3>قاعده‌ی عملی: داده‌ی بزرگ نکپید</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ نکپید: فایل، تصویر، ویدیو
+   ← حجم زیاد، کند، و به‌ندرت تغییر
+   ← به‌جایش: شناسه‌ی فایل را کپی کنید و از سرویس فایل بخوانید
+
+❌ نکپید: اطلاعات حساس (رمز، توکن)
+   ← ریسک امنیتی و مسئولیت حقوقی
+
+✅ کپی کنید: شناسه، نام، وضعیت، قیمت، خلاصه
+   ← کم‌حجم، پرتکرار، و دقیقاً همان چیزی که لازم دارید</code></pre>
+</section>
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>مزایا</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>استقرار مستقل</strong></td><td>هر سرویس بدون ساخت کل سیستم مستقر می‌شود؛ زمان استقرار از ۴۵ دقیقه به ۵ دقیقه</td></tr>
+<tr><td>۲</td><td><strong>مقیاس مستقل</strong></td><td>بخش پرترافیک ۱۰ برابر بزرگ‌تر می‌شود بدون تأثیر بر بقیه</td></tr>
+<tr><td>۳</td><td><strong>استقلال تیمی</strong></td><td>هر تیم محصول خودش را می‌سازد، تست می‌کند و منتشر می‌کند</td></tr>
+<tr><td>۴</td><td><strong>مالکیت روشن داده</strong></td><td>هیچ‌کس جز سرویس مالک به دیتابیس دسترسی ندارد</td></tr>
+<tr><td>۵</td><td><strong>تحمل خرابی بهتر</strong></td><td>خرابی یک سرویس فقط همان قابلیت را از کار می‌اندازد</td></tr>
+<tr><td>۶</td><td><strong>فناوری مناسب هر کار</strong></td><td>سرویس محاسباتی سنگین با ابزار بهینه‌تر، سرویس ساده با ابزار ساده‌تر</td></tr>
+<tr><td>۷</td><td><strong>بازخورد سریع‌تر</strong></td><td>PR کوچک، pipeline کوتاه، زمان تا merge از ۲ روز به ۲ ساعت</td></tr>
+<tr><td>۸</td><td><strong>انتخاب فناوری</strong></td><td>برای هر بار کاری، ابزار مناسب خودش</td></tr>
+<tr><td>۹</td><td><strong>مسیر مهاجرت تدریجی</strong></td><td>با Strangler Fig می‌توان بخش‌به‌بخش مهاجرت کرد بدون توقف سرویس</td></tr>
+<tr><td>۱۰</td><td><strong>هم‌زمانی ایمن‌تر</strong></td><td>ترمز یک تیم، ترمز تیم‌های دیگر نیست</td></tr>
+<tr><td>۱۱</td><td><strong>انعطاف جغرافیایی</strong></td><td>سرویس نزدیک کاربرانشان مستقر می‌شود</td></tr>
+<tr><td>۱۲</td><td><strong>حذف ریسک مشترک</strong></td><td>بودجه‌ی پروژه به یک بخش وابسته نیست</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">بزرگ‌ترین مزیت</span>
+«استقرار مستقل» — این یعنی تیم شما روزی چند بار می‌تواند منتشر کند. در یک مونولیت
+با ۴۵ دقیقه pipeline، عملاً روزی یک‌بار می‌توانید منتشر کنید و هر انتشار ریسک کل
+سیستم است. این تفاوت، مهم‌ترین دستاورد عملی میکروسرویس است.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>معایب</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>هزینه‌ی عملیاتی بالا</strong></td><td>زیرساخت، پایش، لاگ، استقرار و به‌روزرسانی برای هر سرویس</td></tr>
+<tr><td>۲</td><td><strong>سیستم‌های توزیع‌شده ذاتاً سخت‌اند</strong></td><td>هیچ تراکنش ACID بین سرویس‌ها وجود ندارد</td></tr>
+<tr><td>۳</td><td><strong>عیب‌یابی دشوار</strong></td><td>یک درخواست از ۵ سرویس عبور می‌کند؛ بدون ابزار، غیرممکن</td></tr>
+<tr><td>۴</td><td><strong>افزایش تأخیر</strong></td><td>هر مرز شبکه ۱ تا ۵ میلی‌ثانیه اضافه می‌کند</td></tr>
+<tr><td>۵</td><td><strong>سازگاری نهایی</strong></td><td>کاربر ممکن است داده‌ی کهنه ببیند</td></tr>
+<tr><td>۶</td><td><strong>نیاز به DevOps بالغ</strong></td><td>بدون تیم زیرساخت، شکست خواهید خورد</td></tr>
+<tr><td>۷</td><td><strong>مدیریت پیکربندی</strong></td><td>صدها متغیر محیطی که باید هماهنگ بمانند</td></tr>
+<tr><td>۸</td><td><strong>آزمون انتها‌به‌انتها سخت</strong></td><td>راه‌اندازی ۵ سرویس برای یک تست</td></tr>
+<tr><td>۹</td><td><strong>طوفان خرابی</strong></td><td>خرابی یک وابستگی می‌تواند زنجیره‌ای همه را از کار بیندازد</td></tr>
+<tr><td>۱۰</td><td><strong>معماری تیمی (Conway)</strong></td><td>ساختار سازمان باید تغییر کند، و این سخت‌ترین بخش است</td></tr>
+<tr><td>۱۱</td><td><strong>سرمایه‌ی اولیه</strong></td><td>پیش از نخستین قابلیت، هفته‌ها صرف زیرساخت می‌شود</td></tr>
+<tr><td>۱۲</td><td><strong>وابستگی به تأمین‌کننده‌ی ابری</strong></td><td>قفل‌شدگی در پلتفرم، هزینه‌ی خروج بالا</td></tr>
+</tbody>
+</table>
+
+<h3>هزینه‌ی واقعی که در تخمین‌ها نمی‌آید</h3>
+
+<pre class="kl-code" data-lang="text"><code>هزینه‌ای که تیم‌ها پیش‌بینی نمی‌کنند:
+
+  ۱. ردیابی توزیع‌شده (سرویس ردیابی، نمونه‌برداری، ذخیره)
+  ۲. لاگ مرکزی با نسخه‌بندی و جست‌وجو
+  ۳. صفحه‌ی طلایی و داشبورد
+  ۴. تست انتها‌به‌انتها و محیط یکپارچه
+  ۵. اسکریپت‌های مهاجرت دیتابیس هر سرویس
+  ۶. مدیریت اسرار و گواهی‌ها
+  ۷. پشتیبان‌گیری و بازیابی اضطراری هر سرویس
+  ۸. آموزش تیم و مستندسازی
+  ۹. سرویس‌های داخلی که خودشان خراب می‌شوند
+  ۱۰. دیباگ کردن در محیط چندسرویسی
+
+  ← جمع اینها معمولاً ۳ تا ۶ برابر کار خودِ قابلیت‌ها است</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">صادق باشیم</span>
+بیشتر شکست‌های میکروسرویس از «معماری بد» نیست؛ از «تیمی است که ابزار و مهارت
+عملیات ندارد» است. یک تیم ۵ نفره که فقط یک‌بار در ماه پروژه‌ای را مستقر می‌کند،
+نباید سیستم توزیع‌شده بسازد.
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-check">
+<ul>
+<li><strong>بیش از ۱۰ تیم</strong> روی یک کدبیس کار می‌کنند</li>
+<li><strong>نرخ تغییر در کدبیس بالاست</strong> و باید سریع منتشر شود</li>
+<li><strong>بخش‌های بسیار متفاوتی از ترافیک</strong> دارید (یکی پرترافیک، بقیه کم‌ترافیک)</li>
+<li><strong>نیاز به مقیاس مستقل</strong> یک قابلیت خاص دارید</li>
+<li><strong>مالکیت سرویس در سازمان لازم است</strong> (مثلاً هر واحد تجاری سرویس خودش)</li>
+<li><strong>دامنه‌های کسب‌وکار روشن</strong> و قابل تفکیک‌اند</li>
+<li><strong>تیم DevOps یا زیرساخت</strong> وجود دارد</li>
+<li><strong>سیستم باید سال‌ها رشد کند</strong> و سرمایه‌گذاری توجیه شود</li>
+<li><strong>استقلال جغرافیایی</strong> لازم است (سرویس نزدیک کاربر)</li>
+<li><strong>مانورپذیری بالا</strong> لازم است (اجرای نسخه در چند منطقه)</li>
+</ul>
+</div>
+
+<h3>مثال‌های مناسب</h3>
+
+<pre class="kl-code" data-lang="text"><code>✅ نتفلیکس        → ۱۰۰+ میکروسرویس، ۱۰۰۰+ مهندس
+✅ آمازون         → صدها سرویس، چند هزار تیم
+✅ اسبوتیفای      → تیم‌های خودگردان روی هر قابلیت
+✅ اروپایی/滴滴    → مقیاس منطقه‌ای و سازمانی
+✅ بانک‌های بزرگ   ← با احتیاط؛ بسیاری از پروژه‌ها فقط Modular Monolith شدند</code></pre>
+
+<h3>معیار عددی تصمیم</h3>
+
+<pre class="kl-code" data-lang="text"><code>قبل از تصمیم، این پنج عدد را بشمارید:
+
+۱. تعداد تیم‌ها      < ۱۰  → تقریباً همیشه نه
+۲. زمان ادغام (merge)  > ۴ ساعت → بله، درد واقعی
+۳. تعداد استقرار در هفته < ۲   → بله، مانع بزرگ
+۴. وجود بخش پرترافیک  بدون   → بله، عدم‌عدالتی هزینه
+   امکان مقیاس مستقل
+۵. هزینه‌ی یک باگ سراسری → خیلی زیاد
+
+اگر ۳ مورد از ۵ «بله» است، احتمالاً وقتش رسیده.
+اگر ۱ یا ۲ مورد است، Modular Monolith را امتحان کنید.</code></pre>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>چه زمانی استفاده نکنیم؟</h2>
+
+<table>
+<thead>
+<tr><th>وضعیت</th><th>چرا مناسب نیست؟</th><th>جایگزین</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>تیم کوچک</strong> (کمتر از ۱۰ نفر)</td><td>هزینه‌ی زیرساخت بیشتر از سود</td><td>مونولیت با لایه‌بندی تمیز</td></tr>
+<tr><td><strong>تیم زیرساخت ندارد</strong></td><td>سیستم از کار می‌افتد</td><td>مونولیت</td></tr>
+<tr><td><strong>دامنه هنوز کشف نشده</strong></td><td>مرزها را حدس می‌زنید و اشتباه می‌کنید</td><td>Product Discovery</td></tr>
+<tr><td><strong>محصول ناپایدار</strong></td><td>هر هفته معماری عوض می‌شود</td><td>اول محصول را ثابت کنید</td></tr>
+<tr><td><strong>محاسبه‌ی سنگین و یکنواخت</strong></td><td>مقیاس افقی ساده کافی است</td><td>یک سرویس با replica بیشتر</td></tr>
+<tr><td><strong>تیم در حال یادگیری</strong></td><td>هم‌زمان دو پیچیدگی را یاد نمی‌گیرند</td><td>اول عمق در یک فناوری</td></tr>
+<tr><td><strong>مشکل اصلی محاسباتی است</strong></td><td>توزیع‌شده مشکل را حل نمی‌کند</td><td>بهینه‌سازی و کش</td></tr>
+<tr><td><strong>بودجه‌ی زیرساخت محدود</strong></td><td>هزینه‌ی ماهانه‌ی سرور و ابزار</td><td>مونولیت</td></tr>
+<tr><td><strong>پروژه‌ی کوتاه‌مدت</strong></td><td>پایان پروژه = پایان سیستم</td><td>سریع‌ترین راه</td></tr>
+<tr><td><strong>نیاز به سازگاری فوری و مطلق</strong></td><td>سازگاری نهایی با کسب‌وکار نمی‌خواند</td><td>مونولیت با تراکنش ACID</td></tr>
+</tbody>
+</table>
+
+<h3>مسیر جایگزین — Modular Monolith</h3>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">امروز توصیه‌ی اکثر متخصصان</span>
+«مونولیت ماژولار، نه میکروسرویس» پیش‌فرض پیشنهادی امروز است. شما همان مرزهای
+میکروسرویس را در کد دارید (Feature Based)، ولی یک فرایند و یک دیتابیس. بعداً اگر
+لازم شد، استخراج سرویس بسیار آسان‌تر است چون مرزها از قبل وجود دارند.
+</div>
+
+<pre class="kl-code" data-lang="text"><code>مقایسه‌ی عملی:
+
+  Modular Monolith          Microservices
+  ────────────────          ──────────────
+  یک فرایند                 N فرایند
+  یک دیتابیس                N دیتابیس
+  تراکنش ACID               سازگاری نهایی
+  استقرار ۱۰ دقیقه           استقرار ۳ دقیقه
+  عیب‌یابی ساده              عیب‌یابی سخت
+  هزینه‌ی عملیات: کم         هزینه‌ی عملیات: زیاد
+
+  ← ۸۰٪ مشکلات Modular Monolith را حل می‌کند
+  ← با ۱۰٪ هزینه</code></pre>
+
+<h3>سه دام بزرگ</h3>
+
+<table>
+<thead>
+<tr><th>دام</th><th>نشانه</th><th>درمان</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>ناندورسرویس</strong></td><td>سرویس‌های ۵ خطی، صدها سرویس</td><td>ادغام تا رسیدن به مرز دامنه‌ای</td></tr>
+<tr><td><strong>نانو‌سرویس</strong></td><td>هر سرویس ۵ خط، روزی یک استقرار</td><td>همان: این فقط یک مونولیت با تأخیر است</td></tr>
+<tr><td><strong>شبکه‌ی شیطانی</strong></td><td>هر سرویس با ۱۰ سرویس دیگر حرف می‌زند</td><td>فقط رویداد، بدون فراخوانی هم‌زمان</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<table>
+<thead>
+<tr><th>اصل</th><th>نام</th><th>نمود در Microservices</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>S</strong></td><td>Single Responsibility</td><td>هر سرویس یک مسئولیت کسب‌وکاری کامل</td></tr>
+<tr><td><strong>O</strong></td><td>Open/Closed</td><td>افزودن سرویس جدید، سرویس‌های موجود را تغییر نمی‌دهد</td></tr>
+<tr><td><strong>L</strong></td><td>Liskov Substitution</td><td>هر پیاده‌سازی یک قرارداد، جایگزین‌پذیر است</td></tr>
+<tr><td><strong>I</strong></td><td>Interface Segregation</td><td>هر مصرف‌کننده فقط قرارداد مورد نیازش را می‌بیند</td></tr>
+<tr><td><strong>D</strong></td><td>Dependency Inversion</td><td><strong>مهم‌ترین اصل</strong> — وابستگی به قرارداد، نه به سرویس</td></tr>
+</tbody>
+</table>
+
+<h3>D — مهم‌ترین اصل در سیستم توزیع‌شده</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ✅ در سرویس سفارش
+package com.shop.order.integration.client;
+
+import java.math.BigDecimal;
+
+/** فقط قرارداد. هیچ چیزی درباره‌ی HTTP، شبکه یا مکان سرویس نمی‌داند. */
+public interface PaymentClient {
+    PaymentResult capture(String orderId, BigDecimal amount,
+                          String currency, String callbackUrl);
+    void refund(String orderId, BigDecimal amount);
+
+    record PaymentResult(String transactionId, Status status) {
+        enum Status { CAPTURED, FAILED }
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>// ✅ در تست: جایگزینی کامل، بدون هیچ زیرساختی
+package com.shop.order.integration.client;
+
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+class FakePaymentClient implements PaymentClient {
+
+    private final Map&lt;String, PaymentResult&gt; results = new ConcurrentHashMap&lt;&gt;();
+    private boolean shouldFail = false;
+
+    void failNextCalls(boolean fail) {
+        this.shouldFail = fail;
+    }
+
+    @Override
+    public PaymentResult capture(String orderId, BigDecimal amount,
+                                 String currency, String callbackUrl) {
+        if (shouldFail) {
+            throw new PaymentUnavailableException("سرویس شبیه‌سازی‌شده در دسترس نیست");
+        }
+        return results.computeIfAbsent(orderId,
+                id -&gt; new PaymentResult("tx-" + id, Status.CAPTURED));
+    }
+
+    @Override
+    public void refund(String orderId, BigDecimal amount) {
+        results.remove(orderId);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چرا این حیاتی است</span>
+اگر سرویس سفارش مستقیم <code>RestTemplate</code> را صدا بزند، تست آن نیازمند
+سرور پرداخت واقعی است. با interface، تست در ۵ میلی‌ثانیه اجرا می‌شود — و می‌توانید
+حتی سناریوی «درگاه خراب است» را که در محیط واقعی سخت است، دقیقاً تست کنید.
+</div>
+
+<h3>S — هر سرویس یک قابلیت</h3>
+
+<pre class="kl-code" data-lang="text"><code>❌ سرویس بزرگ:
+   order-service شامل: سفارش + کاربر + محصول + پرداخت + گزارش
+   ← یک تیم، یک استقرار، یک فاجعه
+
+✅ سرویس‌های کوچک با قابلیت کامل:
+   order-service     → ثبت، لغو، وضعیت سفارش
+   payment-service   → پرداخت، بازگشت وجه
+   catalog-service   → محصول، قیمت، موجودی نمایشی
+   ← هرکدام یک تیم، یک استقرار، یک دامنه</code></pre>
+
+<h3>O — سرویس جدید بدون تغییر موجود</h3>
+
+<pre class="kl-code" data-lang="text"><code>امروز: order-service به inventory-service نیاز دارد
+
+فردا: تیم تصمیم می‌گیرد سرویس جدیدی بسازد
+      ← order-service تغییری نمی‌کند
+      ← قرارداد PaymentClient یک متد جدید می‌گیرد (پیش‌فرض دارد)
+      ← سرویس جدید همان قرارداد را پیاده می‌کند
+
+← OCP در سطح سیستم توزیع‌شده</code></pre>
+
+<h3>I — مصرف‌کننده فقط مورد نیازش را می‌بیند</h3>
+
+<pre class="kl-code" data-lang="java"><code>// ❌ قرارداد بزرگ: هر مصرف‌کننده همه چیز را می‌بیند
+public interface CatalogService {
+    Product getProduct(String id);
+    List&lt;Product&gt; search(String q);
+    void updatePrice(String id, BigDecimal price);
+    void deleteProduct(String id);
+    Report generateReport(...);
+    void importCatalog(...);
+}
+
+// ✅ قرارداد به‌ازای مصرف‌کننده
+public interface CatalogReader {          // سرویس سفارش
+    Product getProduct(String id);
+    List&lt;Product&gt; search(String q);
+}
+
+public interface CatalogAdmin {           // فقط پنل مدیریت
+    void updatePrice(String id, BigDecimal price);
+    void deleteProduct(String id);
+}
+</code></pre>
+
+<h3>O معماری: مرزها، نه فناوری</h3>
+
+<div class="kl-check">
+<ul>
+<li>ساختار داخلی هر سرویس = <strong>Feature Based / Clean</strong> (مونولیت ماژولار)</li>
+<li>ارتباط بین سرویس‌ها = <strong>Event Driven + CQRS</strong></li>
+<li>مدل داخلی = <strong>DDD</strong> برای دامنه‌های پیچیده</li>
+<li>مرز سرویس = <strong>Bounded Context</strong></li>
+<li>پایداری در حوزه = <strong>SOLID</strong> در داخل سرویس</li>
+</ul>
+</div>
+</section>
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>نقش در Microservices</th><th>نمود در این مقاله</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>API Gateway</strong></td><td><strong>الگوی اصلی</strong> — نقطه‌ی ورود واحد</td><td>لایه‌ی لبه</td></tr>
+<tr><td><strong>Service Discovery</strong></td><td>یافتن آدرس سرویس‌ها در زمان اجرا</td><td>Sidecar، DNS، Service Mesh</td></tr>
+<tr><td><strong>Circuit Breaker</strong></td><td><strong>الگوی حیاتی</strong> — توقف تماس با سرویس خراب</td><td>Resilience4j</td></tr>
+<tr><td><strong>Bulkhead</strong></td><td>جداسازی منابع، جلوگیری از آبشار خرابی</td><td>thread pool جدا برای هر وابستگی</td></tr>
+<tr><td><strong>Retry + Backoff</strong></td><td>تلاش مجدد با فاصله‌ی فزاینده</td><td>برای خطاهای گذرا</td></tr>
+<tr><td><strong>Saga</strong></td><td><strong>الگوی اصلی</strong> — تراکنش توزیع‌شده</td><td>جبران به‌جای Rollback</td></tr>
+<tr><td><strong>Outbox</strong></td><td>انتشار مطمئن رویداد</td><td>جدول + relay</td></tr>
+<tr><td><strong>Idempotent Consumer</strong></td><td>تحمل پیام تکراری</td><td>جدول پردازش‌شده</td></tr>
+<tr><td><strong>Database per Service</strong></td><td>مالکیت داده</td><td>هر سرویس دیتابیس خودش</td></tr>
+<tr><td><strong>Strangler Fig</strong></td><td>مهاجرت تدریجی از مونولیت</td><td>مسیر کم‌ریسک</td></tr>
+<tr><td><strong>Sidecar</strong></td><td>پراکسی همراه سرویس</td><td>Envoy، Istio</td></tr>
+<tr><td><strong>Anti-Corruption Layer</strong></td><td>محافظت از مدل در برابر سرویس بیرونی</td><td>ترجمه‌ی مدل بیرونی</td></tr>
+<tr><td><strong>Facade</strong></td><td>پنهان کردن پیچیدگی سرویس‌ها</td><td>API Gateway، کلاینت هر سرویس</td></tr>
+</tbody>
+</table>
+
+<h3>API Gateway — پیاده‌سازی مسیریابی</h3>
+
+<pre class="kl-code" data-lang="yaml"><code>spring:
+  cloud:
+    gateway:
+      routes:
+        - id: order-service
+          uri: ${ORDER_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/orders/**
+          filters:
+            - AddRequestHeader=X-Service-Name, order-service
+            - RewritePath=/api/v1/orders(?&lt;/segment&gt;.*), /api/v1/orders${segment}
+
+        - id: catalog-service
+          uri: ${CATALOG_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/products/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: catalogCircuitBreaker
+                fallbackUri: forward:/fallback/catalog
+
+        - id: payment-service
+          uri: ${PAYMENT_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 20
+                redis-rate-limiter.burstCapacity: 40
+
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 5s
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30000
+    instances:
+      catalogCircuitBreaker:
+        baseConfig: default</code></pre>
+
+<h3>Bulkhead — جداسازی منابع</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * Bulkhead: هر وابستگی بیرونی thread pool خودش را دارد.
+ * اگر سرویس پرداخت کند شود، thread pool آن تمام می‌شود
+ * ولی thread pool سرویس کاتالوگ سالم می‌ماند.
+ */
+@Configuration
+public class BulkheadConfig {
+
+    @Bean("paymentExecutor")
+    public ExecutorService paymentExecutor() {
+        return Executors.newFixedThreadPool(20);
+    }
+
+    @Bean("catalogExecutor")
+    public ExecutorService catalogExecutor() {
+        return Executors.newFixedThreadPool(20);
+    }
+}
+</code></pre>
+
+<h3>Saga Orchestration — پیاده‌سازی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.checkout.saga;
+
+import com.shop.checkout.integration.client.*;
+import com.shop.checkout.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+/**
+ * Saga مرحله‌ای: هر گام یک تراکنش محلی + یک عملیات جبرانی.
+ */
+@Component
+public class CheckoutSaga {
+
+    private static final Logger log = LoggerFactory.getLogger(CheckoutSaga.class);
+
+    private final InventoryClient inventory;
+    private final PaymentClient payment;
+    private final OrderClient orders;
+    private final NotificationClient notifications;
+
+    public CheckoutSaga(InventoryClient inventory, PaymentClient payment,
+                        OrderClient orders, NotificationClient notifications) {
+        this.inventory = inventory;
+        this.payment = payment;
+        this.orders = orders;
+        this.notifications = notifications;
+    }
+
+    public CheckoutResult run(String orderId, long amount) {
+        // ── گام ۱: رزرو موجودی ──
+        if (!inventory.reserve(orderId)) {
+            log.warn("موجودی ناکافی برای سفارش {}", orderId);
+            return CheckoutResult.OUT_OF_STOCK;
+        }
+
+        try {
+            // ── گام ۲: پرداخت ──
+            payment.capture(orderId, amount);
+
+        } catch (PaymentUnavailableException e) {
+            // ── جبران گام ۱ ──
+            inventory.release(orderId);
+            return CheckoutResult.PENDING;
+
+        } catch (PaymentDeclinedException e) {
+            // ── جبران گام ۱ ──
+            inventory.release(orderId);
+            orders.reject(orderId, "پرداخت رد شد");
+            return CheckoutResult.PAYMENT_DECLINED;
+
+        } catch (Exception e) {
+            // خطای غیرمنتظره: همه‌ی گام‌ها را جبران می‌کنیم
+            log.error("خطای غیرمنتظره در تسویه: {}", orderId, e);
+            inventory.release(orderId);
+            orders.reject(orderId, "خطای داخلی");
+            return CheckoutResult.FAILED;
+        }
+
+        // ── گام ۳: تأیید نهایی (جبران‌ناپذیر) ──
+        orders.confirm(orderId);
+        notifications.sendConfirmation(orderId);
+
+        return CheckoutResult.COMPLETED;
+    }
+
+    public enum CheckoutResult {
+        COMPLETED, PENDING, OUT_OF_STOCK, PAYMENT_DECLINED, FAILED
+    }
+}
+</code></pre>
+
+<h3>Strangler Fig — استخراج تدریجی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.gateway;
+
+import org.springframework.stereotype.Component;
+
+/**
+ * مسیریابی تدریجی: برای هر مسیر، سرویس جدید یا قدیم؟
+ * با یک پرچم قابل تغییر در زمان اجرا، مهاجرت بدون قطعی سرویس انجام می‌شود.
+ */
+@Component
+public class StranglerRouter {
+
+    private final FeatureToggles toggles;
+
+    public StranglerRouter(FeatureToggles toggles) {
+        this.toggles = toggles;
+    }
+
+    public String routeFor(String path) {
+        if (path.startsWith("/api/orders")) {
+            // پرچم را می‌توانید بدون استقرار تغییر دهید
+            return toggles.isEnabled("orders.new-service")
+                    ? "http://order-service-v2"
+                    : "http://monolith";
+        }
+        return "http://monolith";
+    }
+}
+</code></pre>
+
+<h3>نسخه‌بندی و مهاجرت قرارداد</h3>
+
+<pre class="kl-code" data-lang="text"><code>قواعد مهاجرت بدون شکست:
+
+مرحله ۱: نسخه‌ی جدید = نسخه‌ی قدیم + فیلد جدید
+مرحله ۲: همه‌ی مصرف‌کننده‌ها به‌روز شدند
+مرحله ۳: نسخه‌ی قدیمی حذف شد
+مرحله ۴: (اختیاری) مسیر v1 برای مدتی به v2 نگاشت می‌شود
+
+اگر مصرف‌کننده‌ای بیرون از کنترل شماست:
+  مسیر /api/v1/ را به مدت توافق‌شده نگه دارید
+  و با هدر نسخه یا مسیر v2 مهاجرت دهید</code></pre>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+تست سیستم توزیع‌شده چهار سطح دارد و هر سطح هزینه‌ی خودش را دارد.
+</p>
+
+<table>
+<thead>
+<tr><th>سطح</th><th>چه چیزی</th><th>زمان</th><th>چه بار</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>واحد</strong></td><td>کلاس‌ها با کلاینت جعلی</td><td>میلی‌ثانیه</td><td>هر commit</td></tr>
+<tr><td><strong>قرارداد</strong></td><td>سازگاری API بین سرویس‌ها</td><td>ثانیه</td><td>هر commit</td></tr>
+<tr><td><strong>یکپارچه</strong></td><td>سرویس + دیتابیس + broker</td><td>دقیقه</td><td>هر commit</td></tr>
+<tr><td><strong>انتها‌به‌انتها</strong></td><td>همه‌ی سرویس‌ها با هم</td><td><strong>زیاد</strong></td><td>هر شب</td></tr>
+</tbody>
+</table>
+
+<h3>سطح ۱ — تست واحد با کلاینت جعلی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.api;
+
+import com.shop.order.integration.client.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+@SpringBootTest
+@DisplayName("تسویه‌ی سفارش")
+class CheckoutServiceTest {
+
+    @Autowired CheckoutService checkout;
+
+    @MockitoBean PaymentClient payments;
+    @MockitoBean InventoryClient inventory;
+    @MockitoBean OrderClient orderClient;
+
+    @BeforeEach
+    void setUp() {
+        when(inventory.reserve(anyString())).thenReturn(true);
+        when(payments.capture(anyString(), anyLong()))
+                .thenReturn(new PaymentClient.Result("tx-1", "CAPTURED"));
+    }
+
+    @Test
+    @DisplayName("موجودی ناکافی، پرداخت را صدا نمی‌زند")
+    void doesNotPayWhenStockUnavailable() {
+        when(inventory.reserve("o-1")).thenReturn(false);
+
+        var result = checkout.run("o-1", 500000);
+
+        assertThat(result).isEqualTo(CheckoutService.Result.OUT_OF_STOCK);
+        verify(payments, never()).capture(anyString(), anyLong());
+    }
+
+    @Test
+    @DisplayName("خطای درگاه، موجودی رزروشده آزاد می‌شود")
+    void releasesStockWhenGatewayDown() {
+        when(payments.capture(anyString(), anyLong()))
+                .thenThrow(new PaymentUnavailableException("درگاه قطع است"));
+
+        var result = checkout.run("o-1", 500000);
+
+        assertThat(result).isEqualTo(CheckoutService.Result.PENDING);
+        verify(inventory).release("o-1");      // ← جبران اجرا شد
+    }
+
+    @Test
+    @DisplayName("خطای غیرمنتظره، همه‌ی گام‌ها جبران می‌شود")
+    void compensatesOnUnexpectedError() {
+        when(payments.capture(anyString(), anyLong()))
+                .thenThrow(new RuntimeException("خطای ناشناخته"));
+
+        var result = checkout.run("o-1", 500000);
+
+        assertThat(result).isEqualTo(CheckoutService.Result.FAILED);
+        verify(inventory).release("o-1");
+        verify(orderClient).reject(eq("o-1"), anyString());
+    }
+
+    @Test
+    @DisplayName("مسیر موفق، تأیید نهایی می‌کند")
+    void confirmsOnSuccess() {
+        var result = checkout.run("o-1", 500000);
+
+        assertThat(result).isEqualTo(CheckoutService.Result.COMPLETED);
+        verify(orderClient).confirm("o-1");
+        verify(inventory, never()).release(anyString());
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی</span>
+با کلاینت جعلی می‌توانید سناریوهایی را تست کنید که در محیط واقعی ساختنشان
+تقریباً غیرممکن است: «درگاه ۳ ثانیه کند است»، «درگاه ۵۰۰ می‌دهد»، «پاسخ ناقص
+برمی‌گردد». این قدرت اصلی تست در سیستم توزیع‌شده است.
+</div>
+
+<h3>سطح ۲ — تست قرارداد (Contract Testing)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.contracts;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+/**
+ * تولیدکننده‌ی قرارداد: با اجرای این تست، فایل قرارداد ذخیره می‌شود.
+ * مصرف‌کننده در CI فایل را با کلاینت واقعی‌اش مقایسه می‌کند.
+ */
+@DisplayName("قرارداد سرویس پرداخت")
+class PaymentApiContractTest {
+
+    @Test
+    @DisplayName("ساختار پاسخ تغییر نکرده باشد")
+    void responseShapeIsStable() {
+        var response = new PaymentApi.PaymentResult("tx-1", "CAPTURED", "REF-9");
+
+        assertThat(response.transactionId()).isEqualTo("tx-1");
+        assertThat(response.status()).isEqualTo("CAPTURED");
+        assertThat(response.referenceCode()).isEqualTo("REF-9");
+    }
+
+    @Test
+    @DisplayName("فیلدهای جدید نباید فیلد قدیمی را حذف کنند")
+    void legacyFieldsStillExist() {
+        // اگر این تست بعد از تغییر قرارداد شکست بخورد،
+        // یعنی مصرف‌کننده‌های قدیمی می‌شکنند
+        var response = new PaymentApi.PaymentResult("tx-1", "CAPTURED", "REF-9");
+        assertThat(response.status()).isNotNull();
+    }
+}
+</code></pre>
+
+<h3>سطح ۳ — تست یکپارچه با زیرساخت واقعی</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+/**
+ * تست یکپارچه‌ی واقعی: دیتابیس واقعی در کانتینر + Kafka درون‌فرایندی.
+ * ← این تنها راه اطمینان از درستی پیکربندی است.
+ */
+@SpringBootTest
+@Testcontainers
+@EmbeddedKafka(partitions = 1, topics = "orders")
+@DisplayName("یکپارچه‌ی سرویس سفارش")
+class OrderServiceIntegrationTest {
+
+    @Container
+    static PostgreSQLContainer&lt;?&gt; postgres =
+            new PostgreSQLContainer&lt;&gt;("postgres:16-alpine");
+
+    @DynamicPropertySource
+    static void properties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
+
+    @Autowired OrderService service;
+    @Autowired OrderRepository orders;
+
+    @Test
+    @DisplayName("سفارش ثبت می‌شود و رویداد تولید می‌کند")
+    void placesOrderAndRaisesEvent() {
+        String id = service.place(new PlaceOrderCommand("c-1",
+                List.of(new LineCommand("p-1", 1, new BigDecimal("50000")))));
+
+        assertThat(orders.findById(new OrderId(id))).isPresent();
+        // بررسی اینکه رویداد در outbox ثبت شده
+    }
+}
+</code></pre>
+
+<h3>سطح ۴ — تست انتها‌به‌انتها</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.e2e;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.Duration;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.awaitility.Awaitility.*;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DisplayName("جریان کامل ثبت سفارش")
+class CheckoutEndToEndTest {
+
+    @Autowired TestRestTemplate rest;
+
+    @Test
+    @DisplayName("سفارش ثبت می‌شود، پرداخت می‌شود و موجودی کم می‌شود")
+    void fullCheckoutFlow() {
+        var response = rest.postForEntity(
+                "/api/v1/orders", request("c-1", "p-1", 2, "150000"),
+                OrderCreatedResponse.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(201);
+        String orderId = response.getBody().orderId();
+
+        // پرداخت
+        var payment = rest.postForEntity(
+                "/api/v1/orders/" + orderId + "/payment",
+                null, PaymentResponse.class);
+        assertThat(payment.getBody().outcome()).isEqualTo("PAID");
+
+        // انتظار برای پردازش ناهمگام (انبار)
+        await().atMost(Duration.ofSeconds(10)).untilAsserted(() ->
+                assertThat(rest.getForObject(
+                        "/api/test/stock/p-1", String.class))
+                        .isEqualTo("8"));   // ۱۰ − ۲
+    }
+
+    @Test
+    @DisplayName("اگر درگاه خراب باشد، سفارش ثبت می‌ماند")
+    void orderSurvivesGatewayFailure() {
+        rest.postForEntity("/api/test/control/payment", "DOWN", String.class);
+
+        var response = rest.postForEntity(
+                "/api/v1/orders", request("c-1", "p-1", 1, "50000"),
+                OrderCreatedResponse.class);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(201);
+
+        var payment = rest.postForEntity(
+                "/api/v1/orders/" + response.getBody().orderId() + "/payment",
+                null, PaymentResponse.class);
+        assertThat(payment.getBody().outcome()).isEqualTo("PENDING");
+
+        rest.postForEntity("/api/test/control/payment", "UP", String.class);
+    }
+}
+</code></pre>
+
+<h3>راهبرد در جدول</h3>
+
+<table>
+<thead>
+<tr><th>نوع تست</th><th>چند</th><th>زمان کل</th><th>چه چیزی را نمی‌گیرد</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد (با کلاینت جعلی)</td><td>صدها</td><td>&lt; ۱ ثانیه</td><td>پیکربندی و کشف سرویس</td></tr>
+<tr><td>قرارداد</td><td>ده‌ها</td><td>ثانیه</td><td>رفتار واقعی شبکه</td></tr>
+<tr><td>یکپارچه (Testcontainers)</td><td>ده‌ها</td><td>دقیقه</td><td>همکاری بین سرویس‌ها</td></tr>
+<tr><td>انتها‌به‌انتها</td><td>کم</td><td><strong>زیاد</strong></td><td>همه‌ی حالت‌ها</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی طلایی</span>
+بیشتر منطق باید در <strong>سرویس مصرف‌کننده</strong> و قابل تست با mock باشد. اگر
+منطق شما در API Gateway یا در هماهنگ‌کننده‌ی سرویس‌هاست، آن منطق عملاً غیرقابل تست
+واحد است و کیفیت پایینی خواهد داشت.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<table>
+<thead>
+<tr><th>#</th><th>اشتباه</th><th>چرا اشتباه است؟</th><th>راه درست</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td>تقسیم بر اساس لایه (UI، بیزنس، دیتا)</td><td>این‌ها باید همیشه با هم تغییر کنند</td><td>تقسیم بر اساس دامنه</td></tr>
+<tr><td>۲</td><td>تقسیم بر اساس جدول</td><td>مرزهای مصنوعی و سرویس‌های ریز</td><td>Bounded Context</td></tr>
+<tr><td>۳</td><td>دیتابیس مشترک</td><td>مالکیت داده و استقلال از بین می‌رود</td><td>دیتابیس به‌ازای هر سرویس</td></tr>
+<tr><td>۴</td><td>نداشتن timeout</td><td>درخواست بی‌نهایت منتظر می‌ماند</td><td>timeout روی هر تماس</td></tr>
+<tr><td>۵</td><td>نداشتن Circuit Breaker</td><td>خرابی یک سرویس، بقیه را از کار می‌اندازد</td><td>Resilience4j</td></tr>
+<tr><td>۶</td><td>زنجیره‌ی طولانی فراخوانی</td><td>تأخیر ضرب می‌شود و عیب‌یابی سخت است</td><td>حداکثر ۲ فراخوانی هم‌زمان</td></tr>
+<tr><td>۷</td><td>پیام غیر idempotent</td><td>تحویل حداقل یک‌بار، داده خراب می‌شود</td><td>کلید یکتا یا upsert</td></tr>
+<tr><td>۸</td><td>انتشار رویداد بدون Outbox</td><td>حالت ناسازگار بین دیتابیس و صف</td><td>جدول Outbox</td></tr>
+<tr><td>۹</td><td>نداشتن correlationId</td><td>ردیابی یک درخواست غیرممکن</td><td>از Gateway تا همه سرویس‌ها</td></tr>
+<tr><td>۱۰</td><td>نداشتن مشاهده‌پذیری</td><td>سیستم کور است</td><td>لاگ، متریک، trace از روز اول</td></tr>
+<tr><td>۱۱</td><td>اعتماد به زیرساخت ناموجود</td><td>شکست پروژه</td><td>اول DevOps، بعد میکروسرویس</td></tr>
+<tr><td>۱۲</td><td>نوشتن سیستم جدید از صفر</td><td>شکست قطعی مهاجرت</td><td>Strangler Fig</td></tr>
+</tbody>
+</table>
+
+<h3>نشانه‌های هشدار در کدبیس</h3>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">اگر این‌ها را دیدید، معماری توزیع‌شده به شما آسیب می‌زند</span>
+<ul>
+<li>سرویسی با کمتر از ۵۰ خط کد</li>
+<li><code>SELECT *</code> مستقیم از دیتابیس سرویس دیگر</li>
+<li>زنجیره‌ای که با ۵ فراخوانی هم‌زمان ادامه دارد</li>
+<li>نداشتن <code>timeout</code> در هیچ کلاینت HTTP</li>
+<li>لاگ متنی ساده بدون شناسه‌ی درخواست</li>
+<li>سرویسی که برای اجرا به کل سیستم نیاز دارد</li>
+<li>۱۵۰ سرویس برای یک فروشگاه کوچک</li>
+<li>هیچ تیمی که سرویس دیگری را نتواند تغییر دهد</li>
+</ul>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">بزرگ‌ترین اشتباه: دو گزینه</span>
+وقتی در یک سازمان می‌گویند «ما یا میکروسرویس داریم یا نداریم»، معمولاً یا هر دو
+سیستم دارند (که بدترین حالت است) یا هنوز تصمیم نگرفته‌اند. مسیر درست:
+Modular Monolith → استخراج تدریجی → هدف.
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>نمونه‌های واقعی</h2>
+
+<h3>۱. آمازون — از مونولیت تا صدها سرویس</h3>
+
+<pre class="kl-code" data-lang="text"><code>amazon.com در ۲۰۰۱ یک مونولیت بزرگ داشت.
+۲۰۰۶ تصمیم گرفتند به سمت معماری سرویس‌محور بروند.
+
+نکات کلیدی تجربه‌ی آن‌ها:
+
+• مرزها را از روی «دامنه‌های کسب‌وکار» تعیین کردند، نه لایه‌های فنی
+• در ابتدا ارتباط هم‌زمان (REST) بود؛ بعد به صف پیام رفتند
+• رویداد را «واقعیت» می‌دانند، نه پیام
+• هر سرویس دیتابیس خودش دارد و هیچ‌کس مستقیم به آن نمی‌نویسد
+• برای مهاجرت، هر هفته یک قابلیت از مونولیت جدا می‌شد
+
+درس: مهاجرت ۵ ساله بود. Microservices یک پروژه‌ی تحول است، نه یک تصمیم یک‌شبه.</code></pre>
+
+<h3>۲. نتفلیکس — Microservices امروزی</h3>
+
+<p>
+نتفلیکس امروز بیش از ۱۰۰۰ سرویس دارد و آن‌ها را بیش از ۱۰۰۰ تیم اداره می‌کنند.
+هر تیم مالک کامل سرویس خود است: کد، استقرار، پایش و هشدارها.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>قواعد حاکم بر سازمان نتفلیکس:
+
+• "You build it, you run it" — تیمی که می‌سازد، اجرا هم می‌کند
+• هر سرویس توسط دقیقاً یک تیم مالکیت می‌شود
+• هیچ تیمی اجازه‌ی استقرار در زمان کم‌ترافیک را ندارد (پنجشنبه ممنوع)
+• محدودیت وابستگی: سرویس‌ها سطح ۰، ۱ و ۲ دارند
+    سطح ۰: تیم فقط چیزی می‌سازد که مصرف می‌کند
+    سطح ۱: می‌تواند از سرویس تیم‌های هم‌سطح استفاده کند
+    سطح ۲: می‌تواند از هر سرویسی استفاده کند
+• هر سرویس باید دیتابیس خودش را داشته باشد
+• آزمون یکپارچه‌ی متمرکز برای آن‌ها یک ضدالگو است
+
+درس: Microservices بدون استقلال سازمانی تیمی، فقط هزینه است.</code></pre>
+
+<h3>۳. شرکت هواپیمایی با سرویس پرواز و رزرو</h3>
+
+<pre class="kl-code" data-lang="text"><code>معماری قبلی (مونولیت):
+  یک اپلیکیشن ۳۰۰ هزار خطی + یک دیتابیس
+
+دامنه‌ها شناسایی شد:
+  رزرو      — تعداد زیاد تغییر، حساس به زمان
+  پرواز      — تقریباً ثابت، محاسبات پیچیده
+  مسافر      — تقریباً ثابت
+  فاکتور     — ��رایش و قوانین مالی
+
+سرویس‌های استخراج‌شده:
+  booking-service    → دیتابیس خودش، بیشترین تغییر
+  flight-service     → محاسبات مسیر، بهینه‌سازی
+  passenger-service  → داده‌ی کم‌تغییر
+  invoicing-service  → رویدادمحور
+
+رویدادهای کلیدی:
+  BookingConfirmed → رزرو ساخته شد
+  FlightCancelled  → پرواز لغو شد (جبران خودکار)
+  InvoiceIssued    → فاکتور صادر شد
+
+نتیجه:
+  • هسته‌ی رزرو مستقل شد و تیم خودش را داشت
+  • تغییرات پرواز دیگر ریسک انتشار رزرو ندارند
+  • اما کار تیم بیشتر شد: دو سرویس، دو استقرار، دو هشدار</code></pre>
+
+<h3>۴. فروشگاه اینترنتی — مرز واقعی در برابر مرز جعلی</h3>
+
+<pre class="kl-code" data-lang="text"><code>سؤال: آیا باید سرویس «کاتالوگ» و سرویس «سبد خرید» جدا باشند؟
+
+پاسخ درست: نه، اگر تیم و تغییر یکی است → یک سرویس، دو ماژول.
+سؤال: آیا «پرداخت» باید جدا باشد؟
+پاسخ: بله — چون داده‌ی حساس، مراقبت و پایش متفاوت، و ارزش کار مستقل دارد.
+
+جدول تصمیم:
+  ┌──────────────────┬────────────────┬──────────────────┐
+  │ معیار            │ جدا کن         │ یکی نگه دار      │
+  ├──────────────────┼────────────────┼──────────────────┤
+  │ ریتم تغییر       │ متفاوت         │ یکسان            │
+  │ مالک تیم         │ متفاوت         │ یکسان            │
+  │ داده              │ جدا            │ مشترک            │
+  │ سطح دسترس‌پذیری  │ متفاوت         │ یکسان            │
+  │ محدودیت قانونی   │ دارد            │ ندارد            │
+  └──────────────────┴────────────────┴──────────────────┘
+  اگر پاسخ ۳ مورد اول «جدا» است، سرویس را جدا کن.</code></pre>
+
+<h3>۵. سیستم پرداخت با Outbox و Idempotency</h3>
+
+<pre class="kl-code" data-lang="text"><code>سناریوی واقعی:
+  سرویس سفارش سفارش ثبت می‌کند و رویداد OrderPlaced منتشر می‌کند.
+  گیرنده یک بار پیام را تحویل گرفت، اما قبل از ثبت اثر، کرش کرد.
+
+راه‌حل صنعتی:
+  ۱. ثبت سفارش و ثبت رویداد در یک تراکنش دیتابیس (Outbox)
+  ۲. پروسه‌ی relay، سطرهای Outbox را می‌خواند و به Kafka می‌فرستد
+  ۳. مصرف‌کننده کلید یکتای orderId-eventType را ذخیره می‌کند
+  ۴. اگر تکراری بود، بی‌صدا رد می‌شود
+  نتیجه: تحویل دقیقاً یک‌بار از نظر اثر (effectively-once)</code></pre>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>کارایی</h2>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی بنیادی</span>
+Microservices مسئله‌ی کارایی را حل نمی‌کند؛ معمولاً آن را <strong>بدتر</strong>
+می‌کند. هر فراخوانی شبکه‌ای ۱ تا ۵ میلی‌ثانیه تأخیر پایه دارد و شکست احتمالی
+جداگانه. اگر مشکل شما کندی است، میکروسرویس راه‌حل نیست.
+</div>
+
+<table>
+<thead>
+<tr><th>عامل</th><th>تأثیر</th><th>راه‌حل</th></tr>
+</thead>
+<tbody>
+<tr><td>فراخوانی هم‌زمان زنجیری</td><td>تأخیر ضرب‌شونده</td><td>رویداد به‌جای فراخوانی، موازی‌سازی</td></tr>
+<tr><td>تأخیر شبکه</td><td>۱ تا ۵ میلی‌ثانیه به ازای هر تماس</td><td>هم‌باجی gRPC، محلی‌سازی داده</td></tr>
+<tr><td>سریال‌سازی</td><td>میلی‌ثانیه در برابر میکروثانیه</td><td>باینری (protobuf، Avro)</td></tr>
+<tr><td>پیام تکراری و retry</td><td>۳ برابر ترافیک</td><td>backoff + jitter + circuit breaker</td></tr>
+<tr><td>هدر یا retry بی‌مورد</td><td>بار روی سرویس خراب</td><td>بستن سریع پس از تلاش مجدد</td></tr>
+<tr><td>تجمیع داده در UI</td><td>چند تماس ترتیبی</td><td>تجمیع در Gateway یا BFF</td></tr>
+</tbody>
+</table>
+
+<h3>مثال عددی — تفاوت تماس هم‌زمان و رویدادمحور</h3>
+
+<pre class="kl-code" data-lang="text"><code>صفحه‌ی ثبت سفارش، ۴ اطلاعات لازم دارد:
+  موجودی، قیمت، امتیاز فروشنده، آدرس کاربر
+
+روش الف — فراخوانی هم‌زمان (Fan-out):
+  نمایش ─┬─→ inventory      ۱۲ ms
+         ├─→ pricing        ۱۱ ms
+         ├─→ reputation     ۱۵ ms
+         └─→ user-profile   ۱۰ ms
+  نمایش ──→ aggregate ──→ order-service    ۳۵ ms
+  ───────────────────────────────────────────────
+  زمان کاربر: ۷۳ ms
+
+روش ب — موازی با نمایش فوری و تکمیل ناهمگام:
+  مرحله‌ی ۱ (نمایش): تک‌نمایش فوری      ۱۰ ms
+  مرحله‌ی ۲ (تکمیل): اطلاعات ناقص + بارگذاری مجدد   ۱۵ ms
+  ───────────────────────────────────────────────
+  زمان اولیه‌ی قابل مشاهده: ۱۰ ms
+
+نتیجه: با پذیرش نمایش ناقص، ۷ برابر سریع‌تر دیده می‌شود.
+این جایی است که رویدادمحوری واقعاً ارزش دارد.</code></pre>
+
+<h3>قواعد بهینه‌سازی</h3>
+
+<div class="kl-check">
+<ul>
+<li><strong>مکالمه‌ی شبکه کم، پیام بزرگ:</strong> به‌جای ۱۰ تماس با ۱۰ کاربر، یک تماس با یک DTO کامل</li>
+<li><strong>bulkhead واقعی:</strong> هر وابستگی thread pool جدا؛ بدون آن یک وابستگی کند، همه را می‌بلعاند</li>
+<li><strong>timeout کوتاه:</strong> بیشتر تماس‌ها باید زیر ۵۰۰ میلی‌ثانیه بسته شوند؛ تماس باز، بیشترین ضرر را می‌زند</li>
+<li><strong>circuit breaker:</strong> روی همه‌ی تماس‌های بیرونی اجباری است</li>
+<li><strong>cache محلی:</strong> داده‌ی کم‌تغییر (مثل کاتالوگ) را در سرویس مصرف‌کننده نگه دارید</li>
+<li><strong>جریان ناهمگام:</strong> هر کاری که کاربر منتظرش نیست، باید از مسیر پاسخ خارج شود</li>
+<li><strong>پایش:</strong> بدون متریک، هر بهینه‌سازی حدس و گمان است</li>
+</ul>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>package com.shop.order.integration;
+
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * ترکیب چهار الگوی تاب‌آوری برای یک وابستگی بیرونی.
+ */
+@Component
+public class ResilientInventoryClient {
+
+    private final InventoryHttpClient http;
+
+    public ResilientInventoryClient(InventoryHttpClient http) {
+        this.http = http;
+    }
+
+    @CircuitBreaker(name = "inventory", fallbackMethod = "cachedAvailability")
+    @Retry(name = "inventory")                 // فقط خطای گذرا
+    @TimeLimiter(name = "inventory")           // سقف زمانی
+    @Bulkhead(name = "inventory", type = Bulkhead.Type.THREADPOOL)
+    public CompletableFuture&lt;Availability&gt; check(long productId) {
+        return http.getAvailability(productId);
+    }
+
+    /** اگر سرویس خراب بود، آخرین داده‌ی معتبر را برمی‌گردانیم. */
+    private CompletableFuture&lt;Availability&gt; cachedAvailability(
+            long productId, Throwable cause) {
+        return http.getLastKnownAvailability(productId);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">تله‌ی رایج</span>
+Retry روی خطای ۴۰۴ یا اعتبارسنجی نادرست، بار را ۳ برابر می‌کند بی‌آنکه فایده‌ای
+داشته باشد. فقط خطاهای <strong>گذرا</strong> (timeout، ۵۰۳، قطعی شبکه) را با
+<strong>backoff تصادفی</strong> تکرار کنید.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>سوالات مصاحبه</h2>
+
+<h3>سطح Junior</h3>
+
+<p><strong>سؤال 1 — Microservices چیست و چه فرقی با مونولیت دارد؟</strong></p>
+<p>Microservices یعنی تقسیم سیستم به مجموعه‌ای از سرویس‌های کوچک که هرکدام مستقل اجرا، مستقل مستقر و مستقل در داده هستند. تفاوت اصلی با مونولیت فقط اندازه نیست؛ در استقلال است. در مونولیت، تغییر یک بخش نیازمند کل سیستم است؛ در Microservices، سرویس مربوطه مستقل تغییر، تست و منتشر می‌شود.</p>
+
+<p><strong>سؤال 2 — تفاوت microservice با یک ماژول معمولی در مونولیت چیست؟</strong></p>
+<p>ماژول در مونولیت معمولاً در همان فرایند اجرا می‌شود، دیتابیس مشترک دارد و انتشار آن نیازمند کل سرویس است. Microservice مستقل اجرا می‌شود، پروتکل ارتباطی مشخص دارد و مستقل منتشر می‌شود. مرز کد یکسان است؛ مرز اجرا و داده متفاوت.</p>
+
+<p><strong>سؤال 3 — چه زمانی نباید Microservices بسازید؟</strong></p>
+<p>وقتی تیم کوچک است، محصول تازه و مدل کسب‌وکار هنوز تغییر می‌کند، زیرساخت DevOps ندارید، یا ترافیک و تیم شما آن‌قدر کوچک است که یک برنامه به‌راحتی از پس آن برمی‌آید. در این شرایط Modular Monolith انتخاب بسیار بهتری است.</p>
+
+<p><strong>سؤال 4 — Bounded Context در DDD چه ربطی به Microservices دارد؟</strong></p>
+<p>Bounded Context مرز مدل دامنه است؛ جایی که یک واژه می‌تواند دو معنای متفاوت داشته باشد. Microservice معمولاً نگاشت یک‌به‌یک یا یک‌به‌چند با Bounded Context است. اگر یک سرویس شامل دو Bounded Context باشد، احتمالاً باید به دو سرویس تقسیم شود.</p>
+
+<p><strong>سؤال 5 — تفاوت سرویس stateless و stateful چیست؟</strong></p>
+<p>سرویس stateless هیچ نشستی را در حافظه نگه نمی‌دارد؛ هر درخواست کامل است. این نوع را به‌راحتی می‌توان مقیاس داد و پشت Load Balancer قرار داد. سرویس stateful نشست را در حافظه نگه می‌دارد؛ مقیاس‌پذیری آن سخت است و به Sticky Session یا ذخیره‌سازی بیرونی نشست نیاز دارد. سرویس‌های مایکروسرویس ترجیحاً stateless هستند.</p>
+
+<p><strong>سؤال 6 — timeout چرا حیاتی است؟</strong></p>
+<p>بدون timeout، تماس بین دو سرویس می‌تواند تا ابد منتظر بماند و thread ها را اشغال کند. در بار زیاد این اشغال زنجیره‌ای می‌شود و کل سیستم از کار می‌افتد. timeout یک مرز زمانی مشخص می‌گذارد تا منابع آزاد شوند و فراخوان مقطعی دریافت خطا کند.</p>
+
+<p><strong>سؤال 7 — چرا دیتابیس به‌ازای هر سرویس؟</strong></p>
+<p>چون مالکیت داده را روشن می‌کند. هیچ سرویسی نباید مستقیم جدول سرویس دیگر را بخواند یا بنویسد؛ اگر بتواند، استقلال آن سرویس شکننده می‌شود. داده‌های موردنیاز سرویس دیگر باید از طریق API یا رویداد در اختیارش قرار گیرد، ترجیحاً به‌شکل نسخه‌ی محلی و فقط‌خواندنی برای پرهیز از تماس در هر درخواست.</p>
+
+<p><strong>سؤال 8 — تفاوت REST، gRPC و پیام‌سازی چیست؟</strong></p>
+<p>REST ساده و همه‌جا در دسترس است اما کارایی پایین‌تری دارد. gRPC بر پایه‌ی protobuf است، باینری و سریع، و برای ارتباط داخلی مناسب است ولی در مرورگر و دیوارهای سازمانی گاهی مشکل‌ساز می‌شود. پیام‌سازی برای کارهای ناهمگام و غیرهم‌زمان مناسب است و مزیت اصلی آن تحمل خطا و مقاومت است.</p>
+
+<p><strong>سؤال 9 — چه زمانی از پیام‌سازی به‌جای فراخوانی مستقیم استفاده کنیم؟</strong></p>
+<p>وقتی مصرف‌کننده به نتیجه‌ی فوری نیاز ندارد، وقتی می‌خواهیم سرویس‌ها را مستقل از هم مقیاس دهیم، وقتی می‌خواهیم کاری را به چند مصرف‌کننده برسانیم، و وقتی نیاز به تحمل خطا و تحویل دوباره داریم. در مقابل، وقتی کاربر منتظر نتیجه است، فراخوانی هم‌زمان ساده‌تر است.</p>
+
+<p><strong>سؤال 10 — چطور یک سرویس را مستقل مستقر می‌کنید؟</strong></p>
+<p>هر سرویس مخزن و خط لوله‌ی CI خودش را دارد. استقرار باید backward-compatible باشد: نسخه‌ی جدید را کنار نسخه‌ی قبلی بالا می‌آورید، ترافیک را جابه‌جا می‌کنید و اگر مشکلی بود برمی‌گردید. اسکیمای پیام هم باید سازگار بماند تا مصرف‌کننده‌های قدیمی نشکنند.</p>
+
+<p><strong>سؤال 11 — چه ابزارهایی در اکوسیستم لازم است؟</strong></p>
+<p>حداقل: یک ابزار Orchestration مثل Kubernetes، یک سیستم پیام مثل Kafka یا RabbitMQ، ابزار پیکربندی مرکزی، ابزار observability مثل Prometheus و Grafana، و یک ابزار مدیریت اسکریم. در سطح پیشرفته‌تر Service Mesh و CI/CD خودکار هم لازم می‌شود.</p>
+
+<h3>سطح Mid</h3>
+
+<p><strong>سؤال 12 — Saga چیست و چرا ACID کافی نیست؟</strong></p>
+<p>ACID روی یک دیتابیس کار می‌کند. در چند سرویس با دیتابیس جدا، تراکنش توزیع‌شده یعنی ۲PC که کارایی و دسترس‌پذیری را به‌شدت کاهش می‌دهد. Saga به‌جای یک تراکنش بزرگ، زنجیره‌ای از تراکنش‌های محلی است که هرکدام رویدادی منتشر می‌کند و در صورت شکست، تراکنش‌های قبلی با عملیات جبرانی خنثی می‌شوند.</p>
+
+<p><strong>سؤال 13 — Saga در دو نوع Choreography و Orchestration</strong></p>
+<p>در Choreography، سرویس‌ها به رویدادها گوش می‌دهند و خودشان تصمیم می‌گیرند؛ هیچ مرکز فرمانی وجود ندارد. مزیت: کم‌جفتگی و افزودن سرویس جدید آسان. عیب: جریان کار در کل سیستم پخش است و دیباگ سخت می‌شود. در Orchestration، یک سرویس هماهنگ‌کننده مراحل را مدیریت می‌کند؛ جریان شفاف‌تر و خطایابی آسان‌تر است، اما آن سرویس به همان اندازه‌ی دیگران نقطه‌ی قوت و ضعف دارد.</p>
+
+<p><strong>سؤال 14 — مشکل Dual Write چیست و راه‌حل آن؟</strong></p>
+<p>اگر در یک درخواست هم دیتابیس را بنویسید هم پیام را منتشر کنید، یکی از این دو ممکن است موفق و دیگری شکست بخورد. حالت ناسازگار پایدار ایجاد می‌شود. راه‌حل: الگوی Outbox. رویداد را در همان تراکنش دیتابیس ذخیره می‌کنید، سپس یک پروسه‌ی جداگانه آن را منتشر می‌کند. تضمین می‌شود رویداد هرگز گم نمی‌شود.</p>
+
+<p><strong>سؤال 15 — Idempotency چیست و چگونه پیاده می‌شود؟</strong></p>
+<p>یعنی اجرای دوباره‌ی یک عملیات، همان اثر یک بار اجرا را داشته باشد. در مصرف‌کننده‌ی پیام، کلید یکتای شناسه‌ی پیام را در جدولی ثبت می‌کنید و اگر قبلاً دیده شده، بی‌صدا رد می‌شود. این تنها راه مقابله با تحویل دوباره است، چون تضمین exactly-once در شبکه وجود ندارد.</p>
+
+<p><strong>سؤال 16 — Circuit Breaker چگونه کار می‌کند؟</strong></p>
+<p>سه حالت دارد: بسته یعنی تماس عادی؛ باز یعنی خطا زیاد بوده و تماس‌ها رد می‌شوند تا سرویس پایین بیاید؛ نیمه‌باز یعنی چند تماس آزمایشی برای سنجش وضعیت فرستاده می‌شود. اگر موفق باشند به حالت بسته برمی‌گردد. فایده‌اش این است که سرویس سالم، منابعش را صرف سرویس مرده نمی‌کند و پاسخ سریع می‌دهد.</p>
+
+<p><strong>سؤال 17 — Bulkhead چه تفاوتی با Circuit Breaker دارد؟</strong></p>
+<p>Circuit Breaker تصمیم می‌گیرد اصلاً تماس بگیریم یا نه. Bulkhead تصمیم می‌گیرد با چه منابعی تماس بگیریم؛ یعنی هر وابستگی منابع خودش را دارد. اگر سرویس پرداخت کند شود و thread pool آن پر شود، سرویس کاتالوگ که pool جدا دارد همچنان سالم می‌ماند. ترکیب این دو الگو پایداری سیستم را چند برابر می‌کند.</p>
+
+<p><strong>سؤال 18 — چطور در سیستم توزیع‌شده ردیابی می‌کنید؟</strong></p>
+<p>با تولید یک شناسه‌ی یکتا در بدو ورود در Gateway و انتقال آن در هدر به همه‌ی تماس‌های بعدی. با این کار تمام گزارش‌های مربوط به یک درخواست قابل اتصال می‌شوند. ابزارهایی مثل OpenTelemetry و Jaeger این رد را به‌شکل یک نمای درختی از اجرای سرویس‌ها نشان می‌دهند.</p>
+
+<p><strong>سؤال 19 — چه چیزی درباره‌ی نسخه‌بندی API باید بدانید؟</strong></p>
+<p>در API داخلی، نسخه‌بندی کمتر لازم است چون همه‌ی مصرف‌کننده‌ها را خودتان کنترل می‌کنید؛ کافی است تغییر را backward-compatible نگه دارید. در API عمومی نسخه‌بندی اجباری است و باید سیاست روشن دوره‌گردانی و تاریخ حذف داشته باشید. افزودن فیلد معمولاً سازگار است، اما حذف فیلد یا تغییر نوع آن نیست.</p>
+<h3>سطح Senior</h3>
+
+<p><strong>سؤال 20 — چگونه از تخریب یک سرویس جلوگیری می‌کنید؟</strong></p>
+<p>اول با مقاومت‌سازی شروع می‌کنیم: timeout کوتاه روی همه‌ی تماس‌ها، circuit breaker، bulkhead، retry با backoff تصادفی فقط برای خطاهای گذرا، و در نهایت fallback که به‌جای خطا یک پاسخ کاهش‌یافته برمی‌گرداند. دوم کاری می‌کنیم که دامنه‌ی خرابی محدود بماند: صف پیام به‌جای تماس هم‌زمان، صفچینگ در ورودی، و مستقل بودن داده‌ی هر سرویس. سوم با مشاهده‌پذیری و هشدار دقیق، خرابی را پیش از گسترش می‌بینیم.</p>
+
+<p><strong>سؤال 21 — چطور از مهاجرت یک سرویس بزرگ مطمئن شویم؟</strong></p>
+<p>هرگز Big Bang نداریم. با Strangler Fig از یک مسیر کم‌خطر شروع می‌کنیم، مثلاً مسیر خواندن کم‌حجم. پرچم ویژگی پشت یک مسیر می‌گذاریم، سرویس جدید را در سایه اجرا می‌کنیم و خروجی آن را با خروجی قدیمی مقایسه می‌کنیم. درصد ترافیک را مرحله‌به‌مرحله بالا می‌بریم و در هر مرحله معیار عددی مثل نرخ خطا و زمان پاسخ را می‌سنجیم. معماری را برای بازگشت سریع آماده نگه می‌داریم، چون بازگشت باید یک تغییر کوچک باشد نه یک پروژه.</p>
+
+<p><strong>سؤال 22 — درباره‌ی تراکنش توزیع‌شده چه رویکردی دارید؟</strong></p>
+<p>به‌جای دو فاز که سردستی و کارایی دارد، Saga ترجیح می‌دهم: تراکنش‌های محلی با جبران. دو فاز را فقط وقتی استفاده می‌کنم که شرکت‌کننده‌ها کم و پایدار باشند و منابع قفل‌شدن کوتاه باشد. مهم‌تر از همه، طراحی می‌کنم که عملیات جبرانی همیشه اجرا شود، حتی وقتی خود سرویس پرداخت خراب است؛ برای همین جبران را در صف جداگانه می‌گذارم و برای آن هم retry و هشدار دارم.</p>
+
+<p><strong>سؤال 23 — چگونه تضمین می‌کنید که مهاجرت پیام، مصرف‌کننده‌های قدیمی را نشکند؟</strong></p>
+<p>قرارداد را تست می‌کنم: تولیدکننده قرارداد را ذخیره می‌کند و مصرف‌کننده در خط لوله‌ی خودش آن را با کلاینت واقعی مقایسه می‌کند. قوانین سخت‌گیرانه دارم: فیلد جدید اختیاری، فیلد قدیمی هرگز حذف نمی‌شود مگر پس از حذف کامل مصرف‌کننده‌ی قدیمی، و نسخه‌ی قرارداد در نام رویداد قرار می‌گیرد. تغییر ناسازگار بدون مهاجرت دوسطه‌ای قابل‌قبول نیست.</p>
+
+<p><strong>سؤال 24 — چطور هزینه‌ی عملیاتی Microservices را کاهش می‌دهید؟</strong></p>
+<p>اول از همه تعداد سرویس را کم می‌کنم؛ سرویس ریز فقط دردسر است. سرویس‌ها را بر اساس مالکیت داده مرز می‌کنم نه بر اساس اندازه‌ی کد. استقرار را یکنواخت می‌کنم تا ابزارها عمومی باشند: یک الگوی مشترک برای لاگ، متریک، trace و پیکربندی. قالب‌های آماده‌ی سرویس و یک اسکلت مشترک، کار تیم‌های جدید را چند برابر کوتاه‌تر می‌کند. خودکارسازی کامل استقرار و پایش، هزینه‌ی انسانی را کاهش می‌دهد. در نهایت معیارم سادگی است: هر چیزی که نتوان توضیحش داد یا کسی مالکش نیست، باید حذف شود.</p>
+
+<p><strong>سؤال 25 — در طراحی Microservice، ترتیب اولویت شما چیست؟</strong></p>
+<p>اول مرزها: تا دامنه روشن و قابل‌دفاع نباشد، هیچ تصمیم دیگری معتبر نیست. دوم قراردادها و سازگاری رو به عقب، چون شکست آن‌ها در محیط مستقل و نامنسجم بسیار گران است. سوم مشاهده‌پذیری از روز اول، چون بدون آن عیب‌یابی در سیستم توزیع‌شده غیرممکن است. چهارم تاب‌آوری: timeout، circuit breaker و bulkhead. پنجم مدل داده و مالکیت داده. و ششم قرارداد تیمی؛ چون بدون تیم‌های مستقل، Microservices تنها هزینه است بدون فایده.</p>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>سوالات متداول</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">آیا Microservices همیشه بهتر است؟</span>
+<p>نه. Microservices یک تصمیم اقتصادی و سازمانی است، نه یک برتری فنی مطلق. هزینه‌های آن شامل زیرساخت، پیچیدگی عملیات، دشواری عیب‌یابی و کندی توسعه در مقایسه با مونولیت است. این هزینه‌ها فقط وقتی توجیه می‌شوند که تعداد تیم‌ها و سرعت تغییر از حد مشخصی عبور کرده باشد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تفاوت Microservices با Service-Oriented Architecture چیست؟</span>
+<p>SOA عبارت گسترده‌ای است که دهه‌ها قبل برای یکپارچه‌سازی سازمانی با سرویس‌های درشت و قراردادهای سفت (WSDL) مطرح شد. Microservices نسخه‌ی سبک و مدرن آن است: سرویس‌های کوچک، قرارداد سبک، مالکیت مستقل داده و مستقل از فناوری. هر Microservice یک SOA است، اما هر SOA لزوماً Microservice نیست.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">آیا هر سرویس باید دیتابیس جدا داشته باشد؟</span>
+<p>این یک قاعده‌ی سخت نیست، اما استثنای آن مهم است. اگر دو سرویس به‌طور دائم به جدول‌های یکدیگر نیاز دارند، عملاً یک سرویس هستند و بهتر است ادغام شوند. راه عملی میانه: هر سرویس دیتابیس منطقی خودش را دارد که کسی بیرون از آن مستقیم نمی‌نویسد، و یک نسخه‌ی فقط‌خواندنی از داده‌ی موردنیاز در اختیار مصرف‌کننده قرار می‌گیرد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">Monolith First یعنی چه؟</span>
+<p>یعنی عمداً از ابتدا با یک Modular Monolith شروع کنید و ماژول‌ها را با مرزهای روشن بسازید. وقتی واقعاً به مرز مستقل نیاز پیدا کردید، همان ماژول را بدون بازنویسی به سرویس تبدیل کنید. مزیت این رویکرد آن است که از هزینه‌ی توزیع از روز اول پرداخت نمی‌کنید، ولی در عین حال مسیر مهاجرت باز می‌ماند.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چه زمانی باید از Microservices به سمت سرویس‌های درشت‌تر برگردیم؟</span>
+<p>وقتی تعداد سرویس‌ها زیاد و بی‌مورد شده، وقتی مرزها مبهم شده و سرویس‌ها دائماً هم را صدا می‌زنند، وقتی استقرار و پایش از خود محصول مهم‌تر شده، یا وقتی تیم‌ها نمی‌توانند سرویس مستقل خود را بدون هماهنگی تغییر دهند. ادغام سرویس‌های به‌شدت وابسته یک تصمیم سالم است، نه عقب‌گرد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">API Gateway چه تفاوتی با BFF دارد؟</span>
+<p>API Gateway یک لایه‌ی مشترک برای همه‌ی مسیریابی، احراز هویت و سیاست‌گذاری است. BFF یا Backend for Frontend یک نمونه‌ی اختصاصی برای هر نوع کلاینت است؛ مثلاً یکی برای اپ موبایل و یکی برای وب. اگر کلاینت‌های شما نیازهای متفاوت و پرحجم دارند، BFF بهتر است چون پاسخ‌ها را بهینه برای همان کلاینت می‌سازد. البته BFF را به‌عنوان Anti-Pattern BFF باید از آن پرهیز کرد، مخصوصاً وقتی منطق دامنه در آن جا می‌افتد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چگونه از قطع سرویس در زمان استقرار جلوگیری کنیم؟</span>
+<p>با استقرار تدریجی: نسخه‌ی جدید را کنار قبلی بالا می‌آورید، سلامت آن را می‌سنجید، ترافیک را جابه‌جا می‌کنید و در صورت مشکل برمی‌گردید. الگوهای شناخته‌شده شامل Rolling Update، Blue-Green و Canary هستند. مهم این است که نسخه‌ی جدید با نسخه‌ی قبلی و با مصرف‌کننده‌های قدیمی سازگار باشد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">Event Sourcing و Microservices چه ارتباطی دارند؟</span>
+<p>Event Sourcing رویکردی است که وضعیت را به‌صورت توالی رویداد نگه می‌دارد. این با معماری رویدادمحور Microservices هم‌راستا است و تاریخچه‌ی کامل و بازسازی‌پذیر می‌دهد. اما Event Sourcing پیچیدگی زیادی دارد: نیاز به مدیریت نسخه‌بندی رویداد، مدیریت همزمانی و ابزار دیدن وضعیت فعلی. برای بیشتر سیستم‌ها، دیتابیس فعلی به‌همراه رویدادهای دامنه کافی و بسیار کم‌هزینه‌تر است.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">رابطه‌ی CQRS با Microservices چیست؟</span>
+<p>هر دو مفهوم مستقل هستند اما اغلب با هم به‌کار می‌روند. CQRS جداسازی مدل نوشتن از مدل خواندن است و Microservices جداسازی مرزهای اجرایی. CQRS در یک سرویس هم قابل پیاده‌سازی است؛ لازم نیست حتماً مدل خواندن و نوشتن در دو سرویس باشند. ترکیب بی‌دلیل این دو، پیچیدگی زیادی بدون فایده‌ی روشن می‌سازد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چطور داده را بین سرویس‌ها منتقل کنیم؟</span>
+<p>سه راه اصلی: فراخوانی هم‌زمان API هنگام نیاز به داده‌ی تازه و فوری؛ پیام‌رسانی وقتی داده فقط باید برسد و زمان‌بندی مهم نیست؛ و تکرار ناهمگام وقتی می‌خواهیم مصرف‌کننده بدون تماس در هر درخواست کار کند. روش سوم سریع‌تر است اما داده را کهنه می‌کند، پس باید تاریخ انقضای داده و رفتار هنگام کهنگی را صریح تعریف کنید.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">آیا هر سرویس باید فناوری جداگانه داشته باشد؟</span>
+<p>این یکی از جذاب‌ترین و در عین حال خطرناک‌ترین ادعاها در دنیای Microservices است. هر سرویس جداگانه فناوری خودش دارد در تئوری آزادی می‌دهد، اما در عمل سطح مهارت موردنیاز، هزینه‌ی نگهداری و سربار هماهنگی را چند برابر می‌کند. در عمل بهتر است فناوری اصلی سازمان یکسان بماند و تفاوت‌ها فقط جایی مجاز باشند که واقعاً ارزش عملی دارد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">Service Mesh چیست و چه زمانی لازم است؟</span>
+<p>Service Mesh یک لایه‌ی زیرساختی است که ارتباط بین سرویس‌ها را مدیریت می‌کند: رمزنگاری، retry، مشاهده‌پذیری و مسیریابی بدون تغییر کد برنامه. معمولاً با Sidecar پیاده می‌شود، مثلاً Envoy. وقتی لازم است که سیاست‌ها به‌صورت یکنواخت و بدون دست‌زدن به کد اعمال شوند و تعداد سرویس‌ها زیاد باشد ارزشمند است. برای یک سرویس یا دو، پیچیدگی اضافه است.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چطور مصرف رویداد را در برابر پیام تکراری مقاوم کنیم؟</span>
+<p>هر پیام یک شناسه‌ی یکتا دارد. مصرف‌کننده پیش از انجام اثر، این شناسه را در یک جدول اختصاصی ثبت می‌کند. اگر شناسه از قبل وجود داشت، پیام را بدون انجام دوباره‌ی اثر رد می‌کند. این الگو Idempotent Consumer است و در عمل جایگزین قابل‌اعتماد برای تحویل دقیقاً یک‌بار محسوب می‌شود.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">مهم‌ترین مهارتی که برای Microservices لازم داریم چیست؟</span>
+<p>نه فریم‌ورک و نه زبان. مهم‌ترین مهارت، طراحی مرزها و درک هزینه‌ی هر تصمیم است. توانایی اینکه بدانید چه چیزی باید یکی بماند و چه چیزی باید جدا شود، صدها برابر از دانستن جزئیات یک ابزار خاص اهمیت دارد. در کنار آن، مهارت‌های عملیاتی مثل مشاهده‌پذیری و عیب‌یابی شبکه هم عملاً ضروری هستند.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">آیا می‌توان از دیتابیس یک سرویس مستقیم پرسید؟</span>
+<p>از نظر فنی بله، از نظر معماری نه. این کار مرزها را نامرئی می‌کند و باعث می‌شود تغییر اسکیمای یک سرویس، سرویس دیگری را بشکند. اگر مجبورید (مثلاً برای گزارش‌گیری سنگین) از دسترسی فقط‌خواندنی به یک انبار داده استفاده کنید، حداقل مطمئن شوید که این یک استثنای مستند و محدود است و در طراحی کلی نقشی جزیفی ندارد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">چه زمانی داده‌ی تکرارشده به مشکل می‌خورد؟</span>
+<p>وقتی دو نمایش از یک واقعیت هم‌زمان تغییر کنند و هر دو در سرویس‌های جدا ذخیره شوند. آن‌وقت باید منبع حقیقت را تعیین کنید و قانون حل تعارض را صریح بنویسید. اگر کسب‌وکار شما به سازگاری فوری نیاز دارد، تکرار ناهمگام انتخاب درستی نیست؛ باید به فراخوانی هم‌زمان یا یک سرویس مرجع واحد تکیه کنید.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">مونولیت ماژولار چه زمانی به Microservices تبدیل می‌شود؟</span>
+<p>سه نشانه‌ی روشن وجود دارد: تیم‌های متعدد که برای تغییر یک بخش ناچار به هماهنگی مداوم می‌شوند، مستقل‌سازی بخش‌هایی که رشد متفاوت دارند، و نیاز به مقیاس‌پذیری مستقل یا استقرار مستقل در یک ناحیه‌ی مشخص. اگر هیچ‌کدام را ندارید، تبدیل زودهنگام فقط هزینه می‌سازد.</p>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">خطایابی در Microservices چگونه انجام می‌شود؟</span>
+<p>با سه ابزار که با هم کار می‌کنند: لاگ ساختاریافته با شناسه‌ی همبستگی، متریک برای دیدن روند نرخ خطا و زمان پاسخ، و Trace توزیع‌شده برای دیدن مسیر درخواست بین سرویس‌ها. بدون این سه، عیب‌یابی یعنی حدس زدن از روی چندین سرور. ساخت این زیرساخت را به تعویق نیندازید؛ از اولین سرویس باید وجود داشته باشد.</p>
+</div>
+</section>
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet</h2>
+
+<table>
+<thead>
+<tr><th>مفهوم</th><th>تعریف کوتاه</th><th>نکته‌ی کلیدی</th></tr>
+</thead>
+<tbody>
+<tr><td>سرویس مستقل</td><td>واحد اجرایی جدا با استقرار جدا</td><td>پایه‌ی همه چیز</td></tr>
+<tr><td>Bounded Context</td><td>مرز مدل دامنه</td><td>مبنای تقسیم سرویس</td></tr>
+<tr><td>Modular Monolith</td><td>مونولیت با مرزهای ماژولی</td><td>پلشگاه خوب</td></tr>
+<tr><td>Database per Service</td><td>مالکیت کامل داده توسط هر سرویس</td><td>مستقل‌سازی را می‌سازد</td></tr>
+<tr><td>API Gateway</td><td>نقطه‌ی ورود واحد</td><td>مسیریابی و سیاست</td></tr>
+<tr><td>BFF</td><td>Backend اختصاصی هر کلاینت</td><td>وقتی کلاینت‌ها متفاوت‌اند</td></tr>
+<tr><td>Service Discovery</td><td>یافتن آدرس سرویس‌ها در زمان اجرا</td><td>DNS یا Consul یا Service Mesh</td></tr>
+<tr><td>Sidecar</td><td>پراکسی همراه هر سرویس</td><td>نمونه‌ی Envoy</td></tr>
+<tr><td>Service Mesh</td><td>لایه‌ی مدیریت ارتباط بین سرویس‌ها</td><td>سیاست مرکزی بدون تغییر کد</td></tr>
+<tr><td>Saga</td><td>تراکنش توزیع‌شده با جبران</td><td>جایگزین ۲PC</td></tr>
+<tr><td>Compensation</td><td>عملیات معکوس یک گام</td><td>لازم در همه‌ی Sagaها</td></tr>
+<tr><td>Outbox</td><td>ذخیره‌ی رویداد در همان تراکنش دیتابیس</td><td>رفع Dual Write</td></tr>
+<tr><td>Idempotency</td><td>اثر یکسان از اجرای دوباره</td><td>با کلید یکتا</td></tr>
+<tr><td>At-least-once</td><td>پیام حداقل یک‌بار تحویل می‌شود</td><td>واقعیت شبکه</td></tr>
+<tr><td>Circuit Breaker</td><td>قطع تماس با سرویس خراب</td><td>سه حالت: بسته، باز، نیمه‌باز</td></tr>
+<tr><td>Bulkhead</td><td>جداسازی منابع هر وابستگی</td><td>جلوگیری از آبشار خرابی</td></tr>
+<tr><td>Timeout</td><td>سقف زمانی یک تماس</td><td>اجباری روی همه‌ی تماس‌ها</td></tr>
+<tr><td>Retry + Backoff</td><td>تلاش مجدد با فاصله‌ی فزاینده</td><td>فقط برای خطای گذرا</td></tr>
+<tr><td>Correlation ID</td><td>شناسه‌ی ردیابی درخواست</td><td>از Gateway تا همه سرویس‌ها</td></tr>
+<tr><td>OpenTelemetry</td><td>استاندارد جمع‌آوری trace و متریک</td><td>پایه‌ی مشاهده‌پذیری</td></tr>
+<tr><td>Strangler Fig</td><td>مهاجرت تدریجی از مونولیت</td><td>کم‌ریسک‌ترین مسیر</td></tr>
+<tr><td>Canary</td><td>انتشار تدریجی درصدی</td><td>سنجش با معیار عددی</td></tr>
+<tr><td>Blue-Green</td><td>دو محیط کامل و جابه‌جایی ترافیک</td><td>بازگشت فوری</td></tr>
+<tr><td>Eventual Consistency</td><td>همگرایی داده در طول زمان</td><td>هزینه‌ی جداسازی</td></tr>
+<tr><td>Anti-Corruption Layer</td><td>محافظت از مدل در برابر مدل بیرونی</td><td>لایه‌ی ترجمه</td></tr>
+<tr><td>Health Check</td><td>بررسی سلامت سرویس</td><td>پایه‌ی خودترمیمی</td></tr>
+<tr><td>Testcontainers</td><td>زیرساخت واقعی در تست</td><td>برای تست یکپارچه</td></tr>
+<tr><td>Contract Testing</td><td>تست سازگاری API</td><td>ضامن تغییرات امن</td></tr>
+<tr><td>Backpressure</td><td>محدود کردن فشار روی مصرف‌کننده</td><td>با صفچینگ</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>نقشه‌ی راه</h2>
+
+<h3>مرحله ۱ — بنیاد (هفته ۱ تا ۲)</h3>
+<ul>
+<li>شناخت دامنه و استخراج Bounded Context‌ها</li>
+<li>نوشتن یک سند کوتاه که در آن برای هر زمینه مالک، داده و قرارداد مشخص باشد</li>
+<li>آماده‌سازی زیرساخت پایه: مخزن Git، خط لوله‌ی CI، لاگ ساختاریافته، متریک و trace</li>
+<li>ساخت اسکلت مشترک سرویس برای کاهش زمان راه‌اندازی تیم‌های بعدی</li>
+</ul>
+
+<h3>مرحله ۲ — یک سرویس واقعی (هفته ۳ تا ۵)</h3>
+<ul>
+<li>استخراج یک قابلیت کم‌ریسک از مونولیت با Strangler Fig</li>
+<li>پیاده‌سازی کامل زنجیره‌ی تاب‌آوری: timeout، circuit breaker، bulkhead</li>
+<li>راه‌اندازی داشبورد مشاهده‌پذیری و هشدار برای همان یک سرویس</li>
+<li>افزودن تست قرارداد برای مرز سرویس</li>
+</ul>
+
+<h3>مرحله ۳ — پیام‌رسانی و دوام (هفته ۶ تا ۸)</h3>
+<ul>
+<li>راه‌اندازی صف پیام و تعریف قرارداد رویداد</li>
+<li>پیاده‌سازی Outbox و مصرف‌کننده‌ی idempotent</li>
+<li>اجرای یک جریان کامل با Saga و عملیات جبرانی</li>
+<li>افزودن داشبورد مصرف پیام و هشدار برای پیام‌های دفن‌شده</li>
+</ul>
+
+<h3>مرحله ۴ — مقیاس‌پذیری و انتشار (هفته ۹ تا ۱۲)</h3>
+<ul>
+<li>استقرار خودکار با Canary و معیار توقف خودکار</li>
+<li>تنظیم rate limit و page chunk در مرز سرویس</li>
+<li>آزمون بار و شناسایی گلوگاه‌های شبکه</li>
+<li>تمرین بازیابی از خرابی و مستندسازی نتیجه</li>
+</ul>
+
+<h3>مرحله ۵ — سازمان و استاندارد (هفته ۱۳ به بعد)</h3>
+<ul>
+<li>تعریف قرارداد تیمی: مالکیت سرویس، ساعت پاسخ‌گویی، مسیر ارتقا</li>
+<li>کاتالوگ سرویس‌ها به‌همراه مستندات و مالک هر سرویس</li>
+<li>بازبینی دوره‌ای معماری و حذف سرویس‌های بی‌مصرف</li>
+<li>آموزش تیم‌ها در عیب‌یابی توزیع‌شده</li>
+</ul>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">جمع‌بندی</span>
+<p>
+Microservices یعنی تبدیل مسئله‌ی کد به مسئله‌ی سازمان. ارزش آن از مرزهای
+روشن، تیم‌های مستقل و سرعت تغییر می‌آید، نه از تعداد سرویس‌ها. هزینه‌اش را هم
+باید پذیرفت: پیچیدگی عملیات، تأخیر شبکه، سختی عیب‌یابی و هزینه‌ی زیرساخت.
+</p>
+<p>
+اگر این هزینه‌ها را نپذیرفته‌اید، Modular Monolith انتخاب درست‌تری است و هیچ
+اشکالی ندارد. اما اگر پذیرفته‌اید، باید آن را کامل انجام دهید: نیمی از راه
+میکروسرویس، بدترین حالت ممکن است، چون هزینه را پرداخت کرده‌اید اما هیچ سودی
+نبرده‌اید.
+</p>
+<p>
+اگر قرار است امروز تصمیم بگیرید، با یک Modular Monolith شروع کنید، مرزها را از
+روز اول جدی بگیرید، مشاهده‌پذیری را کامل بسازید و اولین سرویس را فقط وقتی
+استخراج کنید که دلیل روشنی برای جدایی دارید. بقیه‌اش در پیش است.
+</p>
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی مونولیت به سقف می‌رسد</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Microservices چیست؟ (تعریف دقیق)</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: تجزیه‌ی دامنه</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">انواع سرویس و مرزها</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">ساختار معماری</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: فروشگاه</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">داده‌ی جدا و تراکنش توزیع‌شده</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی مونولیت به سقف می‌رسد</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Microservices چیست؟ (تعریف دقیق)</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: تجزیه‌ی دامنه</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">انواع سرویس و مرزها</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">ساختار معماری</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مثال عملی کامل: فروشگاه</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">داده‌ی جدا و تراکنش توزیع‌شده</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

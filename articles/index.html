@@ -124,7 +124,7 @@
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">📚</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۱۲</span>
+        <span class="posts-stat-value">۲۳</span>
         <span class="posts-stat-label">مقاله منتشرشده</span>
       </div>
     </div>
@@ -138,7 +138,7 @@
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">⏱</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۵۰۲</span>
+        <span class="posts-stat-value">۱۱۴۲</span>
         <span class="posts-stat-label">دقیقه مطالعه</span>
       </div>
     </div>
@@ -174,11 +174,11 @@
     </div>
 
     <div class="tags-filter" id="articles-filters" role="group" aria-label="فیلتر بر اساس موضوع">
-      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۱۲</span></button>
+      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۲۳</span></button>
       <button type="button" class="tag-btn" data-filter="kotlin" data-label="کاتلین و هم‌زمانی" aria-pressed="false">کاتلین و هم‌زمانی <span class="chip-count" data-count="kotlin">۴</span></button>
       <button type="button" class="tag-btn" data-filter="android" data-label="اندروید و کامپوز" aria-pressed="false">اندروید و کامپوز <span class="chip-count" data-count="android">۴</span></button>
-      <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۷</span></button>
-      <button type="button" class="tag-btn" data-filter="performance" data-label="پرفورمنس و حافظه" aria-pressed="false">پرفورمنس و حافظه <span class="chip-count" data-count="performance">۱</span></button>
+      <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۱۸</span></button>
+      <button type="button" class="tag-btn" data-filter="performance" data-label="پرفورمنس و حافظه" aria-pressed="false">پرفورمنس و حافظه <span class="chip-count" data-count="performance">۲</span></button>
       <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۴</span></button>
     </div>
   </div>
@@ -186,18 +186,342 @@
   <!-- ================= Results bar ================= -->
   <div class="posts-results">
     <h2 class="section-title">مقالات منتشرشده</h2>
-    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۱۲ مقاله</p>
+    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۲۳ مقاله</p>
   </div>
 
   <!-- ================= Articles grid ================= -->
   <main class="posts-container">
     <div class="posts-grid" id="articles-grid">
 
-      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="12" data-minutes="55" data-featured="true">
-        <a class="post-card-link" href="hexagonal-architecture.html">
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="23" data-minutes="65" data-featured="true">
+        <a class="post-card-link" href="microservices-architecture.html">
           <div class="post-card-head">
             <span class="post-cat">معماری نرم‌افزار</span>
             <span class="post-badge">جدیدترین</span>
+          </div>
+          <h3 class="post-title">Microservices چیست؟ آموزش کامل معماری سرویس‌محور با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            از تعریف Bounded Context تا مرزهای واقعی سرویس، API Gateway، دیتابیس به‌ازای هر
+            سرویس، Saga و الگوی Outbox، Circuit Breaker و Bulkhead، مهاجرت تدریجی با
+            Strangler Fig، تست چهار سطحی و ۲۵ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۶۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/microservices-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Microservices</li>
+              <li class="post-tag">#Saga</li>
+              <li class="post-tag">#Outbox</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="22" data-minutes="60" data-featured="true">
+        <a class="post-card-link" href="cqrs-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">CQRS چیست؟ آموزش کامل Command Query Responsibility Segregation با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            جدا کردن مدل نوشتن از مدل خواندن؛ اصل CQS و چهار سطح CQRS، Read Model تخت با
+            فیلدهای محاسبه‌شده، پروژکشن idempotent، مدیریت سازگاری نهایی، بازسازی Read Model و
+            پایش lag، پیاده‌سازی کامل Java 21 با Spring، تست و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۶۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/cqrs-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#CQRS</li>
+              <li class="post-tag">#ReadModel</li>
+              <li class="post-tag">#Projection</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="21" data-minutes="60" data-featured="true">
+        <a class="post-card-link" href="event-driven-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">Event Driven Architecture چیست؟ آموزش کامل Event-Driven با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            ارتباط سرویس‌ها با رویداد به‌جای فراخوانی؛ Domain Event و Integration Event،
+            الگوی Outbox و تحویل Effectively-once، idempotency و Dead Letter Queue،
+            Saga و جبران خطا، پیاده‌سازی کامل Java 21 با Kafka و پایش lag و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۶۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/event-driven-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#EDA</li>
+              <li class="post-tag">#Kafka</li>
+              <li class="post-tag">#Outbox</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="20" data-minutes="55" data-featured="true">
+        <a class="post-card-link" href="feature-based-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">Feature Based Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            سازماندهی کد بر اساس قابلیت کسب‌وکار به‌جای لایه؛ برش عمودی در برابر افقی،
+            قواعد visibility و API عمومی، تعامل بین فیچرها با Integration Event،
+            پیاده‌سازی کامل Java 21 با تست ماژول و ArchUnit، مقایسه با لایه‌ای و
+            Vertical Slice و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۵۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/feature-based-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#FeatureBased</li>
+              <li class="post-tag">#ModularMonolith</li>
+              <li class="post-tag">#ProjectStructure</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="19" data-minutes="65" data-featured="true">
+        <a class="post-card-link" href="ddd-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">DDD چیست؟ آموزش کامل Domain-Driven Design با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            طراحی دامنه‌محور از زبان مشترک تا مدل اجرایی؛ Aggregate و Entity و Value Object،
+            مرزهای زمینه‌ای، Domain Event و Outbox، پیاده‌سازی کامل Java 21 با مدیریت سفارش،
+            مقایسه با لایه‌ای و شش‌ضلعی، تست واحد بدون دیتابیس و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۶۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/ddd-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#DDD</li>
+              <li class="post-tag">#Aggregate</li>
+              <li class="post-tag">#Domain_Model</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="18" data-minutes="60" data-featured="true">
+        <a class="post-card-link" href="repository-pattern.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">Repository Pattern چیست؟ آموزش کامل با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            جدا کردن لایه‌ی دامنه از دیتابیس، Port در دامنه و Adapter در زیرساخت، Data Mapper در برابر Active Record، پیاده‌سازی کامل Java 21 با Spring Data و JPA، مقایسه با DAO، تست با In-Memory Repository و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۶۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/repository-pattern.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Repository</li>
+              <li class="post-tag">#DataAccess</li>
+              <li class="post-tag">#JPA</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="17" data-minutes="60" data-featured="true">
+        <a class="post-card-link" href="mvi-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">MVI چیست؟ آموزش کامل الگوی Model-View-Intent با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            Intent و State و Reducer خالص، جریان یک‌طرفه، مدیریت درخواست‌های ناهمگام با requestId، پیاده‌سازی کامل Java 21، MVI در Jetpack Compose، مقایسه با MVC و MVP و MVVM، تست تابع خالص با JUnit 5 و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۶۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/mvi-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#MVI</li>
+              <li class="post-tag">#Reducer</li>
+              <li class="post-tag">#State</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+        <span class="post-fill" style="--fill:100%" aria-hidden="true"></span>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="16" data-minutes="55">
+        <a class="post-card-link" href="mvvm-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">MVVM چیست؟ آموزش کامل الگوی Model-View-ViewModel با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            ViewModel و بقای وضعیت در چرخش صفحه، LiveData و داده‌ی دوحالته، پیاده‌سازی کامل Java 21، MVVM در Jetpack Compose، مقایسه با MVC و MVP و MVI، تست واحد با JUnit 5 و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۵۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/mvvm-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#MVVM</li>
+              <li class="post-tag">#ViewModel</li>
+              <li class="post-tag">#LiveData</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+        <span class="post-fill" style="--fill:100%" aria-hidden="true"></span>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="15" data-minutes="55">
+        <a class="post-card-link" href="mvp-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">MVP چیست؟ آموزش کامل الگوی Model-View-Presenter با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            Presenter به‌جای Controller، جریان داده‌ی یک‌طرفه، پیاده‌سازی کامل Java 21، MVP در اندروید، مقایسه با MVC و MVVM و MVI، تست واحد Presenter با JUnit 5 و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۵۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/mvp-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#MVP</li>
+              <li class="post-tag">#Model_View_Presenter</li>
+              <li class="post-tag">#Android</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+        <span class="post-fill" style="--fill:100%" aria-hidden="true"></span>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="14" data-minutes="55">
+        <a class="post-card-link" href="mvc-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">MVC چیست؟ آموزش کامل الگوی Model-View-Controller با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            سه نقش Model و View و Controller، تاریخچه‌ی Reenskaug، جریان داده، پیاده‌سازی کامل Java 21، MVC در Spring و اندروید، مقایسه با MVP و MVVM، تست با JUnit 5 و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۵۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/mvc-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#MVC</li>
+              <li class="post-tag">#Model_View_Controller</li>
+              <li class="post-tag">#Spring_MVC</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+        <span class="post-fill" style="--fill:100%" aria-hidden="true"></span>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="13" data-minutes="50">
+        <a class="post-card-link" href="layered-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
+          </div>
+          <h3 class="post-title">Layered Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه</h3>
+          <p class="post-excerpt">
+            Presentation و Domain و Data، قانون وابستگی رو به پایین، جریان داده، پیاده‌سازی کامل Java 21، مقایسه با Clean و Onion، تست با JUnit 5، ۲۰ سؤال مصاحبه و Cheat Sheet.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۵۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/layered-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Layered_Architecture</li>
+              <li class="post-tag">#N_Tier</li>
+              <li class="post-tag">#Service_Layer</li>
+              <li class="post-tag">#Java</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+        <span class="post-fill" style="--fill:100%" aria-hidden="true"></span>
+      </article>
+
+      <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="12" data-minutes="55">
+        <a class="post-card-link" href="hexagonal-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">معماری نرم‌افزار</span>
           </div>
           <h3 class="post-title">Hexagonal Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه</h3>
           <p class="post-excerpt">

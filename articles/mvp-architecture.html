@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MVP چیست؟ آموزش کامل الگوی Model-View-Presenter با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله الگوی MVP را کامل یاد می‌گیرید: تعریف و تاریخچه، جریان یک‌طرفه‌ی داده، پیاده‌سازی کامل با Java 21، مقایسه با MVC و MVVM، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="MVP, Model View Presenter, MVP چیست, الگوی MVP, MVP در اندروید, Java, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, MVC, MVVM, MVI">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="MVP چیست؟ آموزش کامل الگوی Model-View-Presenter با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله الگوی MVP را کامل یاد می‌گیرید: تعریف و تاریخچه، جریان یک‌طرفه‌ی داده، پیاده‌سازی کامل با Java 21، مقایسه با MVC و MVVM، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/mvp-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/mvp-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MVP Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MVP چیست؟ آموزش کامل الگوی Model-View-Presenter با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="Presenter به‌جای Controller، جریان یک‌طرفه، نمونه‌کد Java 21، مقایسه با MVC و MVVM و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "MVP چیست؟ آموزش کامل الگوی Model-View-Presenter با مثال و ساختار پروژه",
+    "description": "در این مقاله الگوی MVP را کامل یاد می‌گیرید: تعریف و تاریخچه، جریان یک‌طرفه‌ی داده، پیاده‌سازی کامل با Java 21، مقایسه با MVC و MVVM، مزایا، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/mvp-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/mvp-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "MVP, Model, View, Presenter, Android, Java, Unit Test",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "MVP", "item": "https://haedarfarhani.github.io/My-Articles/articles/mvp-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">MVP</span>؛ الگویی که تست‌پذیری را از دل Activity بیرون کشید
+          </h1>
+
+          <p class="hero-lead">
+            MVP یعنی <strong>Presenter منطق را از View بیرون می‌کشد</strong> و داده در یک
+            <strong>جریان یک‌طرفه</strong> حرکت می‌کند.
+            در این راهنما سه نقش MVP، جریان داده، پیاده‌سازی کامل با <code>Java 21</code>،
+            مقایسه با MVC و MVVM و MVI، تست واحد Presenter با <code>JUnit 5</code>
+            و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#MVP</span>
+            <span class="post-tag">#Model_View_Presenter</span>
+            <span class="post-tag">#Unidirectional_Data_Flow</span>
+            <span class="post-tag">#Android</span>
+            <span class="post-tag">#Java</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: مشکل تست‌ناپذیری Activity</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>MVP چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: جریان یک‌طرفه</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: اجزای MVP</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: صفحه‌ی ورود</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>MVP در اندروید</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: مشکل تست‌ناپذیری Activity</h2>
+
+<p>
+یک صفحه‌ی ورود در اندروید را در نظر بگیرید. کلاس <code>LoginActivity</code> هم‌زمان:
+فرم را نمایش می‌دهد، اعتبارسنجی فرم را انجام می‌دهد، درخواست شبکه را می‌فرستد،
+پاسخ را پردازش می‌کند و به صفحه‌ی بعدی می‌رود. یک کلاس، ۵ مسئولیت.
+</p>
+
+<p>
+حالا سؤال: <strong>چطور قانون «رمز عبور باید حداقل ۸ کاراکتر باشد» را تست می‌کنید؟</strong>
+برای اجرای این تست باید یک دستگاه یا شبیه‌ساز بالا بیاید، Activity بسازید،
+شبکه را قطع کنید و دکمه را بزنید. یک تست ساده، ۹۰ ثانیه زمان می‌برد و
+بیش از یک بار شکست می‌خورد بدون آنکه مشکلی در کد باشد.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>تست قانون ساده در معماری Activity-centric:
+
+  Android Studio → انتخاب Emulator → صبر تا بوت (۶۰ ثانیه)
+      → اجرای اپ → تایپ در EditText
+      → کلیک دکمه → بررسی Toast
+
+  ⏱ زمان هر تست: ۹۰ ثانیه
+  🐛 نرخ شکست جعلی: بالا (به‌خاطر شبکه و تایمر)
+  🧪 پوشش قوانین کسب‌وکار: معمولاً زیر ۴۰٪</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ریشه‌ی مشکل</span>
+منطق کسب‌وکار به <strong>سیستم‌عامل گره خورده</strong> است. هر جا منطق به Android وابسته شود،
+تست آن گران می‌شود. <strong>MVP</strong> منطق را به کلاسی به نام <code>Presenter</code> منتقل می‌کند
+که هیچ وابستگی‌ای به اندروید ندارد و مثل یک کلاس Java ساده تست می‌شود.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+MVP مدت‌ها پیش از آنکه پایتخت محبوب باشد، در دنیای <strong>GUI و دسکتاپ</strong> وجود داشت.
+نام «Model-View-Presenter» از ترکیب MVC با یک نقش چهارم به‌دست آمد: کنترلر با Presenter جایگزین شد
+تا <strong>جریان داده</strong> کاملاً یک‌طرفه شود.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
+  <tr><td>دهه‌ی ۱۹۸۰–۱۹۹۰</td><td>MVC کلاسیک در Smalltalk؛ مشکل دسترسی مستقیم View به Model</td></tr>
+  <tr><td>دهه‌ی ۱۹۹۰</td><td>تولد Visual Basic و Delphi؛ نیاز به جداسازی منطق از فرم</td></tr>
+  <tr><td>۲۰۰۰s — پلتفرم‌های مایکروسافت</td><td>MVP به‌عنوان الگوی رسمی معرفی شد؛ جریان یک‌طرفه برای تست</td></tr>
+  <tr><td>۲۰۰۸–۲۰۱۳ — موج اندروید</td><td>Activity به‌مرور چاق شد و تیم‌ها به دنبال راه‌حل تست‌پذیری رفتند</td></tr>
+  <tr><td>۲۰۱۳ — Square</td><td>مقاله‌ی کلاسیک Presenter آمد و MVP در جامعه‌ی اندروید فراگیر شد</td></tr>
+  <tr><td>۲۰۱۷ به بعد</td><td>MVVM و سپس MVI محبوب شدند، ولی MVP همچنان در پروژه‌های موجود زنده است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">دلیل اصلی ایجاد</span>
+MVP برای حل سه مشکل هم‌زمان ساخته شد: <strong>۱) تست‌پذیری</strong> (Presenter یک کلاس ساده است)،
+<strong>۲) جریان یک‌طرفه</strong> (View فقط فرمان می‌دهد و دستور نمایش می‌گیرد)، و
+<strong>۳) جداسازی واقعی</strong> (View هرگز Model را نمی‌بیند).
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>MVP چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>MVP</strong> یک الگوی معماری است که برنامه را به سه نقش تقسیم می‌کند:
+<strong>Model</strong> (داده و منطق کسب‌وکار)، <strong>View</strong> (نمایش، کاملاً منفعل) و
+<strong>Presenter</strong> (واسط بین این دو). در این الگو، <strong>View هیچ ارجاعی به Model ندارد</strong>
+و همه‌ی تعامل از مسیر <code>View → Presenter → Model → Presenter → View</code> جریان می‌کند.
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقش</th><th>مسئولیت</th><th>نمونه</th></tr>
+  <tr><td><strong>Model</strong></td><td>داده، قوانین کسب‌وکار و ارتباط با دیتابیس</td><td><code>User</code>، <code>AuthRepository</code></td></tr>
+  <tr><td><strong>View</strong></td><td>نمایش داده و ارسال رویداد؛ بدون هیچ منطقی</td><td><code>LoginContract.View</code>، <code>LoginFragment</code></td></tr>
+  <tr><td><strong>Presenter</strong></td><td>دریافت رویداد، فراخوانی Model، تولید دستور نمایش</td><td><code>LoginPresenter</code></td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">سه اصل کلیدی MVP</span>
+۱) <strong>View کاملاً منفعل است</strong> — فقط متدهای <code>showX()</code> را صدا می‌زند.<br>
+۲) <strong>Presenter همه‌ی منطق را دارد</strong> — جز منطق خالص نمایش.<br>
+۳) <strong>جریان یک‌طرفه است</strong> — View به Model دسترسی ندارد و Presenter تنها منبع حقیقت است.
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سوءتفاهم رایج</span>
+MVP با MVC <strong>یک تفاوت کلیدی</strong> دارد: در MVC، Model و View می‌توانند مستقیم حرف بزنند.
+در MVP، این ارتباط <strong>قطع</strong> می‌شود و همه‌چیز از مسیر Presenter عبور می‌کند.
+اگر View شما مستقیم Repository صدا می‌زند، شما MVC دارید، نه MVP.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<pre class="kl-code" data-lang="java"><code>public class LoginActivity extends AppCompatActivity {
+
+    private EditText emailInput;
+    private Button loginButton;
+    private ApiService api;
+    private ProgressBar progress;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        emailInput = findViewById(R.id.email);
+        loginButton = findViewById(R.id.login);
+        api = RetrofitFactory.create();
+        progress = findViewById(R.id.progress);
+
+        loginButton.setOnClickListener(v -&gt; {
+            // ۱) اعتبارسنجی
+            String email = emailInput.getText().toString();
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                emailInput.setError("ایمیل نامعتبر");
+                return;
+            }
+
+            // ۲) منطق کسب‌وکار
+            if (email.endsWith("@blocked.com")) {
+                Toast.makeText(this, "این ایمیل مسدود است", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // ۳) ارتباط با شبکه
+            progress.setVisibility(View.VISIBLE);
+            api.login(email, "123456")
+              .enqueue(new Callback&lt;Token&gt;() {
+                  @Override
+                  public void onResponse(Call&lt;Token&gt; call, Response&lt;Token&gt; r) {
+                      // ۴) پردازش پاسخ
+                      progress.setVisibility(View.GONE);
+                      if (r.isSuccessful()) {
+                          startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                      } else {
+                          showError(r.body().getMessage());
+                      }
+                  }
+                  @Override
+                  public void onFailure(Call&lt;Token&gt; call, Throwable t) {
+                      // ۵) مدیریت خطا
+                      progress.setVisibility(View.GONE);
+                      showError("خطای شبکه");
+                  }
+              });
+        });
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مشکل</th><th>توضیح</th></tr>
+  <tr><td>۵ مسئولیت در یک کلاس</td><td>نقض کامل SRP؛ تغییر هر بخش، بقیه را می‌شکند</td></tr>
+  <tr><td>تست غیرممکن</td><td>قانون «ایمیل مسدود» نیاز به اجرای Activity دارد</td></tr>
+  <tr><td>منطق در View</td><td>اگر همین منطق را در Fragment دیگری لازم داشتیم، باید کپی می‌شد</td></tr>
+  <tr><td>داخلی‌های باز</td><td>Callback داخلی، منطق را در کلاس بیرونی گروگان می‌گیرد</td></tr>
+  <tr><td>حافظه</td><td>Callback از Activity گره‌گیری دارد و می‌تواند نشتی بسازد</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: جریان یک‌طرفه</h2>
+
+<p>
+ایده‌ی مرکزی MVP در یک جمله: <strong>View فقط می‌پرسد و فقط دستور می‌گیرد؛ هرگز تصمیم نمی‌گیرد.</strong>
+همین یک قاعده، هم تست‌پذیری می‌آورد و هم قابلیت پیش‌بینی.
+</p>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    U["کاربر"] -->|"کلیک دکمه ورود"| V["View — منفعل"]
+    V -->|"view.onLoginClicked(email, pass)"| P["Presenter"]
+    P -->|"login(email, pass)"| M["Model / Repository"]
+    M -->|"Token یا خطا"| P
+    P -->|"view.showProgress(true)"| V
+    P -->|"view.navigateToHome(token)"| V
+    P -->|"view.showError('...')"| V
+
+    V -. "❌ هیچ ارتباط مستقیمی ندارد" .- M
+
+    style U fill:#78350f,stroke:#fbbf24,color:#fff
+    style V fill:#0f766e,stroke:#14b8a6,color:#fff
+    style P fill:#115e59,stroke:#2dd4bf,color:#fff
+    style M fill:#134e4a,stroke:#5eead4,color:#fff</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>قانون طلایی MVP (Unidirectional Data Flow):
+
+  View  → Presenter : «این اتفاق افتاد»      (رویداد، فقط داده خام)
+  Presenter → View  : «این کار را بکن»       (دستور، هرگز منطق)
+
+View هرگز:
+  ✗ از Presenter می‌پرسد «حالا چه کار کنم؟»  (چون خودش تصمیم می‌گیرد)
+  ✗ مستقیم Model را صدا نمی‌زند
+  ✗ شرط تصمیم‌گیر (if) ندارد، مگر if مربوط به نمایش</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چرا یک‌طرفه بودن مهم است؟</span>
+با یک‌طرفه شدن جریان، هر تغییر وضعیت <strong>یک نقطه‌ی مشخص برای شروع</strong> دارد.
+یعنی هر باگ را می‌توانید دقیقاً بازتولید کنید: ورودی را بدهید، خروجی را ببینید.
+این همان چیزی است که در تست‌های واحد Presenter ممکن می‌شود.
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>ساختار معماری: اجزای MVP</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نوع MVP</th><th>توضیح</th><th>نمونه</th></tr>
+  <tr><td><strong>Passive View</strong></td><td>View کاملاً منفعل؛ Presenter همه‌چیز را می‌داند</td><td>رایج‌ترین حالت در اندروید</td></tr>
+  <tr><td><strong>Supervising Presenter</strong></td><td>Presenter کارهای ساده‌ی نمایش را به View واگذار می‌کند</td><td>پروژه‌های وب با فرم‌های پیچیده</td></tr>
+  <tr><td><strong>Presenter + ViewModel</strong></td><td>ترکیب MVP با MVVM؛ Presenter رویدادها می‌گیرد و State منتشر می‌کند</td><td>الگوی نوسازی‌شده‌ی امروزی</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph VIEWLAYER["لایه‌ی View (اندروید)"]
+        V1["LoginFragment"]
+        V2["LoginContract.View — Interface"]
+    end
+
+    subgraph PRESLAYER["لایه‌ی Presenter (Java خالص)"]
+        P1["LoginPresenter"]
+        P2["LoginContract.Presenter — Interface"]
+    end
+
+    subgraph MODLAYER["لایه‌ی Model"]
+        M1["User (Entity)"]
+        M2["AuthRepository (Interface)"]
+        M3["AuthRepositoryImpl"]
+    end
+
+    V1 -. "implements" .-> V2
+    V1 -->|"فراخوانی متدهای Interface"| P2
+    P1 -. "implements" .-> P2
+    P1 --> M2
+    M3 -. "implements" .-> M2
+    P1 --> M1
+
+    style VIEWLAYER fill:#0f766e,stroke:#14b8a6,color:#fff
+    style PRESLAYER fill:#115e59,stroke:#2dd4bf,color:#fff
+    style MODLAYER fill:#134e4a,stroke:#5eead4,color:#fff</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">الگوی Contract: کلید استفاده‌ی اصولی</span>
+راه استاندارد تعریف MVP، ساختن یک <strong>Contract</strong> برای هر صفحه است: یک Interface
+برای View و یکی برای Presenter. با این کار، Presenter به هیچ کلاس اندرویدی وابسته نیست و
+View هم به پیاده‌سازی Presenter وابسته نیست.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    autonumber
+    actor U as کاربر
+    participant V as View
+    participant P as Presenter
+    participant R as Repository
+
+    U->>V: تایپ ایمیل و رمز
+    U->>V: کلیک «ورود»
+    V->>P: onLoginClicked("ali@test.com", "12345678")
+    P->>P: اعتبارسنجی ایمیل
+    alt ایمیل نامعتبر
+        P-->>V: showError("ایمیل نامعتبر", FIELD_EMAIL)
+    else معتبر
+        P-->>V: showProgress(true)
+        P->>R: login(email, password)
+        alt موفق
+            R-->>P: Token
+            P-->>V: showProgress(false)
+            P-->>V: navigateToHome(token)
+        else ناموفق
+            R-->>P: AuthException("رمز اشتباه")
+            P-->>V: showProgress(false)
+            P-->>V: showError("رمز اشتباه", FIELD_PASSWORD)
+        end
+    end</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>جریان خواندن داده در MVP:
+
+  View.onStart()
+      → Presenter.loadProfile()
+          → Repository.getProfile()
+              → Model → ViewModel (در صورت نیاز)
+      → Presenter تبدیل Model به Contract.ViewState
+      → View.render(state)
+
+نکته: تبدیل داده به قالب نمایشی، وظیفه‌ی Presenter است نه View.
+این باعث می‌شود ViewModel نهایی برای تست، کاملاً قابل پیش‌بینی باشد.</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">الگوی View State</span>
+در MVP، Presenter معمولاً به‌جای ده‌ها متد <code>showX()</code>، یک <strong>state</strong> واحد
+به View می‌دهد. مثلاً <code>LoginState(isLoading, error, token)</code>. این کار باعث می‌شود
+حالت‌های ممکن صفحه م exhaustively تعریف شوند و باگ حالت‌های ناقص کم شود.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>app/src/main/java/com/example/login/
+├── ui/login/                        ← لایه‌ی VIEW
+│   ├── LoginFragment.java
+│   ├── LoginContract.java           ← Interfaceهای مشترک
+│   └── LoginPresenterImpl.java      ← پیاده‌سازی Presenter (کلاس خالص)
+│
+├── domain/                          ← لایه‌ی MODEL
+│   ├── model/User.java
+│   ├── repository/AuthRepository.java   ← Interface در دامنه
+│   └── usecase/ValidateCredentialsUseCase.java
+│
+└── data/                            ← پیاده‌سازی زیرساخت
+    ├── auth/AuthRepositoryImpl.java
+    └── remote/AuthApi.java              (Retrofit)
+
+app/src/test/java/com/example/login/ui/login/
+├── LoginPresenterTest.java          ← تست واحد، بدون اندروید
+└── FakeAuthRepository.java</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی مهم درباره‌ی پوشه‌ی ui</span>
+در MVP، پوشه‌ی <code>ui/</code> هم View و هم پیاده‌سازی Presenter را دارد، اما
+<strong>پیاده‌سازی Presenter کلاس Java خالص است</strong> و هیچ وابستگی‌ای به
+Android SDK ندارد. اگر این مرز را جدی نگیرید، دوباره به همان تله‌ی Activity برمی‌گردید.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>مثال عملی کامل: صفحه‌ی ورود</h2>
+
+<ul class="kl-check">
+  <li>کاربر ایمیل و رمز را وارد می‌کند.</li>
+  <li><strong>اعتبارسنجی شکلی</strong> (ایمیل معتبر، رمز حداقل ۸ کاراکتر) باید سمت کلاینت هم باشد.</li>
+  <li><strong>قانون کسب‌وکار</strong> («ایمیل مسدود شده») فقط در Presenter است.</li>
+  <li>درخواست شبکه از Repository انجام و نتیجه به Presenter برمی‌گردد.</li>
+  <li>Presenter به View فرمان می‌دهد: نمایش loader، نمایش خطا یا رفتن به صفحه‌ی خانه.</li>
+</ul>
+
+<pre class="kl-code" data-lang="text"><code>تفکیک مسئولیت در یک سناریو:
+
+  Form     : "ایمیل خالی است"        → View (اعتبارسنجی اولیه)
+  Password : "رمز اشتباه"            → Presenter (پاسخ سرور)
+  Domain   : "ایمیل مسدود شده"        → Presenter (قانون کسب‌وکار)
+  Network  : "اتصال برقرار نشد"       → Repository (تبدیل خطا)
+
+Presenter تنها جایی است که قوانین سطح‌بالا را می‌داند.
+اگر همین صفحه را دوباره در تب دیگری پیاده کنید، فقط View را کپی می‌کنید —
+Presenter و Repository را دوباره استفاده می‌کنید.</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مرز معیار MVP</span>
+اگر <code>LoginFragment</code> خودش قبل از ارسال، ایمیل مسدود را بررسی کند، MVP شکسته است.
+هر تصمیمی که به «سیاست کسب‌وکار» مربوط است، باید در Presenter باشد، حتی اگر هزینه‌ی شبکه داشته باشد.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>قرارداد (Contract)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.login.ui.login;
+
+/**
+ * قرارداد صفحه‌ی ورود. تنها جایی که View و Presenter همدیگر را می‌شناسند.
+ */
+public interface LoginContract {
+
+    interface View {
+        /** نمایش وضعیت در حال بارگذاری */
+        void showProgress(boolean visible);
+
+        /** نمایش خطا؛ field می‌گوید خطا کنار کدام ورودی است */
+        void showError(String message, ErrorField field);
+
+        /** رفتن به صفحه‌ی خانه */
+        void navigateToHome(String token);
+
+        /** پر کردن ورودی‌ها از پاسخ سرور */
+        void prefill(String email);
+    }
+
+    interface Presenter {
+        void attach(View view);
+        void detach();
+        void onLoginClicked(String email, String password);
+        void onEmailChanged(String email);
+    }
+
+    enum ErrorField { NONE, EMAIL, PASSWORD }
+}
+</code></pre>
+
+<h3>Presenter</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.login.ui.login;
+
+import com.example.login.domain.repository.AuthRepository;
+import com.example.login.domain.usecase.ValidateCredentialsUseCase;
+
+/**
+ * تمام منطق صفحه‌ی ورود اینجاست. این کلاس هیچ وابستگی‌ای به Android ندارد،
+ * بنابراین با یک تست واحد کامل قابل بررسی است.
+ */
+public final class LoginPresenterImpl implements LoginContract.Presenter {
+
+    private static final int MIN_PASSWORD_LENGTH = 8;
+    private static final java.util.Set&lt;String&gt; BLOCKED_DOMAINS =
+            java.util.Set.of("blocked.com", "spam.local");
+
+    private final AuthRepository authRepository;
+    private final ValidateCredentialsUseCase validate;
+
+    private LoginContract.View view;
+    private String lastEmail = "";
+
+    public LoginPresenterImpl(AuthRepository authRepository,
+                              ValidateCredentialsUseCase validate) {
+        this.authRepository = authRepository;
+        this.validate = validate;
+    }
+
+    @Override
+    public void attach(LoginContract.View view) {
+        this.view = view;
+    }
+
+    @Override
+    public void detach() {
+        this.view = null;
+    }
+
+    @Override
+    public void onEmailChanged(String email) {
+        this.lastEmail = email;
+    }
+
+    @Override
+    public void onLoginClicked(String email, String password) {
+        this.lastEmail = email;
+
+        // ۱) اعتبارسنجی شکلی
+        if (!email.contains("@")) {
+            showError("ایمیل نامعتبر است", ErrorField.EMAIL);
+            return;
+        }
+        if (password.length() &lt; MIN_PASSWORD_LENGTH) {
+            showError("رمز عبور باید حداقل " + MIN_PASSWORD_LENGTH
+                    + " کاراکتر باشد", ErrorField.PASSWORD);
+            return;
+        }
+
+        // ۲) قانون کسب‌وکار (نه فرم، نه سرور لزوماً)
+        if (isBlocked(email)) {
+            showError("این ایمیل مسدود شده است", ErrorField.EMAIL);
+            return;
+        }
+
+        // ۳) عملیات آسسته
+        view.showProgress(true);
+        authRepository.login(email, password, new AuthCallback() {
+            @Override
+            public void onSuccess(String token) {
+                view.showProgress(false);
+                view.navigateToHome(token);
+            }
+
+            @Override
+            public void onFailure(AuthError error) {
+                view.showProgress(false);
+                switch (error.kind()) {
+                    case INVALID_CREDENTIALS -&gt;
+                            showError("ایمیل یا رمز اشتباه است",
+                                    ErrorField.PASSWORD);
+                    case RATE_LIMITED -&gt;
+                            showError("تلاش بیش از حد؛ کمی بعد امتحان کنید",
+                                    ErrorField.NONE);
+                    case NETWORK -&gt;
+                            showError("اتصال برقرار نشد", ErrorField.NONE);
+                }
+            }
+        });
+    }
+
+    /** قانون: دامنه‌ی ایمیل در لیست مسدودهاست؟ */
+    private boolean isBlocked(String email) {
+        String domain = email.substring(email.indexOf('@') + 1).toLowerCase();
+        return BLOCKED_DOMAINS.contains(domain);
+    }
+
+    private void showError(String message, ErrorField field) {
+        if (view != null) {
+            view.showError(message, field);
+        }
+    }
+}
+</code></pre>
+
+<h3>View (بخش اندرویدی)</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.login.ui.login;
+
+/**
+ * پیاده‌سازی اندرویدی. هیچ منطقی اینجا نیست:
+ * فقط رویداد را به Presenter می‌دهد و دستور Presenter را اجرا می‌کند.
+ */
+public final class LoginFragment extends Fragment implements LoginContract.View {
+
+    private LoginContract.Presenter presenter;
+    private EditText emailInput;
+    private EditText passwordInput;
+    private ProgressBar progressBar;
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        emailInput = view.findViewById(R.id.email);
+        passwordInput = view.findViewById(R.id.password);
+        progressBar = view.findViewById(R.id.progress);
+
+        presenter = new LoginPresenterImpl(
+                ((App) requireActivity().getApplication()).authRepository(),
+                new ValidateCredentialsUseCase());
+
+        presenter.attach(this);
+
+        // رویداد به Presenter داده می‌شود؛ تصمیم‌گیری اینجا نیست
+        view.findViewById(R.id.loginButton).setOnClickListener(v -&gt;
+                presenter.onLoginClicked(
+                        emailInput.getText().toString().trim(),
+                        passwordInput.getText().toString()));
+
+        TextWatcher watcher = new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                presenter.onEmailChanged(s.toString());
+            }
+        };
+        emailInput.addTextChangedListener(watcher);
+    }
+
+    @Override
+    public void onDestroyView() {
+        // جدا کردن Presenter از View، نشتی حافظه را از بین می‌برد
+        presenter.detach();
+        presenter = null;
+        super.onDestroyView();
+    }
+
+    @Override
+    public void showProgress(boolean visible) {
+        progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        loginButton.setEnabled(!visible);
+    }
+
+    @Override
+    public void showError(String message, ErrorField field) {
+        switch (field) {
+            case EMAIL -&gt; emailInput.setError(message);
+            case PASSWORD -&gt; passwordInput.setError(message);
+            case NONE -&gt; Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void navigateToHome(String token) {
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_login_to_home);
+    }
+
+    @Override
+    public void prefill(String email) {
+        emailInput.setText(email);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی</span>
+کلاس <code>LoginPresenterImpl</code> حتی یک <code>import</code> از اندروید ندارد.
+یعنی می‌توان آن را در یک JVM معمولی و در کمتر از ۵۰ میلی‌ثانیه تست کرد — درست برخلاف
+نسخه‌ی قبلی که ۹۰ ثانیه تست می‌شد.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>MVP در اندروید</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>معادل در اندروید</th></tr>
+  <tr><td>Model</td><td>Entity + Repository (Room، Retrofit، DataStore)</td></tr>
+  <tr><td>View</td><td>Activity یا Fragment + لایوت</td></tr>
+  <tr><td>Presenter</td><td>کلاس Java/Kotlin خالص با Interface</td></tr>
+  <tr><td>Contract</td><td>Interfaceهای <code>View</code> و <code>Presenter</code></td></tr>
+  <tr><td>چرخه‌ی عمر</td><td><code>attach</code> در <code>onViewCreated</code> و <code>detach</code> در <code>onDestroyView</code></td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>چرخه‌ی عمر MVP در اندروید — نکته‌ی امنیتی مهم:
+
+  onCreate()       → Presenter را بساز (یا از DI بگیر)
+  onViewCreated()  → presenter.attach(this)
+                     ← متد امن برای تعامل با View
+  onDestroyView()  → presenter.detach()
+                     ← آزادسازی مرجع View از Presenter
+  onDestroy()      → presenter = null
+
+چرا این ترتیب مهم است؟ چون View (Fragment) می‌تواند در چرخه‌ی عمر نابود شود
+در حالی که Presenter باید باقی بماند تا داده را نگه دارد.</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">چرا MVP کنار می‌رفت؟</span>
+دو دلیل: <strong>۱) حجم کد زیاد</strong> — برای هر صفحه یک Contract و یک Presenter، و
+<strong>۲) ناتوانی در مدیریت وضعیت پیچیده</strong> — چون ViewModel خودش وضعیت را نگه می‌دارد و
+با چرخه‌ی حیات بهتر هماهنگ می‌شود. MVVM دقیقاً برای حل همین دو مورد آمد.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مزایا</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>تست‌پذیری بسیار بالا</strong></td><td>Presenter یک کلاس خالص است؛ تست در میلی‌ثانیه</td></tr>
+  <tr><td>۲</td><td><strong>جریان داده‌ی یک‌طرفه</strong></td><td>پیش‌بینی کامل رفتار برنامه</td></tr>
+  <tr><td>۳</td><td><strong>View کاملاً منفعل</strong></td><td>View را می‌توان با هر ابزاری رندر کرد</td></tr>
+  <tr><td>۴</td><td><strong>استفاده‌ی مجدد از Presenter</strong></td><td>یک Presenter برای موبایل و تبلت</td></tr>
+  <tr><td>۵</td><td><strong>جدایی کامل View از Model</strong></td><td>تغییر UI هیچ اثری بر منطق ندارد</td></tr>
+  <tr><td>۶</td><td><strong>مدیریت آسان حالت‌های پیچیده</strong></td><td>حالت‌های Loading/Empty/Error صریح می‌شوند</td></tr>
+  <tr><td>۷</td><td><strong>پوشش‌ی تست بالا با تلاش کم</strong></td><td>۱۰۰ خط Presenter = ۱۰ تست مفید</td></tr>
+  <tr><td>۸</td><td><strong>مناسب برای تیم‌های کوچک</strong></td><td>ساختار روشن بدون نیاز به ابزار خاص</td></tr>
+  <tr><td>۹</td><td><strong>کاهش نشت حافظه</strong></td><td>جدا شدن چرخه‌ی عمر Presenter از View</td></tr>
+  <tr><td>۱۰</td><td><strong>قابلیت انتقال به MVVM</strong></td><td>ساختار Contract پایه‌ی خوبی برای مهاجرت است</td></tr>
+  <tr><td>۱۱</td><td><strong>جداسازی وظایف</strong></td><td>طراح UI و توسعه‌دهنده‌ی منطق موازی کار می‌کنند</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>معایب</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>حجم کد زیاد</strong></td><td>برای هر صفحه یک Contract و یک Presenter لازم است</td></tr>
+  <tr><td>۲</td><td><strong>حفظ وضعیت دشوار</strong></td><td>Presenter باید در چرخه‌ی حیات حفظ و بازیابی شود</td></tr>
+  <tr><td>۳</td><td><strong>انتقال وضعیت پیچیده</strong></td><td>State restoration در Fragment با استفاده از Contract نیازمند کد اضافه است</td></tr>
+  <tr><td>۴</td><td><strong>ناسازگار با داده‌ی دوحالته</strong></td><td>LiveData/Flow را به‌صورت بومی مدیریت نمی‌کند</td></tr>
+  <tr><td>۵</td><td><strong>تکرار متدهای مشابه</strong></td><td>در صفحات مشابه، متدهای Contract تکرار می‌شوند</td></tr>
+  <tr><td>۶</td><td><strong>بازطراحی دشوار</strong></td><td>تغییر صفحه‌ی بزرگ، تغییر همه‌ی Presenter را لازم دارد</td></tr>
+  <tr><td>۷</td><td><strong>سازگاری ضعیف با Jetpack Compose</strong></td><td>منطق فایل‌های جدا کمتر خودکار است</td></tr>
+  <tr><td>۸</td><td><strong>نبود مدیریت خودکار حافظه</strong></td><td>برخلاف ViewModel، خودش rotate را مدیریت نمی‌کند</td></tr>
+  <tr><td>۹</td><td><strong>یادگیری متوسط</strong></td><td>Contract و چرخه‌ی عمر برای تازه‌کاران گیج‌کننده است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">هزینه‌ی پنهان MVP</span>
+برای یک صفحه‌ی ساده‌ی «نمایش لیست»، شما به یک Contract با دو Interface، یک پیاده‌سازی
+Presenter و یک Activity نیاز دارید. این <strong>هزینه‌ی معماری</strong> است — و اگر ارزشش
+(تست‌پذیری) را نگیرید، فقط بوی معماری خواهد بود.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">موارد مناسب</span>
+<ul>
+  <li><strong>اپلیکیشن‌های اندروید با منطق قابل‌تست</strong> و تیمی که به تست اهمیت می‌دهد</li>
+  <li><strong>پروژه‌های موجود با XML</strong> که بازنویسی آن‌ها پرهزینه است</li>
+  <li>تیم‌هایی که <strong>MVVM را جدی می‌دانند</strong> اما به آن نرسیده‌اند</li>
+  <li>پروژه‌هایی با <strong>تعداد صفحات متوسط</strong> و منطق مشخص هر صفحه</li>
+  <li>وقتی می‌خواهید <strong>منطق را از کد اندرویدی جدا کنید</strong></li>
+  <li>اپ‌هایی با <strong>فرم‌های پیچیده</strong> و حالت‌های خطای متنوع</li>
+  <li>وقتی <strong>چند نفر روی صفحات مختلف</strong> کار می‌کنند و تداخل کد کم شود</li>
+</ul>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی سرانگشتی</span>
+اگر منطق صفحه را بتوانید در یک کلاس خالص Java بنویسید و در یک ثانیه تست کنید،
+MVP ارزش هزینه‌اش را دارد. اگر نه، سراغ MVVM بروید.
+</div>
+</section>
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">موارد نامناسب</span>
+<ul>
+  <li>پروژه‌های <strong>کوچک و نمایشی</strong> که تست واحد برایشان ارزش هزینه ندارد</li>
+  <li>اپ‌های <strong>کاملاً Compose</strong> با وضعیت پیچیده (MVI یا MVVM بهتر است)</li>
+  <li>تیم‌هایی که <strong>تست ندارند</strong> — MVP بدون تست، فقط کد اضافه است</li>
+  <li>صفحاتی با <strong>حالت‌های خیلی زیاد</strong> که حفظ وضعیت در آن‌ها دشوار می‌شود</li>
+  <li>تیم‌های بزرگ با <strong>نیاز به استفاده‌ی مجدد حداکثری</strong> (MVVM و StateFlow)</li>
+  <li>پروژه‌هایی که <strong>معماری لایه‌ای یا Clean</strong> لازم دارند</li>
+  <li>وقتی تیم فقط <strong>مهارت XML</strong> دارد و زمان یادگیری الگوی جدید ندارد</li>
+</ul>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز شما</th><th>الگوی مناسب‌تر</th></tr>
+  <tr><td>وضعیت پیچیده + دوحالته</td><td><strong>MVVM</strong></td></tr>
+  <tr><td>جریان کاملاً پیش‌بینی‌پذیر و پررویداد</td><td><strong>MVI</strong></td></tr>
+  <tr><td>پروژه‌ی بک‌اند و دامنه‌ی پیچیده</td><td><strong>Clean Architecture / Onion</strong></td></tr>
+  <tr><td>صفحات ساده و بدون منطق</td><td>هیچ‌کدام — ساده بنویسید</td></tr>
+  <tr><td>واکنش به رویدادهای بیرونی</td><td><strong>Event-Driven</strong></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph MVCg["MVC"]
+        MC1["View"] &lt;--&gt; MC2["Model"]
+        MC3["Controller"] --&gt; MC2
+        MC3 --&gt; MC1
+    end
+    subgraph MVPg["MVP"]
+        MP1["View (منفعل)"] --&gt; MP2["Presenter"] --&gt; MP3["Model"]
+    end
+    subgraph MVVMg["MVVM"]
+        MV1["View"] &lt;--&gt; MV2["ViewModel"] --&gt; MV3["Model"]
+    end
+
+    MVCg -. "View به Model وصل است" .- MVPg
+    MVPg -. "Presenter دارای State است" .- MVVMg
+
+    style MVCg fill:#78350f,stroke:#fbbf24,color:#fff
+    style MVPg fill:#0f766e,stroke:#14b8a6,color:#fff
+    style MVVMg fill:#134e4a,stroke:#5eead4,color:#fff</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>معیار</th><th>MVC</th><th>MVP</th><th>MVVM</th><th>MVI</th></tr>
+  <tr><td>View → Model</td><td>✅ مستقیم</td><td>❌</td><td>❌</td><td>❌</td></tr>
+  <tr><td>جریان داده</td><td>دوطرفه</td><td>یک‌طرفه</td><td>دوطرفه</td><td>یک‌طرفه</td></tr>
+  <tr><td>محور میانی</td><td>Controller</td><td>Presenter</td><td>ViewModel</td><td>Store + Reducer</td></tr>
+  <tr><td>نگه‌داری وضعیت</td><td>Model</td><td>Presenter</td><td>ViewModel</td><td>Store</td></tr>
+  <tr><td>تست واحد</td><td>⚠️ متوسط</td><td>✅ آسان</td><td>✅ آسان</td><td>✅ خیلی آسان</td></tr>
+  <tr><td>حجم کد</td><td>کم</td><td>زیاد</td><td>متوسط</td><td>زیاد</td></tr>
+  <tr><td>مناسب اندروید</td><td>❌</td><td>✅</td><td>✅ بهترین</td><td>✅ مدرن</td></tr>
+  <tr><td>سازگار با Compose</td><td>❌</td><td>⚠️</td><td>✅</td><td>✅ عالی</td></tr>
+  <tr><td>سال معرفی</td><td>۱۹۷۹</td><td>دهه‌ی ۱۹۹۰</td><td>۲۰۰۵ (WPF)</td><td>۲۰۱۰s</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">جمع‌بندی مقایسه</span>
+<strong>MVP</strong> راه حل «تست‌پذیری در دنیای View فعال» است.
+<strong>MVVM</strong> راه حل «مدیریت وضعیت و چرخه‌ی حیات» است.
+اگر در حال کار با XML و Fragment هستید، MVP انتخاب منطقی است؛ اگر در حال مهاجرت به
+Compose هستید، MVI یا MVVM جلوتر شما را می‌برد.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اصل SOLID</th><th>نمود در MVP</th><th>مثال</th></tr>
+  <tr><td><strong>S — SRP</strong></td><td>View، Presenter و Model سه مسئولیت جدا</td><td>Presenter فقط منطق صفحه، نه نمایش</td></tr>
+  <tr><td><strong>O — OCP</strong></td><td>تعویض UI بدون تغییر Presenter</td><td>جایگزینی XML با Compose</td></tr>
+  <tr><td><strong>L — LSP</strong></td><td>هر پیاده‌سازی View قرارداد یکسان دارد</td><td>LoginFragment و LoginCompose</td></tr>
+  <tr><td><strong>I — ISP</strong></td><td>Interface کوچک برای هر صفحه</td><td>LoginContract فقط متدهای همان صفحه</td></tr>
+  <tr><td><strong>D — DIP</strong></td><td>Presenter به Repository وابسته است، نه به Retrofit</td><td>تست با FakeAuthRepository</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نقطه‌ی قوت واقعی MVP</span>
+MVP با <strong>DIP</strong> بهتر از MVC عمل می‌کند: چون Presenter به یک Interface
+(<code>AuthRepository</code>) وابسته است، می‌توانید در تست یک پیاده‌سازی ساده
+جایگزین کنید و کل جریان را بدون شبکه تست کنید.
+</div>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>نقش در MVP</th><th>محل استفاده</th></tr>
+  <tr><td><strong>Observer</strong></td><td>مدل مشاهده‌گری بین Presenter و View</td><td>الگوی کلاسیک تعامل با View</td></tr>
+  <tr><td><strong>Facade</strong></td><td>Contract به‌عنوان رابط ساده‌ی صفحه</td><td>پوشاندن جزئیات چند کلاس</td></tr>
+  <tr><td><strong>Strategy</strong></td><td>تعویض منبع داده (شبکه، کش، محلی)</td><td>Repository پیاده‌سازی‌های مختلف</td></tr>
+  <tr><td><strong>Adapter</strong></td><td>تبدیل پاسخ سرور به مدل دامنه</td><td>مرز Model و شبکه</td></tr>
+  <tr><td><strong>Command</strong></td><td>هر رویداد کاربر یک فرمان به Presenter</td><td>جابه‌جایی صفحات و Undo</td></tr>
+  <tr><td><strong>Template Method</strong></td><td>ساختار ثابت attach/detach</td><td>چرخه‌ی عمر Presenter</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">الگوی واقعاً مهم</span>
+<strong>Strategy</strong> در لایه‌ی Repository، و <strong>Command</strong> در مرز View↔Presenter،
+بیشترین ارزش را دارند. اگر در MVP خود به Observer نیاز ندارید، از آن استفاده نکنید؛
+در MVP مدرن، جریان یک‌طرفه جای Observer را گرفته است.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+بزرگ‌ترین دستاورد MVP این است که <strong>Presenter را بدون هیچ ابزار اندرویدی تست می‌کنید</strong>.
+کافی است یک Fake ساده بسازید.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.login.ui.login;
+
+import java.util.concurrent.CompletableFuture;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+class LoginPresenterTest {
+
+    /** پیاده‌سازی جایگزین بدون شبکه — کمتر از ۱۰ خط */
+    private static final class FakeAuthRepository implements AuthRepository {
+        private String nextToken;
+        private AuthError nextError;
+        private final java.util.List&lt;String&gt; calls = new java.util.ArrayList&lt;&gt;();
+
+        @Override
+        public void login(String email, String password, AuthCallback cb) {
+            calls.add(email + "|" + password);
+            if (nextError != null) {
+                cb.onFailure(nextError);
+            } else {
+                cb.onSuccess(nextToken);
+            }
+        }
+    }
+
+    /** View ساختگی که فقط دستورات را ثبت می‌کند */
+    private static final class RecordingView implements LoginContract.View {
+        boolean progressVisible;
+        String lastError;
+        LoginContract.ErrorField lastField;
+        String navigatedToken;
+        boolean shown;
+
+        @Override public void showProgress(boolean visible) { progressVisible = visible; }
+        @Override public void showError(String message, LoginContract.ErrorField field) {
+            shown = true; lastError = message; lastField = field;
+        }
+        @Override public void navigateToHome(String token) { navigatedToken = token; }
+        @Override public void prefill(String email) { }
+    }
+
+    private FakeAuthRepository repository;
+    private RecordingView view;
+    private LoginContract.Presenter presenter;
+
+    @BeforeEach
+    void setUp() {
+        repository = new FakeAuthRepository();
+        view = new RecordingView();
+        presenter = new LoginPresenterImpl(repository, new ValidateCredentialsUseCase());
+        presenter.attach(view);
+    }
+
+    @Test
+    @DisplayName("ایمیل نامعتبر نباید به سرور برود")
+    void invalidEmailIsRejectedLocally() {
+        presenter.onLoginClicked("ali", "12345678");
+
+        assertThat(view.lastError).isEqualTo("ایمیل نامعتبر است");
+        assertThat(view.lastField).isEqualTo(LoginContract.ErrorField.EMAIL);
+        assertThat(repository.calls).isEmpty();
+    }
+
+    @Test
+    @DisplayName("رمز کوتاه باید رد شود")
+    void shortPasswordIsRejected() {
+        presenter.onLoginClicked("ali@test.com", "123");
+
+        assertThat(view.lastField).isEqualTo(LoginContract.ErrorField.PASSWORD);
+        assertThat(repository.calls).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ایمیل مسدود باید حتی با رمز درست رد شود")
+    void blockedDomainIsRejectedAsBusinessRule() {
+        presenter.onLoginClicked("attacker@blocked.com", "12345678");
+
+        assertThat(view.lastError).contains("مسدود");
+        assertThat(repository.calls).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ورود موفق باید loader را ببندد و به خانه برود")
+    void successfulLoginNavigatesHome() {
+        repository.nextToken = "jwt-token-123";
+
+        presenter.onLoginClicked("ali@test.com", "12345678");
+
+        assertThat(view.progressVisible).isFalse();
+        assertThat(view.navigatedToken).isEqualTo("jwt-token-123");
+    }
+
+    @Test
+    @DisplayName("خطای شبکه باید به کاربر نشان داده شود")
+    void networkFailureIsSurfaced() {
+        repository.nextError = new AuthError(AuthError.Kind.NETWORK);
+
+        presenter.onLoginClicked("ali@test.com", "12345678");
+
+        assertThat(view.progressVisible).isFalse();
+        assertThat(view.lastError).contains("اتصال");
+        assertThat(view.navigatedToken).isNull();
+    }
+}
+</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقش</th><th>روش تست</th><th>سرعت</th></tr>
+  <tr><td><strong>Presenter</strong></td><td>Unit خالص با Fake — بدون Android</td><td>زیر ۵۰ میلی‌ثانیه</td></tr>
+  <tr><td><strong>Model</strong></td><td>Unit با Fake Repository</td><td>زیر ۱۰۰ میلی‌ثانیه</td></tr>
+  <tr><td><strong>View</strong></td><td>تست Robolectric یا Instrumentation</td><td>چند ثانیه تا چند دقیقه</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">عدد واقعی</span>
+در یک صفحه‌ی ورود، نوشتن ۵ تست بالا حدود ۸۰ خط تست می‌برد، اما در زمان اجرا
+<strong>کمتر از ۱۰۰ میلی‌ثانیه</strong> طول می‌کشد. نسخه‌ی مبتنی بر Activity برای همان
+سناریو حداقل ۵ دقیقه تست E2E می‌خواست که تیم معمولاً نمی‌نوشت.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>اشتباه</th><th>نشانه</th><th>راه‌حل</th></tr>
+  <tr><td>۱</td><td><strong>Presenter با Context اندروید</strong></td><td><code>getString(R.string...)</code> در Presenter</td><td>انتقال رشته‌ها به View یا منابع جدا</td></tr>
+  <tr><td>۲</td><td><strong>منطق در View</strong></td><td><code>if</code> در Fragment برای قوانین کسب‌وکار</td><td>انتقال به Presenter</td></tr>
+  <tr><td>۳</td><td><strong>Presenter حجیم</strong></td><td>بیش از ۳۰۰ خط یا منطق چند صفحه</td><td>تقسیم بر اساس صفحه</td></tr>
+  <tr><td>۴</td><td><strong>نادیده گرفتن detach</strong></td><td>نشتی حافظه در چرخش صفحه</td><td>فراخوانی detach در onDestroyView</td></tr>
+  <tr><td>۵</td><td><strong>نداشتن تست</strong></td><td>MVP بدون تست = کد اضافه</td><td>حداقل یک تست برای هر قانون</td></tr>
+  <tr><td>۶</td><td><strong>Callback از Presenter به View</strong></td><td>Presenter متد view را صدا می‌زند بدون null-check</td><td>بررسی null بودن view</td></tr>
+  <tr><td>۷</td><td><strong>استفاده از LiveData در Presenter</strong></td><td>بازگشت به سمت MVVM بدون اعتراف</td><td>یا کامل MVP، یا کامل MVVM</td></tr>
+  <tr><td>۸</td><td><strong>انتقال مستقیم Entity به View</strong></td><td>نشتی لایه‌ی داده به UI</td><td>تبدیل به ViewState در Presenter</td></tr>
+  <tr><td>۹</td><td><strong>داخلی کردن Presenter</strong></td><td>Presenter در کلاس Activity تعریف شده</td><td>استفاده از DI (Dagger/Hilt)</td></tr>
+  <tr><td>۱۰</td><td><strong>دستکاری View از داخل Model</strong></td><td>Repository که progress را خاموش می‌کند</td><td>Repository فقط داده برمی‌گرداند</td></tr>
+  <tr><td>۱۱</td><td><strong>Contract با ده‌ها متد</strong></td><td>یک Contract برای کل اپ</td><td>یک Contract به‌ازای هر صفحه</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">اشتباه مرگبار: Presenter وابسته به Context</span>
+اگر Presenter برای نمایش خطا نیاز به <code>Context</code> یا رشته‌های اندرویدی داشته باشد،
+تست واحد دوباره غیرممکن می‌شود. <strong>Presenter باید یک کلاس Java خالص باشد</strong>؛
+این تنها قانونی است که نباید بشکنید.
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱) اپلیکیشن فروشگاهی اندروید با MVP</h3>
+<p>
+در پروژه‌های فروشگاهی اندرویدی که با XML و Fragment نوشته می‌شوند، MVP هنوز الگوی
+رایجی است. هر صفحه یک Presenter دارد: <code>LoginPresenter</code>، <code>ProductListPresenter</code>
+و <code>CartPresenter</code>. قوانین مربوط به تخفیف و موجودی در Presenter صفحه‌ی سبد قرار
+می‌گیرد و با تست واحد پوشش داده می‌شود. تیم‌ها معمولاً از Dagger برای تزریق Presenter
+استفاده می‌کنند تا از داخلی شدن آن جلوگیری کنند.
+</p>
+
+<h3>۲) اپ پیام‌رسان با Presenter و RxJava</h3>
+<p>
+در اپ‌های چت، جریان پیام‌ها پیوسته و ناهمگام است. الگوی رایج این است که Presenter
+به‌جای Callback، یک <code>Observable</code> از وضعیت صفحه برگرداند و View با
+<code>subscribe</code> آن را مصرف کند. این ترکیب به می‌گوید داده به‌صورت یک جریان
+پیوسته از Presenter به View می‌رود — همان ایده‌ی یک‌طرفه، اما با ابزار واکنشی.
+</p>
+
+<h3>۳) اپ مالی و بانکی</h3>
+<p>
+در اپ‌های بانکی، قوانین مالی (مبلغ انتقال، سقف روزانه، احراز هویت دومرحله‌ای)
+نباید در Fragment نوشته شوند. با MVP، هر قانون در Presenter مربوط به همان صفحه قرار
+می‌گیرد و با یک Fake می‌توان همه‌ی حالت‌های خطا را تست کرد. این برای حسابرسی و
+اثبات صحت قواعد، الزامی است.
+</p>
+
+<h3>۴) اپ سلامت و نوبت‌دهی</h3>
+<p>
+در اپ کلینیک، صفحه‌ی رزرو نوبت چند مرحله دارد: انتخاب پزشک، انتخاب بازه‌ی زمانی،
+تأیید و پرداخت. هر مرحله یک Presenter مستقل دارد که وضعیت مرحله‌ی قبلی را نگه می‌دارد.
+این ساختار از باگ‌های «مرحله‌ی بعدی با وضعیت ناقص» جلوگیری می‌کند.
+</p>
+
+<h3>۵) پروژه‌های شرکتی با UI دسکتاپ یا Vue</h3>
+<p>
+MVP در فرانت‌اند وب هم کاربرد دارد، هرچند کمتر از اندروید. در Vue و React، الگوی
+مشابهی به نام «Presentational Component» و «Container Component» وجود دارد که از نظر
+مفهومی نزدیک به MVP است: یک بخش فقط داده را می‌گیرد و نمایش می‌دهد، و بخش دیگری
+منطق را در اختیار دارد.
+</p>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئله</th><th>علت</th><th>راه‌حل</th></tr>
+  <tr><td>رندر غیرضروری</td><td>فراخوانی زیاد <code>render()</code> از Presenter</td><td>ادغام به‌روزرسانی‌ها در یک state</td></tr>
+  <tr><td>ساخت مکرر Presenter</td><td>ایجاد Presenter در متد <code>onCreate</code> هر بار</td><td>نگه‌داری در <code>onCreateView</code> و بازیابی در چرخش</td></tr>
+  <tr><td>تبدیل مکرر داده</td><td>تبدیل Model به ViewState در هر به‌روزرسانی</td><td>نگه‌داری state نهایی و به‌روزرسانی افزایشی</td></tr>
+  <tr><td>درخواست شبکه‌ی مکرر</td><td>نبود کش در Presenter</td><td>افزودن لایه‌ی کش در Repository</td></tr>
+  <tr><td>سربار callback</td><td>زنجیره‌ی طولانی callback در شبکه</td><td>استفاده از Coroutine یا Rx</td></tr>
+  <tr><td>سربار تعامل UI</td><td>به‌روزرسانی در هر کاراکتر تایپ‌شده</td><td>debounce جست‌وجوی ورودی</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>بد — به‌روزرسانی در هر کلید:
+
+  onEmailChanged(e):
+    view.setHint(formatHint(e))   // هر کاراکتر، یک به‌روزرسانی UI
+
+بهتر — debounce با Rx:
+
+  onEmailChanged()
+    .debounce(300, MILLISECONDS)
+    .distinctUntilChanged()
+    .subscribe(email -&gt; view.setHint(formatHint(email)))
+
+همچنین: وضعیت سنگین (لیست ۱۰۰۰ ردیفی) را در Presenter نگه ندارید؛
+فقط داده‌ی صفحه‌ی فعلی را در ViewState قرار دهید.</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">معیار تصمیم‌گیری</span>
+اگر عملکرد رابط کاربری اولویت اصلی است، یا از صفحات بازی با حلقه‌ی رندر ۶۰ فریم استفاده می‌کنید،
+MVP با callback می‌تواند سربار ایجاد کند. در آن شرایط MVI با StateFlow یا Compose کارا‌تر است.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Junior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱ — MVP چیست؟</span>
+الگوی معماری با سه نقش: Model (داده و منطق)، View (نمایش منفعل) و Presenter
+(واسط که منطق را از View جدا می‌کند و جریان داده را یک‌طرفه می‌سازد).
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲ — تفاوت اصلی MVP و MVC چیست؟</span>
+در MVC، View می‌تواند مستقیم Model را صدا بزند؛ در MVP، این ارتباط قطع می‌شود و
+همه‌چیز از مسیر Presenter عبور می‌کند، بنابراین جریان داده یک‌طرفه است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۳ — تفاوت Presenter با Controller چیست؟</span>
+Presenter یک کلاس Java خالص است و از Android بی‌خبر است، اما Controller معمولاً
+به Activity یا Servlet وابسته است. به همین دلیل Presenter به‌راحتی قابل تست است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۴ — Presenter دقیقاً چه کاری انجام می‌دهد؟</span>
+رویداد کاربر را از View دریافت می‌کند، Model را صدا می‌زند، منطق را اعمال می‌کند
+و با فراخوانی متدهای Contract به View دستور نمایش می‌دهد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۵ — Contract در MVP چیست؟</span>
+یک Interface که متدهای View و Presenter را تعریف می‌کند تا این دو بدون وابستگی
+مستقیم به کلاس‌های همدیگر کار کنند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۶ — آیا View می‌تواند منطق داشته باشد؟</span>
+فقط منطق مربوط به نمایش، مثل این‌که آیا ProgressBar در حالت Loading باشد.
+قوانین کسب‌وکار باید در Presenter باشند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۷ — جریان یک‌طرفه یعنی چه؟</span>
+یعنی داده فقط از View به Presenter و از Presenter به View حرکت می‌کند و View هرگز
+از Model داده نمی‌گیرد. هیچ حلقه‌ی بازگشتی بین این دو وجود ندارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۸ — MVP برای چه نوع اپ‌هایی ساخته شد؟</span>
+اصلاً برای اندروید ساخته نشد؛ ریشه‌ی آن در GUI دسکتاپ است. اما در اندروید به‌دلیل
+مشکل تست‌ناپذیری Activity و نیاز به جداسازی منطق، فراگیر شد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۹ — Presenter را کجا بسازیم؟</span>
+بهتر است با DI (مانند Dagger یا Hilt) در یک کلاس جدا یا با ViewModel‌مانند ساخته شود تا
+در چرخش صفحه از دست نرود. از ساخت دستی در Activity پرهیز کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۰ — چرا attach و detach مهم هستند؟</span>
+چون View (Fragment) می‌تواند در چرخه‌ی حیات نابود شود در حالی که Presenter باید باقی بماند.
+جدا کردن مرجع View از Presenter، هم نشتی حافظه را حذف می‌کند و هم از فراخوانی متد روی View نابود جلوگیری می‌کند.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Mid</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۱ — Passive View و Supervising Presenter چه تفاوتی دارند؟</span>
+در Passive View، تمام حتی جزئی‌ترین تصمیم نمایشی هم در Presenter است و View کاملاً بی‌احساس است.
+در Supervising، Presenter کارهای تکراری نمایش را به View واگذار می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۲ — چطور از نوشتن تست Presenter در ساخت نهایی جلوگیری کنیم؟</span>
+Presenter باید در ماژول یا پکیج دامنه باشد (نه در پکیج UI اندروید). ساخت پروژه‌ی
+کلاس دامنه نباید به SDK اندروید نیاز داشته باشد تا در JVM معمولی تست شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۳ — آیا MVP برای پروژه‌های کوچک مناسب است؟</span>
+اگر پروژه کوچک باشد و تیم تست ننویسد، خیر. هزینه‌ی ساخت Presenter و Contract
+تنها زمانی توجیه می‌شود که ارزش تست‌پذیری آن را دریافت کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۴ — MVP در Compose چه معنایی دارد؟</span>
+معنای اصلی آن (جداسازی منطق از نمایش و تست‌پذیری) باقی می‌ماند، اما در Compose معمولاً
+به جای Presenter از ViewModel استفاده می‌شود (MVVM) یا از الگوی MVI. این‌ها عملاً
+همان مفهوم MVP را با ابزارهای بهتر پیاده می‌کنند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۵ — چگونه state را در MVP مدیریت کنیم؟</span>
+Presenter می‌تواند یک مدل ViewState نگه دارد و در هر تغییر، آن را به View بدهد.
+این کار باعث می‌شود همه‌ی حالت‌های ممکن صفحه صریح و قابل تست باشند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۶ — تفاوت MVP با MVVM در نگه‌داری وضعیت چیست؟</span>
+در MVP، Presenter وضعیت را در حافظه نگه می‌دارد و با چرخه‌ی حیات View هماهنگ نیست (مگر با
+تکنیک‌های دستی). در MVVM، ViewModel به‌طور خودکار با چرخه‌ی حیات هماهنگ می‌شود و
+LiveData/Flow ارائه می‌دهد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۷ — آیا می‌توان از Presenter در پروژه‌ی غیراندرویدی استفاده کرد؟</span>
+بله، این یک الگوی مستقل از پلتفرم است. در Vue و React هم الگوهای مشابه آن وجود دارد
+(Container و Presentational Component).
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Senior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۸ — مهم‌ترین محدودیت نظری MVP چیست؟</span>
+جریان یک‌طرفه در MVP، جریان «فقط رو به جلو» است و وضعیت را به‌صورت دسته‌ای
+(toast-type) می‌گیرد. برای اپ‌هایی با رویدادهای هم‌زمان و جریان‌های پیوسته،
+مدل push بهتری (MVI یا MVVM) وجود دارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۹ — چگونه MVP را در یک پروژه‌ی بزرگ‌تر مدیریت می‌کنید؟</span>
+با تقسیم‌بندی بر اساس فیچر به جای لایه. هر فیچر یک پوشه دارد که شامل View، Presenter
+و Contract خودش است. این کار از تداخل تیم‌ها در فایل‌های مشترک جلوگیری می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲۰ — MVP در معماری لایه‌ای (Layered) کجا قرار می‌گیرد؟</span>
+Presenter در لایه‌ی Presentation قرار می‌گیرد (جایی که View هم هست)، و Model در لایه‌ی
+Domain و Data. MVP و لایه‌بندی مکمل یکدیگرند: لایه‌بندی ساختار کلی را می‌دهد و MVP
+الگوی داخل لایه‌ی Presentation را مشخص می‌کند.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پرسش‌های پرتکرار</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱) تفاوت MVP و MVC دقیقاً چیست؟</span>
+مهم‌ترین تفاوت این است که در MVC، View می‌تواند مستقیم Model را بخواند، ولی در MVP این
+ارتباط قطع می‌شود. این باعث می‌شود جریان داده یک‌طرفه و رفتار برنامه قابل پیش‌بینی شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۲) آیا MVP برای اپ‌های اندرویدی هنوز کاربرد دارد؟</span>
+بله، در پروژه‌های موجود و مبتنی بر XML هنوز بسیار رایج است. اما برای پروژه‌های جدید
+مبتنی بر Compose، MVVM یا MVI محبوب‌تر هستند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۳) آیا MVP با MVVM رقیب است یا مکمل؟</span>
+بیشتر مکمل. در یک سیستم بزرگ، لایه‌ی Presentation را می‌توان به لایه‌های مختلف تقسیم کرد:
+معمولاً صفحات ساده‌تر با MVP و صفحات با وضعیت پیچیده‌تر با MVVM.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۴) تفاوت Presenter و ViewModel در MVVM چیست؟</span>
+ViewModel به‌طور خودکار با چرخه‌ی حیات هماهنگ می‌شود و LiveData/Flow ارائه می‌دهد،
+در حالی که Presenter باید دستی به چرخه‌ی حیات متصل شود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۵) آیا MVP تست‌پذیری را ۱۰۰٪ تضمین می‌کند؟</span>
+فقط اگر View و Presenter واقعاً از هم جدا باشند. اگر Presenter به Context اندروید
+نیاز داشته باشد، عملاً همان مشکل قبلی برمی‌گردد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۶) آیا باید یک Presenter برای هر صفحه بسازم؟</span>
+بله، بهتر است یک Presenter مستقل به‌ازای هر صفحه باشد. Presenter بزرگ که همه‌ی
+صفحه‌ها را مدیریت کند، همان مشکل Controller بزرگ را تکرار می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۷) تفاوت Passive View و Active View چیست؟</span>
+در Passive View، تمام تصمیمات در Presenter است. در Active View، View خودش هم کمی
+منطق دارد. MVP کلاسیک به Passive View اشاره دارد چون ایده‌ی جداسازی را بهتر حفظ می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۸) آیا می‌توان MVP را با لایه‌بندی ترکیب کرد؟</span>
+بله و این ترکیب بسیار رایج است: MVP درون لایه‌ی Presentation (که خودش یک لایه از
+ساختار لایه‌بندی است) و لایه‌بندی در سطح کل سیستم.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۹) آیا MVP برای پروژه‌های تیمی بزرگ مناسب است؟</span>
+تا حدی. مشکل اصلی، حجم زیاد کد است. اگر تیم بزرگ باشد، Feature-Based بهتر عمل می‌کند
+تا Presenter های یک پوشه‌ی بزرگ.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۰) چطور وضعیت را در MVP نگه دارم؟</span>
+معمولاً به دو روش: نگه‌داری وضعیت در فیلدهای Presenter و بازیابی از Bundle،
+یا تعریف یک ViewState واحد و کشش آن به‌صورت LiveData یا Flow.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۱) آیا می‌توان از callback به‌جای Flow در MVP استفاده کرد؟</span>
+بله، و این روش در MVP کلاسیک رایج است. اما برای جریان‌های پیوسته (مثل چت) استفاده
+از Flow یا Rx انتخاب بهتری است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۲) آیا MVP به داده‌ی دوحالته نیاز دارد؟</span>
+خیر، در واقع MVP برای داده‌ی تک‌طرفه طراحی شده است. این یکی از نقاط قوت آن است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۳) چگونه از انتقال منطق به View جلوگیری کنم؟</span>
+قانون بگذارید که View فقط متدهای <code>showX()</code> داشته باشد و هیچ
+<code>repository</code> یا <code>if</code> مربوط به کسب‌وکار در آن نباشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۴) آیا Contract باید برای هر صفحه باشد؟</span>
+بله، یک Contract به‌ازای هر صفحه یا جریان کاربر. قرار دادن همه‌ی متدها در یک Contract
+بزرگ، کد را غیرقابل نگهداری می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۵) بهترین راه تست یک Presenter چیست؟</span>
+استفاده از یک پیاده‌سازی جعلی (Fake) ساده از Repository و یک View ضبط‌کننده
+(Recording View) که دستورات را ثبت می‌کند. این ترکیب، تست را سریع و قطعی می‌کند.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>خلاصه</th></tr>
+  <tr><td>تعریف</td><td>الگوی معماری با Model، View و Presenter</td></tr>
+  <tr><td>View</td><td>نمایش منفعل؛ فقط دستور می‌گیرد و رویداد می‌دهد</td></tr>
+  <tr><td>Presenter</td><td>کلاس خالص با تمام منطق صفحه</td></tr>
+  <tr><td>Model</td><td>داده، قوانین کسب‌وکار و ارتباط با دیتابیس</td></tr>
+  <tr><td>Contract</td><td>Interface مشترک بین View و Presenter</td></tr>
+  <tr><td>جریان</td><td>View → Presenter → Model → Presenter → View</td></tr>
+  <tr><td>قانون طلایی</td><td>View هرگز Model را مستقیم صدا نمی‌زند</td></tr>
+  <tr><td>ممنوعیت</td><td>Presenter با Context اندروید، View با منطق، Model با UI</td></tr>
+  <tr><td>مزیت اصلی</td><td>تست واحد Presenter در چند میلی‌ثانیه</td></tr>
+  <tr><td>عیب اصلی</td><td>حجم کد و حفظ وضعیت دشوار</td></tr>
+  <tr><td>بهترین برای</td><td>اندروید XML با منطق پیچیده و تیم تست‌محور</td></tr>
+  <tr><td>نامناسب برای</td><td>پروژه‌های کوچک، اپ‌های Compose مدرن</td></tr>
+  <tr><td>جایگزین موبایل</td><td>MVVM یا MVI</td></tr>
+  <tr><td>ریشه</td><td>دهه‌ی ۱۹۹۰ در GUI دسکتاپ؛ فراگیری در ۲۰۱۳ در اندروید</td></tr>
+  <tr><td>الگوی کلیدی</td><td>Observer، Facade، Strategy</td></tr>
+  <tr><td>قانون SOLID</td><td>SRP و DIP به‌طور طبیعی رعایت می‌شوند</td></tr>
+  <tr><td>ابزار تست</td><td>JUnit 5، MockK، Fake Repository</td></tr>
+  <tr><td>معیار موفقیت</td><td>Presenter بدون هیچ کلاس اندرویدی تست می‌شود</td></tr>
+  <tr><td>سیگنال هشدار</td><td>منطق در Fragment، Context در Presenter، نبود تست</td></tr>
+  <tr><td>یادآوری نهایی</td><td>MVP ارزشش را از تست‌پذیری می‌گیرد؛ بدون تست، بی‌فایده است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله برای به‌خاطر سپردن</span>
+<strong>MVP یعنی منطق را از View بیرون بکش و از طریق Presenter به آن برگردان.</strong>
+اگر این را نگه دارید، بقیه‌ی جزئیات را می‌توانید خودتان بازسازی کنید.
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>هدف</th><th>تمرین پیشنهادی</th></tr>
+  <tr><td>۱ — هفته‌ی اول</td><td>فهم تفاوت View فعال و منفعل</td><td>یک صفحه‌ی ساده با MVP و یک نسخه‌ی MVC بنویسید و مقایسه کنید</td></tr>
+  <tr><td>۲ — هفته‌ی دوم</td><td>ساخت Contract و جداسازی کامل</td><td>پیاده‌سازی یک صفحه‌ی ورود کاملاً با MVP</td></tr>
+  <tr><td>۳ — هفته‌ی سوم</td><td>نوشتن تست Presenter</td><td>نوشتن ۵ تست واحد با Fake Repository</td></tr>
+  <tr><td>۴ — هفته‌ی چهارم</td><td>آشنایی با Dagger یا Hilt</td><td>تزریق Presenter از طریق DI</td></tr>
+  <tr><td>۵ — ماه دوم</td><td>درک MVVM</td><td>ساخت ViewModel و مقایسه با Presenter</td></tr>
+  <tr><td>۶ — ماه سوم</td><td>مهاجرت به Compose</td><td>انتقال یک صفحه از XML به Compose با حفظ تست‌ها</td></tr>
+  <tr><td>۷ — ماه چهارم</td><td>انتخاب معماری</td><td>تحلیل یک پروژه‌ی واقعی و انتخاب مستند بین MVP، MVVM و MVI</td></tr>
+</table>
+</div>
+
+<h3>جمع‌بندی</h3>
+<p>
+<strong>MVP</strong> یک گام مهم در تاریخچه‌ی معماری اندروید بود: اولین الگویی که
+به‌طور جدی نشان داد می‌توان منطق را از کد سیستم‌عامل جدا کرد و آن را در میلی‌ثانیه تست کرد.
+این ایده هنوز پابرجاست و در قالب MVVM و MVI ادامه پیدا کرده است.
+</p>
+<p>
+اگر امروز در حال شروع یک پروژه‌ی جدید اندرویدی هستید، شاید MVP انتخاب اول شما نباشد —
+MVVM یا MVI جلوتر هستند. اما <strong>فهم عمیق MVP به شما کمک می‌کند MVVM را بهتر
+درک کنید</strong>، چون تفاوت این دو فقط در نام ViewModel است.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله ششمین عضو سری «معماری‌های نرم‌افزاری» است. اکنون شما الگوهای تقسیم
+مسئولیت (MVC، MVP) را می‌شناسید و ساختارهای کلان معماری (Layered، Clean، Onion، Hexagonal)
+را هم پوشش داده‌اید. مقاله‌ی بعدی به MVVM می‌پردازد.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: مشکل تست‌ناپذیری Activity</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">MVP چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: جریان یک‌طرفه</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای MVP</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: صفحه‌ی ورود</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">MVP در اندروید</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: مشکل تست‌ناپذیری Activity</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">MVP چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: جریان یک‌طرفه</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای MVP</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: صفحه‌ی ورود</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">MVP در اندروید</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

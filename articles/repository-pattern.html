@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repository Pattern چیست؟ آموزش کامل الگوی مخزن با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله الگوی Repository را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با DAO و Data Mapper، پیاده‌سازی کامل Java 21 با JPA و JDBC، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="Repository Pattern, الگوی Repository, مخزن چیست, Repository چیست, DAO, Data Mapper, Unit of Work, Java, JPA, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, Clean Architecture">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Repository Pattern چیست؟ آموزش کامل الگوی مخزن با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله الگوی Repository را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با DAO و Data Mapper، پیاده‌سازی کامل Java 21 با JPA و JDBC، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/repository-pattern.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/repository-pattern.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Repository Pattern">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Repository Pattern چیست؟ آموزش کامل الگوی مخزن با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="مخزن به‌عنوان مجموعه‌ی موجودیت‌ها، پیاده‌سازی Java 21 با JPA و JDBC، مقایسه با DAO و Data Mapper و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Repository Pattern چیست؟ آموزش کامل الگوی مخزن با مثال و ساختار پروژه",
+    "description": "در این مقاله الگوی Repository را کامل یاد می‌گیرید: تعریف و تاریخچه، تفاوت با DAO و Data Mapper، پیاده‌سازی کامل Java 21 با JPA و JDBC، تست، مزایا، معایب و ۲۰ سؤال مصاحبه.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/repository-pattern.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/repository-pattern.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Repository Pattern, DAO, Data Mapper, Unit of Work, Java, JPA, Unit Test",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Repository Pattern", "item": "https://haedarfarhani.github.io/My-Articles/articles/repository-pattern.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Repository Pattern</span>؛ کتابخانه‌ای که دامنه از دیتابیس بی‌خبر می‌ماند
+          </h1>
+
+          <p class="hero-lead">
+            Repository یعنی <strong>یک مجموعه‌ی موجودیت‌های دامنه، به‌علاوه‌ی یک Interface
+            که لایه‌ی بالاتر را از جزئیات ذخیره‌سازی دور نگه می‌دارد</strong>.
+            در این راهنما تعریف، تفاوت دقیق با DAO و Data Mapper، پیاده‌سازی کامل با
+            <code>Java 21</code> روی JPA و JDBC، Unit of Work، تست واحد با
+            <code>JUnit 5</code>، معایب صادقانه و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Repository_Pattern</span>
+            <span class="post-tag">#DAO</span>
+            <span class="post-tag">#Data_Mapper</span>
+            <span class="post-tag">#Unit_of_Work</span>
+            <span class="post-tag">#JPA</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی SQL به همه‌جا سرایت می‌کند</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Repository Pattern چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: مخزن کجاست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: اجزای مخزن</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: مدیریت کاربران</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>مقایسه با DAO و Data Mapper</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی SQL به همه‌جا سرایت می‌کند</h2>
+
+<p>
+در یک اپلیکیشن فروشگاهی، منطق ثبت سفارش باید سه چیز را بداند:
+موجودی کم است؟ تخفیف چقدر است؟ کاربر مسدود شده است؟
+هیچ‌کدام از این‌ها ربطی به SQL ندارد.
+</p>
+
+<p>
+اما اگر کد را بنویسیم بدون الگویی که مرز مشخص کند، Service شما
+<code>Connection</code> می‌سازد، <code>PreparedStatement</code> می‌نویسد،
+ردیف را به Entity نگاشت می‌کند و بعد منطق تخفیف را اعمال می‌کند.
+یعنی <strong>سیستم باید در حافظه بماند، اما کد مجبور است جزئیات ذخیره‌سازی را هم بداند</strong>.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>public void placeOrder(Order order) {
+    Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);   // ۱
+    try {
+        conn.setAutoCommit(false);
+
+        // ۲) موجودی بررسی می‌شود — با یک Query ساده
+        PreparedStatement stock = conn.prepareStatement(
+                "SELECT quantity FROM inventory WHERE sku = ?");
+        stock.setString(1, order.sku());
+        ResultSet rs = stock.executeQuery();
+        if (!rs.next() || rs.getInt(1) &lt; order.quantity()) {
+            throw new OutOfStockException(order.sku());
+        }
+
+        // ۳) تخفیف محاسبه می‌شود — منطق کسب‌وکار قاطی SQL
+        BigDecimal discount = order.isVip()
+                ? BigDecimal.valueOf(0.15)
+                : BigDecimal.ZERO;
+        order.applyDiscount(discount);
+
+        // ۴) ذخیره‌سازی با نگاشت دستی ردیف به Entity
+        PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO orders (id, sku, qty, total) VALUES (?,?,?,?)");
+        ps.setString(1, order.id().toString());
+        ps.setString(2, order.sku());
+        ps.setInt(3, order.quantity());
+        ps.setBigDecimal(4, order.total());
+        ps.executeUpdate();
+
+        conn.commit();
+    } catch (SQLException e) {
+        conn.rollback();
+        throw new StorageException(e);   // ۵) خطای دیتابیس به بیرون نشت می‌کند
+    } finally {
+        conn.close();
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ریشه‌ی مشکل</span>
+پنج مسئولیت در یک متد. مهم‌تر از آن، <strong>تست این کد نیاز به دیتابیس‌ی واقعی
+دارد</strong> و قانون «تخفیف مشتریان VIP» به‌جای اینکه یک واحد مستقل باشد،
+بین SQL و محاسبه گیر کرده است. <strong>Repository Pattern</strong> با یک جمله حل می‌کند:
+<em>دسترسی به مجموعه‌ی موجودیت‌ها را پشت یک Interface پنهان کن.</em>
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+ایده‌ی Repository به دهه‌ی ۱۹۹۰s برمی‌گردد و از دنیای پایگاه‌داده‌ی شیءگرا
+(<strong>OODB</strong>) می‌آید. محققانی مثل <strong>Jim Fowler</strong> و
+<strong>David Martin</strong> در کتاب <em>Patterns of Enterprise Application Architecture</em>
+(۲۰۰۲) آن را به‌صورت رسمی در کنار <strong>Data Mapper</strong> و
+<strong>Unit of Work</strong> معرفی کردند.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
+  <tr><td>۱۹۹۰s — OODB</td><td>مشکل «ناهمخوانی شیءگرایی» میان مدل شیء و مدل رابطه‌ای</td></tr>
+  <tr><td>۱۹۹۶ — EJB و Entity Bean</td><td>مخزن به‌عنوان راه دوررسی به موجودیت‌های پایدار</td></tr>
+  <tr><td>۱۹۹۹ — Hibernate</td><td>Session به‌عنوان مخزن پنهان (Session-per-Request)</td></tr>
+  <tr><td>۲۰۰۲ — Martin &amp; Fowler</td><td>معرفی رسمی الگو در کتاب مرجع معماری سازمانی</td></tr>
+  <tr><td>۲۰۰۱–۲۰۱۰ — Spring Data</td><td>تولید خودکار پیاده‌سازی مخزن از Interface</td></tr>
+  <tr><td>۲۰۱۲ — DDD</td><td>بازگشت Repository به‌عنوان بخشی از مدل Aggregate</td></tr>
+  <tr><td>۲۰۱۷ — Onion و Clean</td><td>مخزن به‌عنوان Port در مرز هسته و بیرون</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">دلیل اصلی ایجاد</span>
+سه نیاز تاریخی: <strong>۱) پنهان کردن جزئیات ذخیره‌سازی</strong> از لایه‌ی دامنه،
+<strong>۲) جدا کردن مدل دامنه از مدل دیتابیس</strong> (زیرا رابطه‌ای و شیءگرا
+متفاوت‌اند)، و <strong>۳) یکنواختی API</strong> برای همه‌ی موجودیت‌ها.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Repository Pattern چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>Repository</strong> یک <strong>مجموعه‌ی موجودیت‌های دامنه</strong> است که
+دسترسی به آن‌ها را <strong>مانند یک کتابخانه در حافظه</strong> فراهم می‌کند.
+لایه‌ی بالاتر می‌تواند موجودیت را بخواند، اضافه کند یا حذف کند، بدون آنکه
+از وجود SQL، JPA یا حتی دیتابیس باخبر باشد.
+</div>
+
+<pre class="kl-code" data-lang="text"><code>تعریف کلاسیک (Eric Evans، DDD):
+
+  «یک مخزن، دسترسی به مجموعه‌ای از Aggregateهای هم‌نوع را فراهم می‌کند،
+    با این تصور که این مجموعه یک مجموعه‌ی کامل است.»
+
+سؤالاتی که Repository به آن‌ها پاسخ می‌دهد:
+  ✗ «چطور کاربر را پیدا کنم؟»        → users.findById(id)
+  ✗ «آیا این کاربر وجود دارد؟»       → users.existsByEmail(email)
+  ✗ «چطور همه را ذخیره کنم؟»        → users.save(user)
+
+سؤالاتی که Repository از آن‌ها فرار می‌کند:
+  ✗ «چه جدولی؟»                     → نام جدول یک جزئیات پیاده‌سازی است
+  ✗ «چه ستون‌هایی؟»                 → مدل دیتابیس یک جزئیات است
+  ✗ «چه Indexی؟»                    → نگرانی زیرساخت است
+  ✗ «تراکنش کجاست؟»                 → در Unit of Work یا Service</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>Repository</th><th>DAO</th></tr>
+  <tr><td>تمرکز</td><td>مجموعه‌ی موجودیت‌های دامنه</td><td>یک جدول یا یک عملیات ذخیره‌سازی</td></tr>
+  <tr><td>زبان</td><td>زبان دامنه</td><td>زبان دیتابیس</td></tr>
+  <tr><td>نمونه</td><td><code>findActiveCustomers()</code></td><td><code>findByStatus(1)</code></td></tr>
+  <tr><td>می‌داند جدول چیست؟</td><td>❌</td><td>✅</td></tr>
+  <tr><td>بازگشتی</td><td>موجودیت دامنه</td><td>ردیف خام / نوع فنی</td></tr>
+  <tr><td>تعداد در هر مجموعه</td><td>معمولاً یک (در DDD)</td><td>گاهی یک Interface بزرگ برای همه</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سوءتفاهم رایج</span>
+«یک Interface به نام <code>BaseRepository&lt;T&gt;</code> بساز و همه چیز را از آن
+به ارث ببر» <strong>Repository نیست</strong>. این کار فقط یک لایه‌ی نازک روی ORM
+اضافه می‌کند و هیچ ارزشی نمی‌آورد. مخزن باید <strong>زبان دامنه</strong> داشته باشد.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نشانه</th><th>اثر واقعی</th></tr>
+  <tr><td>متدهای <code>findByColumnName</code> در Service</td><td>تغییر نام ستون یعنی تغییر منطق کسب‌وکار</td></tr>
+  <tr><td>یک <code>BaseDao&lt;T&gt;</code> با ۴۰ متد</td><td>هر لایه‌ای می‌تواند هر کاری با دیتابیس بکند</td></tr>
+  <tr><td>مدل دیتابیس = مدل دامنه</td><td>تغییر اسکیمای جدول، کل دامنه را می‌شکند</td></tr>
+  <tr><td>Lazy Loading فرار از کلاس</td><td><code>LazyInitializationException</code> سر وقت و سر جا</td></tr>
+  <tr><td><code>SQLException</code> در امضای متد Service</td><td>لایه‌ی بالاتر به دیتابیس گره خورد</td></tr>
+  <tr><td>تست نیازمند دیتابیس</td><td>کند، شکننده و وابسته به محیط</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">بدترین پیامد: نشت دانش ذخیره‌سازی</span>
+وقتی Service شما <code>order.getStatus().getValue()</code> صدا می‌زند، عملاً
+جزئیات نمایش وضعیت در دیتابیس (<code>int</code> است نه <code>enum</code>) به
+لایه‌ی دامنه نشت کرده است. با تغییر نوع ستون، کد کسب‌وکار می‌شکند.
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: مخزن کجاست؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">پاسخ بستگی به معماری دارد</span>
+در <strong>لایه‌بندی کلاسیک</strong>، مخزن در لایه‌ی Data قرار می‌گیرد.
+در <strong>Clean و Onion</strong>، مخزن یک <strong>Port</strong> است که در
+لایه‌ی <strong>Domain</strong> تعریف می‌شود و پیاده‌سازی‌اش در لایه‌ی بیرونی است.
+<strong>تفاوت این دو، همان تفاوت کل معماری است.</strong>
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph CLEAN["در معماری Clean / Onion"]
+        D1["Domain Layer"]
+        P1["UserRepository (Port / Interface)"]
+        I1["JpaUserRepository (Adapter)"]
+        DB1[("Database")]
+
+        D1 --> P1
+        I1 -. "implements" .-> P1
+        I1 --> DB1
+    end
+
+    subgraph LAYERED["در لایه‌بندی کلاسیک"]
+        S1["Service Layer"]
+        R1["UserDao"]
+        DB2[("Database")]
+
+        S1 --> R1
+        R1 --> DB2
+    end
+
+    style CLEAN fill:#134e4a,stroke:#5eead4,color:#fff
+    style LAYERED fill:#115e59,stroke:#2dd4bf,color:#fff
+    style P1 fill:#0f766e,stroke:#14b8a6,color:#fff</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قانون جهت وابستگی</span>
+اگر مخزن را در لایه‌ی Data تعریف کنید، لایه‌ی Domain مجبور است به آن وابسته شود
+(چون Interface آنجاست) و قانون وابستگی نقض می‌شود.
+<strong>راه درست: Interface در دامنه، پیاده‌سازی در بیرون.</strong>
+</div>
+</section>
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>ساختار معماری: اجزای مخزن</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نوع مخزن</th><th>توضیح</th><th>مناسب برای</th></tr>
+  <tr><td><strong>مخزن دامنه</strong></td><td>یک مخزن به‌ازای هر Aggregate، با زبان کسب‌وکار</td><td>DDD، Onion، Clean</td></tr>
+  <tr><td><strong>مخزن CRUD</strong></td><td>عملیات پایه‌ی خواندن و نوشتن برای هر موجودیت</td><td>پروژه‌های ساده</td></tr>
+  <tr><td><strong>مخزن با Query DSL</strong></td><td>امکان ساخت کوئری با زنجیره‌ی متد</td><td>گزارش‌گیری پیچیده</td></tr>
+  <tr><td><strong>مخزن مشخصه‌ای (Specification)</strong></td><td>معیار قابل ترکیب برای کوئری پویا</td><td>فیلترهای ترکیبی</td></tr>
+  <tr><td><strong>مخزن رویداد</strong></td><td>فقط خواندن از جریان رویدادها به‌جای دیتابیس</td><td>Event Sourcing</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph DOMAIN["Domain — بدون وابستگی بیرونی"]
+        AGG["User (Aggregate Root)"]
+        IFACE["UserRepository (Port)"]
+        AGG --- IFACE
+    end
+
+    subgraph APP["Application"]
+        SVC["UserService"]
+    end
+
+    subgraph INFRA["Infrastructure — پیاده‌سازی"]
+        IMPL["JpaUserRepository"]
+        MAP["UserRowMapper"]
+        SPRING["SpringDataUserCrudRepository"]
+    end
+
+    DB[("Database")]
+
+    SVC -->|"save(user) · findById(id)"| IFACE
+    IMPL -. "implements" .-> IFACE
+    IMPL --> SPRING
+    IMPL --> MAP
+    SPRING --> DB
+
+    style DOMAIN fill:#134e4a,stroke:#5eead4,color:#fff
+    style APP fill:#115e59,stroke:#2dd4bf,color:#fff
+    style INFRA fill:#1c1917,stroke:#a8a29e,color:#fff</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">سه تکنیک پرکاربرد در پیاده‌سازی</span>
+۱) <strong>نگاشت دستی</strong> — کلاس mapper جدا، بدون ORM.<br>
+۲) <strong>Spring Data JPA</strong> — تولید خودکار از Interface، سریع ولی محدود.<br>
+۳) <strong>Data Mapper کلاسیک</strong> — کامل‌ترین کنترل، بیشترین کد.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>sequenceDiagram
+    autonumber
+    participant S as UserService
+    participant R as UserRepository (Port)
+    participant I as JpaUserRepository
+    participant DB as Database
+
+    S->>R: findByEmail("ali@test.com")
+    R->>I: (تزریق در زمان اجرا)
+    I->>DB: SELECT * FROM users WHERE email = ?
+    DB-->>I: UserRow
+    I->>I: تبدیل UserRow → User
+    I-->>R: Optional&lt;User&gt;
+    R-->>S: Optional&lt;User&gt;
+    S-->>S: قوانین دامنه را اعمال می‌کند
+    S->>R: save(user)
+    R->>I: UPDATE users SET ...
+    I-->>R: void
+    R-->>S: User (بازگشتی)</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>نکته‌ی مهم درباره‌ی جریان Repository:
+
+  ۱) لایه‌ی Service هرگز نمی‌داند پیاده‌سازی مخزن JPA است یا JDBC یا In-Memory
+  ۲) پیاده‌سازی مخزن هم هیچ قاعده‌ی کسب‌وکاری اعمال نمی‌کند
+     → «کاربر مسدود نباید ذخیره شود» در Service/Domain است، نه در Repository
+  ۳) مخزن فقط «انتقال داده» است، نه «انجام عملیات کسب‌وکار»
+
+مثال عملی:
+  users.save(user)         → ذخیره‌ی یک کاربر            (بدون قاعده)
+  users.findActive()       → خواندن کاربران فعال        (بدون قاعده)
+  userService.activate(u)  → فعال‌سازی کاربر             (قاعده‌ی کسب‌وکار)</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">مرز مخزن و سرویس</span>
+متدی مثل <code>saveOnlyVipUsers()</code> یا <code>updateAndNotify()</code>
+از پس responsibilities مخزن خارج شده است. اگر مخزن شما شروع به «تصمیم‌گیری»
+کرد، دیگر مخزن نیست — یک سرویس است با نام اشتباه.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>src/main/java/com/app/user/
+├── domain/                        ← دامنه (بدون وابستگی)
+│   ├── model/
+│   │   ├── User.java
+│   │   └── Email.java             ← Value Object
+│   └── repository/
+│       └── UserRepository.java    ← Port — Interface اینجاست
+│
+├── application/
+│   └── UserService.java           ← قوانین کسب‌وکار
+│
+└── infrastructure/
+    └── persistence/
+        ├── JpaUserRepository.java      ← implements UserRepository
+        ├── UserJpaEntity.java          ← مدل دیتابیس
+        ├── UserJpaRepositoryCrud.java  ← Spring Data
+        └── UserEntityMapper.java       ← نگاشت دوطرفه
+
+src/test/java/com/app/user/
+├── domain/UserTest.java
+├── application/UserServiceTest.java
+└── infrastructure/
+    └── InMemoryUserRepository.java     ← Fake برای تست</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی حیاتی: دو مدل متفاوت</span>
+<strong><code>User</code></strong> (دامنه) و <strong><code>UserJpaEntity</code></strong>
+(دیتابیس) عمداً جدا هستند. این کار هزینه‌ی نگاشت دارد، اما به شما اجازه می‌دهد
+ساختار جدول را بدون شکستن قوانین دامنه تغییر دهید. اگر همین یک کلاس باشد،
+به این نقطه می‌رسید که برای یک <code>INDEX</code> جدید، کل دامنه را بازنویسی می‌کنید.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>مثال عملی کامل: مدیریت کاربران</h2>
+
+<ul class="kl-check">
+  <li>کاربر ثبت‌نام می‌کند؛ دامنه قاعده‌ی «ایمیل تکراری مجاز نیست» را در خود دارد.</li>
+  <li>سرویس ابتدا با <code>existsByEmail</code> بررسی می‌کند.</li>
+  <li>سپس مخزن را صدا می‌زند و مدل دامنه را ذخیره می‌کند.</li>
+  <li>پیاده‌سازی مخزن، مدل دامنه را به مدل دیتابیس نگاشت و ذخیره می‌کند.</li>
+  <li>در تست، به‌جای دیتابیس یک مخزن In-Memory استفاده می‌شود.</li>
+</ul>
+
+<pre class="kl-code" data-lang="text"><code>توزیع مسئولیت در یک سناریو:
+
+  «ایمیل @test.com مجاز نیست»
+      → User.create() در دامنه    (نه مخزن، نه سرویس)
+
+  «ایمیل نباید تکراری باشد»
+      → UserService.register()     (نیازمند جست‌وجو)
+
+  «کاربر با این ایمیل در دیتابیس هست؟»
+      → UserRepository.existsByEmail()
+
+  «INSERT INTO users ...»
+      → JpaUserRepositoryImpl      (جزئیات فنی)
+
+نکته: هیچ‌کدام از قوانین دامنه در Repository نیست.</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">مسئله‌ی نیمه‌کاره</span>
+اگر قاعده‌ی «ایمیل تکراری مجاز نیست» فقط در سرویس باشد و دو نقطه‌ی مختلف
+سرویس آن را صدا بزنند، ممکن است یکی فراموش شود. راه‌حل حرفه‌ای:
+<strong>قید یکتایی در دیتابیس + پیام خطای قابل‌فهم + رعایت در دامنه</strong>.
+دیتابیس آخرین خط دفاع است، نه اولین خط.
+</div>
+</section>
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>مدل دامنه</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.user.domain.model;
+
+import java.util.Objects;
+
+/** Aggregate Root — ریشه‌ی تجمیع کاربر. هیچ وابستگی بیرونی ندارد. */
+public final class User {
+
+    private final Long id;
+    private final Email email;
+    private String fullName;
+    private UserStatus status;
+    private final java.time.Instant createdAt;
+
+    private User(Long id, Email email, String fullName,
+                 UserStatus status, java.time.Instant createdAt) {
+        this.id = id;
+        this.email = email;
+        this.fullName = fullName;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
+
+    /** قاعده‌ی کسب‌وکار در دامنه، نه در مخزن. */
+    public static User register(Email email, String fullName) {
+        if (fullName == null || fullName.trim().length() &lt; 3) {
+            throw new IllegalArgumentException("نام باید حداقل ۳ کاراکتر باشد");
+        }
+        if (email.domain().endsWith("@test.com")) {
+            throw new IllegalArgumentException("دامنه‌ی آزمایشی مجاز نیست");
+        }
+        return new User(null, email, fullName.trim(),
+                UserStatus.ACTIVE, java.time.Instant.now());
+    }
+
+    public void changeName(String newName) {
+        if (status == UserStatus.DELETED) {
+            throw new IllegalStateException("کاربر حذف‌شده قابل تغییر نیست");
+        }
+        if (newName == null || newName.trim().length() &lt; 3) {
+            throw new IllegalArgumentException("نام باید حداقل ۳ کاراکتر باشد");
+        }
+        this.fullName = newName.trim();
+    }
+
+    public void deactivate() {
+        this.status = UserStatus.INACTIVE;
+    }
+
+    public Long id() { return id; }
+    public Email email() { return email; }
+    public String fullName() { return fullName; }
+    public UserStatus status() { return status; }
+    public java.time.Instant createdAt() { return createdAt; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User other)) {
+            return false;
+        }
+        return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.user.domain.model;
+
+/** Value Object — ایمیل با اعتبار و متد equals درست. */
+public record Email(String value) {
+
+    public Email {
+        if (value == null || !value.matches("^[\\w.+-]+@[\\w-]+\\.[\\w.]+$")) {
+            throw new IllegalArgumentException("ایمیل نامعتبر: " + value);
+        }
+        value = value.toLowerCase();
+    }
+
+    /** بخشی که بعد از @ است — برای قاعده‌ی دامنه استفاده می‌شود. */
+    public String domain() {
+        return value.substring(value.indexOf('@'));
+    }
+}
+</code></pre>
+
+<h3>پورت — قرارداد مخزن</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.user.domain.repository;
+
+import java.util.List;
+import java.util.Optional;
+import com.app.user.domain.model.Email;
+import com.app.user.domain.model.User;
+
+/**
+ * Port مخزن کاربر. متدها به زبان دامنه نوشته شده‌اند،
+ * نه به زبان دیتابیس (نه status، نه table، نه limit).
+ */
+public interface UserRepository {
+
+    Optional&lt;User&gt; findById(Long id);
+
+    Optional&lt;User&gt; findByEmail(Email email);
+
+    boolean existsByEmail(Email email);
+
+    List&lt;User&gt; findActive();
+
+    /** شناسه‌ی تولیدشده را برمی‌گرداند. */
+    User save(User user);
+
+    void deleteById(Long id);
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نشانه‌ی یک پورت خوب</span>
+به نام متدها نگاه کنید: <code>findActive()</code> (زبان دامنه) در برابر
+<code>findByStatus(1)</code> (زبان دیتابیس). اگر اسم متدها به جدول و ستون اشاره دارند،
+مخزن شما هنوز زبان دیتابیس را از دامنه پنهان نکرده است.
+</div>
+
+<h3>آداپتر — پیاده‌سازی با JPA</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.user.infrastructure.persistence;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+/** مدل دیتابیس — عمداً با مدل دامنه متفاوت است. */
+@Entity
+@Table(name = "users")
+public class UserJpaEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "email", nullable = false, unique = true, length = 320)
+    private String email;
+
+    @Column(name = "full_name", nullable = false, length = 200)
+    private String fullName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private UserStatusJpa status;
+
+    @Column(name = "created_at", nullable = false)
+    private java.time.Instant createdAt;
+
+    protected UserJpaEntity() {
+        // مورد نیاز JPA
+    }
+
+    public UserJpaEntity(String email, String fullName,
+                         UserStatusJpa status, java.time.Instant createdAt) {
+        this.email = email;
+        this.fullName = fullName;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() { return id; }
+    public String getEmail() { return email; }
+    public String getFullName() { return fullName; }
+    public UserStatusJpa getStatus() { return status; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setStatus(UserStatusJpa status) { this.status = status; }
+    public java.time.Instant getCreatedAt() { return createdAt; }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.user.infrastructure.persistence;
+
+import com.app.user.domain.model.Email;
+import com.app.user.domain.model.User;
+import com.app.user.domain.model.UserStatus;
+import com.app.user.domain.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Repository;
+
+/** تنها کلاسی که حرف JPA می‌زند. هیچ قاعده‌ی کسب‌وکاری اینجا نیست. */
+@Repository
+public class JpaUserRepository implements UserRepository {
+
+    private final SpringUserCrudRepository crud;
+
+    public JpaUserRepository(SpringUserCrudRepository crud) {
+        this.crud = crud;
+    }
+
+    @Override
+    public Optional&lt;User&gt; findById(Long id) {
+        return crud.findById(id).map(UserEntityMapper::toDomain);
+    }
+
+    @Override
+    public Optional&lt;User&gt; findByEmail(Email email) {
+        return crud.findByEmail(email.value()).map(UserEntityMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByEmail(Email email) {
+        return crud.existsByEmail(email.value());
+    }
+
+    @Override
+    public List&lt;User&gt; findActive() {
+        return crud.findByStatus(UserStatusJpa.ACTIVE).stream()
+                .map(UserEntityMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public User save(User user) {
+        UserJpaEntity entity = UserEntityMapper.toEntity(user);
+        UserJpaEntity saved = crud.save(entity);
+        return UserEntityMapper.toDomain(saved);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        crud.deleteById(id);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.user.infrastructure.persistence;
+
+import com.app.user.domain.model.Email;
+import com.app.user.domain.model.User;
+import com.app.user.domain.model.UserStatus;
+import java.util.Objects;
+
+/** نگاشت دوطرفه بین مدل دیتابیس و مدل دامنه. */
+public final class UserEntityMapper {
+
+    private UserEntityMapper() {
+    }
+
+    public static User toDomain(UserJpaEntity entity) {
+        return User.restore(
+                entity.getId(),
+                new Email(entity.getEmail()),
+                entity.getFullName(),
+                UserStatus.valueOf(entity.getStatus().name()),
+                entity.getCreatedAt());
+    }
+
+    public static UserJpaEntity toEntity(User user) {
+        return new UserJpaEntity(
+                user.email().value(),
+                user.fullName(),
+                UserStatusJpa.valueOf(user.status().name()),
+                user.createdAt());
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تغییر پیاده‌سازی بدون تغییر دامنه</span>
+اگر فردا تصمیم بگیرید JPA را کنار بگذارید و از <code>jOOQ</code> یا
+<code>Spring Data JDBC</code> استفاده کنید، فقط همین پکیج
+<code>persistence</code> تغییر می‌کند. کلاس <code>UserService</code> و
+<code>User</code> <strong>حتی یک خط</strong> تغییر نمی‌کنند.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>مقایسه با DAO و Data Mapper</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    subgraph DAOg["DAO — Data Access Object"]
+        D1["UserDao"]
+        D2["UserRow (رکورد خام)"]
+        D3[("Database")]
+        D1 --> D2 --> D3
+    end
+
+    subgraph MAPg["Data Mapper"]
+        M1["UserMapper"]
+        M2["User (دامنه)"]
+        M3["UserRow"]
+        M1 --> M2
+        M1 --> M3
+    end
+
+    subgraph REPOg["Repository + Mapper"]
+        R1["UserRepository"]
+        R2["User (دامنه)"]
+        R3["JpaUserEntity"]
+        R1 --> R2
+        R1 --> R3
+    end
+
+    style DAOg fill:#78350f,stroke:#fbbf24,color:#fff
+    style MAPg fill:#115e59,stroke:#2dd4bf,color:#fff
+    style REPOg fill:#0f766e,stroke:#14b8a6,color:#fff</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>معیار</th><th>DAO</th><th>Data Mapper</th><th>Repository</th></tr>
+  <tr><td>واحد کار</td><td>یک جدول</td><td>نگاشت مدل</td><td>مجموعه‌ی موجودیت‌ها</td></tr>
+  <tr><td>زبان</td><td>فنی</td><td>فنی + نگاشت</td><td>کسب‌وکار</td></tr>
+  <tr><td>می‌داند جدول چیست؟</td><td>✅</td><td>✅</td><td>❌</td></tr>
+  <tr><td>بازگشت</td><td>رکورد / <code>Row</code></td><td>شیء دامنه</td><td>شیء دامنه</td></tr>
+  <tr><td>تعداد در مجموعه</td><td>معمولاً یکی</td><td>خیر</td><td>یک یا چند (بسته به DDD)</td></tr>
+  <tr><td>تمرکز بر</td><td>کارایی دسترسی</td><td>جداسازی مدل</td><td>انتزاع برای دامنه</td></tr>
+  <tr><td>کاربرد امروزی</td><td>زیاد در سیستم‌های قدیمی</td><td>کمتر به‌صورت مستقل</td><td>✅ بسیار رایج</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">رابطه‌ی این سه</span>
+<strong>Data Mapper</strong> مسئله‌ی «چگونه داده را تبدیل کنیم» را حل می‌کند و
+<strong>Repository</strong> مسئله‌ی «چگونه به مجموعه دسترسی داشته باشیم».
+در عمل، مخزن تقریباً همیشه <em>از</em> یک Data Mapper استفاده می‌کند
+(همان کلاس mapper در مثال بالا). پس این‌ها رقیب نیستند؛ دو لایه‌ی مکمل‌اند.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مزایا</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>مزیت</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>جدایی دامنه از ذخیره‌سازی</strong></td><td>لایه‌ی دامنه از JPA و SQL بی‌خبر می‌ماند</td></tr>
+  <tr><td>۲</td><td><strong>تست‌پذیری آسان</strong></td><td>مخزن In-Memory جای دیتابیس را می‌گیرد</td></tr>
+  <tr><td>۳</td><td><strong>تعویض فناوری</strong></td><td>تعویض JPA با jOOQ فقط لایه‌ی Infrastructure را تغییر می‌دهد</td></tr>
+  <tr><td>۴</td><td><strong>متمرکز کردن کوئری‌ها</strong></td><td>همه‌ی SQL در یک جا جمع می‌شود، نه در کل پروژه پخش</td></tr>
+  <tr><td>۵</td><td><strong>انتزاع به‌نام دامنه</strong></td><td>متدهایی مثل <code>findActive()</code> مستقیماً نیاز کسب‌وکار را بیان می‌کنند</td></tr>
+  <tr><td>۶</td><td><strong>نگاشت تمیز مدل</strong></td><td>مدل دیتابیس و مدل دامنه مستقل تغییر می‌کنند</td></tr>
+  <tr><td>۷</td><td><strong>پنهان‌سازی جزئیات دریافت</strong></td><td>لایه‌ی بالاتر نمی‌داند داده از کش است یا دیتابیس</td></tr>
+  <tr><td>۸</td><td><strong>پایه‌ی DD و Clean</strong></td><td>مخزن یکی از اجزای کلیدی مدل‌سازی دامنه است</td></tr>
+  <tr><td>۹</td><td><strong>کاهش تکرار کد</strong></td><td>منطق خواندن/نوشتن در یک کلاس متمرکز می‌شود</td></tr>
+  <tr><td>۱۰</td><td><strong>تولید خودکار با Spring Data</strong></td><td>پیاده‌سازی‌های ساده با چند خط کد ساخته می‌شوند</td></tr>
+  <tr><td>۱۱</td><td><strong>کنترل بر کارایی</strong></td><td>کوئری‌های حساس را می‌توان در مخزن بهینه کرد</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>معایب</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>کد تکراری زیاد</strong></td><td>برای هر موجودیت یک Interface و یک پیاده‌سازی لازم است</td></tr>
+  <tr><td>۲</td><td><strong>متدهای تکراری</strong></td><td>همه‌ی مخزن‌ها متدهای <code>save</code> و <code>deleteById</code> دارند</td></tr>
+  <tr><td>۳</td><td><strong>عبور از حافظه و Identity Map</strong></td><td>در برخی ORMها به‌طور پیش‌فرض وجود دارد و غافلگیری‌آمیز است</td></tr>
+  <tr><td>۴</td><td><strong>مشکل N+1</strong></td><td>گرفتن مخزن برای روابط، کوئری‌های اضافه می‌سازد</td></tr>
+  <tr><td>۵</td><td><strong>لایه‌ی اضافه برای CRUD ساده</strong></td><td>یک صفحه‌ی کوچک به ده‌ها فایل نیاز دارد</td></tr>
+  <tr><td>۶</td><td><strong>نگاشت دستی خسته‌کننده</strong></td><td>برای هر فیلد یک خط کد نگاشت لازم است</td></tr>
+  <tr><td>۷</td><td><strong>طراحی اولیه‌ی دشوار</strong></td><td>تشخیص اینکه مخزن چه باشد و چه نباشد دشوار است</td></tr>
+  <tr><td>۸</td><td><strong>ریسک پوسیدگی</strong></td><td>مخزن‌های بدون استفاده به‌تدریج ناسازگار می‌شوند</td></tr>
+  <tr><td>۹</td><td><strong>تعارض با DDD خالص</strong></td><td>در مدل دامنه، هر مخزن یک Aggregate است نه یک جدول</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">هزینه‌ی پنهان: مخزن یک‌به‌یک با جدول</span>
+بزرگ‌ترین اشتباه رایج: ساختن یک مخزن برای هر جدول. در نتیجه مخزن‌ها آینه‌ی
+دیتابیس می‌شوند، نه آینه‌ی دامنه. <strong>مخزن را برای هر Aggregate بسازید،
+نه برای هر جدول.</strong>
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">موارد مناسب</span>
+<ul>
+  <li>پروژه‌هایی که <strong>دامنه‌ی جدا از دیتابیس</strong> دارند</li>
+  <li>تیم‌هایی که <strong>تست واحد جدی</strong> می‌نویسند</li>
+  <li>سامانه‌هایی که ممکن است <strong>فناوری ذخیره‌سازی</strong> را عوض کنند</li>
+  <li>پروژه‌های <strong>DDD</strong> که مخزن بخشی از مدل است</li>
+  <li>معماری‌های <strong>Clean، Onion و Hexagonal</strong></li>
+  <li>تیم‌های بزرگ که می‌خواهند <strong>مرز داده روشن</strong> باشد</li>
+  <li>پروژه‌هایی که <strong>مدل دیتابیس پیچیده</strong> دارند و نیاز به نگاشت دارند</li>
+  <li>زمانی که <strong>گزارش‌گیری و کوئری‌های سنگین</strong> نیاز به بهینه‌سازی دستی دارند</li>
+</ul>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی سرانگشتی</span>
+اگر قوانین کسب‌وکار شما در ۲۰ Entity ساده خلاصه می‌شود و فناوری ذخیره‌سازی
+هرگز عوض نمی‌شود، مخزن ساده کافی است. اگر دامنه پیچیده است یا تست‌پذیری
+اولویت دارد، مخزن دامنه ارزشش را دارد.
+</div>
+</section>
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">موارد نامناسب</span>
+<ul>
+  <li><strong>CRUDهای بسیار ساده</strong> که Spring Data به‌تنهایی کافی است</li>
+  <li>پروژه‌های <strong>تک‌جدولی</strong> با دو یا سه عملیات</li>
+  <li>تیم‌هایی که <strong>تست نمی‌نویسند</strong> و فایل اضافه فقط شلوغی است</li>
+  <li><strong>پروژه‌های SQL سنگین</strong> که هر لایه‌ی اضافه کارایی را کم می‌کند</li>
+  <li>جایی که <strong>گزارش‌های تحلیلی</strong> حرف اول را می‌زنند (بهتر است از ORM سمت BI استفاده شود)</li>
+  <li>تیم‌هایی که <strong>مرز Aggregate را نمی‌فهمند</strong> و مخزن‌های اشتباه می‌سازند</li>
+  <li>زمانی که فقط یک <strong>لایه‌ی نازک روی ORM</strong> لازم است</li>
+</ul>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز شما</th><th>راه‌حل بهتر</th></tr>
+  <tr><td>خواندن/نوشتن ساده در یک موجودیت</td><td><strong>Spring Data JPA</strong> بدون مخزن دستی</td></tr>
+  <tr><td>گزارش‌گیری تحلیلی سنگین</td><td>مخزن + DTO اختصاصی برای گزارش</td></tr>
+  <tr><td>دامنه‌ی پیچیده و مدل‌سازی</td><td><strong>DDD</strong> + مخزن برای هر Aggregate</td></tr>
+  <tr><td>چند منبع داده</td><td><strong>مخزن چندپیاده‌سازی</strong> با همان پورت</td></tr>
+  <tr><td>تست ساده و سریع</td><td><strong>In-Memory Repository</strong> در تست</td></tr>
+  <tr><td>سیستم یکپارچه‌سازی</td><td><strong>Event-Driven</strong> به‌جای Repository</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TB
+    subgraph SIMPLE["بدون مخزن — لایه‌بندی ساده"]
+        S1["Service"] --> E1["JPA Entity"] --> DB1[("DB")]
+    end
+
+    subgraph REPO["با مخزن"]
+        S2["Service"] --> P2["Repository (Port)"]
+        P2 -. "implements" .-> I2["Jpa Repository"] --> DB2[("DB")]
+    end
+
+    subgraph ACTIVE["مخزن فعال (Active Record)"]
+        E3["Entity"] --> DB3[("DB")]
+        E3 --> "قاعده‌ی کسب‌وکار"
+    end
+
+    SIMPLE -. "افزودن مخزن لایه را تمیز می‌کند" .- REPO
+    REPO -. "Active Record نقطه‌ی مقابل" .- ACTIVE
+
+    style SIMPLE fill:#78350f,stroke:#fbbf24,color:#fff
+    style REPO fill:#0f766e,stroke:#14b8a6,color:#fff
+    style ACTIVE fill:#115e59,stroke:#2dd4bf,color:#fff</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>معیار</th><th>DAO</th><th>Active Record</th><th>Repository</th></tr>
+  <tr><td>محل منطق کسب‌وکار</td><td>Service</td><td>خود Entity</td><td>Domain / Service</td></tr>
+  <tr><td>Entity و دیتابیس</td><td>یکی</td><td>یکی</td><td>جدا</td></tr>
+  <tr><td>تست دامنه</td><td>سخت</td><td>نیازمند DB</td><td>آسان</td></tr>
+  <tr><td>تعداد فایل</td><td>کم</td><td>کم</td><td>زیاد</td></tr>
+  <tr><td>پشتیبانی ابزار</td><td>✅ همه‌ی ORM</td><td>⚠️ محدود</td><td>✅ همه‌ی ORM</td></tr>
+  <tr><td>ریسک دامنه‌ی تهی</td><td>کم</td><td>بالا</td><td>کم</td></tr>
+  <tr><td>مناسب برای</td><td>سیستم‌های قدیمی</td><td>پروژه‌های کوچک</td><td>پروژه‌های متوسط تا بزرگ</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">Active Record یا مخزن؟</span>
+<strong>Active Record</strong> یعنی خود Entity هم داده را نگه می‌دارد و هم ذخیره می‌کند
+(مثل <code>save()</code> روی مدل). این سریع‌تر برای شروع است، اما
+به‌مرور دامنه را «تهی» می‌کند. اگر پروژه‌ی شما قرار است رشد کند،
+<strong>Repository انتخاب امن‌تری است</strong>.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اصل SOLID</th><th>نمود در Repository</th><th>مثال</th></tr>
+  <tr><td><strong>S — SRP</strong></td><td>مخزن فقط مسئول «انتقال داده» است</td><td>قاعده‌ی کسب‌وکار در دامنه، نه مخزن</td></tr>
+  <tr><td><strong>O — OCP</strong></td><td>پیاده‌سازی جدید بدون تغییر پورت</td><td>تعویض JPA با jOOQ</td></tr>
+  <tr><td><strong>L — LSP</strong></td><td>همه‌ی مخزن‌ها قرارداد یکسان دارند</td><td><code>InMemory</code> و <code>Jpa</code> جایگزین‌پذیرند</td></tr>
+  <tr><td><strong>I — ISP</strong></td><td>Interface کوچک به‌ازای هر Aggregate</td><td>مخزن کاربر جدا از مخزن سفارش</td></tr>
+  <tr><td><strong>D — DIP</strong></td><td>لایه‌ی بالا به مخزن (Interface) وابسته است</td><td>تست با مخزن In-Memory</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">DIP: قلب فلسفه‌ی مخزن</span>
+Repository Pattern عملی‌ترین شکل <strong>Dependency Inversion</strong> است.
+پیش از آن، لایه‌ی دامنه به یک کتابخانه‌ی بیرونی (JPA) وابسته بود و نمی‌شد
+آن را تست کرد. با پورت، وابستگی معکوس می‌شود و دامنه آزاد می‌ماند.
+</div>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگو</th><th>نقش در Repository</th><th>محل استفاده</th></tr>
+  <tr><td><strong>Repository</strong></td><td>خود الگو</td><td>مرز دامنه و داده</td></tr>
+  <tr><td><strong>Data Mapper</strong></td><td>تبدیل مدل دیتابیس و دامنه</td><td>کلاس mapper</td></tr>
+  <tr><td><strong>Unit of Work</strong></td><td>مدیریت تراکنش و تغییرات در حافظه</td><td>محدوده‌ی تراکنش</td></tr>
+  <tr><td><strong>Specification</strong></td><td>معیار قابل ترکیب برای کوئری پویا</td><td>متدهای جست‌وجوی پیچیده</td></tr>
+  <tr><td><strong>Identity Map</strong></td><td>تضمین یک نمونه برای هر شناسه</td><td>مدیریت حافظه</td></tr>
+  <tr><td><strong>Gateway</strong></td><td>دسترسی به سرویس بیرونی (API)</td><td>جایگزین مخزن برای سرویس‌ها</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Gateway در برابر Repository</span>
+اگر داده از یک <strong>سرویس بیرونی</strong> می‌آید (مثلاً REST API) و پایگاه‌داده نیست،
+بهتر است آن را <strong>Gateway</strong> بنامید. مخزن برای داده‌ای است که
+<strong>مالکیتش با شماست</strong>؛ برای داده‌ی شخص ثالث، Gateway صادقانه‌تر است.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<p>
+بزرگ‌ترین ارزش Repository این است که می‌توانید یک پیاده‌سازی In-Memory بنویسید
+و کل لایه‌ی سرویس را بدون دیتابیس تست کنید.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.user.infrastructure.persistence;
+
+import com.app.user.domain.model.Email;
+import com.app.user.domain.model.User;
+import com.app.user.domain.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+
+/** مخزن حافظه‌ای برای تست — کمتر از ۳۰ خط */
+public final class InMemoryUserRepository implements UserRepository {
+
+    private final java.util.Map&lt;Long, User&gt; store = new java.util.HashMap&lt;&gt;();
+    private final AtomicLong sequence = new AtomicLong();
+
+    @Override
+    public Optional&lt;User&gt; findById(Long id) {
+        return Optional.ofNullable(store.get(id));
+    }
+
+    @Override
+    public Optional&lt;User&gt; findByEmail(Email email) {
+        return store.values().stream()
+                .filter(u -&gt; u.email().equals(email))
+                .findFirst();
+    }
+
+    @Override
+    public boolean existsByEmail(Email email) {
+        return findByEmail(email).isPresent();
+    }
+
+    @Override
+    public List&lt;User&gt; findActive() {
+        return store.values().stream()
+                .filter(u -&gt; u.status() == UserStatus.ACTIVE)
+                .toList();
+    }
+
+    @Override
+    public User save(User user) {
+        long id = user.id() != null ? user.id() : sequence.incrementAndGet();
+        User saved = User.restore(id, user.email(), user.fullName(),
+                user.status(), user.createdAt());
+        store.put(id, saved);
+        return saved;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        store.remove(id);
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.app.user.application;
+
+import com.app.user.domain.model.Email;
+import com.app.user.domain.model.User;
+import com.app.user.domain.repository.UserRepository;
+import com.app.user.infrastructure.persistence.InMemoryUserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class UserServiceTest {
+
+    private UserRepository repository;
+    private UserService service;
+
+    @BeforeEach
+    void setUp() {
+        repository = new InMemoryUserRepository();
+        service = new UserService(repository);
+    }
+
+    @Test
+    @DisplayName("ثبت‌نام موفق باید کاربر را با شناسه ذخیره کند")
+    void registersNewUser() {
+        var user = service.register(new Email("ali@test.io"), "علی رضایی");
+
+        assertThat(user.id()).isNotNull();
+        assertThat(repository.findById(user.id())).isPresent();
+    }
+
+    @Test
+    @DisplayName("ایمیل تکراری باید رد شود")
+    void rejectsDuplicateEmail() {
+        service.register(new Email("ali@test.io"), "علی رضایی");
+
+        assertThatThrownBy(() -&gt;
+                service.register(new Email("ali@test.io"), "دیگری"))
+                .isInstanceOf(DuplicateEmailException.class);
+    }
+
+    @Test
+    @DisplayName("دامنه‌ی آزمایشی باید در دامنه رد شود، نه در مخزن")
+    void rejectsTestDomainByDomainRule() {
+        assertThatThrownBy(() -&gt;
+                service.register(new Email("x@test.com"), "علی رضایی"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("آزمایشی");
+    }
+
+    @Test
+    @DisplayName("کاربر غیرفعال نباید در نتایج فعال باشد")
+    void inactiveUserIsNotInActiveList() {
+        var user = service.register(new Email("ali@test.io"), "علی رضایی");
+        service.deactivate(user.id());
+
+        assertThat(repository.findActive()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("غیرفعال‌سازی کاربر ناموجود باید خطا دهد")
+    void failsWhenDeactivatingUnknownUser() {
+        assertThatThrownBy(() -&gt; service.deactivate(999L))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">مزیت عملی</span>
+کل تست‌های بالا در کمتر از <strong>۱۰۰ میلی‌ثانیه</strong> و بدون
+<strong>Testcontainer</strong> اجرا می‌شوند. برای تست‌های CI، این یعنی
+اجرای ده‌ها بار در روز بدون هزینه‌ی زیرساخت.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>اشتباه</th><th>نشانه</th><th>راه‌حل</th></tr>
+  <tr><td>۱</td><td><strong>یک مخزن برای هر جدول</strong></td><td>۲۰ مخزن برای ۵ دامنه</td><td>یک مخزن برای هر Aggregate</td></tr>
+  <tr><td>۲</td><td><strong>متد به زبان دیتابیس</strong></td><td><code>findByStatus(1)</code></td><td><code>findActive()</code></td></tr>
+  <tr><td>۳</td><td><strong>قواعد کسب‌وکار در مخزن</strong></td><td><code>if (vip) discount=...</code></td><td>انتقال به دامنه</td></tr>
+  <tr><td>۴</td><td><strong>BaseRepository عمومی</strong></td><td>یک Interface با ۴۰ متد</td><td>مخزن‌های مستقل و کوچک</td></tr>
+  <tr><td>۵</td><td><strong>Entity = مدل دیتابیس</strong></td><td><code>@Entity</code> روی مدل دامنه</td><td>مدل دیتابیس جدا</td></tr>
+  <tr><td>۶</td><td><strong>نشتی Exception فنی</strong></td><td><code>SQLException</code> در امضای متد</td><td>تبدیل به Exception دامنه</td></tr>
+  <tr><td>۷</td><td><strong>نداشتن تست</strong></td><td>مخزن بدون تست In-Memory</td><td>نوشتن Fake مخزن</td></tr>
+  <tr><td>۸</td><td><strong>Lazy Loading در مرز مخزن</strong></td><td><code>LazyInitializationException</code></td><td>بارگذاری کامل در پیاده‌سازی</td></tr>
+  <tr><td>۹</td><td><strong>مخزن با ۵۰ متد پرس‌وجو</strong></td><td>صدها متد برای فیلتر</td><td>استفاده از Specification</td></tr>
+  <tr><td>۱۰</td><td><strong>مخزن پرکاربرد با منطق سرویس</strong></td><td><code>saveAndNotify()</code></td><td>انتقال به سرویس</td></tr>
+  <tr><td>۱۱</td><td><strong>بازگرداندن <code>void</code> از <code>save</code></strong></td><td>شناسه‌ی تولیدشده گم می‌شود</td><td>بازگرداندن Entity ذخیره‌شده</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">اشتباه مرگبار: مخزن آینه‌ی جدول</span>
+اگر تعداد مخزن‌های شما با تعداد جداول برابر است، مخزن‌ها آینه‌ی دیتابیس‌اند
+نه دامنه. این یعنی با هر تغییر اسکیمای جدول، باید Interfaceهای دامنه را هم
+تغییر دهید — دقیقاً همان چیزی که می‌خواستیم از آن فرار کنیم.
+</div>
+</section>
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱) فروشگاه اینترنتی — مخزن سفارش</h3>
+<p>
+در فروشگاه‌های اینترنتی، مخزن <code>OrderRepository</code> فقط عملیات سفارش
+را انجام می‌دهد، نه عملیات کاربر و کالا. این تصمیم باعث می‌شود مرزهای تراکنش
+شفاف بماند: ثبت سفارش یک تراکنش است، اما خواندن کالا یک تراکنش دیگر.
+مخزن سفارش معمولاً متدهایی مثل <code>findByCustomerIdAndStatus</code> و
+<code>findExpiredUnpaid</code> دارد که هر دو به زبان کسب‌وکار نوشته شده‌اند.
+</p>
+
+<h3>۲) سامانه‌ی بانکی — مخزن حساب</h3>
+<p>
+در سامانه‌های بانکی، مخزن حساب <strong>بهینه‌سازی کوئری</strong> را خودش انجام می‌دهد.
+برای مثال وقتی می‌خواهید ۱۰۰۰ تراکنش آخر یک حساب را با یک کوئری بخوانید، متد مخزن
+<code>findRecentTransactions(accountId, limit)</code> یک کوئری
+<code>LIMIT</code> دارد. بدون مخزن، این منطق در سرویس تکرار می‌شد و
+کوئری‌های N+1 ایجاد می‌شد.
+</p>
+
+<h3>۳) اپ پیام‌رسان — مخزن گفت‌وگو</h3>
+<p>
+در اپ‌های چت، مخزن <code>ConversationRepository</code> مسئول بارگذاری
+گفت‌وگوهای کاربر با صفحه‌بندی است. به‌علاوه، یک پیاده‌سازی
+<strong>محلی (Room)</strong> و یک پیاده‌سازی <strong>راه دور (Firestore)</strong>
+برای همان پورت وجود دارد. با تعویض پورت، منطق سرویس بدون تغییر باقی می‌ماند.
+</p>
+
+<h3>۴) اپ سلامت — مخزن نسخه</h3>
+<p>
+در سیستم‌های پزشکی، هر رکورد نسخه <strong>تغییرناپذیر</strong> است؛ بنابراین مخزن
+به‌جای <code>update</code> متد <code>append</code> دارد که نسخه‌ی جدید را
+اضافه می‌کند. این مدل مخزن، تاریخچه‌ی کامل بیمار را تضمین می‌کند و
+<code>Audit Trail</code> به‌صورت خودکار ساخته می‌شود.
+</p>
+
+<h3>۵) پروژه‌های چندسکویی — یک پورت، چند پیاده‌سازی</h3>
+<p>
+در پروژه‌های Kotlin Multiplatform، یک پورت در ماژول <code>shared</code> تعریف
+می‌شود و هر پلتفرم پیاده‌سازی خودش را دارد: روی اندروید Room، روی iOS
+Core Data، و در تست In-Memory. منطق دامنه و تست‌ها <strong>یک بار</strong>
+نوشته و اجرا می‌شوند.
+</p>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئله</th><th>علت</th><th>راه‌حل</th></tr>
+  <tr><td>N+1 در مخزن</td><td>دریافت هر Aggregate و سپس روابط آن به‌صورت جداگانه</td><td>کوئری join یا <code>fetch join</code></td></tr>
+  <tr><td>سربار Identity Map</td><td>نگه‌داری همه‌ی نمونه‌ها در حافظه</td><td>غیرفعال کردن در پیاده‌سازی مخزن</td></tr>
+  <tr><td>نگاشت بی‌مورد</td><td>تبدیل کل Entity در حتی یک فیلد مورد نیاز</td><td>متدهای مخزن با DTO اختصاصی</td></tr>
+  <tr><td>بارگذاری زودهنگام</td><td>واکشی همه‌ی روابط در هر بار</td><td>بارگذاری تنبل با مدیریت صریح نشست</td></tr>
+  <tr><td>کوئری بدون ایندکس</td><td>متد مخزن روی ستون بدون ایندکس</td><td>افزودن ایندکس در اسکیما</td></tr>
+  <tr><td>کش در مخزن</td><td>درخواست تکراری برای داده‌ی ثابت</td><td>حافظه‌ی نهان با TTL مشخص</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>بد — N+1:
+
+  var orders = orderRepo.findByCustomerId(customerId);   // ۱ کوئری
+  for (var order : orders) {
+      order.getCustomer().getAddress().getCity();        // N کوئری
+  }
+
+بهتر — یک کوئری با join:
+
+  var rows = jdbc.query("""
+          SELECT o.id, o.total, c.city
+          FROM orders o
+          JOIN customers c ON c.id = o.customer_id
+          WHERE o.customer_id = ?
+          """, mapper, customerId);
+
+  // مخزن یک DTO مخصوص برمی‌گرداند، نه Aggregate سنگین</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی مهم درباره‌ی کارایی</span>
+مخزن لایه‌ی <strong>بهینه‌سازی پرس‌وجو</strong> هم هست. اگر کوئری گزارش شما سنگین است،
+می‌توانید آن را در مخزن به‌صورت یک متد اختصاصی با ایندکس و SQL بهینه پیاده کنید،
+بدون اینکه منطق کسب‌وکار را درگیر کوئری کنید.
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Junior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱ — Repository Pattern چیست؟</span>
+الگوی دسترسی به داده که یک <strong>مجموعه‌ی موجودیت‌های دامنه</strong> را مانند یک
+کتابخانه در حافظه در اختیار لایه‌ی بالاتر قرار می‌دهد و جزئیات ذخیره‌سازی را پنهان می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲ — تفاوت Repository و DAO چیست؟</span>
+DAO یک لایه‌ی فنی برای یک جدول است و به زبان دیتابیس صحبت می‌کند.
+Repository یک انتزاع دامنه‌محور است و به زبان کسب‌وکار صحبت می‌کند؛
+DAO می‌داند جدول چیست، Repository نمی‌داند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۳ — چه کسی پیاده‌سازی مخزن را می‌نویسد؟</span>
+پیاده‌سازی در لایه‌ی زیرساخت (Infrastructure) نوشته می‌شود، ولی
+<strong>Interface در لایه‌ی دامنه</strong> قرار می‌گیرد. این ترتیب، قانون
+وابستگی معکوس را رعایت می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۴ — بهترین نام برای متدهای مخزن چیست؟</span>
+نام‌هایی که به <strong>زبان دامنه</strong> اشاره دارند. مثلاً
+<code>findActiveCustomers()</code> به‌جای
+<code>selectByStatusEquals1()</code>.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۵ — آیا مخزن می‌تواند منطق کسب‌وکار داشته باشد؟</span>
+<strong>نه.</strong> مخزن فقط داده را جابه‌جا می‌کند. اگر مخزن شما تصمیم بگیرد
+تخفیف بدهد یا کاربر را رد کند، دیگر مخزن نیست.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۶ — تفاوت Repository و Active Record چیست؟</span>
+در Active Record، خود Entity متد <code>save()</code> دارد و هم داده را نگه می‌دارد
+و هم ذخیره می‌کند. در Repository، Entity فقط داده و قوانین دارد و ذخیره‌سازی
+جدا شده است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۷ — Data Mapper چه ربطی به Repository دارد؟</span>
+Data Mapper مسئله‌ی «تبدیل مدل دیتابیس و مدل دامنه» را حل می‌کند و
+Repository مسئله‌ی «دسترسی به مجموعه». مخزن تقریباً همیشه از یک mapper
+استفاده می‌کند. این دو مکمل‌اند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۸ — آیا باید برای هر جدول یک مخزن بسازیم؟</span>
+نه. <strong>برای هر Aggregate</strong> یک مخزن بسازید. اگر مخزن‌ها آینه‌ی جداول
+شوند، مزیت الگو از بین می‌رود.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۹ — Unit of Work چیست؟</span>
+الگویی که تغییرات مدل در حافظه را ردیابی می‌کند و در پایان تراکنش، همه را
+یک‌جا ذخیره و commit می‌کند. در JPA همان <code>EntityManager</code> است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۰ — چرا متد <code>save</code> باید Entity برگرداند؟</span>
+چون شناسه‌ی تولیدشده (مثلاً کلید خودکار) فقط پس از ذخیره معلوم می‌شود.
+اگر <code>void</code> برگرداند، این شناسه را از دست می‌دهید.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Mid</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۱ — چطور با N+1 در مخزن مقابله کنیم؟</span>
+با join در کوئری، یا متدهای مخزن که DTO برمی‌گردانند، یا
+<code>fetch join</code> در JPA. کلید ماجرا این است که رابطه‌ها
+<strong>در یک کوئری</strong> بارگذاری شوند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۲ — آیا Spring Data همان Repository Pattern است؟</span>
+<strong>نه دقیقاً.</strong> Spring Data یک <em>پیاده‌سازی خودکار</em> با نام
+Repository می‌سازد، ولی معمولاً یک لایه‌ی نازک روی ORM است.
+اگر می‌خواهید الگوی واقعی داشته باشید، باید یک
+<strong>Domain Repository</strong> جدا از <code>CrudRepository</code> تعریف کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۳ — مخزن چندمنبعی چیست؟</span>
+مخزنی که هم از دیتابیس و هم از کش یا سرویس بیرونی می‌خواند.
+مزیت: لایه‌ی سرویس متوجه نمی‌شود داده از کجا آمده.
+عیب: خطر ناسازگاری داده و پیچیدگی تراکنش.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۴ — چطور خطای دیتابیس را به لایه‌ی بالاتر منتقل کنیم؟</span>
+در پیاده‌سازی مخزن، Exception فنی (<code>SQLException</code>) را
+بگیرید و به <strong>Exception دامنه</strong> (مثلاً
+<code>UserNotFoundException</code>) تبدیل کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۵ — مشکل Identity Map چیست؟</span>
+در برخی ORMها، اگر دو بار یک موجودیت را بخوانید، <strong>یک نمونه‌ی مشترک
+در حافظه</strong> برمی‌گردد. این باعث می‌شود تغییر یکی، روی دیگری هم اثر بگذارد.
+مخزن‌های مدرن معمولاً این رفتار را خاموش می‌کنند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۶ — Lazy Loading در مخزن چه خطری دارد؟</span>
+اگر رابطه‌ها تنبل بارگذاری شوند و نشست ORM بسته شود، با
+<code>LazyInitializationException</code> مواجه می‌شوید.
+راه‌حل: بارگذاری کامل در مرز مخزن، یا طراحی صریح مدیریت نشست.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۷ — چطور مخزن را در تست جایگزین می‌کنید؟</span>
+با یک پیاده‌سازی In-Memory که همان Interface را پیاده می‌کند.
+تست‌ها به پورت وابسته‌اند نه به پیاده‌سازی، پس به‌طور خودکار با Fake کار می‌کنند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۸ — آیا مخزن باید Interface باشد؟</span>
+از نظر تست و انعطاف، بله. اما در پروژه‌های بسیار کوچک که فقط یک پیاده‌سازی
+می‌خواهند، می‌توان کلاس مشخص بدون Interface داشت.
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سطح Senior</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۹ — مخزن در DDD چه نقشی دارد؟</span>
+مخزن <strong>مرز تراکنش</strong> Aggregate است. یک Aggregate فقط از طریق
+مخزنش به‌روزرسانی می‌شود و مخزن تضمین می‌کند که چند Aggregate با هم
+به‌صورت اتمیک ذخیره شوند. مخزن، API Aggregate در دامنه است — نه یک جزئیات فنی.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲۰ — بزرگ‌ترین خطر معماری در استفاده از مخزن چیست؟</span>
+اینکه مخزن‌ها به‌تدریج <strong>بیشترین منطق کسب‌وکار</strong> را جذب کنند و
+به سرویس تبدیل شوند. اگر متدی دارید که تصمیم می‌گیرد، در مخزن نیست.
+همچنین خطر دوم: ساختن یک مخزن برای هر جدول، که عملاً Repository را
+به یک لایه‌ی بی‌ارزش تبدیل می‌کند.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">پرسش‌های پرتکرار</span>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱) تفاوت Repository و DAO دقیقاً چیست؟</span>
+DAO یک ابزار فنی برای یک جدول است و به زبان دیتابیس حرف می‌زند. Repository
+یک انتزاع دامنه‌ای است و به زبان کسب‌وکار حرف می‌زند. مثال: DAO می‌گوید
+<code>findByStatus(1)</code>، Repository می‌گوید <code>findActive()</code>.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۲) آیا Spring Data Repository با الگوی Repository فرق دارد؟</span>
+بله. Spring Data یک <em>پیاده‌سازی خودکار</em> است، نه الگو.
+اگر فقط از <code>CrudRepository</code> استفاده کنید، لایه‌ی دامنه به ساختار
+جدول‌ها وابسته می‌ماند. اگر یک Domain Repository بسازید که خودش به
+CrudRepository وابسته باشد، الگو را واقعاً پیاده کرده‌اید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۳) آیا برای هر جدول یک مخزن لازم است؟</span>
+نه. برای هر <strong>Aggregate</strong> یک مخزن کافی است. گاهی حتی
+<strong>یک مخزن</strong> برای کل Aggregate کافی است، حتی اگر چند جدول داشته باشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۴) مخزن و Unit of Work چه تفاوتی دارند؟</span>
+مخزن درباره‌ی <em>یک موجودیت</em> و ذخیره‌سازی آن است. Unit of Work درباره‌ی
+<em>تراکنش</em> و همگام‌سازی تغییرات است. در JPA هر دو به‌شکل
+<code>Repository</code> و <code>EntityManager</code> ظاهر می‌شوند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۵) آیا Repository Pattern باعث افت کارایی می‌شود؟</span>
+خودِ الگو خیر. اما اگر مدل دیتابیس و مدل دامنه را جدا کنید، نگاشت
+اضافه می‌شود. این هزینه معمولاً در برابر سود تست‌پذیری و تعویض‌پذیری
+کاملاً به‌صرفه است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۶) چطور Exception دیتابیس را پنهان کنیم؟</span>
+در پیاده‌سازی مخزن، Exception فنی را بگیرید و به Exception دامنه
+تبدیل کنید. از این پس هیچ لایه‌ی بالاتری <code>SQLException</code> نمی‌بیند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۷) آیا می‌توان مخزن را با حافظه‌ی نهان ترکیب کرد؟</span>
+بله. یک پیاده‌سازی <code>CachingUserRepository</code> بنویسید که مخزن اصلی را
+در اختیار دارد. لایه‌ی سرویس هیچ تغییری نمی‌بیند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۸) آیا Repository Pattern برای اپ موبایل لازم است؟</span>
+اگر فقط Room دارید، Room خودش مخزن است و لایه‌ی اضافه لازم نیست.
+اما اگر می‌خواهید منطق دامنه از Room جدا باشد یا از حافظه‌ی نهان استفاده کنید،
+مخزن ارزشش را دارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۹) تفاوت Repository و Gateway چیست؟</span>
+مخزن برای داده‌ای است که <strong>مالکیتش با شماست</strong> و در دیتابیس خودتان
+ذخیره می‌شود. Gateway برای داده‌ی شخص ثالث که از سرویس بیرونی می‌آید.
+استفاده از نام درست، انتظارات تیم را روشن می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۰) آیا مخزن باید تراکنش را مدیریت کند؟</span>
+خیر. تراکنش معمولاً در لایه‌ی Service یا Unit of Work مدیریت می‌شود.
+مخزن فقط در محدوده‌ی تراکنش فعال کار می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۱) چطور متدهای پرس‌وجوی زیاد را مدیریت کنیم؟</span>
+به‌جای ده‌ها متد <code>findBy...</code>، از الگوی
+<strong>Specification</strong> استفاده کنید. این الگو معیارهای قابل ترکیب
+می‌سازد و پوشش پرس‌وجوها را بدون انفجار متدها بالا می‌برد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۲) آیا Repository Pattern و DDD با هم سازگارند؟</span>
+بله، Repository یکی از <strong>الگوهای تاکتیکی</strong> اصلی DDD است.
+در DDD، مخزن فقط برای Aggregate Rootها تعریف می‌شود، نه برای هر موجودیت.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۳) چطور جلوی رشد بی‌رویه‌ی مخزن‌ها را بگیریم؟</span>
+فقط وقتی یک نیاز واقعی دامنه وجود دارد مخزن بسازید. اگر متدی در مخزن
+هیچ استفاده‌ای در لایه‌ی بالاتر ندارد، آن را حذف کنید.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۴) مخزن چه چیزی را نباید انجام دهد؟</span>
+نباید تصمیم بگیرد، اعلان بفرستد، یا کاربر را تأیید کند. این‌ها قواعد
+کسب‌وکار هستند و در دامنه یا سرویس زندگی می‌کنند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">۱۵) آیا مخزن در معماری میکروسرویس هم کاربرد دارد؟</span>
+بله، اما دقت کنید: در میکروسرویس، مرز سرویس خودش یک مخزن کلان است.
+مخزن درون سرویس، جزئیات محلی ذخیره‌سازی آن سرویس است و
+<strong>نباید</strong> از مرز سرویس عبور کند.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>خلاصه</th></tr>
+  <tr><td>تعریف</td><td>مجموعه‌ی موجودیت‌های دامنه با API انتزاعی</td></tr>
+  <tr><td>محل Interface</td><td>لایه‌ی دامنه (Port)</td></tr>
+  <tr><td>محل پیاده‌سازی</td><td>لایه‌ی زیرساخت (Adapter)</td></tr>
+  <tr><td>زبان متدها</td><td>زبان کسب‌وکار، نه زبان جدول و ستون</td></tr>
+  <tr><td>قانون طلایی</td><td>مخزن داده را جابه‌جا می‌کند، تصمیم نمی‌گیرد</td></tr>
+  <tr><td>ممنوعیت</td><td>منطق کسب‌وکار، اعلان، SQLException نشتی، یک مخزن برای هر جدول</td></tr>
+  <tr><td>واحد طراحی</td><td>هر Aggregate، نه هر جدول</td></tr>
+  <tr><td>مدل دیتابیس</td><td>جدا از مدل دامنه</td></tr>
+  <tr><td>مزیت اصلی</td><td>تست دامنه بدون دیتابیس</td></tr>
+  <tr><td>عیب اصلی</td><td>کد تکراری و نگاشت دستی</td></tr>
+  <tr><td>بهترین برای</td><td>پروژه‌های متوسط تا بزرگ با دامنه‌ی پیچیده</td></tr>
+  <tr><td>نامناسب برای</td><td>CRUD ساده و پروژه‌های تک‌جدولی</td></tr>
+  <tr><td>تفاوت با DAO</td><td>DAO فنی و جدول‌محور؛ Repository دامنه‌محور</td></tr>
+  <tr><td>تفاوت با Active Record</td><td>Active Record، Entity را ذخیره‌کننده می‌کند؛ Repository نه</td></tr>
+  <tr><td>رابطه با Data Mapper</td><td>مکمل — mapper نگاشت، repository دسترسی</td></tr>
+  <tr><td>رابطه با Unit of Work</td><td>مکمل — UOW مدیریت تراکنش</td></tr>
+  <tr><td>قانون SOLID</td><td>DIP و SRP به‌طور طبیعی رعایت می‌شوند</td></tr>
+  <tr><td>الگوی کلیدی</td><td>Repository، Data Mapper، Unit of Work، Specification</td></tr>
+  <tr><td>ابزار تست</td><td>JUnit 5، مخزن In-Memory (بدون Testcontainer)</td></tr>
+  <tr><td>معیار موفقیت</td><td>تست سرویس بدون دیتابیس در کمتر از ۱۰۰ میلی‌ثانیه</td></tr>
+  <tr><td>سیگنال هشدار</td><td>مخزن بیش از ۲۰ متد، یا متدی با تصمیم‌گیری</td></tr>
+  <tr><td>یادآوری نهایی</td><td>اگر مخزن‌ها آینه‌ی جداول‌اند، الگو را اشتباه پیاده کرده‌اید</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله برای به‌خاطر سپردن</span>
+<strong>Repository یعنی دامنه مثل یک کتابخانه با داده کار کند، نه با یک دیتابیس.</strong>
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>هدف</th><th>تمرین پیشنهادی</th></tr>
+  <tr><td>۱ — هفته‌ی اول</td><td>فهم تفاوت Repository و DAO</td><td>مقایسه‌ی کد یک DAO با یک Repository برای یک دامنه</td></tr>
+  <tr><td>۲ — هفته‌ی دوم</td><td>ساخت پورت و پیاده‌سازی</td><td>یک مخزن کاربر با JPA و مدل دیتابیس جدا</td></tr>
+  <tr><td>۳ — هفته‌ی سوم</td><td>نگاشت دستی</td><td>نوشتن mapper دوطرفه برای دو موجودیت</td></tr>
+  <tr><td>۴ — هفته‌ی چهارم</td><td>تست با In-Memory</td><td>پیاده‌سازی مخزن حافظه‌ای و تست سرویس</td></tr>
+  <tr><td>۵ — ماه دوم</td><td>مدیریت تراکنش</td><td>آشنایی با Unit of Work و مرز تراکنش</td></tr>
+  <tr><td>۶ — ماه سوم</td><td>پرس‌وجوهای پویا</td><td>پیاده‌سازی الگوی Specification</td></tr>
+  <tr><td>۷ — ماه چهارم</td><td>مخزن چندمنبعی</td><td>مخزن ترکیبی دیتابیس و حافظه‌ی نهان</td></tr>
+</table>
+</div>
+
+<h3>جمع‌بندی</h3>
+<p>
+<strong>Repository Pattern</strong> پلی است میان دنیای دامنه و دنیای ذخیره‌سازی.
+این پل را باید آگاهانه بسازید: اگر فقط یک لایه‌ی نازک روی ORM باشد،
+فایل اضافه ساخته‌اید بدون آنکه ارزشی بیفزایید.
+</p>
+<p>
+معیار ساده‌ای برای ارزیابی وجود دارد:
+<strong>آیا می‌توانید کل لایه‌ی سرویس را بدون هیچ دیتابیسی تست کنید؟</strong>
+اگر پاسخ بله است، الگو را درست پیاده کرده‌اید. اگر نه، هنوز یک لایه دارید
+اما آن لایه انتزاع نیست.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پیام پایانی سری ۱۴ مقاله‌ای</span>
+این مقاله نهمین عضو سری «معماری‌های نرم‌افزاری» است. اکنون الگوهای رابط کاربری
+(MVC، MVP، MVVM، MVI) و الگوهای معماری (Clean، Onion، Hexagonal، Layered و
+Repository) را پوشش داده‌اید. در ادامه سری به حوزه‌ی مدل‌سازی دامنه
+(DDD) و معماری‌های سطح بالا (Feature-Based، Event-Driven، CQRS، Microservices)
+می‌رسیم.
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی SQL به همه‌جا سرایت می‌کند</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Repository Pattern چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: مخزن کجاست؟</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای مخزن</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: مدیریت کاربران</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">مقایسه با DAO و Data Mapper</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی SQL به همه‌جا سرایت می‌کند</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Repository Pattern چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: مخزن کجاست؟</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: اجزای مخزن</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: مدیریت کاربران</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">مقایسه با DAO و Data Mapper</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>
