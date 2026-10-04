@@ -19,6 +19,8 @@
 | ۷ | RxJava و RxAndroid: از Observable تا Flowable و Subject | [`articles/rxjava-rxandroid.html`](articles/rxjava-rxandroid.html) | ~۴۵ دقیقه |
 | ۸ | Design Patterns در Java: آموزش کامل الگوهای طراحی با مثال و تست | [`articles/design-patterns-in-java.html`](articles/design-patterns-in-java.html) | ~۶۰ دقیقه |
 | ۹ | Java Collections Framework: آموزش کامل Collectionهای جاوا | [`articles/java-collections-framework.html`](articles/java-collections-framework.html) | ~۷۰ دقیقه |
+| ۱۰ | Clean Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/clean-architecture.html`](articles/clean-architecture.html) | ~۶۵ دقیقه |
+| ۱۱ | Onion Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | [`articles/onion-architecture.html`](articles/onion-architecture.html) | ~۵۵ دقیقه |
 
 ## فهرست پروژه‌ها
 
@@ -41,8 +43,10 @@ my-articales/
 ├── .nojekyll                     # جلوگیری از پردازش Jekyll در GitHub Pages
 ├── README.md
 │
-├── articles/                     # فهرست مقالات + ۹ مقاله
+├── articles/                     # فهرست مقالات + ۱۱ مقاله
 │   ├── index.html                # جستجو + فیلتر تگ + حالت خالی
+│   ├── onion-architecture.html
+│   ├── clean-architecture.html
 │   ├── java-collections-framework.html
 │   ├── design-patterns-in-java.html
 │   ├── concurrency-in-kotlin.html
@@ -204,6 +208,17 @@ python -m http.server 8080     # یا: npx serve .
 
 ### مهر ۱۴۰۵
 
+- **مقالهٔ Onion Architecture** — بخش دوم سری معماری؛ راهنمای ۲۶ بخشی از حلقه‌های متحدالمرکز و Domain
+  در مرکز تا قواعد سه‌گانه، جریان داده، ساختار پروژه، پیاده‌سازی کامل Java 21 (Entity، UseCase، Repository)،
+  زبان‌ها و Frameworkها، ۱۱ مزیت و ۹ عیب، مقایسه با Clean/Hexagonal/Layered، SOLID، تست با JUnit 5،
+  ۱۱ اشتباه رایج، ۳ مثال واقعی، Performance، ۲۰ سؤال مصاحبه، ۱۵ FAQ، Cheat Sheet و Roadmap.
+- **مقالهٔ Clean Architecture** — آغاز سری ۱۴ مقاله‌ای معماری نرم‌افزار؛ راهنمای جامع ۲۶ بخشی از مشکل
+  شروع بدون معماری و تاریخچه‌ی Uncle Bob تا Dependency Rule، چهار لایه (Entities، Use Cases،
+  Interface Adapters، Frameworks)، جریان داده، ساختار پروژه، پیاده‌سازی کامل Java 21،
+  ارتباط با زبان‌ها و Frameworkها، ۱۱ مزیت و ۹ عیب، چه زمانی استفاده/عدم استفاده،
+  مقایسه با Onion/Hexagonal/Layered، ارتباط با SOLID و Design Patterns، تست با JUnit 5،
+  ۱۲ اشتباه رایج، مثال اندروید/بک‌اند/فرانت‌اند، Performance، ۲۴ سؤال مصاحبه، ۱۵ FAQ،
+  Cheat Sheet و Roadmap یادگیری.
 - **مقالهٔ Java Collections Framework** — راهنمای جامع ۵۲ بخشی از تفاوت Collection/Collections/Map و سلسله‌مراتب JCF
   تا ArrayList، LinkedList، List/Set/Queue/Deque، equals/hashCode، HashMap (bucket، collision، treeification،
   load factor)، LinkedHashMap و LRU، TreeMap، ConcurrentHashMap، synchronized collections، Immutable Collections،

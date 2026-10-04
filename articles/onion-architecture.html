@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onion Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه | حیدر فرحانی</title>
+  <meta name="description" content="در این مقاله Onion Architecture را بررسی می‌کنیم، از مفهوم و حلقه‌های متحدالمرکز تا مزایا، معایب، مثال عملی، کاربرد در Java، Kotlin، C# و TypeScript.">
+  <meta name="keywords" content="Onion Architecture, معماری پیازی, Onion Architecture چیست, Domain Model, Software Architecture, معماری نرم افزار, آموزش معماری نرم افزار, Design Architecture Pattern, Clean Architecture, Hexagonal Architecture">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Onion Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه">
+  <meta property="og:description" content="در این مقاله Onion Architecture را بررسی می‌کنیم، از مفهوم و حلقه‌های متحدالمرکز تا مزایا، معایب، مثال عملی، کاربرد در Java، Kotlin، C# و TypeScript.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/onion-architecture.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/onion-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Onion Architecture">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="معماری نرم‌افزار">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Onion Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه">
+  <meta name="twitter:description" content="حلقه‌های Domain، نمونه‌کد Java، مقایسه با Clean و Hexagonal و ۲۰ سؤال مصاحبه.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Onion Architecture چیست؟ آموزش کامل با مثال و ساختار پروژه",
+    "description": "در این مقاله Onion Architecture را بررسی می‌کنیم، از مفهوم و حلقه‌های متحدالمرکز تا مزایا، معایب، مثال عملی، کاربرد در Java، Kotlin، C# و TypeScript.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/onion-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/onion-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Onion Architecture, Domain Model, Services, Repositories, DAO, SOLID, Java",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Onion Architecture", "item": "https://haedarfarhani.github.io/My-Articles/articles/onion-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">معماری نرم‌افزار</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سری ۱۴ مقاله‌ای معماری</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Onion Architecture</span>؛ حلقه‌هایی که Domain را محافظت می‌کنند
+          </h1>
+
+          <p class="hero-lead">
+            معماری پیازی یعنی <strong>مدل دامنه در مرکز می‌نشیند و هیچ لایه‌ی بیرونی حق ندارد آن را تغییر دهد.</strong>
+            در این راهنما حلقه‌ها، جهت وابستگی، پیاده‌سازی کامل با <code>Java 21</code>، مقایسه با Clean و Hexagonal،
+            تست با <code>JUnit 5</code> و ۲۰ سؤال مصاحبه را بررسی می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری نرم‌افزار</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط تا پیشرفته (Java 21)</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Onion_Architecture</span>
+            <span class="post-tag">#Domain_Model</span>
+            <span class="post-tag">#SOLID</span>
+            <span class="post-tag">#Dependency_Inversion</span>
+            <span class="post-tag">#Java</span>
+            <span class="post-tag">#JUnit5</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: وقتی لایه‌ها به هم نشت می‌کنند</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Onion Architecture چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>مشکل قبل از استفاده</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>ایده اصلی: Domain در مرکز</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>ساختار معماری: حلقه‌ها</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>جریان داده (Data Flow)</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>ساختار پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>مثال عملی کامل: سیستم فاکتور</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>ارتباط با زبان‌ها و Frameworkها</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>ارتباط با SOLID</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>ارتباط با Design Patterns</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مثال در پروژه واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>Performance</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>۲۰ سؤال مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>Cheat Sheet نهایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s26" class="inline-toc-link"><span class="inline-toc-num">۲۶</span><span>Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ================= BODY:START ================= -->
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: وقتی لایه‌ها به هم نشت می‌کنند</h2>
+
+<p>
+یک سیستم فاکتور فروش را تصور کنید که با معماری لایه‌ای کلاسیک شروع شده: <code>UI → Business → Data</code>.
+در نسخه‌ی اول همه‌چیز مرتب است؛ اما بعد از چند ماه مشاهده می‌کنید Entityهای دامنه شما کم‌کم به <code>JPA</code> وابسته شده‌اند،
+منطق مالیات در یک کلاس Controller جا خوش کرده و لایه‌ی Data برای «بهینه‌سازی» مستقیماً از لایه‌ی Business صدا می‌زند.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Layered — وضعیت بعد از رشد:
+
+UI ──────────────┐
+  ↓              │
+Business ←── Data   (وابستگی معکوس!)
+  ↓
+Database
+
+Domain مدتهاست از وسط این فلش‌ها له شده است.</code></pre>
+
+<ul>
+  <li><strong>نشت دانش دامنه</strong>: قانون مالیات بین سه لایه پراکنده می‌شود.</li>
+  <li><strong>وابستگی معکوس</strong>: لایه‌ی پایین‌تر، لایه‌ی بالاتر را خبردار می‌کند.</li>
+  <li><strong>تست دشوار</strong>: تست قانون مالیات نیاز به بالا آوردن Persistence دارد.</li>
+  <li><strong>UI جایگزین‌نشدنی</strong>: افزودن API جدید یعنی بازنویسی دوباره‌ی منطق.</li>
+</ul>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">ریشه‌ی مشکل</span>
+لایه‌بندیِ صِرف کافی نیست؛ چون جهت وابستگی را کنترل نمی‌کند. <strong>Onion Architecture</strong> با یک جمله آمد:
+<strong>یک مرکز داشته باشید (Domain) و بگذارید همه‌ی وابستگی‌ها به سمت آن جریان یابند — هرگز برعکس.</strong>
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تاریخچه و دلیل ایجاد</h2>
+
+<p>
+<strong>Onion Architecture</strong> را <strong>Jeffrey Palermo</strong> در سال <strong>۲۰۰۸</strong> در وبلاگش معرفی کرد
+(سلسله مقاله‌های «Introducing Onion Architecture»). انگیزه‌ی او دقیقاً همان درد بخش اول بود:
+پروژه‌های N-Tier که در آن‌ها لایه‌ی Data به Business وابسته می‌شد و Unit Test‌ها کند و شکننده بودند.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بستر</th><th>چه اتفاقی افتاد؟</th></tr>
+  <tr><td>دهه‌ی ۲۰۰۰ — N-Tier / Layered</td><td>لایه‌بندی رایج شد اما جهت وابستگی کنترل نمی‌شد؛ لایه‌ی Data اغلب به همه‌ی چیز وصل بود</td></tr>
+  <tr><td>۲۰۰۳–۲۰۰۷ — TDD و Agile</td><td>نیاز به تست‌های سریع بدون DB، معماری‌های «تست‌پذیر» را ضروری کرد</td></tr>
+  <tr><td>۲۰۰۵ — Hexagonal (Cockburn)</td><td>ایده‌ی هسته و درایور/درایو را مطرح کرد — خویشاوند نزدیک Onion</td></tr>
+  <tr><td>۲۰۰۸ — Onion (Palermo)</td><td>حلقه‌های متحدالمرکز با مرکزیت Domain Model را رسماً توصیف کرد</td></tr>
+  <tr><td>۲۰۱۲–۲۰۱۷ — Clean (Martin)</td><td>ایده‌های مشابه را با نام‌گذاری چهارلایه‌ای و Dependency Rule تثبیت کرد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">چرا محبوب شد؟</span>
+چون به تیم‌ها اجازه داد <strong>منطق تجاری را بدون DB و بدون UI تست کنند</strong>؛ و در پروژه‌های سازمانی بزرگ،
+مدل دامنه به تنها دارایی پایدارِ پروژه تبدیل شد — همه‌چیز عوض می‌شد جز قواعد تجاری.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Onion Architecture چیست؟ (تعریف دقیق)</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>Onion Architecture</strong> یک روش سازمان‌دهی کد است که سیستم را به <strong>حلقه‌های متحدالمرکز</strong> تقسیم می‌کند؛
+<strong>Model دامنه در مرکز</strong> است و هر حلقه فقط به حلقه‌ی داخلی‌تر وابسته است، و وابستگی‌ها با <strong>Dependency Inversion</strong>
+در مرز حلقه‌ها می‌چرخند تا جهت نهایی همیشه به مرکز باشد.
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>✅ هست…</th><th>❌ نیست…</th></tr>
+  <tr><td>یک <strong>طرح کلی ساختار سیستم</strong> با مرکزیت Domain</td><td>یک <strong>Framework</strong> یا کتابخانه‌ی قابل نصب</td></tr>
+  <tr><td>یک <strong>قاعده‌ی جهت وابستگی</strong> (فقط به داخل)</td><td>یک <strong>Design Pattern</strong> مثل Strategy یا Observer</td></tr>
+  <tr><td>ترجمه‌ی عملیِ <strong>DIP</strong> در مقیاس کل پروژه</td><td>فقط «ساختن پوشه‌ی Domain» — ظاهر بدون قاعده کافی نیست</td></tr>
+  <tr><td>همه‌پوشش برای UI، API، CLI و هر ورودی دیگر</td><td>جایگزین DDD — بلکه مکمل آن است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سوءتفاهم رایج</span>
+خیال نکنید «پیازی» یعنی لایه‌ی زیاد بسازید! تعداد حلقه‌ها مهم نیست؛ آنچه مهم است
+<strong>اینکه هیچ فلشی از مرکز به بیرون نرود</strong>. پروژه‌ی کوچک با دو حلقه می‌تواند پیازی باشد.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>مشکل قبل از استفاده</h2>
+
+<p>همان سیستم فاکتور را بدون معماری پیازی ببینید:</p>
+
+<pre class="kl-code" data-lang="java"><code>public class InvoiceRepository {
+
+    private final EntityManager em; // JPA در کلاس تجاری!
+
+    public BigDecimal totalTax(Invoice invoice) {
+        // قانون مالیات! کجای کار است؟ لایه‌ی Data
+        BigDecimal vat = invoice.getSubtotal()
+                .multiply(new BigDecimal("0.09"));
+
+        em.persist(invoice); // ذخیره‌سازی همین‌جا
+        return vat;
+    }
+}
+</code></pre>
+
+<p>تحلیل مشکلات:</p>
+<ul>
+  <li><strong>قانون تجاری در اشتباه‌ترین حلقه</strong>: مالیات باید در Domain باشد، نه در Repository.</li>
+  <li><strong>وابستگی به JPA</strong>: تست قانون مالیات بدون Container ممکن نیست.</li>
+  <li><strong>دو مسئولیت در یک کلاس</strong>: محاسبه + ذخیره (نقض SRP).</li>
+  <li><strong>UI جایگزین‌نشدنی</strong>: API جدید مجبور است همین کلاس را صدا بزند و قانون را دوباره بشکند.</li>
+</ul>
+
+<pre class="kl-code" data-lang="text"><code>وابستگی‌ها (همه به بیرون):
+
+InvoiceRepository ──→ JPA ──→ Database
+        │
+        └──→ قانون مالیات (کجاست؟ همین‌جا گم شده)
+
+در Onion: Invoice (مرکز) ← TaxRule (حلقه‌ی سرویس) ← JpaInvoiceRepo (حلقه‌ی بیرونی)</code></pre>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>ایده اصلی: Domain در مرکز</h2>
+
+<p>سه قانون بنیادین Onion Architecture:</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">قواعد سه‌گانه</span>
+۱) <strong>مرکز، وابستگی ندارد</strong> — حلقه‌ی Domain هیچ import از بیرون نمی‌گیرد.<br>
+۲) <strong>هر حلقه فقط به داخل نگاه می‌کند</strong> — وابستگی کامپایلی هرگز به بیرون نمی‌رود.<br>
+۳) <strong>در مرز حلقه‌ها DIP اعمال می‌شود</strong> — بیرونی‌ها interfaceهای داخلی را پیاده‌سازی می‌کنند.
+</div>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    UI[UI / Web / CLI] --&gt; S[Services]
+    S --&gt; R[Repositories interfaces]
+    S --&gt; M[Domain Model]
+    R --&gt; M
+    DB[DAO / Database] --&gt; R
+
+    classDef inner fill:#0F766E,color:#fff
+    classDef outer fill:#14B8A6,color:#fff
+    class M inner
+    class UI,DB outer</code></pre>
+
+<p>مثال ساده: قانون «فاکتور زیر ۱۰۰ هزار تومان معاف از مالیات است» را در مرکز قرار می‌دهیم:</p>
+
+<pre class="kl-code" data-lang="java"><code>// حلقه‌ی مرکز — هیچ وابستگی ندارد
+public final class Invoice {
+    private final List&lt;InvoiceLine&gt; lines;
+
+    public Invoice(List&lt;InvoiceLine&gt; lines) {
+        if (lines.isEmpty()) throw new IllegalArgumentException("empty invoice");
+        this.lines = List.copyOf(lines);
+    }
+
+    public BigDecimal subtotal() {
+        return lines.stream().map(InvoiceLine::amount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // قانون تجاری اینجاست — نه در Controller و نه در DAO
+    public BigDecimal tax() {
+        BigDecimal sub = subtotal();
+        return sub.compareTo(new BigDecimal("100000")) &lt; 0
+                ? BigDecimal.ZERO
+                : sub.multiply(new BigDecimal("0.09"));
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">آزمون مرز</span>
+اگر فایل‌های حلقه‌ی مرکز شما <code>import</code>ای غیر از استاندارد زبان (java.math، java.util و…) دارند،
+مرکز آلوده شده و معماری عملاً شکسته است — حتی اگر پوشه‌ها مرتب باشند.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>ساختار معماری: حلقه‌ها</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    subgraph "Domain Model (مرکز)"
+        A[Entities + Value Objects]
+    end
+    subgraph "Domain Services"
+        B[Service interfaces]
+        B2[Repository interfaces]
+    end
+    subgraph "Application Services"
+        C[Use Case orchestration]
+    end
+    subgraph "Infrastructure (بیرونی‌ترین)"
+        D[DAO / ORM]
+        D2[Web / UI]
+        D3[Email / Payment]
+    end
+
+    C --&gt; B
+    C --&gt; B2
+    B --&gt; A
+    B2 --&gt; A
+    D --&gt; B2
+    D2 --&gt; C
+    D3 --&gt; B</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>حلقه</th><th>مسئولیت</th><th>داخل آن</th><th>ممنوع</th></tr>
+  <tr><td><strong>۱. Domain Model</strong></td><td>موجودیت‌ها و قواعد پایدار</td><td>Entity، Value Object، قواعد</td><td>هر import بیرونی</td></tr>
+  <tr><td><strong>۲. Domain Services</strong></td><td>رفتارهای دامنه‌ای بدون جای طبیعی در Entity</td><td>interface سرویس‌ها و Repositoryها</td><td>جزئیات ORM/HTTP</td></tr>
+  <tr><td><strong>۳. Application Services</strong></td><td>هماهنگی سناریوها (Use Case)</td><td>کلاس‌های اجرایی سرویس</td><td>منطق تجاری ثابت</td></tr>
+  <tr><td><strong>۴. Infrastructure</strong></td><td>جزئیات فنی</td><td>DAO، ORM، Web، UI، درگاه پرداخت</td><td>هر قانون تجاری</td></tr>
+</table>
+</div>
+
+<p>
+ Palermo تأکید داشت جای <strong>Repository interface</strong> در حلقه‌ی داخلی و جای <strong>پیاده‌سازی‌اش</strong> در بیرون است؛
+و <strong>DAO</strong> فقط در بیرونی‌ترین حلقه می‌نشیند. این جداسازی، همان چیزی است که تست‌پذیری را ممکن می‌کند.
+</p>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>جریان داده (Data Flow)</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph TD
+    A[User / API Request] --&gt; B[Web Controller]
+    B --&gt; C[Application Service]
+    C --&gt; D[Domain Entity]
+    D --&gt; E[Repository interface]
+    E --&gt; F[Repository Impl + DAO]
+    F --&gt; G[(Database)]
+    G --&gt; E
+    E --&gt; C
+    C --&gt; B
+    B --&gt; H[Response]</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>چه می‌شود؟</th></tr>
+  <tr><td>۱. Controller</td><td>ورودی را می‌گیرد، به Command داخلی ترجمه و Application Service را صدا می‌زند</td></tr>
+  <tr><td>۲. Application Service</td><td>Entity را از Repository می‌گیرد، رفتار لازم را هماهنگ می‌کند</td></tr>
+  <tr><td>۳. Domain Entity</td><td>قانون را اعمال می‌کند (مالیات، اعتبار، وضعیت)</td></tr>
+  <tr><td>۴. Repository</td><td>interface در داخل فراخوانی، پیاده‌سازی بیرونی کار را می‌کند</td></tr>
+  <tr><td>۵. بازگشت</td><td>نتیجه از همان زنجیره برمی‌گردد؛ Controller فقط پاسخ می‌سازد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی کلیدی</span>
+فراخوانی (Call) از بیرون به داخل است، اما <strong>فلش وابستگی کامپایلی به داخل</strong> است؛
+چون DAO پیاده‌سازی Repository interface است. این تقارن، رمز تست دامنه بدون DB است.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>ساختار پروژه واقعی</h2>
+
+<pre class="kl-code" data-lang="text"><code>src/
+├── domain/                      # حلقه‌ی مرکز — خالص
+│   ├── model/
+│   │   ├── Invoice.java
+│   │   ├── InvoiceLine.java
+│   │   └── Money.java
+│   └── service/                 # interfaceها
+│       ├── InvoiceRepository.java
+│       └── TaxCalculator.java
+│
+├── application/                 # هماهنگ‌کننده‌ی سناریوها
+│   ├── InvoiceService.java
+│   └── dto/InvoiceRequest.java
+│
+├── infrastructure/              # حلقه‌ی بیرونی
+│   ├── persistence/
+│   │   ├── JpaInvoiceRepository.java
+│   │   └── InvoiceJpaEntity.java
+│   └── config/AppConfig.java
+│
+├── interfaces/                  # Web / CLI
+│   └── web/InvoiceController.java
+│
+└── test/
+    ├── domain/                  # تست خالص — بدون I/O
+    ├── application/             # Fake Repository
+    └── infrastructure/          # ادغام با DB</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>پوشه</th><th>حلقه</th><th>وابستگی مجاز</th></tr>
+  <tr><td><code>domain</code></td><td>مرکز</td><td>هیچ</td></tr>
+  <tr><td><code>application</code></td><td>وسط</td><td>فقط <code>domain</code></td></tr>
+  <tr><td><code>interfaces</code></td><td>بیرونی</td><td><code>application</code> و <code>domain</code></td></tr>
+  <tr><td><code>infrastructure</code></td><td>بیرونی‌ترین</td><td>همه‌ی حلقه‌های داخلی (سیم‌کشی)</td></tr>
+</table>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">نکته‌ی چند-ماژوله</span>
+در Gradle/Maven چند-ماژوله، هر حلقه یک ماژول است؛ وابستگی خلاف جهت، کامپایل را می‌شکند و
+بلافاصله در CI لو می‌رود — قوی‌ترین تضمینِ رعایت معماری.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>مثال عملی کامل: سیستم فاکتور</h2>
+
+<p>دامنه: <code>Invoice</code>، <code>InvoiceLine</code>، <code>Customer</code> با قواعد:</p>
+
+<pre class="kl-code" data-lang="text"><code>Rules (در مرکز)
+├── فاکتور نمی‌تواند خالی باشد
+├── زیر ۱۰۰,۰۰۰ → مالیات صفر؛ وگرنه ۹٪
+├── تخفیف فقط برای Customerهای VIP مجاز است
+└── فاکتور PAID قابل ویرایش نیست</code></pre>
+
+<pre class="kl-code" data-lang="text"><code>Workflow:
+1. POST /invoices — Controller ساخت InvoiceRequest را ترجمه می‌کند
+2. InvoiceService قوانین را روی Invoice اعمال می‌کند
+3. InvoiceRepository (interface در داخل) فراخوانی می‌شود
+4. JpaInvoiceRepository در بیرون ذخیره می‌کند
+5. نتیجه InvoiceResult به Controller و پاسخ HTTP برمی‌گردد</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی طراحی</span>
+توجه کنید «کجا تست می‌نویسیم؟»: چهار قانون بالا همگی در حلقه‌ی مرکزند → تست آن‌ها میلی‌ثانیه‌ای است.
+فقط ذخیره‌سازی به تست ادغام نیاز دارد.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>پیاده‌سازی کد با Java 21</h2>
+
+<h3>حلقه‌ی مرکز: Entity و قواعد</h3>
+<pre class="kl-code" data-lang="java"><code>import java.math.BigDecimal;
+import java.util.List;
+
+public final class Invoice {
+    private final String id;
+    private final Customer customer;
+    private final List&lt;InvoiceLine&gt; lines;
+    private final InvoiceStatus status;
+
+    public Invoice(String id, Customer customer,
+                   List&lt;InvoiceLine&gt; lines, InvoiceStatus status) {
+        if (lines == null || lines.isEmpty())
+            throw new IllegalArgumentException("Invoice must have lines");
+        this.id = id;
+        this.customer = customer;
+        this.lines = List.copyOf(lines);
+        this.status = status;
+    }
+
+    public BigDecimal subtotal() {
+        return lines.stream().map(InvoiceLine::amount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal tax() {
+        BigDecimal sub = subtotal();
+        boolean exempt = sub.compareTo(new BigDecimal("100000")) &lt; 0;
+        return exempt ? BigDecimal.ZERO
+                      : sub.multiply(new BigDecimal("0.09"));
+    }
+
+    public BigDecimal discount() {
+        boolean vip = customer.tier() == Tier.VIP;
+        return vip ? subtotal().multiply(new BigDecimal("0.05")) : BigDecimal.ZERO;
+    }
+
+    public Invoice pay() {
+        if (status == InvoiceStatus.PAID) return this;
+        return new Invoice(id, customer, lines, InvoiceStatus.PAID);
+    }
+}
+</code></pre>
+
+<h3>حلقه‌ی داخلی: interface سرویس‌ها</h3>
+<pre class="kl-code" data-lang="java"><code>import java.util.Optional;
+
+public interface InvoiceRepository {
+    void save(Invoice invoice);
+    Optional&lt;Invoice&gt; findById(String id);
+}
+</code></pre>
+
+<h3>Application Service: هماهنگی سناریو</h3>
+<pre class="kl-code" data-lang="java"><code>public final class CreateInvoiceUseCase {
+
+    private final InvoiceRepository invoices;
+    private final CustomerRepository customers;
+    private final IdGenerator ids;
+
+    public CreateInvoiceUseCase(InvoiceRepository invoices,
+                                CustomerRepository customers,
+                                IdGenerator ids) {
+        this.invoices = invoices;
+        this.customers = customers;
+        this.ids = ids;
+    }
+
+    public InvoiceResult execute(CreateInvoiceCommand cmd) {
+        Customer customer = customers.findById(cmd.customerId())
+                .orElseThrow(() -&gt; new CustomerNotFound(cmd.customerId()));
+
+        List&lt;InvoiceLine&gt; lines = cmd.lines().stream()
+                .map(l -&gt; new InvoiceLine(l.description(), l.amount()))
+                .toList();
+
+        Invoice invoice = new Invoice(ids.nextId(), customer, lines, InvoiceStatus.DRAFT);
+        invoices.save(invoice);
+
+        return new InvoiceResult(invoice.id(), invoice.subtotal(),
+                                 invoice.tax(), invoice.discount());
+    }
+}
+</code></pre>
+
+<h3>حلقه‌ی بیرونی: پیاده‌سازی Repository</h3>
+<pre class="kl-code" data-lang="java"><code>import java.util.Optional;
+
+public final class JpaInvoiceRepository implements InvoiceRepository {
+
+    private final InvoiceJpaDao dao;
+
+    public JpaInvoiceRepository(InvoiceJpaDao dao) {
+        this.dao = dao;
+    }
+
+    @Override
+    public void save(Invoice invoice) {
+        dao.save(InvoiceJpaEntity.from(invoice));
+    }
+
+    @Override
+    public Optional&lt;Invoice&gt; findById(String id) {
+        return dao.findById(id).map(InvoiceJpaEntity::toDomain);
+    }
+}
+</code></pre>
+
+<p>تحلیل: Entity هیچ import بیرونی ندارد؛ Use Case فقط interface می‌شناسد؛
+DAO و ترجمه (Mapping) کاملاً در حلقه‌ی بیرونی‌اند — با تغییر ORM هیچ‌کدام از دو فایل اول تغییر نمی‌کنند.</p>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>ارتباط با زبان‌ها و Frameworkها</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>زبان</th><th>ابزار رایج</th><th>نمونه‌ی واقعی</th></tr>
+  <tr><td><strong>Java</strong></td><td>Spring Boot، JPA/Hibernate</td><td><code>domain</code> خالص + <code>@Repository</code> در <code>infrastructure</code></td></tr>
+  <tr><td><strong>Kotlin</strong></td><td>Android + Hilt/Koin، Ktor</td><td>ماژول‌های <code>domain</code>/<code>data</code>/<code>ui</code> با Coroutines</td></tr>
+  <tr><td><strong>C#</strong></td><td>ASP.NET Core + EF Core</td><td><code>IInvoiceRepository</code> در Core و پیاده‌سازی Ef در Infrastructure</td></tr>
+  <tr><td><strong>TypeScript</strong></td><td>NestJS + TypeORM، Angular</td><td>کلاس Entity خالص + Provider درایور با <code>@Injectable()</code></td></tr>
+  <tr><td><strong>Python</strong></td><td>FastAPI + SQLAlchemy، Django</td><td>مدل دامنه خالص + Adapterهای ORM در پکیج <code>infra</code></td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>// سیم‌کشی در بیرونی‌ترین حلقه — Entity و Use Case خبردار نیستند
+@Configuration
+public class InvoiceConfig {
+    @Bean
+    CreateInvoiceUseCase createInvoiceUseCase(InvoiceRepository repo,
+                                              CustomerRepository customers) {
+        return new CreateInvoiceUseCase(repo, customers, new UuidIdGenerator());
+    }
+}
+</code></pre>
+
+<div class="kl-box">
+<span class="kl-h">نکته</span>
+بهترین راه تضمین مرز، <strong>جدا بودن ماژول/پکیج</strong> است: اگر <code>domain</code> یک ماژول مستقل باشد،
+import کردن JPA در آن دیگر ممکن نیست — قاعده به قید کامپایل درمی‌آید.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>مزایای Onion Architecture</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>مزیت</th><th>مثال</th></tr>
+  <tr><td>۱</td><td><strong>مستقل بودن Domain</strong></td><td>قوانین مالیات بدون DB و UI قابل اجرا و تست‌اند</td></tr>
+  <tr><td>۲</td><td><strong>تست‌پذیری بالا</strong></td><td>تست Entity در میلی‌ثانیه؛ تست Use Case با Fake</td></tr>
+  <tr><td>۳</td><td><strong>جابه‌جایی آسان Infrastructure</strong></td><td> Hibernate → jOOQ فقط پیاده‌سازی حلقه‌ی بیرونی را عوض می‌کند</td></tr>
+  <tr><td>۴</td><td><strong>چند ورودی هم‌زمان</strong></td><td>Web، CLI و Job زمان‌بندی‌شده از یک Application Service مشترک‌اند</td></tr>
+  <tr><td>۵</td><td><strong>تمرکز روی مدل دامنه</strong></td><td>مدل‌سازی DDD (Entity/VO/Aggregate) جای طبیعی خود را دارد</td></tr>
+  <tr><td>۶</td><td><strong>کاهش Coupling</strong></td><td>تغییر UI به هیچ قانون تجاری دست نمی‌زند</td></tr>
+  <tr><td>۷</td><td><strong>Nگزینه‌ای شدن ذخیره‌سازی</strong></td><td>در یک پروژه هم Database رابطه‌ای و هم ذخیره‌سازی فایل پشت یک Repository</td></tr>
+  <tr><td>۸</td><td><strong>توسعه‌ی موازی تیم</strong></td><td>مرز حلقه‌ها تداخل کاری را مشخص و کم می‌کند</td></tr>
+  <tr><td>۹</td><td><strong>پایداری در تغییر Framework</strong></td><td>مهاجرت به فریم‌ورک جدید حلقه‌ی مرکز را دست نمی‌زند</td></tr>
+  <tr><td>۱۰</td><td><strong>مستندسازی ساختاری</strong></td><td>چیدمان حلقه‌ها خودِ نقشه‌ی معماری است</td></tr>
+  <tr><td>۱۱</td><td><strong>هماهنگی خوب با DDD</strong></td><td>حلقه‌ها مرزهای Bounded Context را تقویت می‌کنند</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>معایب Onion Architecture</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>عیب</th><th>توضیح</th></tr>
+  <tr><td>۱</td><td><strong>تعداد فایل و لایه‌ی زیاد</strong></td><td>Interface + Impl + Mapper برای هر موجودیت</td></tr>
+  <tr><td>۲</td><td><strong>زمان اولیه‌ی بیشتر</strong></td><td>ساخت اسکلت حلقه‌ها ۲۰–۳۰٪ کندتر است</td></tr>
+  <tr><td>۳</td><td><strong>نیاز به تجربه در مرزبندی</strong></td><td>قرار دادن قانون در حلقه‌ی اشتباه، معماری را بی‌ارزش می‌کند</td></tr>
+  <tr><td>۴</td><td><strong>Overengineering پروژه‌های کوچک</strong></td><td>CRUD ساده احتیاجی به چهار حلقه ندارد</td></tr>
+  <tr><td>۵</td><td><strong>Mapping مکرر</strong></td><td>ترجمه‌ی بین حلقه‌ها Boilerplate تولید می‌کند</td></tr>
+  <tr><td>۶</td><td><strong>پیچیدگی Debug</strong></td><td>ردیابی یک باگ از Controller تا Entity چند پرش دارد</td></tr>
+  <tr><td>۷</td><td><strong>موافقت تیم سخت</strong></td><td>توسعه‌دهندگان تازه‌کار ممکن است حلقه‌ها را نادیده بگیرند</td></tr>
+  <tr><td>۸</td><td><strong>هزینه‌ی نگهداری خودِ معماری</strong></td><td>بازبینی وابستگی‌ها و تست معماری باید مداوم باشد</td></tr>
+  <tr><td>۹</td><td><strong>مرز مبهم با DDD</strong></td><td>تیم‌ها گاهی DDD و Onion را قاطی و ساختار را شلوغ می‌کنند</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">واقع‌بین باشید</span>
+هر ۹ مورد بالا <strong>هزینه‌ی معقول</strong>‌اند، نه دلیل رد کردن معماری؛
+سؤال درست این است: «آیا هزینه‌ی حلقه‌ها کمتر از هزینه‌ی نگهداری بدون مرز است؟»
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>چه زمانی استفاده کنیم؟</h2>
+
+<ul>
+  <li><strong>مدل دامنه پیچیده و غنی است</strong> — قواعد تجاری ارزش اصلی محصول‌اند (مالی، بیمه، لجستیک)</li>
+  <li><strong>پروژه بلندمدت و پر-تغییر است</strong> — عمر بیش از یک سال با تیم در حال رشد</li>
+  <li><strong>پشتیبانی از چند ورودی مورد نیاز است</strong> — Web + Mobile API + CLI + Batch Job</li>
+  <li><strong>تست خودکار و CI اهمیت دارد</strong> — خواهان تست‌های سریع و پوشش بالای دامنه</li>
+  <li><strong>تعویض زیرساخت محتمل است</strong> — مهاجرت ORM، DB یا فریم‌ورک در برنامه است</li>
+  <li><strong>تیم بزرگ یا چندتیمی دارید</strong> — مرز حلقه‌ها مالکیت را روشن می‌کند</li>
+  <li><strong>می‌خواهید DDD را عملی کنید</strong> — Onion بهترین اسکلت اجرایی برای DDD است</li>
+</ul>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نشانه‌ی طلایی</span>
+اگر جمله‌ی «این قانون تجاری سال‌ها ثابت می‌ماند اما ابزارهای فنی عوض می‌شوند» در پروژه‌تان صادق است،
+دقیقاً حالتی است که Onion برایش ساخته شده است.
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>سناریو</th><th>چرا نه؟</th></tr>
+  <tr><td><strong>CRUD بدون قانون تجاری</strong></td><td>چیزی برای محافظت در مرکز نیست؛ MVC ساده کافی است</td></tr>
+  <tr><td><strong>Prototype و اسپایک</strong></td><td>سرعت اثبات ایده مهم‌تر از مرزبندی است</td></tr>
+  <tr><td><strong>ابزار یک‌بارمصرف / اسکریپت</strong></td><td>عمر کوتاه، بازگشت هزینه‌ی معماری ممکن نیست</td></tr>
+  <tr><td><strong>تیم کوچک بدون تجربه</strong></td><td>پیاده‌سازی نادرست، بدتر از لایه‌بندی ساده‌ی درست است</td></tr>
+  <tr><td><strong>پنل داخلی کوچک</strong></td><td>ارزش تجاری کم، تغییر کم — سادگی بهتر است</td></tr>
+  <tr><td><strong>پروژه‌ی با عمر کمتر از ۳ ماه</strong></td><td>برای برگشت سرمایه‌ی معماری زود است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">قانون عملی</span>
+شروع ساده کنید و مرزها را با رشد نیاز بکشید (Incremental). معماری پیازیِ زودهنگامِ اشتباه
+بدهی فنی می‌ماند — بهتر است ابتدا یک حلقه‌ی خالص واقعی بسازید، بعد حلقه‌ها را زیاد کنید.
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>مقایسه با معماری‌های مشابه</h2>
+
+<pre class="kl-code" data-lang="mermaid"><code>graph LR
+    subgraph Onion[Onion]
+        O1[Domain Model] --- O2[Domain Services] --- O3[App Services] --- O4[Infrastructure]
+    end
+    subgraph Clean[Clean]
+        C1[Entities] --- C2[Use Cases] --- C3[Adapters] --- C4[Frameworks]
+    end
+    subgraph Hex[Hexagonal]
+        H1[Core] --- H2[Ports] --- H3[Adapters]
+    end</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>Onion</th><th>Clean</th><th>Hexagonal</th><th>Layered</th></tr>
+  <tr><td>مرکز ثقل</td><td>Domain Model</td><td>Entities + Use Cases</td><td>Core + Ports</td><td>لایه‌بندی عمودی</td></tr>
+  <tr><td>اصول کلیدی</td><td>چرخش وابستگی به مرکز</td><td>Dependency Rule</td><td>Ports &amp; Adapters</td><td>تفکیک وظیفه</td></tr>
+  <tr><td>نام Repository</td><td>interface داخل، Impl بیرون</td><td>interface داخل</td><td>Driven Port</td><td>معمولاً داخل لایه‌ی Data</td></tr>
+  <tr><td>جهت وابستگی تضمینی</td><td>بله (DIP در مرزها)</td><td>بله</td><td>بله</td><td>خیر</td></tr>
+  <tr><td>تمرکز روی Use Case</td><td>متوسط (Application Services)</td><td>زیاد</td><td>متوسط</td><td>کم</td></tr>
+  <tr><td>بهترین حوزه</td><td>مدل دامنه‌ی غنی</td><td>سناریوهای کاربردی زیاد</td><td>درایورهای متعدد</td><td>اپ ساده‌ی لایه‌ای</td></tr>
+</table>
+</div>
+
+<p><strong>تفاوت کلیدی:</strong></p>
+<ul>
+  <li><strong>Onion vs Clean</strong>: هر دو متحدالمرکزند؛ Onion بر تسلط بر <em>Model</em> تأکید دارد، Clean بر <em>Use Case</em> و قاعده‌ی وابستگی.</li>
+  <li><strong>Onion vs Hexagonal</strong>: Hexagonal هر ورودی/خروجی را Port می‌نامد؛ Onion حلقه‌ها را بر اساس نوع مسئولیت نام‌گذاری می‌کند.</li>
+  <li><strong>Onion vs Layered</strong>: Layered جهت وابستگی را آزاد می‌گذارد؛ Onion صراحتاً ممنوع می‌کند.</li>
+</ul>
+
+<div class="kl-box">
+<span class="kl-h">مرتبط در همین سایت</span>
+مقایسه‌ی عمیق این چهار معماری در مقاله‌ی Clean Architecture سری معماری آمده است.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>ارتباط با SOLID</h2>
+
+<ul>
+  <li><strong>SRP</strong>: هر حلقه یک دلیل تغییر دارد — قانون در Domain، هماهنگی در Application، جزئیات در Infrastructure.</li>
+  <li><strong>OCP</strong>: افزودن نوع جدید پرداخت = کلاس جدیدِ پیاده‌سازیِ همان interface؛ بدون تغییر Use Case.</li>
+  <li><strong>LSP</strong>: پیاده‌سازی‌های Repository باید رفتار قراردادی interface را حفظ کنند (مثلاً ذخیره‌ی ناموفق استثنا بدهد).</li>
+  <li><strong>ISP</strong>: interfaceهای کوچک و متمرکز: <code>InvoiceReader</code> و <code>InvoiceWriter</code> بهتر از یک <code>InvoiceDao</code> غول.</li>
+  <li><strong>DIP</strong>: هسته‌ی فلسفه‌ی Onion — بیرون به interfaceهای داخل وابسته است.</li>
+</ul>
+
+<pre class="kl-code" data-lang="java"><code>// DIP در عمل — قبل و بعد
+
+// ✗ قبل: وابستگی مستقیم به بیرون
+public class InvoiceService {
+    private final JpaInvoiceDao dao = new JpaInvoiceDao();
+}
+
+// ✓ بعد: وابستگی به interface در حلقه‌ی داخلی
+public class InvoiceService {
+    private final InvoiceRepository repository;
+
+    public InvoiceService(InvoiceRepository repository) {
+        this.repository = repository;
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>ارتباط با Design Patterns</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Pattern</th><th>نقش در Onion</th></tr>
+  <tr><td><strong>Repository</strong></td><td>پنهان‌سازی ذخیره‌سازی پشت interface در حلقه‌ی داخلی</td></tr>
+  <tr><td><strong>Facade</strong></td><td>Application Service به‌عنوان دروازه‌ی ساده‌ی حلقه‌های داخلی</td></tr>
+  <tr><td><strong>Adapter</strong></td><td>ترجمه‌ی مدل دامنه به ردیف DB و DTOهای وب</td></tr>
+  <tr><td><strong>Dependency Injection</strong></td><td>سیم‌کشی حلقه‌ها در Composition Root</td></tr>
+  <tr><td><strong>Strategy</strong></td><td>الگوریتم‌های قابل تعویض مثل محاسبه‌ی مالیات</td></tr>
+  <tr><td><strong>Factory</strong></td><td>ساخت Entityهای پیچیده با اعتبارسنجی</td></tr>
+  <tr><td><strong>Observer / Pub-Sub</strong></td><td>انتشار رویدادهای دامنه به Listenerهای بیرونی</td></tr>
+</table>
+</div>
+
+<p>
+تفاوت مفهومی: <strong>Pattern</strong> یک راه‌حل محلی برای یک مشکل کد است؛ <strong>Onion</strong> چیدمان کل سیستم است
+و از چندین Pattern داخل حلقه‌هایش استفاده می‌کند.
+</p>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>Testing</h2>
+
+<pre class="kl-code" data-lang="text"><code>تست حلقه‌ی مرکز (Entity/VO)   → سریع‌ترین، بدون I/O
+تست Application Service        → با Fake Repository
+تست Infrastructure (ادغام)     → با DB واقعی / Testcontainers</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>import static org.junit.jupiter.api.Assertions.*;
+import java.math.BigDecimal;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class InvoiceTest {
+
+    @Test
+    @DisplayName("فاکتور زیر آستانه باید معاف از مالیات باشد")
+    void shouldBeTaxExemptBelowThreshold() {
+        // Arrange
+        Invoice invoice = new Invoice("i1", Customer.retail(),
+                List.of(new InvoiceLine("کالا", new BigDecimal("99000"))),
+                InvoiceStatus.DRAFT);
+
+        // Act
+        BigDecimal tax = invoice.tax();
+
+        // Assert
+        assertEquals(0, tax.compareTo(BigDecimal.ZERO));
+    }
+
+    @Test
+    @DisplayName("فاکتور PAID قابل ویرایش نیست")
+    void paidInvoiceStaysImmutable() {
+        Invoice paid = draftInvoice().pay();
+        Invoice again = paid.pay();
+        assertSame(paid, again);
+    }
+}
+</code></pre>
+
+<p>برای تست Application Service از Fake ساده استفاده می‌کنیم (بدون Mock سنگین):</p>
+
+<pre class="kl-code" data-lang="java"><code>final class InMemoryInvoiceRepository implements InvoiceRepository {
+    private final Map&lt;String, Invoice&gt; store = new LinkedHashMap&lt;&gt;();
+
+    @Override public void save(Invoice invoice) { store.put(invoice.id(), invoice); }
+    @Override public Optional&lt;Invoice&gt; findById(String id) {
+        return Optional.ofNullable(store.get(id));
+    }
+}
+
+@Test
+void shouldCreateAndPersistInvoice() {
+    // Arrange
+    InMemoryInvoiceRepository repo = new InMemoryInvoiceRepository();
+    CreateInvoiceUseCase useCase = new CreateInvoiceUseCase(
+            repo, new FakeCustomerCatalog(), new UuidIdGenerator());
+
+    // Act
+    InvoiceResult result = useCase.execute(commandWithOneLine());
+
+    // Assert
+    assertTrue(repo.findById(result.id()).isPresent());
+    assertEquals(0, result.tax().compareTo(BigDecimal.ZERO));
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نتیجه</span>
+چون حلقه‌ی مرکز خالص است، اکثر تست‌ها بدون Thread و بدون Network اجرا می‌شوند؛
+تست‌های ادغامی فقط مرز بیرونی را پوشش می‌دهند و تعدادشان کم است.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>#</th><th>اشتباه</th><th>راه درست</th></tr>
+  <tr><td>۱</td><td>استفاده بدون نیاز در پروژه‌ی کوچک</td><td>شروع ساده، مرزبندی تدریجی با رشد نیاز</td></tr>
+  <tr><td>۲</td><td>کپی کردن پوشه‌ها بدون فهم جهت وابستگی</td><td>اول قاعده را توضیح دهید، بعد پوشه بسازید</td></tr>
+  <tr><td>۳</td><td>ساخت حلقه/کلاس زیاد برای هر متغیر</td><td>تا دو مصرف‌کننده ندارید، interface اضافه نکنید</td></tr>
+  <tr><td>۴</td><td>قانون تجاری در Service یا Controller</td><td>قانون در Entity، هماهنگی در Application Service</td></tr>
+  <tr><td>۵</td><td>قرار دادن Repository در حلقه‌ی بیرونی</td><td>interface در داخل، پیاده‌سازی در بیرون</td></tr>
+  <tr><td>۶</td><td>وابستگی معکوس ناخواسته (import بیرونی در domain)</td><td>بازبینی import + تست معماری (ArchUnit)</td></tr>
+  <tr><td>۷</td><td>Service غول‌پیکر چند-مسئولیتی</td><td>یک Use Case = یک سناریوی واحد</td></tr>
+  <tr><td>۸</td><td>نادیده گرفتن Mapping بین حلقه‌ها</td><td>Mapper صریح و جدا از منطق تجاری</td></tr>
+  <tr><td>۹</td><td>تست فقط در لایه‌ی بیرونی</td><td>پوشش اصلی تست‌ها روی حلقه‌ی مرکز</td></tr>
+  <tr><td>۱۰</td><td>تبدیل Entity به کلاس داده‌ی ساده (贫血)</td><td>رفتار و قانون را روی Entity نگه دارید</td></tr>
+  <tr><td>۱۱</td><td>عدم مستندسازی تصمیم‌ها</td><td>ADR کوتاه + نمودار حلقه‌ها در README</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مثال در پروژه واقعی</h2>
+
+<h3>۱) بک‌اند (Java + Spring Boot)</h3>
+<pre class="kl-code" data-lang="text"><code>com.shop/
+├── domain/          # Invoice, Customer, InvoiceRepository (interface)
+├── application/     # CreateInvoiceUseCase
+├── infrastructure/  # JpaInvoiceRepository, SmtpMailer
+└── interfaces/      # InvoiceController (REST)</code></pre>
+<p>درگاه پرداخت جدید فقط یک کلاس جدید در <code>infrastructure</code> است؛ Use Case تغییر نمی‌کند.</p>
+
+<h3>۲) اندروید (Kotlin + Compose)</h3>
+<pre class="kl-code" data-lang="text"><code>app/
+├── domain/       # قواعد سبد خرید + Repository interface
+├── data/         # پیاده‌سازی با Room/Retrofit
+└── ui/           # ViewModel + Compose Screen</code></pre>
+<p>تغییر API سرور فقط پکیج <code>data</code> را می‌لرزاند؛ ViewModel و قواعد دامنه دست‌نخورده می‌مانند.</p>
+
+<h3>۳) فرانت‌اند (TypeScript + NestJS)</h3>
+<pre class="kl-code" data-lang="text"><code>src/
+├── domain/           # مدل‌های TS خالص
+├── application/      # سرویس‌های هماهنگ‌کننده
+├── infrastructure/   # TypeORM, Axios
+└── interfaces/       # Controllers / Frontend Components</code></pre>
+<p>یک هسته‌ی مشترک بین API و منطق سمت Client قابل اشتراک است چون به فریم‌ورک وابسته نیست.</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">الگوی مشترک</span>
+در همه‌ی پلتفرم‌ها: <strong>مدل در مرکز، interface در حلقه‌ی داخلی، پیاده‌سازی و سیم‌کشی در بیرون</strong>.
+</div>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>Performance</h2>
+
+<p><strong>نه — Onion Architecture خودِ Runtime را سریع‌تر نمی‌کند؛</strong> آنچه بهتر می‌شود کیفیت نگهداری است:</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بعد</th><th>تأثیر</th></tr>
+  <tr><td>تست‌پذیری و سرعت تست</td><td>✅ بهبود چشمگیر (تست دامنه بدون I/O)</td></tr>
+  <tr><td>نگهداری و تغییر</td><td>✅ بهبود چشمگیر</td></tr>
+  <tr><td>Scalability سازمانی</td><td>✅ بهبود</td></tr>
+  <tr><td>Throughput / Latency</td><td>⬜ تقریباً بی‌تأثیر؛ هزینه‌ی ترجمه‌ی بین حلقه‌ها ناچیز است</td></tr>
+  <tr><td>مصرف حافظه</td><td>⬜ بی‌تأثیر عملی</td></tr>
+</table>
+</div>
+
+<p>
+تنها هزینه‌ی واقعی، <strong>Overhead Mapping</strong> (ترجمه‌ی مدل دامنه به JPA Entity و برعکس) است؛
+در مسیرهای بسیار داغ می‌توان آن را با Builderهای بهینه کاهش داد — بدون شکستن مرز حلقه‌ها.
+</p>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">کی نگران شویم؟</span>
+در پردازش ده‌ها هزار پیام در ثانیه، هر شیءی اهمیت دارد؛ آن‌جا پروفایل کنید و در صورت نیاز
+مسیر Hot Path را ساده کنید — معماری اجازه می‌دهد این بهینه‌سازی فقط محلی باشد و مرزها را نشکند.
+</div>
+</section>
+
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>۲۰ سؤال مصاحبه شغلی</h2>
+
+<h3>سطح Junior</h3>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱ — Onion Architecture چیست؟</span>
+معماری‌ای با حلقه‌های متحدالمرکز است که Model دامنه را در مرکز می‌گذارد و هر حلقه فقط به حلقه‌ی داخلی‌تر وابسته است؛
+با اعمال DIP در مرزها تا جهت وابستگی همیشه به مرکز باشد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲ — حلقه‌های اصلی را نام ببرید.</span>
+از داخل به بیرون: Domain Model (Entities/VO)، Domain Services (interfaceها)،
+Application Services (هماهنگی) و Infrastructure/Interfaces (DAO، Web، UI).
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۳ — چرا Domain در مرکز است؟</span>
+چون قواعد تجاری پایدارترین بخش سیستم‌اند؛ ابزارها (DB/UI/Framework) عوض می‌شوند اما قواعد تجاری کمتر.
+مرکز قرار دادن آن، بیشترین تغییرات را از کمترین تغییرات دور نگه می‌دارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۴ — Repository interface در کدام حلقه است؟</span>
+در حلقه‌ی داخلی (کنار Domain Services)؛ پیاده‌سازی و DAO در حلقه‌ی بیرونی — نتیجه‌ی مستقیم DIP.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۵ — تفاوت با Layered ساده چیست؟</span>
+Layered فقط وظیفه را جدا می‌کند و جهت وابستگی را آزاد می‌گذارد؛ Onion صراحتاً هر وابستگی به بیرون را ممنوع می‌کند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۶ — DAO و Repository فرقشان چیست؟</span>
+Repository یک مفهوم دامنه‌ای است (مجموعه‌ی اقلام قابل بازیابی) و interface آن در داخل می‌نشیند؛
+DAO یک ابزار فنی برای دسترسی مستقیم به داده است و فقط در بیرون مجاز است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۷ — تست قانون مالیات چطور انجام می‌شود؟</span>
+مستقیماً روی Entity: شیء Invoice را می‌سازید، <code>tax()</code> را صدا می‌زنید و assert می‌کنید — بدون DB، بدون Framework، در میلی‌ثانیه.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۸ — اگر import بیرونی در domain پیدا کنید چه می‌کنید؟</span>
+آن را نقض معماری می‌دانم: یا جای قانون را اشتباه انتخاب کرده‌ایم یا باید یک interface در داخل تعریف و پیاده‌سازی را به بیرون منتقل کنیم.
+</div>
+
+<h3>سطح Mid</h3>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۹ — تفاوت Onion و Clean Architecture؟</span>
+هر دو متحدالمرکزند؛ Clean بر Use Case و چهار لایه‌ی مشخص با Dependency Rule تأکید دارد،
+Onion بر تسلط Domain Model و نام‌گذاری حلقه‌ای تأکید می‌کند. در عمل همپوشانی زیادی دارند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۰ — تفاوت Onion و Hexagonal؟</span>
+Hexagonal هر ورودی/خروجی را Port/Adapter می‌نامد (تمرکز بر interfaceهای محیط)؛
+Onion حلقه‌ها را بر اساس نوع مسئولیت نام می‌زند (تمرکز بر لایه‌بندی دامنه). هر دو جهت وابستگی را به داخل می‌چرخانند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۱ — Application Service با Domain Service فرقش؟</span>
+Domain Service رفتار دامنه‌ای بدون جای طبیعی در Entity است (مثل محاسبه‌ی ارز متقابل) و در حلقه‌ی داخلی می‌نشیند؛
+Application Service فقط سناریو را هماهنگ می‌کند و منطق تجاری ندارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۲ — چطور وابستگی معکوس را تضمین می‌کنید؟</span>
+سه ابزار: جداسازی ماژول/پکیج (کامپایل می‌شکند)، تست معماری مثل ArchUnit در CI، و بازبینی import در Code Review.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۳ — اگر Use Case منطق تجاری پیدا کرد چه می‌شود؟</span>
+نشانه‌ی خوبی نیست: قانون ثابت باید به Entity/Domain Service منتقل شود؛ آنچه در Application می‌ماند فقط هماهنگی و ترتیب اجراست.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۴ — چند حلقه خوب است؟</span>
+هیچ عدد جادویی وجود ندارد؛ ۲ تا ۴ حلقه برای اکثر پروژه‌ها کافی است. مهم تعداد نیست، جهت وابستگی است.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۵ — DTO را در کجا تعریف می‌کنید؟</span>
+در لایه‌ی بیرونی مربوطه (interfaces یا application بسته به سیاست تیم)؛ DTO حامل داده برای عبور از مرز است و نباید وارد حلقه‌ی مرکز شود.
+</div>
+
+<h3>سطح Senior</h3>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۶ — Trade-offهای واقعی این معماری چیست؟</span>
+زمان اولیه‌ی بیشتر، Boilerplate Mapping، نیاز به آموزش تیم و ریسک مرزِ اشتباه — در برابر تست سریع،
+تعویض زیرساخت و نگهداری ارزان در بلندمدت. تصمیم به عمر پروژه و نرخ تغییر بستگی دارد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۷ — مهاجرت Legacy به Onion را چطور انجام می‌دهید؟</span>
+به روش Strangler: دور یک قابلیت پرتکرار مرز می‌کشم، قوانین را به Entity منتقل می‌کنم، پشت Repository interface می‌گذارم
+و بقیه را تدریجی جذب می‌کنم. مهاجرت آبشاری همه‌چیز، بدون پوشش تست، شکست می‌خورد.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۸ — Onion و DDD چه ربطی دارند؟</span>
+Onion اسکلت اجرایی DDD است: Aggregate و Entity در مرکز، Repositoryها در حلقه‌ی دامنه،
+و مرزهای حلقه‌ها به تقویت Bounded Context کمک می‌کنند. DDD فکر می‌کند، Onion می‌چیند.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۱۹ — چطور به مدیر توجیه هزینه‌ی اولیه را می‌کنید؟</span>
+با عدد: «الان افزودن یک درگاه ۳ روز و ۲ باگ دارد؛ با مرزبندی، یک روز و بدون دست‌زدن به بقیه.»
+هزینه را به زبان ریسک کسب‌وکار ترجمه می‌کنم، نه تئوری معماری.
+</div>
+
+<div class="kl-box">
+<span class="kl-h">سؤال ۲۰ — سنجه‌ی موفقیت این معماری چیست؟</span>
+زمان تغییر (Lead Time)، نرخ باگ پس از تغییر، زمان اجرای تست‌ها و هزینه‌ی onboarding.
+اگر این عدد پس از مهاجرت بهتر نشود، معماری فقط شکل گرفته، نه فایده بخشیده است.
+</div>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box"><span class="kl-h">۱. نام «Onion» از کجا آمد؟</span>
+به خاطر حلقه‌های متحدالمرکز مانند لایه‌های پیاز؛ هر لایه‌ی بیرونی، لایه‌ی داخلی‌تر را می‌پوشاند و به آن وابسته است.
+</div>
+
+<div class="kl-box"><span class="kl-h">۲. آیا حتماً باید ۴ حلقه داشت؟</span>
+خیر. ۲–۴ حلقه معمول است؛ مهم جهت وابستگی است، نه تعداد دقیق.
+</div>
+
+<div class="kl-box"><span class="kl-h">۳. Onion همان Clean نیست؟</span>
+شبیه اما نه یکسان؛ Clean بر Use Case و قاعده‌ی وابستگی تأکید دارد، Onion بر تسلط Domain Model و حلقه‌ها.
+</div>
+
+<div class="kl-box"><span class="kl-h">۴. با کدام زبان بهتر است؟</span>
+همه‌ی زبان‌های شیءگرا (Java، Kotlin، C#، TS، Python) — پیش‌نیاز فقط Interface و DI است.
+</div>
+
+<div class="kl-box"><span class="kl-h">۵. جای Unit و Integration Test کجاست؟</span>
+Unit روی حلقه‌ی مرکز و Application Service (با Fake)؛ Integration روی پیاده‌سازی‌های بیرونی (DB واقعی).
+</div>
+
+<div class="kl-box"><span class="kl-h">۶. معنای DIP در این معماری؟</span>
+Dependency Inversion Principle: بیرونی‌ها interfaceهای داخلی را پیاده‌سازی می‌کنند تا فلش وابستگی به مرکز برگردد.
+</div>
+
+<div class="kl-box"><span class="kl-h">۷. Entity贫血 (Anemic) ممنوع است؟</span>
+بله — Entityیی که فقط getter/setter دارد، قانون را به بیرون می‌فرستد و مرکز بی‌ارزش می‌شود. رفتار را به Domain برگردانید.
+</div>
+
+<div class="kl-box"><span class="kl-h">۸. این معماری برای میکروسرویس هم خوب است؟</span>
+بله؛ هر سرویس می‌تواند داخل خودش پیازی باشد. مرز بین سرویس‌ها مسئله‌ی جدا (DDD Bounded Context) است.
+</div>
+
+<div class="kl-box"><span class="kl-h">۹. اگر ذخیره‌سازی چندگانه بخواهیم؟</span>
+دقیقاً بهترین حالت Onion: یک interface و چند پیاده‌سازی (PostgreSQL، MongoDB، فایل) که در Composition Root انتخاب می‌شوند.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۰. Framework چه نقشی دارد؟</span>
+فقط سیم‌کشی و جزئیات بیرونی. اگر Entity شما علامت JPA بگیرد، حلقه‌ی مرکز شکسته است.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۱. CQRS با Onion جور است؟</span>
+بله — جداسازی مسیر خواندن/نوشتن در Application Services قابل اعمال است و با حلقه‌ها تداخلی ندارد.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۲. رویدادهای دامنه کجا تعریف می‌شوند؟</span>
+در حلقه‌ی مرکز (مثل <code>InvoiceIssued</code>)؛ Listenerهای ایمیل/تحلیل در بیرون به آن وصل می‌شوند.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۳. چه ابزاری مرز را تضمین می‌کند؟</span>
+ArchUnit (JVM)، لینترهای import، جدا بودن ماژول‌ها و بررسی CI.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۴. برای شروع از کجا یاد بگیرم؟</span>
+SOLID و Repository Pattern، بعد یک پروژه‌ی کوچک را دستی حلقه‌ای کنید، سپس مقاله‌ی اصلی Palermo و کتاب Clean Architecture.
+</div>
+
+<div class="kl-box"><span class="kl-h">۱۵. سریع‌ترین راه اشتباه کردن چیست؟</span>
+کپی کردن ساختار پوشه‌ها بدون فهم «فلش وابستگی به کجاست؟» — ظاهر مرتب، جهت اشتباه.
+</div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>Cheat Sheet نهایی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>موضوع</th><th>توضیح</th></tr>
+  <tr><td><strong>هدف</strong></td><td>محافظت از Domain Model در مرکز با حلقه‌های متحدالمرکز</td></tr>
+  <tr><td><strong>قاعده‌ی طلایی</strong></td><td>وابستگی فقط به داخل + DIP در مرز حلقه‌ها</td></tr>
+  <tr><td><strong>حلقه‌ها</strong></td><td>Domain Model ← Domain Services ← Application Services ← Infrastructure/Interfaces</td></tr>
+  <tr><td><strong>مناسب برای</strong></td><td>دامنه‌ی غنی، پروژه‌ی بلندمدت، چند ورودی، تیم بزرگ، DDD</td></tr>
+  <tr><td><strong>مناسب نیست برای</strong></td><td>CRUD ساده، Prototype، اسکریپت، پنل کوچک</td></tr>
+  <tr><td><strong>مزیت اصلی</strong></td><td>Domain مستقل، تست سریع، تعویض آسان زیرساخت</td></tr>
+  <tr><td><strong>مشکل اصلی</strong></td><td>فایل/Boilerplate زیاد، ریسک مرز اشتباه</td></tr>
+  <tr><td><strong>الگوهای کلیدی</strong></td><td>Repository · DI · Adapter · Strategy · Facade</td></tr>
+  <tr><td><strong>ابزار تضمین مرز</strong></td><td>ArchUnit · جداسازی ماژول · بازبینی import</td></tr>
+  <tr><td><strong>Frameworkهای معروف</strong></td><td>Spring Boot · Android · ASP.NET Core · NestJS · FastAPI</td></tr>
+  <tr><td><strong>چک‌لیست نهایی</strong></td><td>١) Domain خالص ٢) interface در داخل ٣) پیاده‌سازی در بیرون ٤) سیم‌کشی در ورودی ٥) تست معماری در CI</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله‌ی حفظی</span>
+<strong>Onion یعنی: دامنه در مرکز، حلقه‌ها دور تا دور، و فلش‌های وابستگی فقط به مرکز.</strong>
+</div>
+</section>
+
+<!-- ==================== 26 ==================== -->
+<section id="s26">
+<h2><span class="kl-num">بخش ۲۶</span>Roadmap یادگیری و جمع‌بندی</h2>
+
+<pre class="kl-code" data-lang="text"><code>Programming (OOP)
+   ↓
+SOLID + Design Patterns (Repository, DI, Adapter)
+   ↓
+معماری لایه‌ای و MVC/MVVM
+   ↓
+Clean / Onion / Hexagonal
+   ↓
+DDD و System Design</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>یادگیری</th><th>خروجی عملی</th></tr>
+  <tr><td>۱</td><td>OOP و مدیریت وابستگی</td><td>پکیج domain بدون import بیرونی</td></tr>
+  <tr><td>۲</td><td>SOLID + Repository/DI</td><td>بازنویسی DAO با interface در داخل</td></tr>
+  <tr><td>۳</td><td>حلقه‌های Onion</td><td>پروژه‌ی فاکتور با ۳ حلقه و تست سریع</td></tr>
+  <tr><td>۴</td><td>Clean و Hexagonal</td><td>مقایسه‌ی عملی سه معماری روی یک دامنه</td></tr>
+  <tr><td>۵</td><td>DDD و System Design</td><td>مدل‌سازی Aggregate و مرزهای Bounded Context</td></tr>
+</table>
+</div>
+
+<h3>جمع‌بندی نهایی</h3>
+<p>
+مسیر طلایی این مقاله را مرور کنید: <strong>Problem → Why Created → Concept → Structure → Data Flow →
+Implementation → Real Project → Advantages → Disadvantages → When To/NOT To → Comparison → Interview</strong>.
+Onion به شما می‌گوید دامنه را کجا بگذارید و فلش‌ها را به کجا بچرخانید.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">پیام نهایی</span>
+هدف، حفظ کردن حلقه‌ها نیست؛ هدف این است که برای مسئله‌ی واقعی، معماری مناسب انتخاب کنید.
+گاهی Onion درست است، گاهی یک MVC ساده — معمار خوب، Trade-off را می‌فهمد.
+</div>
+
+<h3>ادامه‌ی سری معماری نرم‌افزار</h3>
+<p>
+این مقاله بخش دوم سری ۱۴ مقاله‌ای معماری نرم‌افزار است؛ مقالات بعدی:
+Hexagonal Architecture · Layered · MVC · MVP · MVVM · MVI · Repository Pattern · DDD ·
+Feature Based · Event Driven · CQRS · Microservices.
+</p>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی لایه‌ها به هم نشت می‌کنند</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Onion Architecture چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: Domain در مرکز</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: حلقه‌ها</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سیستم فاکتور</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ارتباط با زبان‌ها و Frameworkها</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+              <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s25" class="btn-action-block" style="text-align:center;">
+              <span>Cheat Sheet سریع ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: وقتی لایه‌ها به هم نشت می‌کنند</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تاریخچه و دلیل ایجاد</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Onion Architecture چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">مشکل قبل از استفاده</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">ایده اصلی: Domain در مرکز</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">ساختار معماری: حلقه‌ها</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">جریان داده (Data Flow)</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">ساختار پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">مثال عملی کامل: سیستم فاکتور</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">پیاده‌سازی کد با Java 21</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ارتباط با زبان‌ها و Frameworkها</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">مقایسه با معماری‌های مشابه</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">ارتباط با SOLID</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">ارتباط با Design Patterns</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">Testing</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مثال در پروژه واقعی</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">Performance</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">۲۰ سؤال مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">Cheat Sheet نهایی</span></a></li>
+        <li class="toc-item"><a href="#s26" class="toc-link" data-target="s26"><span class="toc-num">۲۶</span><span class="toc-text">Roadmap یادگیری و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>
