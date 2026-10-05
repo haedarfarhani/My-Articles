@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOAP چیست؟ آموزش کامل SOAP، WSDL و سرویس‌های وب | حیدر فرحانی</title>
+  <meta name="description" content="آموزش کامل SOAP: ساختار پاکت Envelope و Header و Body و Fault، WSDL و XSD، قرارداد سفت (Contract-first)، SOAP over HTTP، WS-Security و WS-*، تراکنش‌های سازمانی، پیاده‌سازی JAX-WS و Spring Web Services در جاوا و WCF در دات‌نت، مقایسه SOAP با REST و ۲۰ سؤال مصاحبه.">
+  <meta name="keywords" content="SOAP, WSDL, XSD, SOAP Envelope, SOAP Fault, WS-Security, Contract First, JAX-WS, Spring Web Services, WCF, XML Schema, Enterprise Integration, آموزش SOAP">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="SOAP چیست؟ آموزش کامل SOAP، WSDL و سرویس‌های وب">
+  <meta property="og:description" content="پاکت SOAP، WSDL و XSD، قرارداد سفت، WS-Security، تراکنش‌های سازمانی، پیاده‌سازی جاوا و دات‌نت و مقایسه‌ی کامل با REST.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/soap.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/soap.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="SOAP">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="API و ارتباطات">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SOAP چیست؟ آموزش کامل SOAP، WSDL و سرویس‌های وب">
+  <meta name="twitter:description" content="پاکت SOAP، WSDL و XSD، WS-Security، تراکنش و مقایسه‌ی کامل با REST — با مثال جاوا و دات‌نت.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
+  <script defer src="../js/views.js"></script>
+  <script defer src="../api/js/api-demos.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
+  <link rel="stylesheet" href="../api/css/api-series.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "SOAP چیست؟ آموزش کامل SOAP، WSDL و سرویس‌های وب",
+    "description": "پاکت SOAP، WSDL و XSD، قرارداد سفت، WS-Security، تراکنش‌های سازمانی، پیاده‌سازی JAX-WS و WCF و مقایسه با REST.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/soap.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/soap.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "SOAP, WSDL, XSD, WS-Security, Contract First",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "SOAP", "item": "https://haedarfarhani.github.io/My-Articles/articles/soap.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="19.78" y1="4.22" x2="18.36" y2="5.64"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">API و ارتباطات</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">پروتکل پیام — سری API</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">SOAP</span> چیست؟ آموزش کامل SOAP، WSDL و سرویس‌های وب
+          </h1>
+
+          <p class="hero-lead">
+            <code>SOAP</code> پروتکلی است که دو دهه است در بانکداری، بیمه و یکپارچگی سازمانی
+            کار می‌کند — و همچنان انتخاب اول بسیاری از پروژه‌هاست. در این راهنما ساختار
+            <code>Envelope</code>، <code>Header</code>، <code>Body</code> و <code>Fault</code>، زبان
+            <code>WSDL</code> و <code>XSD</code>، مفهوم <strong>قرارداد سفت</strong>، اکوسیستم
+            <code>WS-*</code> و تراکنش‌ها را می‌بینید، با <code>JAX-WS</code> و <code>WCF</code>
+            پیاده‌سازی می‌کنید و در پایان SOAP را با REST مقایسه می‌کنید.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — API و ارتباطات</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۴۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#SOAP</span>
+            <span class="post-tag">#WSDL</span>
+            <span class="post-tag">#XML</span>
+            <span class="post-tag">#WS_Security</span>
+            <span class="post-tag">#JAX-WS</span>
+            <span class="post-tag">#WCF</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه و اهداف یادگیری</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>SOAP چیست؟ و تاریخچه</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>ساختار پاکت SOAP</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>WSDL، XSD و قرارداد سفت</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>SOAP over HTTP و مسیریابی</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>نمونه‌ی Request و Response کامل</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>SOAP Fault و مدیریت خطا</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>WS-* و WS-Security</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>Contract-first در برابر Contract-last</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>امنیت</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>کارایی و مقیاس‌پذیری</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>تراکنش‌ها و یکپارچگی سازمانی</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>پیاده‌سازی با Java</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>پیاده‌سازی با C#</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>ساختار پروژه</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>نمونه‌های واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مقایسه SOAP در برابر REST</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>اشتباهات رایج و Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>سؤالات مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه و اهداف یادگیری</h2>
+
+<p>
+پیش از ظهور <code>JSON</code> و <code>REST</code>، استاندارد ارتباط بین سیستم‌های سازمانی
+<strong>SOAP</strong> بود — و هنوز هم در بانک، بیمه، دولت و سیستم‌های ERP همین است. اگر روزی
+مجبور شدید با یک سرویس قدیمی یکپارچه شوید، SOAP اولین چیزی است که جلوی رویتان خواهد بود.
+</p>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">اهداف یادگیری</span>
+<ol class="kl-check">
+<li>اجزای پاکت <code>Envelope</code>، <code>Header</code>، <code>Body</code> و <code>Fault</code> را بشناسید</li>
+<li>یک <code>WSDL</code> را بخوانید و متوجه عملیات‌ها، پیام‌ها و endpoint ها شوید</li>
+<li>تفاوت <strong>قرارداد سفت</strong> و قرارداد ضعیف را توضیح دهید</li>
+<li>نقش <code>WS-Security</code> و تفاوت آن با TLS را بیان کنید</li>
+<li>یک سرویس SOAP با <code>JAX-WS</code> بسازید و با <code>WCF</code> مصرف کنید</li>
+<li>بگویید چه زمانی SOAP و چه زمانی REST انتخاب درستی است</li>
+</ol>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">یک تذکر مهم درباره‌ی اصطلاحات</span>
+<strong>SOAP یک پروتکل پیام است</strong> — نه یک سبک معماری و نه یک کتابخانه.
+در سری API، <code>REST</code> یک <em>سبک API</em>، <code>Event-Driven</code> یک <em>سبک معماری</em>،
+<code>WebSocket</code> یک <em>پروتکل ارتباطی</em> و <code>SOAP</code> یک <em>پروتکل پیام</em> است.
+این مرزبندی در <a href="api-comparison.html">مقاله‌ی مقایسه‌ی API ها</a> به‌تفصیل آمده است.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>SOAP چیست؟ و تاریخچه</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تعریف</span>
+<p>
+<strong>SOAP</strong> مخفف <em>Simple Object Access Protocol</em> است — پروتکلی مبتنی بر
+<strong>XML</strong> برای تبادل ساخت‌یافته در پیشاپیش معماری‌های وب. نکته‌ی مهم این است که
+SOAP <strong>هیچ ارتباطی با XML-RPC ندارد</strong> و از نظر ریشه هم به RPC برنمی‌گردد؛
+SOAP بر پایه‌ی <strong>پاکت</strong> (Envelope) استوار است، نه فراخوانی تابع.
+</p>
+<p>
+SOAP همچنین <strong>بی‌طرف نسبت به پروتکل انتقال</strong> است: می‌تواند روی HTTP، SMTP،
+TCP یا حتی پیام‌رسانی کار کند. در عمل، تقریباً همیشه روی HTTP است.
+</p>
+</div>
+
+<h3>مسیر تکامل</h3>
+
+<table>
+<thead>
+<tr><th>سال</th><th>رویداد</th><th>اثر</th></tr>
+</thead>
+<tbody>
+<tr><td>۱۹۹۸</td><td>SOAP 1.1 توسط Microsoft و IBM و DevelopMentor</td><td>شروع پاکت XML به‌عنوان قرارداد سازمانی</td></tr>
+<tr><td>۲۰۰۰</td><td><strong>W3C</strong> SOAP 1.1 را توصیه کرد (Note)</td><td>پذیرش گسترده‌ی صنعتی</td></tr>
+<tr><td>۲۰۰۳</td><td>SOAP 1.2 توسط W3C توصیه شد</td><td>نسخه‌ی رسمی و پایدار</td></tr>
+<tr><td>۲۰۰۵</td><td>REST/Fielding به شهرت رسید؛ JSON ظاهر شد</td><td>شروع مهاجرت به API های سبک‌تر</td></tr>
+<tr><td>۲۰۰۶</td><td>WCF معرفی شد (دات‌نت)</td><td>SOAP به پلتفرم اصلی مایکروسافت تبدیل شد</td></tr>
+<tr><td>۲۰۱۰+</td><td>REST غالب شد</td><td>SOAP به حوزه‌های تخصصی عقب نشست</td></tr>
+<tr><td>امروز</td><td>بانک، بیمه، دولت، ERP، EDI</td><td>هنوز <strong>فعال و لازم</strong> — نه منسوخ</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">چرا یادگیری‌اش هنوز لازم است؟</span>
+تمام سیستم‌های مالی و دولتی بزرگ روی SOAP ساخته شده‌اند. مهاجرت آن‌ها یا دهه‌ها طول
+می‌کشد یا اصلاً انجام نمی‌شود. مهندسی که SOAP را نمی‌شناسد، نمی‌تواند با نصف دنیای
+سازمانی یکپارچه شود — و مهم‌تر، نمی‌تواند تشخیص دهد کجا REST و کجا SOAP درست است.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>ساختار پاکت SOAP</h2>
+
+<p>
+هر پیام SOAP دقیقاً یک <strong>پاکت</strong> دارد. این پاکت ساختار سلسله‌مراتبی سفتی دارد و
+هر ابزار SOAP موظف است دقیقاً همین ساختار را رعایت کند.
+</p>
+
+<figure class="kl-fig">
+  <svg viewBox="0 0 760 330" role="img" aria-labelledby="fig-soap-t fig-soap-d" preserveAspectRatio="xMidYMid meet">
+    <title id="fig-soap-t">ساختار سلسله‌مراتبی پاکت SOAP</title>
+    <desc id="fig-soap-d">Envelope شامل Header اختیاری و Body اجباری است؛ Header شامل عملیات‌های امنیتی مثل WS-Security و Body شامل پیام عملیات یا Fault است.</desc>
+
+    <rect x="30" y="20" width="700" height="70" rx="12" fill="var(--bg-surface)" stroke="var(--color-primary)" stroke-width="2.5"/>
+    <text x="380" y="48" text-anchor="middle" font-size="15" font-weight="800" fill="var(--text-main)">&lt;soap:Envelope&gt;</text>
+    <text x="380" y="72" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">ریشه‌ی اجباری — پاکت پیام</text>
+
+    <rect x="60" y="120" width="310" height="80" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
+    <text x="215" y="147" text-anchor="middle" font-size="13.5" font-weight="800" fill="var(--text-main)">&lt;soap:Header&gt; اختیاری</text>
+    <text x="215" y="170" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">WS-Security · To · Action · ReplyTo</text>
+    <text x="215" y="189" text-anchor="middle" font-size="11" fill="var(--color-secondary)">متادیتای امنیتی و مسیریابی</text>
+
+    <rect x="400" y="120" width="310" height="80" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
+    <text x="555" y="147" text-anchor="middle" font-size="13.5" font-weight="800" fill="var(--text-main)">&lt;soap:Body&gt; اجباری</text>
+    <text x="555" y="170" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">پیام عملیات یا Fault</text>
+    <text x="555" y="189" text-anchor="middle" font-size="11" fill="var(--color-danger)">تنها بخشی که محتوای واقعی را حمل می‌کند</text>
+
+    <rect x="400" y="235" width="310" height="70" rx="12" fill="var(--bg-surface)" stroke="var(--color-danger)" stroke-width="2"/>
+    <text x="555" y="262" text-anchor="middle" font-size="13.5" font-weight="800" fill="var(--text-main)">&lt;soap:Fault&gt;</text>
+    <text x="555" y="285" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">FaultCode · FaultString · Detail</text>
+
+    <g class="s-arr" stroke="var(--color-primary)" stroke-width="2.2" fill="none">
+      <line x1="215" y1="90" x2="215" y2="118"/>
+      <line x1="555" y1="90" x2="555" y2="118"/>
+      <line x1="555" y1="200" x2="555" y2="233"/>
+    </g>
+  </svg>
+  <figcaption>ساختار پاکت SOAP — Header اختیاری است، Body اجباری، و Fault فقط زمانی می‌آید که خطا رخ داده باشد.</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr><th>عنصر</th><th>تکرار</th><th>نقش</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><strong>Envelope</strong></td><td>دقیقاً یک</td><td>ریشه‌ی پاکت؛ namespace نسخه را مشخص می‌کند</td></tr>
+<tr><td dir="ltr"><strong>Header</strong></td><td>صفر یا یک</td><td>متادیتا: امنیت، مسیریابی، تراکنش، شناسه</td></tr>
+<tr><td dir="ltr"><strong>Body</strong></td><td>دقیقاً یک</td><td>پیام عملیات یا Fault</td></tr>
+<tr><td dir="ltr"><strong>Fault</strong></td><td>حداکثر یک، داخل Body</td><td>خطا با کد و پیام و جزئیات</td></tr>
+<tr><td dir="ltr"><strong>mustUnderstand</strong></td><td>ویژگی Header</td><td>اگر گیرنده نفهمد، باید خطا بدهد</td></tr>
+<tr><td dir="ltr"><strong>actor / role</strong></td><td>ویژگی Header</td><td>مشخص می‌کند کدام میان‌افزار باید Header را بخواند</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>WSDL، XSD و قرارداد سفت</h2>
+
+<h3>هر سند چه می‌گوید؟</h3>
+
+<div class="ax-versus">
+  <div class="ax-versus-side">
+    <h4>WSDL — چه چیزی قابل فراخوانی است</h4>
+    <ul>
+      <li><strong>Web Services Description Language</strong></li>
+      <li>عملیات‌ها، پیام‌ها، پورت‌ها و آدرس‌ها را مشخص می‌کند</li>
+      <li>در واقع «منوی رستوران» است</li>
+      <li>پایه‌ی تولید کد Client در SOAP</li>
+    </ul>
+  </div>
+  <div class="ax-versus-mid">VS</div>
+  <div class="ax-versus-side">
+    <h4>XSD — شکل داده چگونه است</h4>
+    <ul>
+      <li><strong>XML Schema Definition</strong></li>
+      <li>انواع، فیلدها، الزامی بودن و محدودیت‌ها</li>
+      <li>«قالب غذا» است، نه خود غذا</li>
+      <li>اعتبارسنجی قبل از رسیدن به منطق تجاری</li>
+    </ul>
+  </div>
+</div>
+
+<pre class="kl-code" data-lang="xml"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://bank.example.com/orders"
+             targetNamespace="http://bank.example.com/orders"&gt;
+
+  &lt;!-- ۱) انواع: شکل داده --&gt;
+  &lt;types&gt;
+    &lt;xsd:schema targetNamespace="http://bank.example.com/orders"&gt;
+      &lt;xsd:element name="TransferRequest"&gt;
+        &lt;xsd:complexType&gt;
+          &lt;xsd:sequence&gt;
+            &lt;xsd:element name="fromAccount" type="xsd:string"/&gt;
+            &lt;xsd:element name="toAccount"   type="xsd:string"/&gt;
+            &lt;xsd:element name="amount"      type="xsd:decimal"/&gt;
+          &lt;/xsd:sequence&gt;
+        &lt;/xsd:complexType&gt;
+      &lt;/xsd:element&gt;
+    &lt;/xsd:schema&gt;
+  &lt;/types&gt;
+
+  &lt;!-- ۲) پیام‌ها --&gt;
+  &lt;message name="TransferRequestMessage"&gt;
+    &lt;part name="body" element="tns:TransferRequest"/&gt;
+  &lt;/message&gt;
+  &lt;message name="TransferResponseMessage"&gt;
+    &lt;part name="body" element="tns:TransferResponse"/&gt;
+  &lt;/message&gt;
+
+  &lt;!-- ۳) عملیات --&gt;
+  &lt;portType name="TransferService"&gt;
+    &lt;operation name="Transfer"&gt;
+      &lt;input  message="tns:TransferRequestMessage"/&gt;
+      &lt;output message="tns:TransferResponseMessage"/&gt;
+    &lt;/operation&gt;
+  &lt;/portType&gt;
+
+  &lt;!-- ۴) پیام‌گذاری + ۵) آدرس --&gt;
+  &lt;binding name="TransferBinding" type="tns:TransferService"&gt;
+    &lt;soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/&gt;
+    &lt;operation name="Transfer"&gt;
+      &lt;soap:operation soapAction="http://bank.example.com/Transfer"/&gt;
+    &lt;/operation&gt;
+  &lt;/binding&gt;
+
+  &lt;service name="TransferService"&gt;
+    &lt;port name="TransferPort" binding="tns:TransferBinding"&gt;
+      &lt;soap:address location="https://bank.example.com/soap/transfer"/&gt;
+    &lt;/port&gt;
+  &lt;/service&gt;
+&lt;/definitions&gt;</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">اینجاست که «قرارداد سفت» معنا پیدا می‌کند</span>
+<p>
+وقتی <code>WSDL</code> و <code>XSD</code> دارید، Client و Server هر دو از یک تعریف واحد کد
+تولید می‌کنند. اگر نوع داده تغییر کند، کامپایل‌کردن دوباره خطا می‌دهد — و این دقیقاً
+<strong>چیزی است که می‌خواهید</strong>: خطا را در مرحله‌ی توسعه بگیرید، نه در محیط تولید.
+</p>
+<p>
+مقایسه کنید با REST که «قراردادش» یک فایل OpenAPI است که ممکن است کهنه بماند. تفاوت
+<strong>ساختاری</strong> است: در SOAP، ابزارها بدون قرارداد کار نمی‌کنند.
+</p>
+</div>
+
+<h3>دو سبک پیام‌گذاری</h3>
+
+<table>
+<thead>
+<tr><th>سبک</th><th>شکل پیام</th><th>کاربرد</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><strong>Document</strong></td><td>کل سند با XSD اعتبارسنجی می‌شود</td><td><strong>پیشنهادی و رایج</strong> — قابلیت اعتبارسنجی کامل</td></tr>
+<tr><td dir="ltr"><strong>RPC</strong></td><td>فراخوانی تابع با پارامترها</td><td>قدیمی، کمتر استفاده می‌شود</td></tr>
+<tr><td dir="ltr"><strong>Literal</strong></td><td>داده عیناً با XSD می‌آید</td><td>ترکیب با Document (Document/Literal)</td></tr>
+<tr><td dir="ltr"><strong>Encoded</strong></td><td>سریال‌سازی دستی</td><td>منسوخ — اجتناب کنید</td></tr>
+</tbody>
+</table>
+
+<p>
+<strong>Document/Literal Wrapped</strong> الگوی پیش‌فرض و توصیه‌شده‌ی امروز است: پیام یک سند
+اعتبارسنجی‌پذیر کامل است، و عملیات داخل آن «پیچیده» (wrapped) شده.
+</p>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>SOAP over HTTP و مسیریابی</h2>
+
+<pre class="kl-code" data-lang="http"><code>POST /soap/transfer HTTP/1.1
+Host: bank.example.com
+Content-Type: text/xml; charset=utf-8
+SOAPAction: "http://bank.example.com/Transfer"
+Content-Length: 612
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+  &lt;soap:Header&gt;
+    &lt;wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/
+                                oasis-200401-wss-wssecurity-secext-1.0.xsd"&gt;
+      &lt;wsse:UsernameToken&gt;
+        &lt;wsse:Username&gt;teller&lt;/wsse:Username&gt;
+        &lt;wsse:Password Type="...#PasswordDigest"&gt;...&lt;/wsse:Password&gt;
+      &lt;/wsse:UsernameToken&gt;
+    &lt;/wsse:Security&gt;
+  &lt;/soap:Header&gt;
+  &lt;soap:Body&gt;
+    &lt;tns:Transfer xmlns:tns="http://bank.example.com/orders"&gt;
+      &lt;tns:fromAccount&gt;IR12-0000&lt;/tns:fromAccount&gt;
+      &lt;tns:toAccount&gt;IR34-0000&lt;/tns:toAccount&gt;
+      &lt;tns:amount&gt;5000000&lt;/tns:amount&gt;
+    &lt;/tns:Transfer&gt;
+  &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;</code></pre>
+
+<table>
+<thead>
+<tr><th>ویژگی HTTP در SOAP</th><th>نقش</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><code>POST</code></td><td>همیشه POST — SOAP از GET استفاده نمی‌کند</td></tr>
+<tr><td dir="ltr"><code>Content-Type: text/xml</code></td><td>SOAP 1.1 — برای SOAP 1.2: <code>application/soap+xml</code></td></tr>
+<tr><td dir="ltr"><code>SOAPAction</code></td><td>هدر SOAP 1.1 برای شناسایی عملیات (در 1.2 جایگزین با action در Content-Type شد)</td></tr>
+<tr><td dir="ltr"><code>HTTP 500</code></td><td>می‌تواند حاوی SOAP Fault باشد (SOAP 1.1 غیررسمی؛ در 1.2 تعریف شده)</td></tr>
+<tr><td dir="ltr"><code>HTTP 200</code></td><td>پاسخ موفق</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نکته‌ی ظریف درباره‌ی Status Code</span>
+در SOAP، <strong>خطای تجاری اغلب با HTTP 200 برمی‌گردد</strong> و خطا داخل <code>Fault</code>
+پنهان است. این دقیقاً برعکس REST است و یکی از رایج‌ترین دلایل سوءتفاهم هنگام مهاجرت
+از SOAP به REST. وقتی SOAP می‌خوانید، هرگز فقط به کد HTTP اکتفا نکنید.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>نمونه‌ی Request و Response کامل</h2>
+
+<h3>درخواست</h3>
+
+<pre class="kl-code" data-lang="xml"><code>&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:tns="http://bank.example.com/orders"&gt;
+  &lt;soap:Body&gt;
+    &lt;tns:GetAccountBalance&gt;
+      &lt;tns:accountId&gt;IR12-0000&lt;/tns:accountId&gt;
+    &lt;/tns:GetAccountBalance&gt;
+  &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;</code></pre>
+
+<h3>پاسخ موفق</h3>
+
+<pre class="kl-code" data-lang="xml"><code>&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:tns="http://bank.example.com/orders"&gt;
+  &lt;soap:Body&gt;
+    &lt;tns:GetAccountBalanceResponse&gt;
+      &lt;tns:accountId&gt;IR12-0000&lt;/tns:accountId&gt;
+      &lt;tns:balance&gt;12500000&lt;/tns:balance&gt;
+      &lt;tns:currency&gt;IRR&lt;/tns:currency&gt;
+      &lt;tns:asOf&gt;2026-10-04T09:12:33+03:30&lt;/tns:asOf&gt;
+    &lt;/tns:GetAccountBalanceResponse&gt;
+  &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;</code></pre>
+
+<table>
+<thead>
+<tr><th>تفاوت کلیدی با REST</th><th>SOAP</th><th>REST</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد ارتباط</td><td>عملیات (<code>GetAccountBalance</code>)</td><td>منبع (<code>GET /accounts/12</code>)</td></tr>
+<tr><td>شناسایی عملیات</td><td>نام عملیات در Body + <code>SOAPAction</code></td><td>متد + مسیر HTTP</td></tr>
+<tr><td>پاسخ موفق</td><td>XML هم‌شکل درخواست</td><td>JSON (یا هر قالب دیگر)</td></tr>
+<tr><td>کش</td><td>عملاً بی‌اثر (همه POST)</td><td>بخش ذاتی معماری</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی RTL</span>
+تمام بلوک‌های XML و آدرس‌هایی مثل <code dir="ltr">http://bank.example.com/soap</code> باید
+همیشه با <code dir="ltr">ltr</code> رندر شوند، وگرنه ترتیب نویسه‌ها و جهت نشانگر در آن‌ها به‌هم
+می‌ریزد.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>SOAP Fault و مدیریت خطا</h2>
+
+<p>
+خطا در SOAP با عنصر <code>Fault</code> بیان می‌شود که فقط داخل <code>Body</code> قرار می‌گیرد
+و فقط یکی در هر پیام.
+</p>
+
+<pre class="kl-code" data-lang="xml"><code>&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+  &lt;soap:Body&gt;
+    &lt;soap:Fault&gt;
+      &lt;soap:faultcode&gt;soap:Client&lt;/soap:faultcode&gt;
+      &lt;soap:faultstring&gt;Invalid account number&lt;/soap:faultstring&gt;
+      &lt;soap:detail&gt;
+        &lt;tns:BankError xmlns:tns="http://bank.example.com/orders"&gt;
+          &lt;tns:code&gt;ACC-404&lt;/tns:code&gt;
+          &lt;tns:message&gt;حساب مبدأ یافت نشد&lt;/tns:message&gt;
+          &lt;tns:correlationId&gt;8f14e45f-ea2c-4d0b-9a11&lt;/tns:correlationId&gt;
+        &lt;/tns:BankError&gt;
+      &lt;/soap:detail&gt;
+    &lt;/soap:Fault&gt;
+  &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;</code></pre>
+
+<div class="ax-tablewrap">
+<table>
+<thead>
+<tr><th>faultcode پایه</th><th>معنی</th><th>مسئول</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><strong>VersionMismatch</strong></td><td>namespace پاکت نادرست است</td><td>Client — نسخه‌ی SOAP</td></tr>
+<tr><td dir="ltr"><strong>MustUnderstand</strong></td><td>هدری را که <code>mustUnderstand="1"</code> داشت نفهمید</td><td>گیرنده</td></tr>
+<tr><td dir="ltr"><strong>Client</strong></td><td>درخواست ناقص یا نامعتبر است</td><td>Client</td></tr>
+<tr><td dir="ltr"><strong>Server</strong></td><td>درخواست درست است ولی پردازش شکست خورد</td><td>Server</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>ساختار Fault از نزدیک</h3>
+
+<div class="ax-versus">
+  <div class="ax-versus-side">
+    <h4>faultcode در برابر faultstring</h4>
+    <ul>
+      <li><strong>faultcode</strong> برای ماشین — قابل تصمیم‌گیری خودکار</li>
+      <li><strong>faultstring</strong> برای انسان — پیام قابل فهم</li>
+      <li>هرگز تصمیم خودکار را روی faultstring نگیرید</li>
+      <li>همیشه برای خطاهای تجاری، کد خودتان را در <code>detail</code> بگذارید</li>
+    </ul>
+  </div>
+  <div class="ax-versus-mid">VS</div>
+  <div class="ax-versus-side">
+    <h4>SOAP Fault در برابر بدنه‌ی خطای REST</h4>
+    <ul>
+      <li>S: ساختار ثابت و استاندارد (WSDL)</li>
+      <li>R: هر API شکل خودش را دارد (مگس‌گیری خودتان)</li>
+      <li>S: اغلب پشت HTTP 200/500</li>
+      <li>R: همیشه با Status Code مناسب</li>
+    </ul>
+  </div>
+</div>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">قاعده‌ی طلایی</span>
+هرگز پیام خطای داخلی، نام جدول یا stack trace را داخل <code>faultstring</code> نگذارید.
+<code>faultstring</code> عمومی است. جزئیات فنی را در لاگ با <code>correlationId</code> نگه دارید و
+در <code>detail</code> فقط یک کد خطای تجاری ساخت‌یافته بفرستید.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>WS-* و WS-Security</h2>
+
+<p>
+خانواده‌ی <code>WS-*</code> مجموعه‌ای از مشخصات هستند که امکانات را به SOAP اضافه می‌کنند.
+این خانواده دلیل اصلی ماندگاری SOAP در سازمان‌های بزرگ است.
+</p>
+
+<div class="ax-tablewrap">
+<table>
+<thead>
+<tr><th>مشخصه</th><th>نقش</th><th>جایگزین در REST</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><strong>WS-Security</strong></td><td>امضا، رمزنگاری و هویت <strong>در سطح پیام</strong></td><td>Bearer Token + TLS</td></tr>
+<tr><td dir="ltr"><strong>WS-Addressing</strong></td><td>مسیر و مقصد در خود پیام (بی‌طرف از انتقال)</td><td>URL + هدر</td></tr>
+<tr><td dir="ltr"><strong>WS-ReliableMessaging</strong></td><td>تحویل ترتیبی و بدون تکرار با تأیید</td><td>الگوی Idempotency-Key</td></tr>
+<tr><td dir="ltr"><strong>WS-AtomicTransaction</strong></td><td>تراکنش توزیع‌شده با دو فاز</td><td>Saga</td></tr>
+<tr><td dir="ltr"><strong>WS-Coordination</strong></td><td>هماهنگی چند شرکت‌کننده در تراکنش</td><td>Orchestrator</td></tr>
+<tr><td dir="ltr"><strong>WS-Policy</strong></td><td>اعلام الزامات و قابلیت‌های سرویس</td><td>مستندسازی + OpenAPI</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>تفاوت اساسی: امنیت در پیام یا در لایه‌ی انتقال؟</h3>
+
+<pre class="kl-code" data-lang="text"><code>مدل REST (لایه‌ی انتقال):
+  Client ═════════ TLS ═════════► Server
+  رمزنگاری بین دو نقطه؛ محتوا بعد از مقصد ساده است.
+  اگر پیام از میان‌افزاری رد شود، محافظت ضعیف است.
+
+مدل SOAP/WSS (لایه‌ی پیام):
+  Client ──► پاکتی که خودش امضا و رمزنگاری شده ──► Intermediary ──► Server
+  محافظت همراه پیام حرکت می‌کند.
+  فایده: امضای دیجیتال + انکارناپذیری + چندامضا.
+
+چرا سازمان‌ها SOAP را نگه داشته‌اند؟ چون یک پیام باید از چند
+میان‌افزار عبور کند و تا مقصد معتبر بماند — کاری که TLS به تنهایی نمی‌کند.</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">WS-Security چیست و چه نیست؟</span>
+<div class="kl-check">
+<ul>
+<li><strong>هست:</strong> امضای دیجیتال XML (XML Signature)، رمزنگاری XML (XML Encryption)، و اثبات هویت با <code>UsernameToken</code> یا X.509.</li>
+<li><strong>نیست:</strong> جایگزین TLS. هر دو لازم‌اند — TLS ترافیک شبکه را می‌پوشاند و WS-Security پاکت را امضا می‌کند.</li>
+<li><strong>هشدار:</strong> XML Signature در گذشته آسیب‌پذیری‌های Canonicalization داشته. همیشه از کتابخانه‌های به‌روز و پیکربندی‌شده استفاده کنید، نه پیاده‌سازی دستی.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>Contract-first در برابر Contract-last</h2>
+
+<h3>کدام را انتخاب کنیم؟</h3>
+
+<div class="ax-versus">
+  <div class="ax-versus-side" style="border-top:3px solid var(--color-success);">
+    <h4>✅ Contract-first (توصیه‌شده)</h4>
+    <ul>
+      <li><strong>اول</strong> XSD و WSDL را طراحی می‌کنید</li>
+      <li>سپس کد از قرارداد تولید می‌شود</li>
+      <li>قرارداد با تیم Client به اشتراک گذاشته می‌شود</li>
+      <li>زبان و پلتفرم مهم نیست</li>
+      <li><strong>مخاطب:</strong> API عمومی و یکپارچگی بین سازمانی</li>
+    </ul>
+  </div>
+  <div class="ax-versus-mid">VS</div>
+  <div class="ax-versus-side" style="border-top:3px solid var(--color-danger);">
+    <h4>❌ Contract-last (آنتی‌پترن)</h4>
+    <ul>
+      <li><strong>اول</strong> کلاس‌ها را می‌نویسید</li>
+      <li>سپس WSDL به‌صورت خودکار تولید می‌شود</li>
+      <li>قرارداد به جزئیات داخلی کد گره می‌خورد</li>
+      <li>تغییر کد = شکستن قرارداد</li>
+      <li><strong>مخاطب:</strong> فقط پروژه‌های داخلی و موقت</li>
+    </ul>
+  </div>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>جریان Contract-first:
+  ۱) طراحی XSD (انواع داده)
+  ۲) طراحی WSDL (عملیات + پیام‌ها + آدرس)
+  ۳) بازبینی قرارداد با مصرف‌کننده‌ها
+  ۴) تولید کد Server از WSDL
+  ۵) پیاده‌سازی منطق
+  ۶) تولید کد Client برای مصرف‌کننده‌ها
+  ۷) تست قرارداد در CI
+
+جریان Contract-last:
+  ۱) نوشتن سرویس با هر الگویی
+  ۲) تولید خودکار WSDL
+  ۳) تحویل WSDL به Client
+  ۴) Client کد تولید می‌کند
+  ۵) تغییر سرویس → شکستن Client
+  ۶) ارتباط دستی و دعوا
+
+نتیجه: Contract-first زمان بیشتری در ابتدا می‌گیرد، ولی در نگهداری
+        بسیار ارزان‌تر است — به‌خصوص وقتی چند زبان درگیرند.</code></pre>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>امنیت</h2>
+
+<div class="ax-tablewrap">
+<table>
+<thead>
+<tr><th>تهدید</th><th>دفاع در SOAP</th></tr>
+</thead>
+<tbody>
+<tr><td>شنود ترافیک</td><td><strong>HTTPS + TLS</strong> — الزامی و غیرقابل مذاکره</td></tr>
+<tr><td>تغییر محتوا در مسیر</td><td><strong>WS-Security Signature</strong> (XML Signature)</td></tr>
+<tr><td>چندبار فرستادن یک پیام</td><td>شناسه‌ی یکتا در Header + بررسی سمت Server</td></tr>
+<tr><td>جعل هویت</td><td><code>UsernameToken</code> یا گواهی <strong>X.509</strong></td></tr>
+<tr><td>سرزدن (Sniffing پاکت)</td><td><strong>XML Encryption</strong> روی بدنه</td></tr>
+<tr><td>انکار کردن ارسال</td><td>امضای دیجیتال + Timestamp (انکارناپذیری)</td></tr>
+<tr><td>پیام قدیمی (Replay)</td><td><code>Nonce + Created</code> با بازه‌ی اعتبار</td></tr>
+<tr><td>SOAP Injection / XXE</td><td>غیرفعال کردن پردازش Entity بیرونی در پارسر XML</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">دو آسیب‌پذیری که باید بشناسید</span>
+<div class="kl-check">
+<ul>
+<li><strong>XXE (XML External Entity):</strong> اگر پارسر XML پردازش Entity های بیرونی را فعال بگذارد، مهاجم می‌تواند فایل سرور را بخواند. همیشه <code>setFeature(DISALLOW_DOCTYPE, true)</code>.</li>
+<li><strong>Billion Laughs:</strong> یک سند XML با تو در توی Entity ها که حافظه را اشباع می‌کند. محدودیت اندازه‌ی ورودی + غیرفعال کردن DTD.</li>
+</ul>
+</div>
+</div>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.bank.soap;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+/**
+ * پیکربندی ایمن پارسر XML — پیش از هر سرویس SOAP الزامی است.
+ */
+public final class SafeXml {
+
+    private SafeXml() { }
+
+    public static DocumentBuilderFactory secureFactory() {
+        DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+
+        try {
+            // جلوگیری از XXE
+            f.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            f.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            f.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            f.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            f.setXIncludeAware(false);
+            f.setExpandEntityReferences(false);
+        } catch (Exception e) {
+            // پیکربندی شکست خورد ⇒ بهتر است سرویس بالا نیاید
+            throw new IllegalStateException("XML پیکربندی امن نیست", e);
+        }
+        return f;
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>کارایی و مقیاس‌پذیری</h2>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">یک قاعده‌ی مهم</span>
+هرگز ننویسید «SOAP کندتر از REST است». آنچه واقعاً زمان را می‌سازد،
+<strong>حجم XML</strong>، <strong>عملیات رمزنگاری/امضا</strong>، <strong>تعداد round-trip</strong>،
+<strong>زمان پردازش سرور</strong> و <strong>تأخیر دیتابیس</strong> است. این‌ها را اندازه بگیرید.
+</div>
+
+<table>
+<thead>
+<tr><th>عامل</th><th>SOAP</th><th>REST</th></tr>
+</thead>
+<tbody>
+<tr><td>حجم سربرگ</td><td>XML زیاد + SoapAction</td><td>JSON سبک</td></tr>
+<tr><td>سریال‌سازی</td><td>پارس XML (سنگین‌تر)</td><td>JSON (ساده‌تر)</td></tr>
+<tr><td>امضا/رمزنگاری</td><td>هزینه‌ی محاسباتی XMLDSig</td><td>معمولاً فقط TLS</td></tr>
+<tr><td>کش</td><td>همه POST ⇒ کش HTTP عملاً بی‌اثر</td><td>ذاتاً کش‌پذیر</td></tr>
+<tr><td>ورزش (GZip)</td><td>معمولاً ۸۰–۹۵٪ کاهش حجم</td><td>همین‌طور</td></tr>
+<tr><td>اتصال مجدد</td><td>Keep-alive هم کار می‌کند</td><td>مشابه</td></tr>
+</tbody>
+</table>
+
+<h3>بهینه‌سازی واقعی</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱) فشرده‌سازی
+   Content-Encoding: gzip      ►  XML معمولاً ۸۰٪+ کوچک می‌شود۲) حذف Header های غیرضروری
+   هر هدر WS-* هزینه‌ی رمزنگاری دارد؛ فقط لازم‌ها۳) Streaming
+   برای پاکت‌های خیلی بزرگ، SAX/StAX به‌جای DOM۴) اتصال پایدار
+   connection pooling + keep-alive (handshake کمتر)۵) بهینه‌سازی XSD
+   هر فراخوانی validate هزینه دارد؛ ساختار ساده = اعتبارسنجی سریع۶) مقیاس افقی
+   بدون وضعیت نشست در سرور ⇒ افزودن نمونه آسان
+   (مگر اینکه در Header وضعیت نگه دارید)</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نکته‌ای که اغلب نادیده گرفته می‌شود</span>
+مشکل اصلی SOAP معمولاً <strong>سرعت اجرا نیست</strong>؛ مشکل <strong>حجم</strong> و
+<strong>پیچیدگی عیب‌یابی</strong> است. یک پاکت ۲۰ کیلوبایتی XML با یک پاسخ JSON سه‌کیلوبایتی
+مقایسه‌ای عادلانه نیست — هر دو می‌توانند درست و سریع باشند، فقط برای مصارف متفاوت.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>تراکنش‌ها و یکپارچگی سازمانی</h2>
+
+<p>
+این دقیقاً حوزه‌ای است که SOAP هنوز در آن حرف اول را می‌زند: جایی که چند سیستم باید
+<strong>یا همه با هم</strong> تغییر کنند یا هیچ‌کدام.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>تراکنش دو فاز (WS-AtomicTransaction):
+
+  هماهنگ‌کننده (Coordinator)
+        │
+        ├──► سرویس A : «آماده‌ای؟»  ► PREPARED (قفل داده)
+        ├──► سرویس B : «آماده‌ای؟»  ► PREPARED
+        └──► سرویس C : «آماده‌ای؟»  ► PREPARED
+                │
+        همه PREPARED؟
+        ├── بله ► COMMIT همه
+        └── خیر ► ABORT همه و رها کردن قفل‌هامزایا: تضمین سازگاری فوری (Strong Consistency)
+هزینه: قفل داده + کاهش دسترس‌پذیری + مقیاس‌پذیری کمتر
+       اگر هماهنگ‌کننده از کار بیفتد، همه معطل می‌مانند</code></pre>
+
+<h3>WS-AtomicTransaction در برابر Saga</h3>
+
+<div class="ax-versus">
+  <div class="ax-versus-side">
+    <h4>WS-AtomicTransaction</h4>
+    <ul>
+      <li>سازگاری <strong>فوری و قوی</strong></li>
+      <li>قفل + دو فاز</li>
+      <li>مناسب سیستم‌های داخلی با تعداد شرکت‌کننده‌ی کم</li>
+      <li>لغو واقعی در صورت خطا</li>
+    </ul>
+  </div>
+  <div class="ax-versus-mid">VS</div>
+  <div class="ax-versus-side">
+    <h4>Saga (الگوی مدرن رویدادمحور)</h4>
+    <ul>
+      <li>سازگاری <strong>نهایی</strong> با جبران</li>
+      <li>بدون قفل، مقیاس‌پذیر</li>
+      <li>مناسب سرویس‌های مستقل و توزیع‌شده</li>
+      <li>عملیات جبرانی به‌جای Rollback</li>
+    </ul>
+  </div>
+</div>
+
+<p>
+انتخاب درست به این بستگی دارد: <strong>آیا واقعاً به لغو فوری نیاز دارید؟</strong>
+اگر بله (مالی)، SOAP + WS-AtomicTransaction یا یک سیستم تراکنش واقعی. اگر نه،
+<a href="event-driven-api.html">معماری رویدادمحور</a> با <a href="event-driven-architecture.html">Saga</a>
+معمولاً ساده‌تر و مقیاس‌پذیرتر است.
+</p>
+
+<h3>الگوهای یکپارچگی سازمانی</h3>
+
+<table>
+<thead>
+<tr><th>الگو</th><th>کاربرد</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>File Transfer (EDI)</strong></td><td>تبادل دوره‌ای اسناد ساخت‌یافته بین سازمان‌ها</td></tr>
+<tr><td><strong>Remote Procedure Invocation</strong></td><td>فراخوانی مستقیم یک عملیات</td></tr>
+<tr><td><strong>Publish-Subscribe</strong></td><td>توزیع یک رویداد به شنونده‌های متعدد</td></tr>
+<tr><td><strong>Message Translator</strong></td><td>تبدیل قالب قدیمی به قالب جدید در مسیر</td></tr>
+<tr><td><strong>Content-Based Router</strong></td><td>مسیریابی بر اساس محتوای پیام</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>پیاده‌سازی با Java</h2>
+
+<h3>Contract-first با Spring Web Services</h3>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.bank.soap;
+
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import org.springframework.ws.server.endpoint.annotation.XPath;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+
+import javax.xml.transform.stream.StreamSource;
+import java.io.StringReader;
+
+/**
+ * Endpoint سرویس SOAP — با XSD طراحی شده، نه از روی کد.
+ */
+@Endpoint
+public class TransferEndpoint {
+
+    private static final String NAMESPACE = "http://bank.example.com/orders";
+
+    private final TransferService service;
+    private final Jaxb2Marshaller marshaller;
+
+    public TransferEndpoint(TransferService service, Jaxb2Marshaller marshaller) {
+        this.service = service;
+        this.marshaller = marshaller;
+    }
+
+    @javax.xml.transform.SourceEndpoint
+    @org.springframework.ws.server.endpoint.annotation.PayloadRoot(
+            namespace = NAMESPACE, localPart = "GetAccountBalance")
+    @ResponsePayload
+    public StreamSource getBalance(
+            @RequestPayload StreamSource request,
+            @XPath("//*[local-name()='accountId']/text()") String accountId) {
+
+        if (accountId == null || accountId.isBlank()) {
+            // خطا با Fault استاندارد
+            throw new InvalidRequestException("accountId اجباری است");
+        }
+
+        var balance = service.balanceOf(accountId);
+        String xml = """
+                &lt;tns:GetAccountBalanceResponse xmlns:tns="%s"&gt;
+                  &lt;tns:accountId&gt;%s&lt;/tns:accountId&gt;
+                  &lt;tns:balance&gt;%s&lt;/tns:balance&gt;
+                  &lt;tns:currency&gt;IRR&lt;/tns:currency&gt;
+                &lt;/tns:GetAccountBalanceResponse&gt;
+                """.formatted(NAMESPACE, accountId, balance.amount());
+
+        return new StreamSource(new StringReader(xml));
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.bank.soap;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.ws.config.annotation.EnableWs;
+import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+import org.springframework.ws.transport.http.MessageDispatcherServlet;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
+
+import java.util.List;
+
+/**
+ * پیکربندی WSDL از فایل XSD (contract-first).
+ */
+@EnableWs
+@Configuration
+public class WebServiceConfig extends WsConfigurerAdapter {
+
+    @Bean
+    public ServletRegistrationBean&lt;MessageDispatcherServlet&gt; messageDispatcherServlet() {
+        var servlet = new MessageDispatcherServlet();
+        servlet.setTransformWsdlLocations(true);
+        return new ServletRegistrationBean&lt;&gt;(servlet, "/ws/*");
+    }
+
+    @Bean(name = "transferWsdl11")
+    public DefaultWsdl11Definition transferWsdl(XsdSchema transferSchema) {
+        var wsdl = new DefaultWsdl11Definition();
+        wsdl.setPortTypeName("TransferPort");
+        wsdl.setLocationUri("/ws/transfer");
+        wsdl.setTargetNamespace("http://bank.example.com/orders");
+        wsdl.setSchema(transferSchema);
+        return wsdl;
+    }
+
+    @Bean
+    public XsdSchema transferSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("xsd/transfer.xsd"));
+    }
+
+    @Bean
+    public Jaxb2Marshaller marshaller() {
+        var m = new Jaxb2Marshaller();
+        m.setClassesToBind(TransferRequest.class, TransferResponse.class);
+        return m;
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی عملی</span>
+برای سرویس‌های SOAP قدیمی‌تر، <code>JAX-WS</code> (<code>jakarta.xml.ws</code>) و ابزار
+<code>wsimport</code> همچنان کاربرد دارند. <code>Spring Web Services</code> گزینه‌ی
+<strong>Contract-first</strong> است و کنترل بیشتری روی قرارداد می‌دهد.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>پیاده‌سازی با C#</h2>
+
+<h3>WCF — پلتفرم کلاسیک SOAP در .NET</h3>
+
+<pre class="kl-code" data-lang="csharp"><code>using System.ServiceModel;
+using System.ServiceModel.Web;
+
+[ServiceContract(Namespace = "http://bank.example.com/orders")]
+public interface ITransferService
+{
+    [OperationContract(Action = "http://bank.example.com/GetAccountBalance")]
+    GetAccountBalanceResponse GetAccountBalance(GetAccountBalanceRequest request);
+}
+
+public class TransferService : ITransferService
+{
+    private readonly IAccountService _accounts;
+
+    public TransferService(IAccountService accounts) => _accounts = accounts;
+
+    public GetAccountBalanceResponse GetAccountBalance(GetAccountBalanceRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.AccountId))
+            throw new FaultException&lt;BankError&gt;(
+                new BankError { Code = "ACC-404", Message = "حساب یافت نشد" },
+                new FaultReason("Invalid account"));
+
+        var balance = _accounts.GetBalance(request.AccountId);
+        return new GetAccountBalanceResponse
+        {
+            AccountId = request.AccountId,
+            Balance   = balance.Amount,
+            Currency  = "IRR"
+        };
+    }
+}
+
+/* پیکربندی Web.config یا کد: */
+public static class Program
+{
+    public static void Main()
+    {
+        var baseAddress = new Uri("http://localhost:8080/soap/transfer");
+        using var host = new WebServiceHost(typeof(TransferService), baseAddress);
+        host.AddServiceEndpoint(
+            typeof(ITransferService),
+            new BasicHttpBinding
+            {
+                MaxReceivedMessageSize = 1_048_576,
+                Security = { Mode = BasicHttpSecurityMode.Transport }
+            },
+            "");
+        host.Open();
+        Console.ReadLine();
+        host.Close();
+    }
+}
+</code></pre>
+
+<h3>جایگزین‌های مدرن در .NET</h3>
+
+<table>
+<thead>
+<tr><th>گزینه</th><th>وضعیت</th><th>چه موقع</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>WCF</strong></td><td>میراث؛ در .NET مدرن پشتیبانی محدود</td><td>پروژه‌های ارثی موجود</td></tr>
+<tr><td><strong>CoreWCF</strong></td><td>پورت فعال WCF برای .NET 6+</td><td>مهاجرت WCF بدون بازنویسی کامل</td></tr>
+<tr><td><strong>SOAP Envelope دستی</strong></td><td>کنترل کامل با <code>XDocument</code></td><td>یکپارچگی با یک سرویس خاص</td></tr>
+<tr><td><strong>gRPC / Minimal API</strong></td><td>پیشنهادی برای جدیدها</td><td>سیستم تازه — به <a href="grpc.html">gRPC</a> بروید</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">وضعیت WCF در .NET امروز</span>
+<code>WCF</code> در <strong>.NET Framework</strong> کامل است؛ در <strong>.NET 6/8</strong> کلاینت WCF
+با <code>System.ServiceModel</code> موجود است ولی سرور با <strong>CoreWCF</strong> جداگانه ارائه
+می‌شود. برای پروژه‌های جدید، SOAP فقط وقتی انتخاب شود که <strong>طرف مقابل الزامش کرده باشد</strong>.
+</div>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>ساختار پروژه</h2>
+
+<pre class="kl-code" data-lang="text"><code>transfer-service/
+├── xsd/                          ◄ قرارداد اول (Contract-first)
+│   └── transfer.xsd
+├── wsdl/                         ◄ از XSD تولید یا دستی
+│   └── transfer.wsdl
+├── contract/                     ◄ کلاس‌های تولیدشده از XSD
+│   ├── TransferRequest.java
+│   ├── TransferResponse.java
+│   └── BankError.java
+├── endpoint/                     ◄ لایه‌ی SOAP
+│   ├── TransferEndpoint.java
+│   └── SoapFaultResolver.java
+├── application/                  ◄ منطق
+│   ├── TransferService.java
+│   └── port/
+│       ├── AccountRepository.java
+│       └── LedgerGateway.java
+├── domain/                       ◄ مدل خالص
+│   ├── Money.java
+│   └── Account.java
+├── infrastructure/               ◄ پیاده‌سازی
+│   ├── persistence/
+│   └── security/WssInterceptor.java
+└── config/
+    ├── WebServiceConfig.java
+    └── SecurityConfig.java</code></pre>
+
+<h3>جریان یک فراخوانی</h3>
+
+<pre class="kl-code" data-lang="text"><code>Client
+  │ ۱) درخواست XML + هدر WS-Security
+  ▼
+Transport Interceptor (TLS + اعتبارسنجی امضا)
+  │ ۲) بررسی امضا و هویت
+  ▼
+Message Dispatcher (طبق WSDL)
+  │ ۳) مسیریابی به endpoint درست
+  ▼
+Endpoint (پارس + اعتبارسنجی XSD)
+  │ ۴) تبدیل XML ← شی
+  ▼
+Application Service
+  │ ۵) منطق تجاری
+  ▼
+Domain + Infrastructure
+  │ ۶) دسترسی به داده
+  ▼
+پاسخ XML + Fault در صورت خطا</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چرا قرارداد در یک ماژول جدا است؟</span>
+چون مصرف‌کننده‌ها (حتی نوشته‌شده به COBOL یا Python) باید بتوانند فقط با فایل
+<code>XSD/WSDL</code> کد بسازند، بدون دسترسی به مخزن شما. این یعنی قرارداد باید
+<strong>قابل انتشار و نسخه‌بندی</strong> باشد — دقیقاً همان چیزی که در REST با OpenAPI
+مدیریت می‌کنید، ولی اینجا ابزارها بدون آن کار نمی‌کنند.
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>نمونه‌های واقعی</h2>
+
+<h3>۱. انتقال وجه بانکی بین دو بانک</h3>
+
+<pre class="kl-code" data-lang="text"><code>بانک مبدأ                                    بانک مقصد
+   │ TransferRequest (XML + WS-Security)        │
+   ├────────────────────────────────────────────►│
+   │                                            ├─ اعتبارسنجی XSD
+   │                                            ├─ بررسی امضای دیجیتال
+   │                                            ├─ ثبت در دفتر (commit)
+   │◄────────────────────────────────────────────┤
+   │ TransferResponse {txId, status=ACCEPTED}   │
+   │                                            │
+   │ چرا SOAP؟                                   │
+   │  • امضای دیجیتال = انکارناپذیری حقوقی      │
+   │  • WS-ReliableMessaging = تحویل مطمئن       │
+   │  • قرارداد سفت = هر دو سمت از یک XSD کد می‌سازند │
+   │  • بازرسی = پاکت همان‌طور که امضا شده خوانده می‌شود │</code></pre>
+
+<h3>۲. سیستم‌های ERP و یکپارچگی زنجیره تأمین</h3>
+
+<pre class="kl-code" data-lang="text"><code>سناریو: ثبت سفارش خرید از پنل شرکت به ERP
+  ۱) سفارش ساخته می‌شود
+  ۲) فراخوانی CreatePurchaseOrder (SOAP)
+  ۳) ERP با XSD اعتبارسنجی می‌کند
+  ۴) در صورت نقص، Fault با کد دقیق فیلد برمی‌گردد
+  ۵) در صورت موفقیت، شماره سفارش ERP برگردانده می‌شودنکته: دقیقاً همین قابلیت اعتبارسنجی سمت سرور (XSD)
+       دلیل ماندگاری SOAP در ERP هاست — «JSON ساده‌تر است»
+       اینجا جواب نیست، چون خطا باید دقیق و ساختاریافته باشد.</code></pre>
+
+<h3>۳. سرویس‌های دولتی و شهروندی</h3>
+
+<pre class="kl-code" data-lang="text"><code>پرتال دولت الکترونیک
+  │ استعلام هویت (VerifyIdentity)
+  │ وراثت از سیستم‌های قدیمی + نیاز به امضای دیجیتال
+  │
+  ▼
+  SOAP + WS-Security + گواهی X.509
+  → چون قانونی بودن امضا مهم‌تر از سادگی استاین مثال‌ها نشان می‌دهد SOAP هنوز «زنده» است —
+نه به این دلیل که بهتر است، بلکه چون الزاماتش (امضا، قرارداد سفت،
+قابلیت بازرسی) در REST ساده پیاده نمی‌شود.</code></pre>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>مزایا</h2>
+
+<div class="ax-proscons">
+  <div class="ax-pc ax-pc--pro">
+    <div class="ax-pc-head">✅ مزایا</div>
+    <div class="ax-pc-body">
+      <ul>
+        <li><strong>قرارداد سفت واقعی</strong> — WSDL + XSD از پایه تضمین می‌کنند Client و Server یک تعریف دارند.</li>
+        <li><strong>قرارداد زبان‌بی‌طرف</strong> — جاوا، دات‌نت، Python، COBOL همه از یک فایل کد تولید می‌کنند.</li>
+        <li><strong>امنیت در سطح پیام</strong> — WS-Security امضا و رمزنگاری را همراه پیام حمل می‌کند.</li>
+        <li><strong>قابلیت بازرسی</strong> — پاکت قابل بایگانی و بررسی حقوقی است.</li>
+        <li><strong>مدیریت خطا ساختاریافته</strong> — Fault با کد و جزئیات، برای خطاپردازی خودکار.</li>
+        <li><strong>استانداردهای W3C</strong> — بی‌طرف و پایدار، وابسته به یک فروشنده نیست.</li>
+        <li><strong>تحمل خطا</strong> — WS-ReliableMessaging تحویل را تضمین می‌کند.</li>
+        <li><strong>پیام‌رسانی بی‌طرف انتقال</strong> — روی HTTP، SMTP و message broker کار می‌کند.</li>
+        <li><strong>رسوب دانش سازمانی</strong> — تیم‌ها و ابزارهای موجود از آن پشتیبانی می‌کنند.</li>
+        <li><strong>تأیید نهایی و تراکنش</strong> — WS-AtomicTransaction برای سازگاری قوی.</li>
+        <li><strong>ابزارسازی بالغ</strong> — تولید کد، تست قرارداد و پایش همه موجودند.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>معایب</h2>
+
+<div class="ax-proscons">
+  <div class="ax-pc ax-pc--con">
+    <div class="ax-pc-head">⚠️ معایب</div>
+    <div class="ax-pc-body">
+      <ul>
+        <li><strong>وزن زیاد XML</strong> — پاکت‌ها بزرگ‌ترند و پارس‌شان گران‌تر است.</li>
+        <li><strong>پیچیدگی</strong> — Envelope، namespaces، WSDL و XSD همگی منحنی یادگیری تند دارند.</li>
+        <li><strong>کش ضعیف</strong> — همه‌ی درخواست‌ها POST است؛ کش HTTP عملاً بی‌اثر است.</li>
+        <li><strong>ابزارسازی سخت‌تر برای مرورگر</strong> — مرورگر مستقیماً SOAP نمی‌خواند.</li>
+        <li><strong>WebSocket و جریان بلادرنگ</strong> — خارج از مدل است؛ نیاز به قرارداد مجزا.</li>
+        <li><strong>تست و عیب‌یابی پیچیده‌تر</strong> — XML بزرگ در لاگ‌ها خوانا نیست.</li>
+        <li><strong>WS-* به‌سرعت فرسوده می‌شود</strong> — پیاده‌سازی ناقص و ناسازگاری بین فروشندگان.</li>
+        <li><strong>کندتری بالقوه</strong> — سریال‌سازی و رمزنگاری XML هزینه‌ی محاسباتی دارد.</li>
+        <li><strong>استقرار و پایش کم‌کاربردتر</strong> — ابزارهای مدرن برای REST بهینه‌اند.</li>
+        <li><strong>بحران استعداد</strong> — توسعه‌دهنده‌ی SOAP کمتر از توسعه‌دهنده‌ی REST پیدا می‌شود.</li>
+        <li><strong>اسباب‌بازی اضافه</strong> — برای یک CRUD ساده، کاملاً بیش از حد لازم است.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">بزرگ‌ترین ریسک امروزی</span>
+<strong>پیاده‌سازی‌های ناقص WS-*</strong>. بسیاری از فروشندگان فقط بخشی از مشخصات را
+پیاده می‌کنند و نتیجه، ناسازگاری بین دو سیستمی است که «هر دو SOAP» هستند. اگر وارد
+پروژه‌ی SOAP شدید، <strong>آزمون یکپارچگی با طرف مقابل</strong> را از همان روز اول بگذارید —
+فقط خواندن مشخصات کافی نیست.
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>چه زمانی استفاده کنیم؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">SOAP انتخاب درست است وقتی</span>
+<div class="kl-check">
+<ul>
+<li><strong>طرف مقابل الزام کرده</strong> — بانک، بیمه، دولت، ارائه‌دهنده‌ی قدیمی</li>
+<li><strong>نیاز به امضای دیجیتال و انکارناپذیری در سطح پیام دارید</strong></li>
+<li><strong>قرارداد سفت واقعاً لازم است</strong> — چند زبان، چند تیم، چند سازمان</li>
+<li><strong>باید از چند میان‌افزار عبور کند</strong> و پیام باید محافظت‌شده بماند</li>
+<li><strong>قابلیت بازرسی حقوقی</strong> مطرح است</li>
+<li><strong>سازگاری قوی و تراکنش دو فاز</strong> الزامی است</li>
+<li><strong>سیستم فعلی SOAP است</strong> و بازنویسی توجیه اقتصادی ندارد</li>
+</ul>
+</div>
+</div>
+
+<div class="ax-checkgrid">
+  <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>طرف مقابل SOAP می‌خواهد</span></label>
+  <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>امضای دیجیتال لازم است</span></label>
+  <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>چند زبان درگیر است</span></label>
+  <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>بازرسی حقوقی داریم</span></label>
+  <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>قرارداد سفت لازم است</span></label>
+  <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>سیستم فعلی SOAP است</span></label>
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>چه زمانی استفاده نکنیم؟</h2>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">SOAP گزینه‌ی درستی نیست وقتی</span>
+<div class="kl-check">
+<ul>
+<li><strong>API عمومی برای توسعه‌دهندگان وب</strong> — JSON + REST پذیرش بیشتری دارد</li>
+<li><strong>اپ موبایل با محدودیت پهنای باند</strong> — حجم XML واقعاً مهم است</li>
+<li><strong>سیستم تازه بدون وابستگی</strong> — هیچ دلیلی برای SOAP وجود ندارد</li>
+<li><strong>بلادرنگ دوطرفه</strong> — به <a href="websocket.html">WebSocket</a> نگاه کنید</li>
+<li><strong>جریان یک‌طرفه‌ی ساده</strong> — <a href="sse.html">SSE</a> بسیار ساده‌تر است</li>
+<li><strong>اعلان رویداد به بیرون</strong> — <a href="webhook.html">Webhook</a></li>
+<li><strong>IoT و دستگاه کم‌مصرف</strong> — <a href="mqtt.html">MQTT</a></li>
+<li><strong>ارتباط داخلی سرویس‌ها</strong> — <a href="grpc.html">gRPC</a></li>
+<li><strong>تیم کوچک و سرعت بالا</strong> — منحنی یادگیری SOAP توجیه‌پذیر نیست</li>
+</ul>
+</div>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">تله‌ی معماری</span>
+استفاده از SOAP صرفاً چون «سابقه‌ی سازمانی داریم» اشتباه است. اگر طرف مقابل از
+SOAP پشتیبانی می‌کند ولی REST هم می‌پذیرد، REST را انتخاب کنید. SOAP باید
+<strong>الزام واقعی</strong> داشته باشد، نه اینکه فقط راحت‌ترین گزینه‌ی قدیمی باشد.
+</div>
+</section>
+
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مقایسه SOAP در برابر REST</h2>
+
+<div class="ax-tablewrap">
+<table>
+<caption>مقایسه‌ی کامل — بدون ادعای برتری مطلق</caption>
+<thead>
+<tr><th>معیار</th><th>SOAP</th><th>REST</th></tr>
+</thead>
+<tbody>
+<tr><td>نوع</td><td>پروتکل پیام</td><td>سبک معماری</td></tr>
+<tr><td>قالب داده</td><td>فقط XML</td><td>JSON، XML، CSV، …</td></tr>
+<tr><td>پروتکل انتقال</td><td>بی‌طرف (HTTP، SMTP، …)</td><td>عملاً HTTP</td></tr>
+<tr><td>قرارداد</td><td><strong>WSDL + XSD (سفت)</strong></td><td>توافقی + OpenAPI</td></tr>
+<tr><td>شناسایی عملیات</td><td>نام عملیات + SOAPAction</td><td>متد + مسیر</td></tr>
+<tr><td>کش</td><td>ضعیف (همه POST)</td><td><strong>ذاتاً قوی</strong></td></tr>
+<tr><td>امنیت</td><td><strong>WS-Security در سطح پیام</strong></td><td>TLS + OAuth/JWT</td></tr>
+<tr><td>خطا</td><td>Fault ساختاریافته (اغلب پشت 200)</td><td>Status Code + بدنه‌ی خطا</td></tr>
+<tr><td>تراکنش</td><td>WS-AtomicTransaction</td><td>Saga</td></tr>
+<tr><td>حجم</td><td>بزرگ</td><td>کوچک</td></tr>
+<tr><td>منحنی یادگیری</td><td>تند</td><td>ملایم</td></tr>
+<tr><td>ابزار مرورگر</td><td>ضعیف</td><td>عالی</td></tr>
+<tr><td>سرعت توسعه</td><td>کندتر</td><td>سریع‌تر</td></tr>
+<tr><td>کاربرد اصلی</td><td>بانک، بیمه، دولت، ERP</td><td>وب، موبایل، API عمومی</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">پاسخ مصاحبه‌ای</span>
+<p>
+اگر پرسیدند «SOAP بهتر است یا REST؟» — پاسخ درست این است که <strong>این پرسش غلط است</strong>.
+آن‌ها مسائل متفاوتی را حل می‌کنند. SOAP برای <strong>قرارداد سفت، امضای دیجیتال و
+یکپارچگی سازمانی</strong> ساخته شده؛ REST برای <strong>سادگی، کش و پذیرش گسترده</strong>.
+انتخاب به <strong>الزام طرف مقابل</strong>، <strong>نیاز امنیتی</strong> و
+<strong>مخاطب</strong> بستگی دارد.
+</p>
+<p>
+برای دیدن جایگاه SOAP در میان ۱۳ سبک، به <a href="api-comparison.html">مقاله‌ی مقایسه‌ی
+API ها</a> و برای انتخاب، به <a href="api-selection-guide.html">راهنمای تعاملی</a> مراجعه کنید.
+</p>
+</div>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>اشتباهات رایج و Testing</h2>
+
+<div class="ax-tablewrap">
+<table>
+<thead>
+<tr><th>#</th><th>اشتباه</th><th>اثر</th><th>راه درست</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td>Contract-last</td><td>قرارداد به کد داخلی گره می‌خورد و می‌شکند</td><td>اول XSD/WSDL</td></tr>
+<tr><td>۲</td><td>اعتبار نزدن XML پیش از پردازش</td><td>ورودی خراب به منطق تجاری می‌رسد</td><td>اعتبارسنجی XSD</td></tr>
+<tr><td>۳</td><td>پارسر با DTD فعال</td><td>XXE و Billion Laughs</td><td>غیرفعال کردن DOCTYPE</td></tr>
+<tr><td>۴</td><td>خواندن فقط Status Code</td><td>خطای تجاری داخل Fault پنهان می‌ماند</td><td>همیشه Fault را بررسی کنید</td></tr>
+<tr><td>۵</td><td>قرارداد بدون نسخه</td><td>تغییر XSD مصرف‌کننده‌ها را می‌شکند</td><td>namespace نسخه‌دار</td></tr>
+<tr><td>۶</td><td>بدون سقف اندازه‌ی پیام</td><td>از کار افتادن سرویس با یک فایل بزرگ</td><td>محدودیت Content-Length</td></tr>
+<tr><td>۷</td><td>پیاده‌سازی دستی WS-Security</td><td>ناسازگاری و آسیب‌پذیری</td><td>کتابخانه‌ی بالغ و به‌روز</td></tr>
+<tr><td>۸</td><td>گذاشتن جزئیات فنی در faultstring</td><td>نشت اطلاعات داخلی</td><td>کد تجاری در detail</td></tr>
+<tr><td>۹</td><td>انتشار WSDL بدون مستند</td><td>Client حدس می‌زند</td><td>WSDL + مستند رویدادها</td></tr>
+<tr><td>۱۰</td><td>SOAP همه‌جا</td><td>پیچیدگی بی‌مورد در CRUD ساده</td><td>REST برای مصارف عمومی</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>چهار سطح تست</h3>
+
+<table>
+<thead>
+<tr><th>سطح</th><th>چه چیزی</th><th>ابزار</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد</td><td>منطق بدون XML</td><td dir="ltr">JUnit 5 / xUnit</td></tr>
+<tr><td>پیام</td><td>پارس، اعتبارسنجی و Fault</td><td dir="ltr">MockMvc + XML fixtures</td></tr>
+<tr><td>یکپارچه</td><td>سرویس + دیتابیس + SOAP client واقعی</td><td dir="ltr">Testcontainers</td></tr>
+<tr><td>قرارداد</td><td>سازگاری WSDL با مصرف‌کننده</td><td dir="ltr">WS-I / schema diff در CI</td></tr>
+<tr><td>یکپارچگی بین سیستمی</td><td>با سرویس واقعی طرف مقابل</td><td>محیط تست مشترک</td></tr>
+</tbody>
+</table>
+
+<pre class="kl-code" data-lang="java"><code>@SpringBootTest
+@AutoConfigureMockMvc
+@DisplayName("GetAccountBalance")
+class TransferEndpointTest {
+
+    @Autowired MockMvc mvc;
+
+    @Test
+    @DisplayName("پاسخ موفق حاوی balance است")
+    void balanceOk() throws Exception {
+        mvc.perform(post("/ws/transfer")
+                .contentType("text/xml;charset=UTF-8")
+                .header("SOAPAction", "\"http://bank.example.com/GetAccountBalance\"")
+                .content(readResource("xml/getBalance-request.xml")))
+           .andExpect(status().isOk())
+           .andExpect(xpath("//*[local-name()='balance']").string("12500000"));
+    }
+
+    @Test
+    @DisplayName("ورودی نامعتبر ⇒ SOAP Fault نه 200 ساده")
+    void invalidAccount() throws Exception {
+        mvc.perform(post("/ws/transfer")
+                .contentType("text/xml;charset=UTF-8")
+                .content(readResource("xml/getBalance-invalid.xml")))
+           .andExpect(status().is5xxServerError())          // Fault معمولاً پشت 500
+           .andExpect(xpath("//*[local-name()='faultcode']").string("soap:Client"))
+           .andExpect(xpath("//*[local-name()='code']").string("ACC-404"));
+    }
+
+    @Test
+    @DisplayName("پاکت نامعتبر از نظر XSD رد می‌شود")
+    void schemaViolation() throws Exception {
+        mvc.perform(post("/ws/transfer")
+                .contentType("text/xml;charset=UTF-8")
+                .content(readResource("xml/getBalance-broken.xml")))
+           .andExpect(status().isBadRequest());
+    }
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">کمینه‌ی تست برای یک سرویس SOAP</span>
+<ol class="kl-check">
+<li>عملیات موفق → شکل پاسخ طبق XSD</li>
+<li>ورودی نامعتبر → Fault با کد درست</li>
+<li>پاکت ناقص → رد پیش از رسیدن به منطق</li>
+<li>امضای نامعتبر → رد در لایه‌ی امنیتی</li>
+<li>نسخه‌ی نادرست namespace → VersionMismatch</li>
+<li>سازگاری WSDL → تغییر نکردن قرارداد در CI</li>
+</ol>
+</div>
+</section>
+
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>سؤالات مصاحبه</h2>
+
+<h3>سطح پایه (Junior)</h3>
+
+<p><strong>سؤال ۱ — SOAP چیست؟</strong></p>
+<p>پروتکلی مبتنی بر XML برای تبادل ساخت‌یافته در معماری‌های وب. پیام‌ها در پاکتی به نام Envelope قرار می‌گیرند و معمولاً روی HTTP منتقل می‌شوند. مهم‌ترین ویژگی‌اش، قرارداد سفت با WSDL و XSD است.</p>
+
+<p><strong>سؤال ۲ — SOAP چه تفاوتی با REST دارد؟</strong></p>
+<p>SOAP یک پروتکل پیام با XML و قرارداد سفت (WSDL) است؛ REST یک سبک معماری با منابع و HTTP و قرارداد توافقی. SOAP معمولاً روی POST کار می‌کند و کش آن ضعیف است؛ REST ذاتاً کش‌پذیر است.</p>
+
+<p><strong>سؤال ۳ — اجزای پاکت SOAP را نام ببرید.</strong></p>
+<p><code>Envelope</code> (ریشه‌ی اجباری)، <code>Header</code> (اختیاری، برای متادیتای امنیتی و مسیریابی)، <code>Body</code> (اجباری، محتوای عملیات) و <code>Fault</code> (حداکثر یکی، داخل Body، برای خطا).</p>
+
+<p><strong>سؤال ۴ — WSDL و XSD چه فرقی دارند؟</strong></p>
+<p><code>WSDL</code> مشخص می‌کند <strong>چه چیزی قابل فراخوانی است</strong>: عملیات‌ها، پیام‌ها، پورت‌ها و آدرس. <code>XSD</code> مشخص می‌کند <strong>شکل داده چگونه است</strong>: انواع، فیلدها، الزامی بودن. اولی منو، دومی قالب غذاست.</p>
+
+<p><strong>سؤال ۵ — SOAP Fault چیست؟</strong></p>
+<p>عنصری داخل Body که خطا را با <code>faultcode</code> (برای ماشین)، <code>faultstring</code> (برای انسان) و <code>detail</code> (جزئیات ساخت‌یافته) بیان می‌کند. کدهای پایه: VersionMismatch، MustUnderstand، Client و Server.</p>
+
+<p><strong>سؤال ۶ — تفاوت faultcode و faultstring؟</strong></p>
+<p><code>faultcode</code> برای تصمیم‌گیری خودکار Client است و باید از مجموعه‌ی استاندارد باشد. <code>faultstring</code> پیام انسانی است. هرگز منطق شرطی را روی faultstring نگذارید، چون ممکن است تغییر کند یا محلی‌سازی شود.</p>
+
+<p><strong>سؤال ۷ — SOAP همیشه روی HTTP است؟</strong></p>
+<p>خیر. SOAP بی‌طرف نسبت به انتقال است و می‌تواند روی SMTP یا message broker هم کار کند. ولی در عمل تقریباً همیشه روی HTTP است، معمولاً با <code>POST</code> و هدر <code>SOAPAction</code>.</p>
+
+<p><strong>سؤال ۸ — SOAPAction چیست؟</strong></p>
+<p>هدری در SOAP 1.1 که شناسه‌ی عملیات را مشخص می‌کند تا میان‌افزارها بتوانند بدون خواندن کل بدنه، مسیریابی کنند. در SOAP 1.2 این نقش به پارامتر <code>action</code> در Content-Type منتقل شد.</p>
+
+<p><strong>سؤال ۹ — contract-first یعنی چه؟</strong></p>
+<p>اول قرارداد (XSD و WSDL) را طراحی و بازبینی می‌کنید، سپس کد از آن تولید می‌شود. برعکسش Contract-last است که اول کد و بعد WSDL خودکار تولید می‌شود — که آنتی‌پترن است چون قرارداد به جزئیات کد گره می‌خورد.</p>
+
+<p><strong>سؤال ۱۰ — چرا SOAP خوب کش نمی‌شود؟</strong></p>
+<p>چون عملاً همه‌ی فراخوانی‌ها <code>POST</code> است و HTTP کردن POST بی‌مورد و خطرناک است. بنابراین کش مرورگر و CDN عملاً بی‌اثرند. برای کش باید لایه‌ی خودتان (مثلاً Redis) را خودتان بسازید.</p>
+
+<h3>سطح متوسط (Mid)</h3>
+
+<p><strong>سؤال ۱۱ — WS-Security با TLS چه فرقی دارد؟</strong></p>
+<p><code>TLS</code> ترافیک بین دو نقطه را رمزنگاری می‌کند؛ محصولِ نهایی بعد از مقصد ساده است. <code>WS-Security</code> روی <strong>خود پاکت</strong> امضا و رمزنگاری می‌زند، بنابراین محافظت همراه پیام حرکت می‌کند و از چند میان‌افزار عبور می‌کند. هر دو لازم‌اند و جایگزین هم نیستند.</p>
+
+<p><strong>سؤال ۱۲ — چرا در SOAP اغلب خطای تجاری با HTTP 200 برمی‌گردد؟</strong></p>
+<p>چون در مدل SOAP، خطا باید در ساختار Fault با کد و جزئیات بیان شود و پروتکل‌ها این را از کد HTTP جدا می‌دانند. این تفاوت مهمی با REST است که Status Code حامل معناست. عمل درست: هم Status Code و هم Fault را بررسی کنید.</p>
+
+<p><strong>سؤال ۱۳ — مستندات XML را چگونه در برابر XXE محافظت می‌کنید؟</strong></p>
+<p>پردازش DOCTYPE و Entity های بیرونی را کاملاً غیرفعال می‌کنید: <code>disallow-doctype-decl=true</code>، <code>external-general-entities=false</code>، <code>FEATURE_SECURE_PROCESSING=true</code> و محدودیت اندازه‌ی ورودی. و هرگز پارسر XML را با تنظیمات پیش‌فرض نگه نمی‌دارم.</p>
+
+<p><strong>سؤال ۱۴ — سبک پیام‌گذاری Document/Literal Wrapped چیست و چرا پیشنهادی است؟</strong></p>
+<p>یعنی پیام، یک سند XML کامل است که با XSD اعتبارسنجی می‌شود، و نام عملیات داخل پیام «پیچیده» شده. مزیت: اعتبارسنجی کامل، سازگاری خوب بین پلتفرم‌ها، و جلوگیری از مشکلات ترتیب پارامتر که در RPC/Encoded دیده می‌شد.</p>
+
+<p><strong>سؤال ۱۵ — اگر WSDL تغییر کند چه می‌شود؟</strong></p>
+<p>تغییر باید سازگار باشد: افزودن عملیات یا فیلد اختیاری مشکلی ندارد، ولی حذف عملیات یا تغییر نوع، مصرف‌کننده‌ها را می‌شکند. راه درست: تغییر نسخه‌ی targetNamespace برای تغییر شکننده و اجرای هم‌زمان نسخه‌های قدیم و جدید.</p>
+
+<p><strong>سؤال ۱۶ — چگونه یک سرویس SOAP را تست قرارداد می‌کنید؟</strong></p>
+<p>فایل WSDL/XSD را نسخه‌بندی می‌کنید و در CI مقایسه‌ی ساختاری (schema diff) انجام می‌دهید تا تغییر ناسازگار فوراً شناسایی شود. در کنار آن، تست‌های پیام با XML های نمونه‌ی معتبر و نامعتبر.</p>
+
+<p><strong>سؤال ۱۷ — WS-ReliableMessaging چه مشکلی را حل می‌کند؟</strong></p>
+<p>مشکل تحویل پیام در شبکه‌ی ناپایدار: تحویل چندباره، از دست رفتن پیام و ترتیب نادرست را با شماره‌گذاری، تأیید (ack) و دوباره‌فرستادن مدیریت می‌کند. تفاوت اصلی‌اش با Idempotency-Key این است که خود پروتکل آن را ارائه می‌دهد، نه قرارداد شما.</p>
+
+<p><strong>سؤال ۱۸ — اگر سرویس SOAP فعلی باید با REST جدید یکپارچه شود چه می‌کنید؟</strong></p>
+<p>یک Anti-Corruption Layer می‌سازم: لایه‌ای که SOAP قدیمی را می‌پوشاند، مدل داده‌اش را به مدل REST نگاشت می‌کند و پیچیدگی XML را از کلاینت جدید پنهان می‌کند. این‌طوری هیچ‌کدام از دو سیستم مجبور نیست بقیه را بفهمد.</p>
+
+<h3>سطح پیشرفته (Senior)</h3>
+
+<p><strong>سؤال ۱۹ — سازمانی با ۲۰۰ سرویس SOAP قدیمی دارید و باید به سمت API مدرن بروید. استراتژی‌تان چیست؟</strong></p>
+<p>هرگز Big Bang ندارم. <strong>۱)</strong> همه‌ی WSDL ها را فهرست و قراردادشان را نسخه‌بندی و ماشینی می‌کنم. <strong>۲)</strong> با Strangler Fig از یک مسیر کم‌خطر شروع می‌کنم و یک Anti-Corruption Layer جلوی سرویس قدیمی می‌گذارم. <strong>۳)</strong> سرویس‌های جدید را REST یا gRPC می‌سازم ولی داده را در همان مکان نگه می‌دارم تا ریسک جابه‌جایی ندهم. <strong>۴)</strong> ترافیک را مرحله‌به‌مرحله با پرچم ویژگی منتقل می‌کنم و با معیارهای عددی (نرخ خطا، زمان پاسخ) تأیید می‌کنم. <strong>۵)</strong> در نهایت SOAP هایی را که واقعاً امضای دیجیتال یا قرارداد سفت می‌خواهند، نگه می‌دارم. کلید موفقیت: بازگشت سریع در هر مرحله.</p>
+
+<p><strong>سؤال ۲۰ — طراحی قرارداد SOAP برای چند سازمان با چند زبان مختلف را چطور انجام می‌دهید؟</strong></p>
+<p><strong>اول XSD می‌سازم</strong>، چون مشترک‌ترین نقطه بین زبان‌هاست. سپس WSDL را روی همان XSD بنا می‌کنم و آن را یک <strong>محصول</strong> با نسخه و چرخه‌ی عمر می‌دانم، نه خروجی تولید. قواعد سازگاری را صریح می‌نویسم: حذف فیلد ممنوع، فیلدهای جدید اختیاری، تغییر نوع فقط در نسخه‌ی جدید. سپس یک <strong>پکیج مشترک</strong> از XSD + XML های نمونه + تست‌های قرارداد تحویل همه‌ی طرف‌ها می‌دهم تا همان را در CI خودشان اجرا کنند. در نهایت، نسخه‌ی قرارداد را داخل namespace می‌گذارم تا هر دو نسخه بتوانند هم‌زمان اجرا شوند — وگرنه تغییر یک فیلد یعنی توقف سرویس‌های دیگر سازمان‌ها.</p>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-hd"><span class="kl-h">آیا SOAP منسوخ شده است؟</span><p>خیر. در API های عمومی و اپ‌های مدرن، REST و GraphQL غالب‌اند. اما در بانکداری، بیمه، دولت، ERP و یکپارچگی زنجیره تأمین همچنان فعال و پرجنب‌وجوش است. SOAP منسوخ نشده؛ فقط دامنه‌ی کاربردش شفاف‌تر شده.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">SOAP چه تفاوتی با XML-RPC دارد؟</span><p>XML-RPC یک روش فراخوانی از راه دور است که عملیات را در مسیر می‌گذارد. SOAP بر پایه‌ی پاکت (Envelope) است، قرارداد WSDL/XSD دارد، Header برای امنیت و مسیریابی دارد و اکوسیستم WS-* را پشتیبانی می‌کند. ریشه‌ی هر دو RPC است ولی SOAP بسیار ساختاریافته‌تر است.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">آیا برای یک پروژه‌ی داخلی کوچک SOAP مناسب است؟</span><p>به‌ندرت. اگر مصرف‌کننده فقط یک سیستم داخلی است و نیاز به امضای دیجیتال یا قرارداد سفت ندارید، REST ساده‌تر و سریع‌تر است. SOAP فقط وقتی می‌ارزد که چند زبان، چند سازمان یا نیاز امنیتی خاص درگیر باشد.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">WSDL را از کجا بگیرم؟</span><p>اگر قرارداد از قبل وجود دارد، ارائه‌دهنده باید آن را تحویل دهد (معمولاً در مسیری مثل <code dir="ltr">?wsdl</code>). اگر خودتان می‌سازید، <strong>اول XSD بنویسید</strong> و WSDL را از آن تولید کنید، نه از روی کد.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">SOAP 1.1 و SOAP 1.2 چه فرقی دارند؟</span><p>۱٫۲ یک توصیه‌ی W3C رسمی است، namespace آن متفاوت است، هدر <code>SOAPAction</code> را با پارامتر <code>action</code> در Content-Type جایگزین کرده، و کدهای خطای HTTP را بهتر تعریف کرده. ساختار کلی Envelope همچنان یکسان است. در عمل بیشتر سرویس‌ها هنوز 1.1 هستند.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">چرا SOAP از GET استفاده نمی‌کند؟</span><p>چون عملیات SOAP معمولاً بدنه‌ی XML دارد و GET بدنه ندارد. از طرفی عملیات SOAP ممکن است اثر جانبی داشته باشد و GET باید ایمن باشد. بنابراین همیشه POST.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">SOAP چقدر کند است؟</span><p>این پرسش بدون اندازه‌گیری بی‌معناست. عوامل واقعی: حجم XML، عملیات رمزنگاری/امضا، تعداد round-trip و زمان پردازش سرور. در عمل، فشرده‌سازی gzip اکثر هزینه‌ی حجم را جبران می‌کند و گلوگاه معمولاً منطق تجاری است، نه XML خودش.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">امروز SOAP یا REST؟</span><p>پیش‌فرض: <strong>REST</strong>. SOAP فقط وقتی که طرف مقابل الزام کرده، نیاز به امضای دیجیتال در سطح پیام دارید، یا سیستم فعلی SOAP است. اگر طرف مقابل هر دو را می‌پذیرد، REST انتخاب معقول‌تری است.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">آیا می‌توان SOAP را داخل REST بسته‌بندی کرد؟</span><p>یعنی یک endpoint REST داشته باشید که زیر پوست SOAP می‌زند. بله — به این Anti-Corruption Layer می‌گویند. این الگوی رایجی در مهاجرت است: Client ها REST می‌بینند و لایه‌ی میانی با SOAP قدیمی حرف می‌زند.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">SOAP در چه زبان‌هایی پشتیبانی می‌شود؟</span><p>تقریباً همه: جاوا (JAX-WS، Spring Web Services)، دات‌نت (WCF، CoreWCF)، Python (Zeep)، Node.js، PHP، Go. قرارداد زبان‌بی‌طرف است و هر زبانی می‌تواند از WSDL کد تولید کند — که همان قدرت اصلی آن است.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">اگر WSDL ناقص یا نادرست باشد چه؟</span><p>عملاً غیرممکن است به‌درستی کلاینت بسازید. این یکی از رایج‌ترین مشکلات در یکپارچگی است: WSDL ای که با پیاده‌سازی واقعی نمی‌خواند. راه‌حل: تست یکپارچگی با کلاینت تولیدشده از همان WSDL را در CI قرار دهید.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">SOAP و GraphQL چه ربطی دارند؟</span><p>هر دو یک تعریف دقیق از شکل داده دارند (XSD در برابر Schema) و هر دو کنترل دقیق روی پاسخ می‌دهند. تفاوت: SOAP برای سمت سرور و قرارداد بین سازمانی است، GraphQL برای مصرف‌کننده‌های وب و موبایل و کنترل Client روی شکل پاسخ.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">اگر مجبور به استفاده از SOAP شدم، از کجا شروع کنم؟</span><p>۱) فایل XSD و WSDL را بگیرید و بازبینی کنید. ۲) کد Client را از WSDL تولید کنید. ۳) با یک XML نمونه تست بزنید. ۴) مدیریت Fault را از همان اول جدی بگیرید. ۵) پیکربندی امنیت XML (ضد XXE) را قفل کنید. جزئیات در بخش‌های ۴، ۷ و ۱۰.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">مستندات SOAP را چطور نگه دارم؟</span><p>WSDL خودش سند است، ولی کافی نیست. کنار آن مستند رویدادهای تجاری، نمونه‌های XML، معنای فیلدها و نسخه‌ها را اضافه کنید. ابزارهایی مثل SoapUI یا Postman می‌توانند از WSDL کلاینت بسازند — نمونه‌های کارکرده را حتماً ضمیمه کنید.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">SOAP چطور با محدودیت نرخ کنار می‌آید؟</span><p>مثل REST — در Gateway یا میدل‌ور، با کلید Client یا IP. تفاوت: چون کش کار نمی‌کند، بار واقعی سرور بالاتر است و محدودیت نرخ اهمیت بیشتری پیدا می‌کند. پاسخ باید <code dir="ltr">429</code> با هدر Retry-After باشد.</p></div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>جمع‌بندی و مقالات مرتبط</h2>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">آنچه باید به یاد بماند</span>
+<ol class="kl-check">
+<li><strong>SOAP یک پروتکل پیام است</strong>، نه یک سبک معماری — با Envelope، Header و Body ساخت‌یافته.</li>
+<li><strong>WSDL و XSD قرارداد سفت می‌سازند</strong> — Client و Server از یک تعریف واحد کد تولید می‌کنند.</li>
+<li><strong>Contract-first، Contract-last نیست</strong> — اول قرارداد، بعد کد؛ وگرنه قرارداد به کد گره می‌خورد.</li>
+<li><strong>WS-Security جایگزین TLS نیست</strong> — یکی لایه‌ی انتقال، دیگری لایه‌ی پیام؛ هر دو لازم.</li>
+<li><strong>خطای تجاری اغلب پشت HTTP 200 است</strong> — همیشه Fault را بررسی کنید، نه فقط Status Code.</li>
+<li><strong>پیکربندی امنیت XML (ضد XXE) اجباری است</strong> — پیش از اولین درخواست.</li>
+<li><strong>SOAP فقط وقتی درست است که الزام واقعی داشته باشد</strong> — امضای دیجیتال، قرارداد سفت، یا طرف مقابل.</li>
+</ol>
+</div>
+
+<h3>مسیر یادگیری</h3>
+
+<div class="ax-path">
+  <div class="ax-path-col ax-path-col--beginner">
+    <div class="ax-path-title">مبتدی</div>
+    <ul class="ax-path-steps">
+      <li><a href="api-fundamentals.html">API چیست؟</a></li>
+      <li><a href="rest-api.html">REST API</a></li>
+      <li><strong>SOAP</strong></li>
+      <li><a href="api-security.html">امنیت API</a></li>
+    </ul>
+  </div>
+  <div class="ax-path-col ax-path-col--mid">
+    <div class="ax-path-title">متوسط</div>
+    <ul class="ax-path-steps">
+      <li><a href="graphql.html">GraphQL</a></li>
+      <li><a href="api-versioning.html">نسخه‌بندی</a></li>
+      <li><a href="api-testing.html">تست API</a></li>
+      <li><a href="api-comparison.html">مقایسه‌ها</a></li>
+    </ul>
+  </div>
+  <div class="ax-path-col ax-path-col--advanced">
+    <div class="ax-path-title">پیشرفته</div>
+    <ul class="ax-path-steps">
+      <li><a href="grpc.html">gRPC</a></li>
+      <li><a href="event-driven-api.html">API رویدادمحور</a></li>
+      <li><a href="api-gateway.html">API Gateway</a></li>
+      <li><a href="microservices-architecture.html">Microservices</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="ax-related">
+<h3 class="ax-related-title">مقالات مرتبط</h3>
+<div class="ax-related-grid">
+  <a class="ax-related-card" href="rest-api.html">
+    <span class="ax-related-card-cat">سبک API</span>
+    <div class="ax-related-card-title">REST API — مقایسه‌ی مستقیم و مسیر مهاجرت</div>
+  </a>
+  <a class="ax-related-card" href="api-fundamentals.html">
+    <span class="ax-related-card-cat">مبانی</span>
+    <div class="ax-related-card-title">API چیست؟ — HTTP، Status Code و مدیریت خطا</div>
+  </a>
+  <a class="ax-related-card" href="graphql.html">
+    <span class="ax-related-card-cat">سبک API</span>
+    <div class="ax-related-card-title">GraphQL — قرارداد سخت در مدل پرسش</div>
+  </a>
+  <a class="ax-related-card" href="grpc.html">
+    <span class="ax-related-card-cat">RPC</span>
+    <div class="ax-related-card-title">gRPC — جایگزین مدرن با Protobuf و HTTP/2</div>
+  </a>
+  <a class="ax-related-card" href="api-security.html">
+    <span class="ax-related-card-cat">امنیت</span>
+    <div class="ax-related-card-title">امنیت API — مقایسه‌ی مدل پیام با مدل لایه‌ی انتقال</div>
+  </a>
+  <a class="ax-related-card" href="api-comparison.html">
+    <span class="ax-related-card-cat">مقایسه</span>
+    <div class="ax-related-card-title">مقایسه‌ی API ها — جایگاه SOAP در ۱۳ سبک</div>
+  </a>
+</div>
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <nav class="ax-pager" aria-label="پیمایش مقالات سری API">
+            <a class="ax-pager-link" href="rest-api.html">
+              <span class="ax-pager-dir">مقاله‌ی قبلی</span>
+              <span class="ax-pager-title">REST API چیست؟</span>
+            </a>
+            <a class="ax-pager-link ax-pager-link--next" href="graphql.html">
+              <span class="ax-pager-dir">مقاله‌ی بعدی</span>
+              <span class="ax-pager-title">GraphQL چیست؟</span>
+            </a>
+          </nav>
+
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۵ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه و اهداف یادگیری</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">SOAP چیست؟ و تاریخچه</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">ساختار پاکت SOAP</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">WSDL، XSD و قرارداد سفت</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">SOAP over HTTP و مسیریابی</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">نمونه‌ی Request و Response کامل</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">SOAP Fault و مدیریت خطا</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">WS-* و WS-Security</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Contract-first در برابر Contract-last</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">امنیت</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">کارایی و مقیاس‌پذیری</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">تراکنش‌ها و یکپارچگی سازمانی</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">پیاده‌سازی با Java</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">پیاده‌سازی با C#</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">ساختار پروژه</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">نمونه‌های واقعی</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مقایسه SOAP در برابر REST</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">اشتباهات رایج و Testing</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">سؤالات مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s24" class="btn-action-block" style="text-align:center;">
+              <span>پاسخ سریع FAQ ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه و اهداف یادگیری</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">SOAP چیست؟ و تاریخچه</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">ساختار پاکت SOAP</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">WSDL، XSD و قرارداد سفت</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">SOAP over HTTP و مسیریابی</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">نمونه‌ی Request و Response کامل</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">SOAP Fault و مدیریت خطا</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">WS-* و WS-Security</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Contract-first در برابر Contract-last</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">امنیت</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">کارایی و مقیاس‌پذیری</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">تراکنش‌ها و یکپارچگی سازمانی</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">پیاده‌سازی با Java</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">پیاده‌سازی با C#</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">ساختار پروژه</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">نمونه‌های واقعی</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">چه زمانی استفاده کنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">چه زمانی استفاده نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مقایسه SOAP در برابر REST</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">اشتباهات رایج و Testing</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">سؤالات مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

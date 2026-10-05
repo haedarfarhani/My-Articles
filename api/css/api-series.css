@@ -599,6 +599,10 @@
 .ax-check.is-on { background: var(--color-primary-soft); border-color: var(--color-primary); color: var(--color-primary); font-weight: 700; }
 .ax-check:focus-within { outline: 2px solid var(--color-primary); outline-offset: 1px; }
 
+/* Persian / RTL label variant — the base .ax-check is LTR by design
+   (it hosts Latin field names in the GraphQL demo). */
+.ax-check--rtl { direction: rtl; justify-content: flex-start; }
+
 /* Log stream for WebSocket / SSE / MQTT demos */
 .ax-log {
   direction: ltr;

@@ -87,13 +87,13 @@
       safe: false, idempotent: true, body: true,
       desc: 'جایگزینی کامل منبع. تکرارش همان وضعیت نهایی را می‌سازد.',
       res: '200 OK',
-      payload: ['id', 42], ['name', 'Ali Rezaei'], ['email', 'ali@example.com']
+      payload: [['id', 42], ['name', 'Ali Rezaei'], ['email', 'ali@example.com']]
     },
     PATCH: {
       safe: false, idempotent: true, body: true,
       desc: 'تغییر جزئی. فقط فیلدهای ارسالی عوض می‌شوند.',
       res: '200 OK',
-      payload: ['name', 'Ali R.']
+      payload: [['name', 'Ali R.']]
     },
     DELETE: {
       safe: false, idempotent: true, body: false,
@@ -366,6 +366,13 @@
     'alerts/+/critical':    { qos: 2, sub: 'oncall' }
   };
 
+  const MQTT_SAMPLE = {
+    'sensors/temperature': '{"t":23.4,"unit":"C"}',
+    'sensors/humidity':    '{"rh":48,"unit":"%"}',
+    'devices/+/status':    '{"id":"sensor-7","online":true}',
+    'alerts/+/critical':   '{"id":"sensor-7","code":"E42","sev":"critical"}'
+  };
+
   function initMqtt(demo) {
     const log = $('[data-mqtt-log]', demo);
     const list = $('[data-mqtt-topics]', demo);
@@ -399,6 +406,32 @@
     pub.addEventListener('click', publish);
     const reset = $('[data-mqtt-reset]', demo);
     if (reset) reset.addEventListener('click', () => { clearLog(log); paint(''); });
+
+    /* Topic selection: clicking a row republishes from that topic. */
+    $$('[data-topic]', list).forEach((row) => {
+      const label = row.textContent;
+      row.setAttribute('tabindex', '0');
+      row.setAttribute('role', 'button');
+      row.setAttribute('aria-label', 'انتشار روی topic ' + row.dataset.topic);
+      const select = () => {
+        $$('[data-topic]', list).forEach((r) => r.setAttribute('aria-pressed', 'false'));
+        row.setAttribute('aria-pressed', 'true');
+        pub.dataset.topic = row.dataset.topic;
+        const def = MQTT_TOPICS[row.dataset.topic];
+        if (def && payload && !payload.dataset.touched) {
+          payload.value = MQTT_SAMPLE[row.dataset.topic] || payload.value;
+        }
+        publish();
+      };
+      row.addEventListener('click', select);
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(); }
+      });
+      if (label) row.title = row.dataset.topic;
+    });
+    if (payload) {
+      payload.addEventListener('input', () => { payload.dataset.touched = '1'; });
+    }
 
     logLine(log, 'sys', 'یک topic را انتخاب و «انتشار» را بزنید.');
   }
@@ -465,7 +498,7 @@
           tech: 'REST',
           cat: 'سبک معماری',
           desc: 'پیش‌فرض پیشنهادی برای API عمومی: کش‌پذیر، ابزارمحور و مستندپذیر.',
-          href: 'rest.html'
+          href: 'rest-api.html'
         } },
         { cond: 'کلاینت هر بار فیلدهای متفاوتی می‌خواهد', result: {
           tech: 'GraphQL',
@@ -500,7 +533,7 @@
           tech: 'معماری رویدادمحور',
           cat: 'الگوی معماری',
           desc: 'تولیدکننده، پیام‌رسان و مصرف‌کننده؛ سازگاری نهایی به‌جای تراکنش توزیع‌شده.',
-          href: 'event-driven-apis.html'
+          href: 'event-driven-api.html'
         } }
       ]
     }

@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REST API چیست؟ آموزش کامل RESTful API | حیدر فرحانی</title>
+  <meta name="description" content="آموزش کامل REST API: شش محدودیت معماری Roy Fielding، طراحی منابع و URI، متدها و Status Code، Content Negotiation، صفحه‌بندی و فیلتر، HATEOAS، نسخه‌بندی، Idempotency، Rate Limiting و Caching — با پیاده‌سازی Spring Boot و ASP.NET Core.">
+  <meta name="keywords" content="REST API, RESTful API, Roy Fielding, Uniform Interface, Statelessness, HATEOAS, Content Negotiation, Resource Naming, HTTP Methods, Idempotency, Rate Limiting, ETag, Spring Boot, ASP.NET Core, آموزش REST">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="REST API چیست؟ آموزش کامل RESTful API">
+  <meta property="og:description" content="شش محدودیت معماری REST، طراحی منابع و URI، متدها، Status Code، صفحه‌بندی، HATEOAS، نسخه‌بندی و پیاده‌سازی کامل با Spring Boot و ASP.NET Core.">
+  <meta property="og:type" content="article">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/rest-api.html">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/rest-api.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="REST API">
+  <meta property="article:author" content="حیدر فرحانی">
+  <meta property="article:section" content="API و ارتباطات">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="REST API چیست؟ آموزش کامل RESTful API">
+  <meta name="twitter:description" content="محدودیت‌های معماری REST، طراحی منابع، متدها، صفحه‌بندی، HATEOAS و نسخه‌بندی — با پیاده‌سازی Java و C#.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/diagrams.js"></script>
+  <script defer src="../js/views.js"></script>
+  <script defer src="../api/js/api-demos.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
+  <link rel="stylesheet" href="../api/css/api-series.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "REST API چیست؟ آموزش کامل RESTful API",
+    "description": "شش محدودیت معماری REST، طراحی منابع و URI، متدها و Status Code، صفحه‌بندی، HATEOAS، نسخه‌بندی، Idempotency و پیاده‌سازی Spring Boot و ASP.NET Core.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/rest-api.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/rest-api.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "REST API, HATEOAS, Statelessness, Resource Naming, Idempotency",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "REST API", "item": "https://haedarfarhani.github.io/My-Articles/articles/rest-api.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">م</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="19.78" y1="4.22" x2="18.36" y2="5.64"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">API و ارتباطات</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">مرجع اصلی سری REST</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">REST API</span> چیست؟ آموزش کامل RESTful API
+          </h1>
+
+          <p class="hero-lead">
+            <code>REST</code> پرکاربردترین سبک API در جهان است — و پرسوءتفاهم‌ترین. در این
+            راهنما از <strong>شش محدودیت‌ی معماری</strong> که <code>Roy Fielding</code> در پایان‌نامه‌ی
+            ۲۰۰۰ تعریف کرد شروع می‌کنیم، به طراحی منابع و <code>URI</code>، صفحه‌بندی،
+            <code>HATEOAS</code>، نسخه‌بندی و <code>Caching</code> می‌رسیم و در پایان یک API کامل
+            با <code>Spring Boot</code> و <code>ASP.NET Core</code> می‌سازیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — API و ارتباطات</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#REST</span>
+            <span class="post-tag">#RESTful</span>
+            <span class="post-tag">#HTTP</span>
+            <span class="post-tag">#HATEOAS</span>
+            <span class="post-tag">#Spring_Boot</span>
+            <span class="post-tag">#ASP.NET</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه و اهداف یادگیری</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>REST چیست؟ و تاریخچه‌ی Fielding</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>شش محدودیت معماری</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>طراحی منابع و URI</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>متدهای HTTP و عملیات CRUD</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>جریان داده و نمونه‌ی Request/Response</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>Representations و Content Negotiation</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>صفحه‌بندی، فیلتر، مرتب‌سازی و جستجو</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>HATEOAS</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>نسخه‌بندی (Versioning)</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>Idempotency و مدیریت خطا</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>احراز هویت، امنیت و Rate Limiting</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>Caching و کارایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>پیاده‌سازی با Java و Spring Boot</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>پیاده‌سازی با C# و ASP.NET Core</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>ساختار پروژه و لایه‌بندی</span></a></li>
+              <li class="inline-toc-item"><a href="#s17" class="inline-toc-link"><span class="inline-toc-num">۱۷</span><span>نمونه‌های واقعی</span></a></li>
+              <li class="inline-toc-item"><a href="#s18" class="inline-toc-link"><span class="inline-toc-num">۱۸</span><span>مزایا</span></a></li>
+              <li class="inline-toc-item"><a href="#s19" class="inline-toc-link"><span class="inline-toc-num">۱۹</span><span>معایب</span></a></li>
+              <li class="inline-toc-item"><a href="#s20" class="inline-toc-link"><span class="inline-toc-num">۲۰</span><span>چه زمانی استفاده کنیم / نکنیم؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s21" class="inline-toc-link"><span class="inline-toc-num">۲۱</span><span>مقایسه با GraphQL، gRPC و SOAP</span></a></li>
+              <li class="inline-toc-item"><a href="#s22" class="inline-toc-link"><span class="inline-toc-num">۲۲</span><span>اشتباهات رایج و Testing</span></a></li>
+              <li class="inline-toc-item"><a href="#s23" class="inline-toc-link"><span class="inline-toc-num">۲۳</span><span>سؤالات مصاحبه</span></a></li>
+              <li class="inline-toc-item"><a href="#s24" class="inline-toc-link"><span class="inline-toc-num">۲۴</span><span>پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="inline-toc-item"><a href="#s25" class="inline-toc-link"><span class="inline-toc-num">۲۵</span><span>جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه و اهداف یادگیری</h2>
+
+<p>
+اگر در مصاحبه بپرسند «REST چیست؟»، اکثر مصاحبه‌شوندگان جواب می‌دهند: «API ای که با HTTP و JSON
+کار می‌کند». این جواب <strong>اشتباه</strong> است — و دقیقاً همان سوءتفاهمی است که این مقاله می‌خواهد
+از بین ببرد. بسیاری از «API های RESTful» ادعایی، در واقع REST نیستند.
+</p>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">اهداف یادگیری</span>
+<ol class="kl-check">
+<li>شش محدودیت معماری REST را بشناسید و بتوانید تشخیص دهید API شما REST هست یا نه</li>
+<li>منابع را به‌درستی نام‌گذاری و URI طراحی کنید</li><li>متد و Status Code درست را برای هر عملیات انتخاب کنید</li>
+<li>صفحه‌بندی، فیلتر و جستجو را استاندارد پیاده کنید</li>
+<li>نسخه‌بندی و سازگاری رو به عقب را مدیریت کنید</li>
+<li>یک API کامل با Spring Boot و ASP.NET Core بسازید</li>
+</ol>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">یک حقیقت مهم</span>
+<code>REST</code> مخفف <strong>Representational State Transfer</strong> است — یک <em>سبک معماری</em>،
+نه یک پروتکل و نه یک کتابخانه. نمی‌توانید «کتابخانه‌ی REST» نصب کنید. REST مجموعه‌ای از
+قواعد طراحی است که رعایتشان یا نکردنشان را خودتان تشخیص می‌دهید.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>REST چیست؟ و تاریخچه‌ی Fielding</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تعریف رسمی</span>
+<p>
+<strong>REST</strong> یک سبک معماری سیستم‌های توزیع‌شده است که <code>Roy Fielding</code> در
+<strong>پایان‌نامه‌ی دکترای ۲۰۰۰</strong> خود با عنوان
+«<em>Architectural Styles and the Design of Network-based Software Architectures</em>»
+مطرح کرد. REST نتیجه‌ی تحلیل معماری‌های موفق اینترنت (HTTP، URIs، HTML) بود و
+<strong>شش محدودیت</strong> را به‌عنوان تعریف ارائه داد.
+</p>
+<p>
+نکته‌ی ظریف: REST برای وب جهانی طراحی شد، نه برای API های داخلی سازمان. به همین دلیل
+رعایت کامل آن در ارتباط سرویس‌به‌سرویس، همیشه معنادار نیست — و این را در بخش مقایسه می‌بینید.
+</p>
+</div>
+
+<h3>تکامل از RPC تا REST</h3>
+
+<pre class="kl-code" data-lang="text"><code>دهه‌ی ۱۹۹۰ — RPC (Remote Procedure Call)
+  ایده: از راه دور، مثل تابع محلی فراخوانی کن
+  نمونه: XML-RPC
+  مشکل: عملیات را با endpoint یکی می‌گرفت
+         POST /getUser  ← متد در مسیر!
+
+دهه‌ی ۲۰۰۰ — SOAP
+  ایده: قرارداد سفت + پاکت XML + WS-*
+  مشکل: وزن زیاد، پیچیدگی، کاربرد سازمانی
+
+۲۰۰۰ — REST (Fielding)
+  ایده: منبع + HTTP + متد + نمایش (Representation)
+  نمونه: GET /api/users/42
+
+۲۰۱۵ — GraphQL
+  ایده: بگذار Client شکل پاسخ را تعیین کند
+  مشکل: پیچیدگی امنیت و کش
+
+امروز — ترکیب
+  REST برای API عمومی، gRPC برای داخلی،
+  GraphQL برای مصرف‌کننده‌ی متنوع، SSE/WS برای بلادرنگ</code></pre>
+
+<h3>چه چیزی REST را از بقیه متمایز می‌کند؟</h3>
+
+<table>
+<thead>
+<tr><th>ویژگی</th><th>REST</th><th>RPC</th><th>SOAP</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد اصلی</td><td><strong>منبع (Resource)</strong></td><td>عملیات (Operation)</td><td>سرویس (Service)</td></tr>
+<tr><td>نام‌گذاری</td><td>منابع با URI</td><td>متدها با نام فعل</td><td>Operations در WSDL</td></tr>
+<tr><td>عملیات</td><td>HTTP methods</td><td>معمولاً فقط POST</td><td>SOAP verbs</td></tr>
+<tr><td>قرارداد</td><td>توافقی + OpenAPI</td><td>توافقی</td><td>WSDL + XSD (سفت)</td></tr>
+<tr><td>کش</td><td>بخش ذاتی (Cacheability)</td><td>معمولاً کل بی‌اثر</td><td>پیچیده</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>شش محدودیت معماری</h2>
+
+<p>
+این شش مورد <strong>تعریف واقعی REST</strong> هستند. اگر یکی را عمداً و آگاهانه رعایت نکنید،
+دیگر کاملاً RESTful نیستید — که اشکالی ندارد، مهم این است که بدانید و بتوانید توضیح دهید.
+</p>
+
+<div class="ax-tablewrap">
+<table>
+<thead>
+<tr><th>#</th><th>محدودیت</th><th>چه می‌گوید</th><th>هزینه‌ی نقض</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td><strong>Client-Server</strong></td><td>مرز مشخص بین Client و Server؛ هرکدام مستقل تکامل می‌یابند</td><td>ترکیب منطق، امکان مستقل‌سازی از بین می‌رود</td></tr>
+<tr><td>۲</td><td><strong>Statelessness</strong></td><td>سرور هیچ وضعیت نشستی بین درخواست‌ها نگه نمی‌دارد؛ هر درخواست کامل است</td><td>مقیاس‌پذیری و بازیابی خرابی سخت می‌شود</td></tr>
+<tr><td>۳</td><td><strong>Cacheability</strong></td><td>هر پاسخ باید قابل کش باشد یا صریحاً غیرقابل کش بودنش را اعلام کند</td><td>بار بی‌مورد روی سرور و تأخیر غیرضروری</td></tr>
+<tr><td>۴</td><td><strong>Uniform Interface</strong></td><td>چهار جزء: شناسایی منابع، نمایش خودتوصیفی، خودتوضیحی درخواست، تعامل مبتنی بر HATEOAS</td><td>قرارداد پنهان، Client به جزئیات داخلی وابسته می‌شود</td></tr>
+<tr><td>۵</td><td><strong>Layered System</strong></td><td>Client نمی‌داند آیا مستقیم به سرور وصل است یا از لایه‌هایی (proxy, gateway) رد شده</td><td>امکان قرار دادن CDN و Gateway از بین می‌رود</td></tr>
+<tr><td>۶</td><td><strong>Code on Demand</strong> <span class="ax-badge ax-badge--pattern">اختیاری</span></td><td>سرور می‌تواند کد قابل اجرا (مثل اسکریپت) برای Client بفرستد</td><td>محدود — فقط افزودنی است</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">نکته‌ی مصاحبه‌ای</span>
+<p>
+در مصاحبه اگر پرسیدند «چند محدودیت دارد؟» بگویید <strong>شش تا، که ششمی اختیاری است</strong>.
+و اگر پرسیدند «کدام مهم‌تر است؟» — پاسخ درست این است که هیچ‌کدام تنها نیست؛ ولی
+<strong>Uniform Interface</strong> هسته‌ی تمایز REST است، چون چهار جزءش دقیقاً همان چیزی است
+که «منبع + متد + نمایش» را می‌سازد.
+</p>
+</div>
+
+<h3>جزء چهارم: Uniform Interface از نزدیک</h3>
+
+<pre class="kl-code" data-lang="text"><code>۱) شناسایی منابع در URI
+   هر منبع شناسه‌ی یکتای خودش را دارد
+   GET /api/orders/ORD-1042
+
+۲) نمایشِ خودتوصیفی (Self-descriptive)
+   هر پاسخ نوع خودش را می‌گوید
+   Content-Type: application/json
+   و هر درخواست قواعدش را مشخص می‌کند
+   Accept: application/json
+
+۳) خودتوضیحی بودن درخواست
+   متد + هدر + بدنه = تمام معنا
+   GET /api/orders?status=SHIPPED
+   (سرور نیازی به دانستن تاریخچه‌ی Client ندارد)
+
+۴) HATEOAS
+   پاسخ لینک‌های مرتبط را برمی‌گرداند
+   { \"id\": 1042, \"_links\": { \"cancel\": \"/api/orders/1042/cancel\" } }</code></pre>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>طراحی منابع و URI</h2>
+
+<p>
+طراحی REST با <strong>شناسایی منابع</strong> شروع می‌شود، نه با نوشتن متد. اول بپرسید
+«چه چیزی را می‌خواهید نشان دهید؟» و بعد «با آن چه می‌خواهید بکنید؟».
+</p>
+
+<table>
+<thead>
+<tr><th>قاعده</th><th>درست</th><th>غلط</th></tr>
+</thead>
+<tbody>
+<tr><td>اسم فعل نگذارید</td><td dir="ltr"><code>/api/orders</code></td><td dir="ltr"><code>/api/getOrders</code></td></tr>
+<tr><td>جمع باشید</td><td dir="ltr"><code>/api/users/42/orders</code></td><td dir="ltr"><code>/api/getUserOrder?id=42</code></td></tr>
+<tr><td>مرتب‌سازی سلسله‌مراتبی</td><td dir="ltr"><code>/api/orders/1042/items/3</code></td><td dir="ltr"><code>/api/orderItem?o=1042&amp;i=3</code></td></tr>
+<tr><td>حرف کوچک + جداکننده‌ی <code>-</code></td><td dir="ltr"><code>/api/order-items</code></td><td dir="ltr"><code>/api/OrderItems</code></td></tr>
+<tr><td>حالت را از URI حذف کنید</td><td dir="ltr"><code>DELETE /api/users/42</code></td><td dir="ltr"><code>/api/users/42/delete</code></td></tr>
+<tr><td>منابع دارایی (Collection)</td><td dir="ltr"><code>/api/users</code></td><td dir="ltr"><code>/api/userList</code></td></tr>
+</tbody>
+</table>
+
+<h3>نمونه‌ی یک مدل منابع</h3>
+
+<pre class="kl-code" data-lang="text"><code>/api/users                     GET لیست کاربران   POST ساخت کاربر
+/api/users/42                  GET یک کاربر       PUT جایگزینی    PATCH تغییر   DELETE حذف
+/api/users/42/orders           سفارش‌های یک کاربر
+/api/orders/1042               یک سفارش
+/api/orders/1042/items         اقلام سفارش
+/api/orders/1042/items/3       یک قلم خاص
+
+عملیات غیرCRUD (sub-resource یا action):
+  POST /api/orders/1042/cancel     لغو سفارش
+  POST /api/payments               پرداخت (منبع جدید)
+
+چرا POST به‌جای GET برای action؟ چون action وضعیت را عوض می‌کند
+و GET نباید تغییر وضعیت بدهد.</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">دو اشتباه مرگبار</span>
+<div class="kl-check">
+<ul>
+<li><strong>URI حساس به حروف بزرگ:</strong> <code dir="ltr">/API/Users</code> و <code dir="ltr">/api/users</code> دو چیز متفاوت‌اند. یکی را انتخاب و رعایت کنید.</li>
+<li><strong>حالت نهفته در URI:</strong> <code dir="ltr">/users/42/activate</code> مجاز نیست مگر اینکه activate یک sub-resource واقعی باشد؛ وگرنه متد <code dir="ltr">PATCH</code> با <code>{"active":true}</code> درست‌تر است.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>متدهای HTTP و عملیات CRUD</h2>
+
+<p>
+روی هر منبع، این پنج متد معنای مشخصی دارند. نکته‌ی کلیدی: <strong>روی یک منبع واحد</strong>، نه در سطح کل API.
+</p>
+
+<table>
+<thead>
+<tr><th>متد</th><th>روی Collection</th><th>روی منبع واحد</th><th>بدنه</th><th>کد موفق</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><strong>GET</strong></td><td>لیست</td><td>جزئیات</td><td>❌</td><td dir="ltr">200</td></tr>
+<tr><td dir="ltr"><strong>POST</strong></td><td>ایجاد + ۲۰۱</td><td>معمولاً غیرمجاز</td><td>✅</td><td dir="ltr">201 + Location</td></tr>
+<tr><td dir="ltr"><strong>PUT</strong></td><td>معمولاً غیرمجاز</td><td>جایگزینی کامل</td><td>✅</td><td dir="ltr">200 یا 204</td></tr>
+<tr><td dir="ltr"><strong>PATCH</strong></td><td>معمولاً غیرمجاز</td><td>تغییر جزئی</td><td>✅</td><td dir="ltr">200</td></tr>
+<tr><td dir="ltr"><strong>DELETE</strong></td><td>معمولاً غیرمجاز</td><td>حذف</td><td>❌</td><td dir="ltr">204</td></tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr><th>متد</th><th>Safe</th><th>Idempotent</th><th>کش</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr">GET</td><td>✅</td><td>✅</td><td>✅ قابل کش</td></tr>
+<tr><td dir="ltr">POST</td><td>❌</td><td>❌</td><td>❌ هرگز</td></tr>
+<tr><td dir="ltr">PUT</td><td>❌</td><td>✅</td><td>❌ (ولی تکرار امن)</td></tr>
+<tr><td dir="ltr">PATCH</td><td>❌</td><td>⚠️ بستگی دارد</td><td>❌</td></tr>
+<tr><td dir="ltr">DELETE</td><td>❌</td><td>✅</td><td>❌</td></tr>
+</tbody>
+</table>
+
+<h3>PUT در برابر PATCH</h3>
+
+<div class="ax-versus">
+  <div class="ax-versus-side">
+    <h4>PUT — جایگزینی کامل</h4>
+    <ul>
+      <li>بدنه باید <strong>تمام فیلدهای لازم</strong> را داشته باشد</li>
+      <li>فیلدهای غایب، پیش‌فرض یا حذف می‌شوند</li>
+      <li>تکرار بی‌خطر است: همیشه به همان وضعیت می‌رسید</li>
+      <li>مثال: <code dir="ltr">PUT /users/42</code></li>
+    </ul>
+  </div>
+  <div class="ax-versus-mid">VS</div>
+  <div class="ax-versus-side">
+    <h4>PATCH — تغییر جزئی</h4>
+    <ul>
+      <li>فقط <strong>فیلدهای ارسالی</strong> عوض می‌شوند</li>
+      <li>بقیه‌ی فیلدها دست‌نخورده می‌مانند</li>
+      <li>تکرار بی‌خطر فقط اگر عملیات جایگزینی باشد</li>
+      <li>مثال: <code dir="ltr">PATCH /users/42</code></li>
+    </ul>
+  </div>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">PUT یا PATCH؟</span>
+<p>
+اگر می‌توانید کل منبع را بدون اطلاع قبلی بازنویسی کنید، <code>PUT</code>. اگر کلاینت فقط
+بخشی را دارد (مثلاً فقط فیلد «نام خوانوادگی» عوض شده)، <code>PATCH</code>. اغلب سرویس‌ها هر دو را
+پشتیبانی می‌کنند و <code>PATCH</code> برای اپ‌های موبایل که فهرست فیلدها محدود است، راحت‌تر است.
+</p>
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>جریان داده و نمونه‌ی Request/Response</h2>
+
+<figure class="kl-fig">
+  <svg viewBox="0 0 780 300" role="img" aria-labelledby="fig-rest-t fig-rest-d" preserveAspectRatio="xMidYMid meet">
+    <title id="fig-rest-t">جریان کامل یک درخواست REST</title>
+    <desc id="fig-rest-d">Client درخواست GET را به Load Balancer می‌فرستد، به Controller، سپس Service، Repository و Database می‌رسد و پاسخ JSON با 200 OK برمی‌گردد.</desc>
+
+    <rect x="16" y="120" width="130" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
+    <text x="81" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">Client</text>
+    <text x="81" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">GET /users/42</text>
+
+    <rect x="186" y="120" width="118" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
+    <text x="245" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">Gateway</text>
+    <text x="245" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">auth + limit</text>
+
+    <rect x="344" y="120" width="118" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
+    <text x="403" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">Controller</text>
+    <text x="403" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">HTTP</text>
+
+    <rect x="502" y="120" width="118" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
+    <text x="561" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">Service</text>
+    <text x="561" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">domain</text>
+
+    <rect x="660" y="120" width="104" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
+    <text x="712" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">DB</text>
+    <text x="712" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">Repository</text>
+
+    <defs>
+      <marker id="arr-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--color-primary)"/>
+      </marker>
+    </defs>
+
+    <g stroke="var(--color-primary)" stroke-width="2.4" fill="none" class="s-arr">
+      <line x1="146" y1="135" x2="182" y2="135" marker-end="url(#arr-r)"/>
+      <line x1="304" y1="135" x2="340" y2="135" marker-end="url(#arr-r)"/>
+      <line x1="462" y1="135" x2="498" y2="135" marker-end="url(#arr-r)"/>
+      <line x1="620" y1="135" x2="656" y2="135" marker-end="url(#arr-r)"/>
+    </g>
+    <g class="s-flow" stroke="var(--color-secondary)" stroke-width="2.4" fill="none">
+      <path d="M712,184 L712,236 L81,236 L81,186" marker-end="url(#arr-r)"/>
+    </g>
+    <text x="396" y="256" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-secondary)">پاسخ JSON: HTTP/1.1 200 OK</text>
+    <text x="396" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-primary)">درخواست: اعتبارسنجی → احراز هویت → منطق → داده</text>
+  </svg>
+  <figcaption>مسیر یک درخواست GET از Client تا دیتابیس و برگشت — هر جعبه یک مرز مسئولیت است.</figcaption>
+</figure>
+
+<h3>یک چرخه‌ی کامل</h3><pre class="kl-code"data-lang="text"><code>① Client          GET /api/users/42
+                  Accept: application/json
+                  Authorization: Bearer ...
+
+② Gateway         احراز هویت + Rate Limit + مسیریابی
+
+③ Controller      پارس مسیر و هدر → ساخت DTO
+
+④ Service         منطق دامنه + قواعد تجاری
+
+⑤ Repository      SELECT ... WHERE id = 42
+
+⑥ Database        رکورد یا عدم وجود
+
+⑦ نگاشت          Entity → DTO (بدون لو رفتن جدول‌ها)
+
+⑧ Serialization   تبدیل DTO به JSON
+
+⑨ Response        200 OK + ETag + Cache-Control</code></pre>
+
+<div class="ax-demo" data-demo="rest">
+  <div class="ax-demo-head">
+    <span class="ax-demo-head-icon" aria-hidden="true">🧪</span>
+    <span class="ax-demo-title">دموی تعاملی: متد و Request</span>
+    <span class="ax-badge ax-badge--style">زنده</span>
+  </div>
+  <div class="ax-demo-body">
+    <div class="ax-demo-controls">
+      <button class="ax-btn" type="button" data-method="GET" aria-pressed="true">GET</button>
+      <button class="ax-btn" type="button" data-method="POST" aria-pressed="false">POST</button>
+      <button class="ax-btn" type="button" data-method="PUT" aria-pressed="false">PUT</button>
+      <button class="ax-btn" type="button" data-method="PATCH" aria-pressed="false">PATCH</button>
+      <button class="ax-btn" type="button" data-method="DELETE" aria-pressed="false">DELETE</button>
+      <label class="ax-field">
+        <span>مسیر</span>
+        <input type="text" dir="ltr" value="/api/users" data-rest-path aria-label="مسیر درخواست">
+      </label>
+    </div>
+    <p class="ax-demo-caption" data-rest-caption></p>
+    <pre class="ax-http-pre"><code dir="ltr" data-rest-out></code></pre>
+    <p class="ax-demo-hint">متد را عوض کنید: بدنه، هدرها، ایدمپوتنت بودن و Status Code پاسخ تغییر می‌کنند.</p>
+  </div>
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>Representations و Content Negotiation</h2>
+
+<p>
+نکته‌ی ظریف REST این است: <strong>منبع و نمایش آن، دو چیز جدا هستند</strong>. شما URL را
+<span dir="ltr">/api/users/42</span> می‌گیرید، ولی می‌توانید JSON، XML یا حتی CSV بگیرید.
+همان منبع، نمایش‌های متعدد دارد.
+</p>
+
+<table>
+<thead>
+<tr><th>نمایش</th><th>هدر</th><th>کاربرد</th></tr>
+</thead>
+<tbody>
+<tr><td>JSON</td><td dir="ltr"><code>application/json</code></td><td>پیش‌فرض اکثر API ها</td></tr>
+<tr><td>XML</td><td dir="ltr"><code>application/xml</code></td><td>یکپارچگی سازمانی، SOAP</td></tr>
+<tr><td>CSV</td><td dir="ltr"><code>text/csv</code></td><td>گزارش‌گیری و اکسل</td></tr>
+<tr><td>HTML</td><td dir="ltr"><code>text/html</code></td><td>HATEOAS و نمایش انسانی</td></tr>
+<tr><td>HTML+JSON</td><td dir="ltr"><code>application/vnd.myapp.v2+json</code></td><td>نسخه‌بندی با هدر</td></tr>
+</tbody>
+</table>
+
+<pre class="kl-code" data-lang="http"><code>── درخواست: چه قالبی را می‌پذیرم؟
+GET /api/users/42 HTTP/1.1
+Accept: application/json;q=0.9, application/xml;q=0.8
+Accept-Language: fa-IR, fa;q=0.9
+
+── پاسخ: چه قالبی را انتخاب کردم
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Vary: Accept, Accept-Language
+Vary: Accept-Encoding</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">هدر Vary را فراموش نکنید</span>
+بدون <code>Vary: Accept</code>، یک کش می‌تواند پاسخ JSON را به درخواست XML برگرداند. این
+یکی از رایج‌ترین خطاهای کش در سیستم‌های چندزبانه و چندقالبی است.
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">واقعیت عملی</span>
+اکثر تیم‌ها فقط JSON تولید می‌کنند و این کاملاً قابل قبول است — به شرط آنکه صریحاً
+مستند کنند: «فقط JSON». سکوت درباره‌ی قالب‌ها، Client را وادار به حدس می‌کند.
+</div>
+</section>
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>صفحه‌بندی، فیلتر، مرتب‌سازی و جستجو</h2>
+
+<p>
+هر فهرستی در مرحله‌ای از رشد، بدون صفحه‌بندی از کار می‌افتد. قاعده: <strong>هیچ‌وقت یک endpoint
+فهرست بدون سقف تعداد نسازید</strong> — یک <code dir="ltr">?size=999999</code> می‌تواند کل
+دیتابیس را بیرون بکشد و سرور را زمین بزند.
+</p>
+
+<table>
+<thead>
+<tr><th>نیاز</th><th>پارامتر</th><th>مثال</th></tr>
+</thead>
+<tbody>
+<tr><td>صفحه‌بندی</td><td dir="ltr"><code>page</code> + <code>size</code></td><td dir="ltr"><code>?page=0&amp;size=20</code></td></tr>
+<tr><td>فیلتر</td><td dir="ltr"><code>نام‌فیلد=مقدار</code></td><td dir="ltr"><code>?status=SHIPPED</code></td></tr>
+<tr><td>مرتب‌سازی</td><td dir="ltr"><code>sort</code></td><td dir="ltr"><code>?sort=createdAt,desc</code></td></tr>
+<tr><td>جستجو</td><td dir="ltr"><code>q</code> یا <code>search</code></td><td dir="ltr"><code>?q=ali</code></td></tr>
+<tr><td>بازه‌ی زمانی</td><td dir="ltr"><code>from</code> + <code>to</code></td><td dir="ltr"><code>?from=2026-01-01&amp;to=2026-03-31</code></td></tr>
+<tr><td>انتخاب فیلد</td><td dir="ltr"><code>fields</code></td><td dir="ltr"><code>?fields=id,name</code></td></tr>
+</tbody>
+</table>
+
+<h3>Offset یا Cursor؟</h3>
+
+<div class="ax-versus">
+  <div class="ax-versus-side">
+    <h4>Offset-based</h4>
+    <ul>
+      <li><code dir="ltr">?page=3&amp;size=20</code></li>
+      <li>ساده و قابل فهم</li>
+      <li>در صفحات عمیق <strong>کند</strong> می‌شود (database باید ۶۰ رکورد را دور بریزد)</li>
+      <li><strong>ناسازگار</strong> با داده‌ی در حال تغییر: رکورد جدید، آیتم را جابه‌جا می‌کند</li>
+    </ul>
+  </div>
+  <div class="ax-versus-mid">VS</div>
+  <div class="ax-versus-side">
+    <h4>Cursor-based</h4>
+    <ul>
+      <li><code dir="ltr">?after=eyJpZCI6MTA0Mn0</code></li>
+      <li>در عمق زیاد هم <strong>سریع</strong> (ایندکس مستقیم)</li>
+      <li><strong>پایدار</strong> در برابر درج/حذف هم‌زمان</li>
+      <li>پیچیده‌تر؛ پیمایش تصادفی ندارد</li>
+    </ul>
+  </div>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>Offset:  SELECT * FROM orders ORDER BY id LIMIT 20 OFFSET 40
+         ► ایندکس را از ۰ تا ۴۰ طی می‌کند (در عمق زیاد گران)Cursor:  SELECT * FROM orders WHERE id &gt; 1042 ORDER BY id LIMIT 20
+         ► مستقیم از ۱۰۴۲ شروع می‌کند (همیشه ارزان)
+
+قاعده‌ی انتخاب:
+  لیست‌های کوتاه و صفحه‌بندی شماره‌دار  ►  offset
+  فیدهای بی‌انتها و لیست‌های بلند      ►  cursor</code></pre>
+
+<pre class="kl-code" data-lang="json"><code>{
+  "items": [
+    { "id": 1043, "status": "SHIPPED", "total": 1450000 },
+    { "id": 1044, "status": "PENDING", "total": 980000 }
+  ],
+  "page":     0,
+  "size":     20,
+  "totalElements": 1284,
+  "totalPages":    65,
+  "first": true,
+  "last":  false,
+  "sort": "createdAt,desc"
+}</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">تله‌ی <code>totalElements</code></span>
+شمارش کل (<code dir="ltr">COUNT(*)</code>) روی جدول‌های بزرگ بسیار گران است. در لیست‌های
+پرحجم، یا از تخمین استفاده کنید، یا شمارش را پشت صفحه‌ی بعدی و پرکاربرد قرار دهید، یا
+آن را در لیست‌های بی‌انتها به‌کل حذف کنید.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>HATEOAS</h2>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">تعریف</span>
+<strong>HATEOAS</strong> مخفف <em>Hypermedia As The Engine Of Application State</em> است: پاسخ
+علاوه بر داده، <strong>لینک‌های اقدام بعدی ممکن</strong> را هم برمی‌گرداند تا Client رفتارش را از
+خودِ پاسخ بیاموزد، نه از دانش ازپیش‌کدشده.
+</div>
+
+<pre class="kl-code" data-lang="json"><code>{
+  "id": 1042,
+  "status": "PENDING",
+  "total": 1450000,
+  "_links": {
+    "self":    { "href": "/api/orders/1042" },
+    "cancel":  { "href": "/api/orders/1042/cancel", "method": "POST" },
+    "payment": { "href": "/api/orders/1042/payment", "method": "POST" },
+    "items":   { "href": "/api/orders/1042/items" }
+  }
+}</code></pre>
+
+<p>
+وقتی سفارش لغو می‌شود، لینک <code>cancel</code> دیگر برنمی‌گردد. Client مجبور نیست بداند
+«سفارشِ لغوشده قابل لغو نیست» — خودِ داده به او می‌گوید چه می‌تواند بکند.
+</p>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چرا در عمل کم رعایت می‌شود؟</span>
+<p>
+سه هزینه دارد: پیچیدگی سمت سرور، پیچیدگی تست (پاسخ‌ها به وابستگی حساس‌اند)، و نیاز به
+قرارداد لینک‌ها. به همین دلیل اکثر تیم‌ها به <strong>قرارداد ثابت + OpenAPI</strong> بسنده می‌کنند
+و HATEOAS را رها می‌کنند. این انتخاب آگاهانه‌ای است و اشکالی ندارد — فقط به یاد داشته
+باشید که در آن صورت، API شما <em>کامل</em> RESTful نیست.
+</p>
+<p>
+فرمت‌های رایج لینک: <code>HAL</code>، <code>JSON:API</code> و <code>Siren</code>.
+</p>
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>نسخه‌بندی (Versioning)</h2>
+
+<p>
+نسخه‌بندی فقط برای <strong>تغییر شکننده</strong> لازم است. اگر فیلدی اضافه می‌کنید یا endpoint
+تازه می‌سازید، نسخه‌ی جدید لازم نیست.
+</p>
+
+<div class="ax-tablewrap">
+<table>
+<thead>
+<tr><th>روش</th><th>مثال</th><th>موافق</th><th>مخالف</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>URI</strong></td><td dir="ltr"><code>/api/v1/users</code></td><td>ساده، قابل تشخیص، کش‌پذیر</td><td>مسیر را شلوغ می‌کند؛ از نظر REST خالص اشکال دارد (منبع باید پایدار بماند)</td></tr>
+<tr><td><strong>هدر</strong></td><td dir="ltr"><code>Accept: application/vnd.myapp.v1+json</code></td><td>URI تمیز می‌ماند</td><td>تست و کش سخت‌تر؛ در مرورگر مستقیم قابل تست نیست</td></tr>
+<tr><td><strong>Query</strong></td><td dir="ltr"><code>?version=1</code></td><td>خیلی ساده</td><td>در همه‌ی درخواست‌ها باید تکرار شود؛ فراموش‌شدنی است</td></tr>
+<tr><td><strong>Media Type</strong></td><td dir="ltr"><code>application/vnd.myapp.v1+json</code></td><td>از Content Negotiation واقعی استفاده می‌کند</td><td>پیچیده‌ترین پیاده‌سازی</td></tr>
+</tbody>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>سازگاری رو به عقب (Backward Compatible) — مجاز بدون نسخه‌ی جدید:
+  + افزودن فیلد جدید (اختیاری)
+  + افزودن endpoint جدید
+  + افزودن مقدار مجاز جدید به enum (با احتیاط)
+  + افزودن پارامتر query اختیاری
+
+تغییر شکننده (Breaking) — نیازمند نسخه‌ی جدید:
+  − حذف فیلد
+  − تغییر نوع فیلد (string → number)
+  − تغییر معنای فیلد (amount به ریال، نه تومان!)
+  − تغییر Status Code پاسخ
+  − تغییر الزامی بودن فیلد
+  − تغییر نام یا مسیر منبع</code></pre>
+
+<h3>استراتژی خروج (Sunset)</h3>
+
+<ol class="kl-check">
+<li><strong>اعلام</strong> — هدر <code dir="ltr">Sunset: Sat, 01 Nov 2027 00:00:00 GMT</code> و مستندات</li>
+<li><strong>هشدار</strong> — هدر <code dir="ltr">Deprecation: true</code> روی نسخه‌ی قدیمی</li>
+<li><strong>دوره‌ی همپوشانی</strong> — هر دو نسخه هم‌زمان فعال باشند (معمولاً ۶ تا ۱۲ ماه)</li>
+<li><strong>نظارت</strong> — ترافیک نسخه‌ی قدیمی را اندازه بگیرید تا بدانید کی واقعاً قطع کنید</li>
+<li><strong>قطع</strong> — <code dir="ltr">410 Gone</code> + پیام راهنمای مهاجرت</li>
+</ol>
+
+<pre class="kl-code" data-lang="http"><code>HTTP/1.1 200 OK
+Deprecation: true
+Sunset: Sat, 01 Nov 2027 00:00:00 GMT
+Link: &lt;https://api.example.com/v2/users&gt;; rel="successor-version"</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">روش پیشنهادی</span>
+<strong>URI versioning</strong> برای اکثر تیم‌ها عملی‌ترین انتخاب است: واضح، در لاگ‌ها قابل ردیابی،
+و در Gateway به‌سادگی مسیریابی می‌شود. پیچیدگی هدر را فقط وقتی بپذیرید که واقعاً نیاز دارید
+URI را تمیز نگه دارید.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>Idempotency و مدیریت خطا</h2>
+
+<h3>ایدمپوتنت بودن در عمل</h3>
+
+<p>
+وقتی شبکه قطع می‌شود، Client نمی‌داند درخواست به سرور رسیده یا نه. تنها راه امن،
+<strong>تلاش مجدد</strong> است — و تنها راه امنِ تلاش مجدد، ایدمپوتنت بودن است.
+</p>
+
+<pre class="kl-code" data-lang="http"><code>POST /api/payments HTTP/1.1
+Idempotency-Key: 8f2a1c9e-4d77-4b02-9c31-0e5f6a7b2c41
+Content-Type: application/json
+
+{ "orderId": 9001, "amount": 1450000 }
+
+── بار اول ──
+HTTP/1.1 201 Created
+{ "paymentId": "pay_99128", "status": "CAPTURED" }
+
+── تکرار همان درخواست با همان کلید ──
+HTTP/1.1 200 OK
+Idempotency-Replayed: true
+{ "paymentId": "pay_99128", "status": "CAPTURED" }
+         ▲ همان رکورد، نه رکورد دوم</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">سه قاعده‌ی پیاده‌سازی</span>
+<ol class="kl-check">
+<li>کلید را <strong>همراه با درخواست اصلی</strong> در یک تراکنش ذخیره کنید، نه بعد از پاسخ.</li>
+<li>اگر همان کلید با <strong>بدنه‌ی متفاوت</strong> آمد، خطا بدهید (<code dir="ltr">409</code>) — این
+یک باگ Client است و باید دیده شود.</li>
+<li>کلید را برای مدت مشخص (مثلاً ۲۴ ساعت) نگه دارید و بعد پاک‌سازی کنید.</li>
+</ol>
+</div>
+
+<h3>بدنه‌ی خطای استاندارد</h3>
+
+<pre class="kl-code" data-lang="json"><code>{
+  "status": 409,
+  "error": "Conflict",
+  "message": "شماره‌ی تلفن قبلاً ثبت شده است",
+  "path": "/api/users",
+  "timestamp": "2026-10-04T09:12:33Z",
+  "traceId": "8f14e45f-ea2c-4d0b-9a11-0b3c7d2e5a91",
+  "errors": [
+    { "field": "phone", "code": "DUPLICATE", "message": "این شماره قبلاً ثبت شده" }
+  ]
+}</code></pre>
+
+<table>
+<thead>
+<tr><th>وضعیت</th><th>کد</th><th>چه موقع</th></tr>
+</thead>
+<tbody>
+<tr><td>ورودی نامعتبر</td><td dir="ltr">400 / 422</td><td>اعتبارسنجی شکست خورد</td></tr>
+<tr><td>توکن نامعتبر</td><td dir="ltr">401</td><td>هویت معلوم نیست</td></tr>
+<tr><td>مجوز ناکافی</td><td dir="ltr">403</td><td>مالکیت ندارد</td></tr>
+<tr><td>منبع ناموجود</td><td dir="ltr">404</td><td>شناسه وجود ندارد</td></tr>
+<tr><td>تضاد</td><td dir="ltr">409</td><td>وضعیت فعلی اجازه نمی‌دهد</td></tr>
+<tr><td>پیش‌شرط شکسته</td><td dir="ltr">412</td><td><code>If-Match</code> ناموفق</td></tr>
+<tr><td>بیش از حد مجاز</td><td dir="ltr">429</td><td>Rate limit</td></tr>
+<tr><td>خطای سرور</td><td dir="ltr">500</td><td>خطای غیرمنتظره</td></tr>
+</tbody>
+</table>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">کنترل هم‌زمانی با ETag</span>
+برای جلوگیری از اینکه دو کاربر هم‌زمان یک رکورد را بازنویسی کنند، از
+<strong> optimistic locking </strong> استفاده کنید: سرور <code>ETag</code> بدهد، Client هنگام
+به‌روزرسانی آن را در <code>If-Match</code> برگرداند، و اگر منبع عوض شده باشد سرور
+<code dir="ltr">412 Precondition Failed</code> بدهد.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>احراز هویت، امنیت و Rate Limiting</h2>
+
+<h3>چهار لایه‌ی دفاع</h3>
+
+<table>
+<thead>
+<tr><th>لایه</th><th>ابزار</th><th>چه می‌کند</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>انتقال</strong></td><td>HTTPS + HSTS</td><td>رمزنگاری ترافیک؛ بدون آن هر هدری قابل خواندن است</td></tr>
+<tr><td><strong>هویت</strong></td><td>OAuth 2.0 + JWT</td><td>می‌گوید کی هستید</td></tr>
+<tr><td><strong>مجوز</strong></td><td>RBAC / ownership check</td><td>می‌گوید چه اجازه‌ای دارید — <strong>روی هر منبع</strong></td></tr>
+<tr><td><strong>نرخ</strong></td><td>Rate Limiting + quota</td><td>جلوی سوءاستفاده و ترافیک غیرعادی</td></tr>
+</tbody>
+</table>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.api.security;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Set;
+
+/**
+ * کنترل مالکیت: کاربر فقط به منابع خودش دسترسی دارد.
+ * قاعده‌ی طلایی: بررسی مالکیت، همیشه سمت سرور.
+ */
+@Component
+public class OwnershipFilter extends OncePerRequestFilter {
+
+    private static final Set&lt;String&gt; PROTECTED = Set.of("/api/users/");
+
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest req,
+                                    @NonNull HttpServletResponse res,
+                                    @NonNull FilterChain chain) throws ServletException, IOException {
+
+        String path = req.getRequestURI();
+        boolean isProtected = PROTECTED.stream().anyMatch(path::startsWith);
+
+        if (isProtected) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || auth.isAuthenticated() == false) {
+                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                return;
+            }
+            String currentUserId = auth.getName();
+            String pathUserId = extractUserId(path);   // /api/users/{id}/...
+
+            // مدیر می‌تواند همه را ببیند؛ بقیه فقط خودشان را
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch(a -&gt; "ROLE_ADMIN".equals(a.getAuthority()));
+
+            if (pathUserId != null && !isAdmin && !pathUserId.equals(currentUserId)) {
+                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+                return;
+            }
+        }
+        chain.doFilter(req, res);
+    }
+
+    private String extractUserId(String path) {
+        String[] parts = path.split("/");
+        // /api/users/42/orders → 42
+        return parts.length &gt; 3 && "users".equals(parts[2]) ? parts[3] : null;
+    }
+}
+</code></pre>
+
+<h3>Rate Limiting</h3>
+
+<table>
+<thead>
+<tr><th>الگوریتم</th><th>رفتار</th><th>مناسب</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Fixed Window</strong></td><td>شمارنده در بازه‌ی ثابت (هر دقیقه)</td><td>ساده؛ اما در مرز دو پنجره ۲ برابر ترافیک می‌پذیرد</td></tr>
+<tr><td><strong>Sliding Window</strong></td><td>بازه‌ی متحرک با وزن‌دهی</td><td>دقیق‌تر، هزینه‌ی بیشتر</td></tr>
+<tr><td><strong>Token Bucket</strong></td><td>توکن با نرخ پر شدن؛ جمع‌آوری مجاز</td><td><strong>رایج‌ترین</strong> — موج کوتاه را می‌پذیرد</td></tr>
+<tr><td><strong>Leaky Bucket</strong></td><td>خروج با نرخ ثابت</td><td>صاف کردن ترافیک</td></tr>
+</tbody>
+</table>
+
+<pre class="kl-code" data-lang="http"><code>HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1791500000</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">چهار اشتباه امنیتی در REST</span>
+<div class="kl-check">
+<ul>
+<li><strong>IDOR:</strong> با تغییر <code dir="ltr">/users/41</code> به <code dir="ltr">/users/42</code> به داده‌ی دیگران دسترسی — بدون بررسی مالکیت.</li>
+<li><strong>Mass Assignment:</strong> Client فیلد <code dir="ltr">role</code> را در بدنه می‌فرستد و آبجکت کامل bind می‌شود.</li>
+<li><strong>Excessive Data Exposure:</strong> برگرداندن کل رکورد به‌جای DTO حداقلی.</li>
+<li><strong>CORS باز:</strong> <code dir="ltr">Allow-Origin: *</code> در کنار credential.</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>Caching و کارایی</h2>
+
+<p>
+<code>Cacheability</code> یکی از شش محدودیت REST است — یعنی کش فقط «قابلیت اضافه» نیست،
+بخشی از تعریف است. پاسخ باید یا قابل کش باشد، یا صریحاً غیرقابل کش بودنش را اعلام کند.
+</p>
+
+<table>
+<thead>
+<tr><th>هدر</th><th>معنی</th><th>مقدار نمونه</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><code>Cache-Control</code></td><td>قواعد اصلی</td><td dir="ltr"><code>public, max-age=60</code></td></tr>
+<tr><td dir="ltr"><code>ETag</code></td><td>اثر انگشت نسخه</td><td dir="ltr"><code>"a1b2c3"</code></td></tr>
+<tr><td dir="ltr"><code>If-None-Match</code></td><td>درخواست اعتبارسنجی نسخه</td><td>در Request Client</td></tr>
+<tr><td dir="ltr"><code>Last-Modified</code></td><td>تاریخ آخرین تغییر</td><td dir="ltr"><code>Sat, 03 Oct 2026...</code></td></tr>
+<tr><td dir="ltr"><code>Vary</code></td><td>کش بسته به هدر متفاوت باشد</td><td dir="ltr"><code>Accept, Accept-Encoding</code></td></tr>
+<tr><td dir="ltr"><code>no-store</code></td><td>هرگز ذخیره نشود (داده‌ی حساس)</td><td>اطلاعات پرداخت</td></tr>
+</tbody>
+</table>
+
+<pre class="kl-code" data-lang="http"><code># ۱) سرور ETag تولید می‌کند
+HTTP/1.1 200 OK
+ETag: "a1b2c3"
+Cache-Control: private, max-age=60
+Content-Type: application/json
+
+# ۲) Client بعداً با همان ETag برمی‌گردد
+GET /api/users/42 HTTP/1.1
+If-None-Match: "a1b2c3"
+
+# ۳) تغییری نکرده ⇒ فقط سربرگ، بدون بدنه
+HTTP/1.1 304 Not Modified</code></pre>
+
+<div class="ax-tablewrap">
+<table>
+<thead>
+<tr><th>نوع داده</th><th>باید</th><th>دلیل</th></tr>
+</thead>
+<tbody>
+<tr><td>داده‌ی شخصی / مالی</td><td dir="ltr"><code>private, no-store</code></td><td>نشت در کش مشترک یا CDN</td></tr>
+<tr><td>داده‌ی عمومی کم‌تغییر</td><td dir="ltr"><code>public, max-age=600</code></td><td>بیشترین برد، کمترین خطر</td></tr>
+<tr><td>داده‌ی عمومی پرتأخیر</td><td><code>public + ETag</code></td><td>تولید گران، تغییر کم</td></tr>
+<tr><td>پاسخ پس از POST</td><td dir="ltr"><code>no-store</code></td><td>هیچ‌وقت کش نشود</td></tr>
+<tr><td>داده‌ی بلادرنگ</td><td dir="ltr"><code>no-store</code></td><td>کش با ماهیت داده در تضاد است</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>چهار عامل واقعی زمان پاسخ</h3>
+
+<pre class="kl-code" data-lang="text"><code>زمان کل = تأخیر شبکه + سریال‌سازی + پردازش سرور + تأخیر دیتابیس
+
+مثال واقعی (اندازه‌گیری، نه حدس):
+  تأخیر شبکه (۱ hop)         ۸ ms
+  سریال‌سازی JSON (۵ KB)     ۱ ms
+  پردازش سرور (Business)    ۱۲ ms
+  دیتابیس (ایندکس خوب)      ۱۴ ms
+  ──────────────────────────────────
+  جمع                      ۳۵ ms  ◄ این را گزارش کنید
+
+با N+1 query:
+  ۱ + ۲۰ فراخوانی = ۸ + ۱ + ۱۲ + ۲۰×۱۴ = ۳۰۱ ms  ◄ همان API، ۸ برابر کندتر</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">نکته‌ی مهم درباره‌ی کارایی</span>
+هرگز ننویسید «X سریع‌تر از Y است». آنچه مهم است، <strong>تعداد round-trip</strong>،
+<strong>حجم payload</strong>، <strong>زمان دیتابیس</strong> و <strong>تعداد پرس‌وجو</strong> است. این‌ها را اندازه
+بگیرید و همان را گزارش کنید — نه عددی که از وبلاگی خوانده‌اید.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>پیاده‌سازی با Java و Spring Boot</h2>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.shop.order;
+
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/orders")
+public class OrderController {
+
+    private final OrderService service;
+    private final OrderResourceAssembler assembler;
+
+    public OrderController(OrderService service, OrderResourceAssembler assembler) {
+        this.service = service;
+        this.assembler = assembler;
+    }
+
+    /* ---------- GET /api/orders?status=&page=&size=&sort= ---------- */
+    @GetMapping
+    public Page&lt;OrderResource&gt; list(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "createdAt,desc" ) String sort) {
+
+        int safeSize = Math.min(Math.max(size, 1), 100);      // سقف اجباری
+        Sort sortOrder = parseSort(sort);                      // فقط فیلدهای مجاز!
+        Pageable pageable = PageRequest.of(Math.max(page, 0), safeSize, sortOrder);
+
+        return service.find(status, q, pageable).map(assembler::toResource);
+    }
+
+    /* ---------- GET /api/orders/1042 ---------- */
+    @GetMapping("/{id}")
+    public ResponseEntity&lt;OrderResource&gt; get(@PathVariable long id) {
+        return service.findById(id)
+                .map(assembler::toResource)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -&gt; ResponseEntity.notFound().build());
+    }
+
+    /* ---------- POST /api/orders → 201 + Location + ETag ---------- */
+    @PostMapping
+    public ResponseEntity&lt;OrderResource&gt; create(
+            @Valid @RequestBody CreateOrderRequest req,
+            @RequestHeader(value = "Idempotency-Key", required = false) String key) {
+
+        Order created = service.create(req, key);              // کلید در همان تراکنش
+        OrderResource body = assembler.toResource(created);
+
+        return ResponseEntity
+                .created(URI.create("/api/orders/" + created.id()))
+                .eTag('"' + created.version() + '"')
+                .body(body);
+    }
+
+    /* ---------- PUT /api/orders/1042 (idempotent) ---------- */
+    @PutMapping("/{id}")
+    public ResponseEntity&lt;OrderResource&gt; replace(
+            @PathVariable long id,
+            @Valid @RequestBody CreateOrderRequest req,
+            @RequestHeader(value = "If-Match", required = false) String ifMatch) {
+
+        Order updated = service.replace(id, req, ifMatch);     // شکست هم‌زمانی → 412
+        return ResponseEntity.ok(assembler.toResource(updated));
+    }
+
+    /* ---------- DELETE /api/orders/1042 → 204 ---------- */
+    @DeleteMapping("/{id}")
+    public ResponseEntity&lt;Void&gt; delete(@PathVariable long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** فقط فیلدهای مجاز — جلوگیری از Sort Injection */
+    private Sort parseSort(String raw) {
+        String[] parts = raw.split(",");
+        String field = parts[0];
+        boolean asc = parts.length &lt; 2 || "asc".equalsIgnoreCase(parts[1]);
+        if (!Order.SORTABLE.contains(field)) field = "createdAt";
+        return asc ? Sort.by(field).ascending() : Sort.by(field).descending();
+    }
+}
+</code></pre>
+
+<pre class="kl-code" data-lang="java"><code>package com.example.shop.order;
+
+/**
+ * نمایش عمومی — جداول و فیلدهای داخلی هرگز مستقیم برنمی‌گردند.
+ */
+public record OrderResource(
+        long id,
+        String status,
+        long total,
+        String createdAt,
+        List&lt;Item&gt; items,
+        Map&lt;String, String&gt; links) {          // HATEOAS-lite
+
+    public record Item(long productId, String name, int qty, long unitPrice) { }
+}
+</code></pre>
+
+<h3>تست</h3>
+
+<pre class="kl-code" data-lang="java"><code>@SpringBootTest
+@AutoConfigureMockMvc
+@DisplayName("OrderController")
+class OrderControllerTest {
+
+    @Autowired MockMvc mvc;
+
+    @Test @DisplayName("GET موفق → 200 + ETag")
+    void getOk() throws Exception {
+        mvc.perform(get("/api/orders/1042"))
+           .andExpect(status().isOk())
+           .andExpect(header().exists("ETag"))
+           .andExpect(jsonPath("$.status").value("PENDING"));
+    }
+
+    @Test @DisplayName("سقف صفحه رعایت می‌شود")
+    void pageSizeClamped() throws Exception {
+        mvc.perform(get("/api/orders").param("size", "99999"))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.size").value(100));
+    }
+
+    @Test @DisplayName("sort روی فیلد غیرمجاز → فیلد پیش‌فرض")
+    void sortWhitelist() throws Exception {
+        mvc.perform(get("/api/orders").param("sort", "password,desc"))
+           .andExpect(status().isOk());
+    }
+
+    @Test @DisplayName("ETag نادرست → 412")
+    void staleVersion() throws Exception {
+        mvc.perform(put("/api/orders/1042")
+                .header("If-Match", '"' + "999" + '"')
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{...}"))
+           .andExpect(status().isPreconditionFailed());
+    }
+}
+</code></pre>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>پیاده‌سازی با C# و ASP.NET Core</h2>
+
+<pre class="kl-code" data-lang="csharp"><code>using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOutputCache(o =&gt;
+    o.AddPolicy("orders", p =&gt; p.Expire(TimeSpan.FromSeconds(60)).Tag("orders")));
+builder.Services.AddProblemDetails();
+var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UseOutputCache();
+
+/* ---------- GET /api/orders?status=&amp;page=&amp;size= ---------- */
+app.MapGet("/api/orders", async (
+        string? status, int page = 0, int size = 20,
+        OrderStore db, CancellationToken ct) =&gt;
+{
+    size = Math.Clamp(size, 1, 100);
+    var (items, total) = await db.FindAsync(status, page, size, ct);
+    return Results.Ok(new
+    {
+        items,
+        page,
+        size,
+        totalElements = total,
+        totalPages = (int)Math.Ceiling(total / (double)size)
+    });
+})
+.CacheOutput("orders");
+
+/* ---------- GET /api/orders/1042 ---------- */
+app.MapGet("/api/orders/{id:long}", async (long id, OrderStore db, CancellationToken ct) =&gt;
+{
+    var order = await db.FindAsync(id, ct);
+    return order is null
+        ? Results.NotFound()
+        : Results.Ok(order);
+});
+
+/* ---------- POST /api/orders → 201 + Location + Idempotency-Key ---------- */
+app.MapPost("/api/orders", async (
+        CreateOrderRequest req,
+        IHttpContextAccessor http,
+        OrderStore db, CancellationToken ct) =&gt;
+{
+    var key = http.HttpContext!.Request.Headers["Idempotency-Key"].FirstOrDefault();
+    var (order, replayed) = await db.CreateIdempotentAsync(req, key, ct);
+
+    var result = Results.Created($"/api/orders/{order.Id}", order);
+    if (replayed) result.Headers["Idempotency-Replayed"] = "true";
+    return result;
+});
+
+/* ---------- DELETE /api/orders/1042 → 204 ---------- */
+app.MapDelete("/api/orders/{id:long}", async (long id, OrderStore db, CancellationToken ct) =&gt;
+{
+    await db.DeleteAsync(id, ct);
+    return Results.NoContent();
+});
+
+app.Run();
+
+public record CreateOrderRequest(long CustomerId, List&lt;LineDto&gt; Lines);
+public record LineDto(long ProductId, int Qty);
+</code></pre>
+
+<table>
+<thead>
+<tr><th>مفهوم</th><th>Java / Spring</th><th>C# / ASP.NET Core</th></tr>
+</thead>
+<tbody>
+<tr><td>صفحه‌بندی</td><td dir="ltr"><code>Page&lt;T&gt; + Pageable</code></td><td dir="ltr"><code>IQueryable.Skip/Take</code></td></tr>
+<tr><td>کش</td><td dir="ltr"><code>ETag + ShallowETagHeaderFilter</code></td><td dir="ltr"><code>OutputCache</code></td></tr>
+<tr><td>پاسخ 201</td><td dir="ltr"><code>ResponseEntity.created(uri)</code></td><td dir="ltr"><code>Results.Created(...)</code></td></tr>
+<tr><td>پیش‌شرط نسخه</td><td dir="ltr"><code>OptimisticLocking + 412</code></td><td dir="ltr"><code>ConcurrencyCheck</code></td></tr>
+<tr><td>اعتبارسنجی</td><td dir="ltr"><code>jakarta.validation</code></td><td dir="ltr"><code>DataAnnotations / FluentValidation</code></td></tr>
+<tr><td>تست</td><td dir="ltr"><code>MockMvc + JUnit 5</code></td><td dir="ltr"><code>WebApplicationFactory + xUnit</code></td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>ساختار پروژه و لایه‌بندی</h2>
+
+<pre class="kl-code" data-lang="text"><code>order-service/
+├── api/                         ◄ فقط HTTP
+│   ├── OrderController.java
+│   ├── dto/
+│   │   ├── CreateOrderRequest.java
+│   │   └── OrderResource.java
+│   ├── mapper/OrderMapper.java
+│   └── error/ApiExceptionHandler.java
+│
+├── application/                 ◄ منطق دامنه / use case
+│   ├── OrderService.java
+│   ├── CreateOrderCommand.java
+│   └── port/                    ◄ interface ها
+│       ├── OrderRepository.java
+│       ├── PaymentGateway.java
+│       └── Clock.java
+│
+├── domain/                      ◄ مدل خالص، بدون وابستگی بیرونی
+│   ├── Order.java
+│   ├── OrderLine.java
+│   ├── OrderStatus.java        (enum)
+│   └── Money.java
+│
+└── infrastructure/              ◄ پیاده‌سازی پورت‌ها
+    ├── persistence/
+    │   ├── JpaOrderRepository.java
+    │   └── OrderJpaEntity.java
+    ├── payment/StripePaymentGateway.java
+    └── messaging/OrderEventPublisher.java</code></pre>
+
+<h3>جریان یک درخواست</h3>
+
+<pre class="kl-code" data-lang="text"><code>OrderController (api)
+    │  ۱) پارس و اعتبارسنجی DTO
+    ▼
+OrderService (application)
+    │  ۲) اجرای قواعد دامنه
+    │  ۳) فراخوانی port ها
+    ▼
+OrderRepository (port → interface)
+    │
+    ▼
+JpaOrderRepository (infrastructure)
+    │  ۴) تبدیل Entity ↔ Domain
+    ▼
+Databaseِ
+
+قانون: فلش‌ها فقط به پایین می‌روند
+  api → application → domain ← infrastructure
+  هرگز: domain → infrastructure  یا  domain → api</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چرا این ساختار؟</span>
+Controller نباید منطق دامنه داشته باشد (تست‌پذیری پایین). Domain نباید Spring یا EF بشناسد
+(تک‌منبعی و تست بدون زیرساخت). و DTO نباید Entity باشد (امنیت + قرارداد ثابت). هر سه این
+ها اگر رعایت نشوند، تغییر قرارداد API با تغییر جدول دیتابیس یکی می‌شود — و آن‌وقت
+دیگر نمی‌توانید مستقل تکامل دهید.
+</div>
+</section>
+
+<!-- ==================== 17 ==================== -->
+<section id="s17">
+<h2><span class="kl-num">بخش ۱۷</span>نمونه‌های واقعی</h2>
+
+<h3>۱. فروشگاه اینترنتی</h3>
+
+<pre class="kl-code" data-lang="text"><code>GET  /api/products?q=لپ‌تاپ&amp;category=laptop&amp;minPrice=200000000
+     &amp;sort=price,asc&amp;page=0&amp;size=24
+  → 200 + صفحه‌بندی + ETag (تغییر نکرده ⇒ 304)GET  /api/cart
+  → 200 + موارد + جمع + کد تخفیفPOST /api/checkout
+     Idempotency-Key: 9c31...
+  → 201 + Location: /api/orders/ORD-1042GET  /api/orders/ORD-1042/status
+  → 200 + {"status":"SHIPPED","eta":"..."}
+
+نکته: checkout یک عملیات حساس است ⇒ حتماً Idempotency-Key</code></pre>
+
+<h3>۲. سرویس بانکی</h3>
+
+<pre class="kl-code" data-lang="text"><code>GET    /api/accounts/IR12.../transactions?from=2026-01-01&amp;size=50
+       Cache-Control: private, no-store      ◄ داده‌ی مالی هرگز کش نشودPOST   /api/transfers
+       Idempotency-Key: c41d...
+       If-Match: "acct-version-7"            ◄ جلوگیری از نوشتن هم‌زمان  → 202 Accepted + Location: /api/transfers/TRF-99128
+       چون تأیید نهایی آن‌سوی سیستم بانکی استGET    /api/transfers/TRF-99128
+  → 200 + {"status":"PENDING"} یا {"status":"SETTLED"}</code></pre>
+
+<h3>۳. پنل مدیریت گزارش‌ها</h3>
+
+<pre class="kl-code" data-lang="text"><code>GET /api/reports/revenue?from=2026-01-01&amp;to=2026-03-31&amp;groupBy=month
+Accept: application/json
+If-None-Match: "r7f2"
+
+  → 304 (داده تغییری نکرده — صرفه‌جویی در تولید مجدد)
+  یا 200 + ETag جدیدنتیجه: endpoint گران‌قیمت هم بدون کاهش دقت، در دسترس می‌ماند.
+قاعده: داده‌ی گزارشی = کش بلند + ETag؛ داده‌ی تراکنشی = no-store.</code></pre>
+</section>
+<!-- ==================== 18 ==================== -->
+<section id="s18">
+<h2><span class="kl-num">بخش ۱۸</span>مزایا</h2>
+
+<div class="ax-proscons">
+  <div class="ax-pc">
+    <div class="ax-pc-head" style="background:var(--color-success-soft);color:var(--color-success);">✅ مزایا</div>
+    <div class="ax-pc-body">
+      <ul>
+        <li><strong>سادگی مدل فکری</strong> — منبع + متد + پاسخ؛ هر کسی در چند دقیقه می‌فهمد.</li>
+        <li><strong>بی‌طرفی کامل</strong> — زبان، فریم‌ورک و سیستم‌عامل مهم نیست؛ HTTP زبان مشترک است.</li>
+        <li><strong>کش ذاتی</strong> — به‌لطف Cacheability، کش مرورگر/CDN/سرور بدون طراحی خاصی ممکن است.</li>
+        <li><strong>مستندسازی ساده</strong> — OpenAPI از annotation تولید و خودکار نگه داشته می‌شود.</li>
+        <li><strong>تست‌پذیری</strong> — با هر HTTP client ابزاری قابل آزمون است.</li>
+        <li><strong>مقیاس‌پذیری</strong> — Statelessness امکان افزودن نمونه بدون پیکربندی خاص می‌دهد.</li>
+        <li><strong>محدودیت نرخ و امنیت</strong> — در Gateway یکجا پیاده می‌شود.</li>
+        <li><strong>زبان صنعت</strong> — تقریباً هر توسعه‌دهنده‌ای آن را می‌شناسد؛ هزینه‌ی استخدام کم.</li>
+        <li><strong>مرحله‌به‌مرحله</strong> — می‌توانید endpoint را کم‌کم عرضه و نسخه‌بندی کنید.</li>
+        <li><strong>پایش‌پذیری</strong> — هر درخواست قابل لاگ، متریک و ردیابی است.</li>
+        <li><strong>سازگار با وب</strong> — مرورگر، CDN و ابزارهای شبکه بی‌واسطه کار می‌کنند.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== 19 ==================== -->
+<section id="s19">
+<h2><span class="kl-num">بخش ۱۹</span>معایب</h2>
+
+<div class="ax-proscons">
+  <div class="ax-pc">
+    <div class="ax-pc-head" style="background:var(--color-danger-soft);color:var(--color-danger);">⚠️ معایب</div>
+    <div class="ax-pc-body">
+      <ul>
+        <li><strong>Over-fetching</strong> — ممکن است فیلدهایی را بگیرید که لازم ندارید (چون مسیر از پیش تعریف شده).</li>
+        <li><strong>Under-fetching</strong> — برای نمایش یک صفحه‌ی پیچیده، چند round-trip لازم است.</li>
+        <li><strong>تعداد round-trip بالا</strong> — در لایه‌ی UI پرحجم واقعاً به چشم می‌آید.</li>
+        <li><strong>HTTP/1.1 محدودیت اتصال دارد</strong> — در ترافیک بالا، بهینه‌سازی لازم است.</li>
+        <li><strong>هیچ قرارداد زمان‌دار ندارد</strong> — Webhook و جریان بلادرنگ خارج از مدل طبیعی REST هستند.</li>
+        <li><strong>نیاز به صریح‌سازی مداوم</strong> — بدون نسخه‌بندی و مستند، به‌سرعت فرسوده می‌شود.</li>
+        <li><strong>REST خالص به‌ندرت رعایت می‌شود</strong> — HATEOAS معمولاً حذف می‌شود و این باعث سوءتفاهم می‌شود.</li>
+        <li><strong>امنیت وظیفه‌ی همیشگی است</strong> — CORS، rate limit، اعتبارسنجی، مالکیت — همیشه.</li>
+        <li><strong>سرریز (Serialization)</strong> — تبدیل اشیاء به JSON در حجم بالا هزینه دارد.</li>
+        <li><strong>پنهان‌سازی خطای دیتابیس</strong> — بدون قاعده، جزئیات خطا نشت می‌کند.</li>
+        <li><strong>هیچ تضمین تحویلی ندارد</strong> — برای عملیات حساس به ایدمپوتنتی نیاز است.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">بزرگ‌ترین سوءتفاهم</span>
+«هر API ای که JSON برمی‌گرداند REST است» — غلط. اگر از POST برای خواندن استفاده می‌کنید،
+یا وضعیت را در سرور نگه می‌دارید، یا کش را کاملاً غیرفعال کرده‌اید، <strong>RESTful نیستید</strong>.
+این اشکالی ندارد — ولی باید بدانید و بتوانید دلیلش را توضیح دهید.
+</div>
+</section>
+
+<!-- ==================== 20 ==================== -->
+<section id="s20">
+<h2><span class="kl-num">بخش ۲۰</span>چه زمانی استفاده کنیم / نکنیم؟</h2>
+
+<h3>چه زمانی REST، و چه زمانی نه؟</h3>
+
+<div class="ax-versus">
+  <div class="ax-versus-side" style="border-top:3px solid var(--color-success);">
+    <h4>✅ استفاده کنید وقتی</h4>
+    <ul>
+      <li><strong>API عمومی یا بیرونی</strong> دارید — زبان مشترک، پذیرش حداکثری</li>
+      <li><strong>مصرف‌کننده‌های متنوع</strong> — وب، iOS، Android، دسکتاپ</li>
+      <li><strong>منابع مدل‌سازی‌شده</strong> — کاربر، سفارش، محصول، سند</li>
+      <li><strong>CRUD با منطق متوسط</strong> — رایج‌ترین حالت کاری</li>
+      <li><strong>نیاز به کش</strong> — داده‌ی خواندنی پرتکرار</li>
+      <li><strong>تیم با تجربه‌ی کم</strong> — منحنی یادگیری کوتاه</li>
+      <li><strong>پایش و ابزارسازی</strong> — ابزارهای موجود بی‌دردسر کار می‌کنند</li>
+    </ul>
+  </div>
+  <div class="ax-versus-mid">VS</div>
+  <div class="ax-versus-side" style="border-top:3px solid var(--color-danger);">
+    <h4>❌ استفاده نکنید وقتی</h4>
+    <ul>
+      <li><strong>ارتباط داخلی پرحجم</strong> — gRPC با Protobuf مناسب‌تر است</li>
+      <li><strong>بلادرنگ دوطرفه‌ی مداوم</strong> — WebSocket ببینید</li>
+      <li><strong>جریان یک‌طرفه‌ی ساده</strong> — SSE ارزان‌تر و ساده‌تر است</li>
+      <li><strong>تعداد زیاد پیام ریز</strong> — MQTT یا صف پیام</li>
+      <li><strong>چند کلاینت با نیاز متضاد</strong> — شاید GraphQL یا BFF</li>
+      <li><strong>یکپارچگی سازمانی قدیمی</strong> — SOAP / OData در آن فضا استاندارد است</li>
+      <li><strong>فراخوانی داخلی همان فرایند</strong> — اصلاً API لازم نیست</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ==================== 21 ==================== -->
+<section id="s21">
+<h2><span class="kl-num">بخش ۲۱</span>مقایسه با GraphQL، gRPC و SOAP</h2>
+
+<div class="ax-tablewrap">
+<table>
+<caption>مقایسه‌ی چهار رویکرد — بدون ادعای برتری مطلق</caption>
+<thead>
+<tr><th>معیار</th><th>REST</th><th>GraphQL</th><th>gRPC</th><th>SOAP</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد اصلی</td><td>منبع</td><td>پرسش روی گراف</td><td>سرویس و متد</td><td>سرویس و عملیات</td></tr>
+<tr><td>قالب</td><td>JSON</td><td>JSON</td><td>Protobuf</td><td>XML</td></tr>
+<tr><td>پروتکل</td><td>HTTP/1.1–3</td><td>HTTP</td><td>HTTP/2</td><td>HTTP + SOAP envelope</td></tr>
+<tr><td>تایپ‌سیستم</td><td>قرارداد ضعیف</td><td>Schema قوی</td><td>.proto قوی</td><td>XSD بسیار قوی</td></tr>
+<tr><td>نقطه‌ی قوت</td><td>سادگی + کش</td><td>دقیقاً همان فیلدها</td><td>کارایی + نوع</td><td>قرارداد سفت + WS-*</td></tr>
+<tr><td>نقطه‌ی ضعف</td><td>Over/Under-fetching</td><td>امنیت و کش سخت</td><td>مرورگر محدود</td><td>وزن و پیچیدگی</td></tr>
+<tr><td>بهترین کاربرد</td><td>API عمومی وب</td><td>چند کلاینت با نیاز متفاوت</td><td>ارتباط داخلی</td><td>بانک و سازمان قدیمی</td></tr>
+<tr><td>کارایی انتقال</td><td>متوسط</td><td>متوسط</td><td>بالا</td><td>پایین</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قاعده‌ی انتخاب</span>
+<p>
+از <strong>REST</strong> شروع کنید. وقتی به یکی از این سه رسیدید، جابه‌جا کنید:
+</p>
+<div class="kl-check">
+<ul>
+<li><strong>پاسخ‌ها دقیقاً فیلدهای متفاوت می‌خواهند و round-trip زیاد است</strong> → <a href="graphql.html">GraphQL</a></li>
+<li><strong>ارتباط داخلی پرحجم با نوع‌دهی قوی</strong> → <a href="grpc.html">gRPC</a></li>
+<li><strong>قرارداد سفت سازمانی و WS-Security لازم است</strong> → <a href="soap.html">SOAP</a></li>
+</ul>
+</div>
+<p>جدول کامل ۱۳ سبک را در <a href="api-comparison.html">مقاله‌ی مقایسه‌ی API ها</a> ببینید.</p>
+</div>
+</section>
+
+<!-- ==================== 22 ==================== -->
+<section id="s22">
+<h2><span class="kl-num">بخش ۲۲</span>اشتباهات رایج و Testing</h2>
+
+<h3>اشتباهات رایج</h3>
+
+<div class="ax-tablewrap">
+<table>
+<thead>
+<tr><th>#</th><th>اشتباه</th><th>اثر</th><th>راه درست</th></tr>
+</thead>
+<tbody>
+<tr><td>۱</td><td>اسم فعل در URI (<code dir="ltr">/getUser</code>)</td><td>قرارداد REST را می‌شکند</td><td>منبع + متد</td></tr>
+<tr><td>۲</td><td><code>GET</code> که وضعیت عوض کند</td><td>کش و prefetch داده خراب می‌کنند</td><td>فقط خواندن</td></tr>
+<tr><td>۳</td><td>۲۰۰ برای خطا</td><td>Client و ابزارها را فریب می‌دهد</td><td>4xx/5xx واقعی</td></tr>
+<tr><td>۴</td><td>نبود سقف صفحه</td><td><code>?size=99999</code> سرور را زمین می‌زند</td><td><code>Math.min(size,100)</code></td></tr>
+<tr><td>۵</td><td>بدون Idempotency-Key</td><td>تلاش مجدد = رکورد تکراری</td><td>کلید در تراکنش اصلی</td></tr>
+<tr><td>۶</td><td>برگرداندن Entity خام</td><td>نشت داده و قرارداد شکننده</td><td>DTO مجزا</td></tr>
+<tr><td>۷</td><td>بدون ETag/Cache-Control</td><td>یا هیچ کشی نیست یا داده‌ی کهنه</td><td>اعلام صریح</td></tr>
+<tr><td>۸</td><td>بدون Vary روی Accept</td><td>پاسخ JSON به درخواست XML می‌رود</td><td><code>Vary: Accept</code></td></tr>
+<tr><td>۹</td><td>sort بدون whitelist</td><td>Sort Injection / خطای دیتابیس</td><td>فیلدهای مجاز</td></tr>
+<tr><td>۱۰</td><td>نادیده گرفتن CORS</td><td>خطای مرورگر یا نشت credential</td><td>لیست دامنه‌ی مشخص</td></tr>
+<tr><td>۱۱</td><td>بدون بررسی مالکیت</td><td>IDOR — دسترسی به داده‌ی دیگران</td><td>Ownership در هر منبع</td></tr>
+<tr><td>۱۲</td><td>بدون traceId</td><td>عیب‌یابی غیرممکن</td><td>شناسه از Gateway تا آخر</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>سطح‌های تست</h3>
+
+<table>
+<thead>
+<tr><th>سطح</th><th>چه چیزی</th><th>Java</th><th>C#</th></tr>
+</thead>
+<tbody>
+<tr><td>واحد</td><td>منطق دامنه بدون HTTP</td><td dir="ltr">JUnit 5 + AssertJ</td><td dir="ltr">xUnit</td></tr>
+<tr><td>API</td><td>endpoint با HTTP واقعی</td><td dir="ltr">MockMvc</td><td dir="ltr">WebApplicationFactory</td></tr>
+<tr><td>یکپارچه</td><td>+ دیتابیس واقعی</td><td dir="ltr">Testcontainers</td><td dir="ltr">Testcontainers</td></tr>
+<tr><td>قرارداد</td><td>سازگاری با مصرف‌کننده</td><td dir="ltr">Spring Cloud Contract</td><td dir="ltr">Pact</td></tr>
+<tr><td>بار</td><td>رفتار در فشار</td><td dir="ltr">Gatling</td><td dir="ltr">k6</td></tr>
+</tbody>
+</table>
+
+<pre class="kl-code" data-lang="java"><code>@Test
+@DisplayName("حذف تکراری ⇒ Idempotency-Key همان پاسخ قبلی را برمی‌گرداند")
+void idempotentCreateReplays() throws Exception {
+    String key = "8f2a1c9e-4d77-4b02-9c31-0e5f6a7b2c41";
+    String body = "{\"customerId\":7,\"lines\":[{\"productId\":1,\"qty\":2}]}";
+
+    mvc.perform(post("/api/orders").header("Idempotency-Key", key)
+            .contentType(MediaType.APPLICATION_JSON).content(body))
+       .andExpect(status().isCreated())
+       .andExpect(header().doesNotExist("Idempotency-Replayed"));
+
+    mvc.perform(post("/api/orders").header("Idempotency-Key", key)
+            .contentType(MediaType.APPLICATION_JSON).content(body))
+       .andExpect(status().isCreated())
+       .andExpect(header().string("Idempotency-Replayed", "true"))
+       .andExpect(header().string("Location", "/api/orders/1043"));  // نه 1044
+}
+
+@Test
+@DisplayName("درخواست بدون احراز هویت ⇒ 401")
+void unauthorized() throws Exception {
+    mvc.perform(get("/api/orders"))
+       .andExpect(status().isUnauthorized());
+}
+</code></pre>
+
+<div class="kl-box kl-hd">
+<span class="kl-h">کمینه‌ی تست برای هر endpoint جدید</span>
+<ol class="kl-check">
+<li>مسیر موفق → Status Code + شکل بدنه + هدرها</li>
+<li>منبع ناموجود → 404</li>
+<li>ورودی نامعتبر → 400/422 با فهرست فیلدها</li>
+<li>بدون مجوز → 401 ؛ با مجوز ناکافی → 403</li>
+<li>مالکیت دیگری → 403</li>
+<li>تکرار عملیات حساس → نتیجه‌ی یکسان</li>
+<li>سقف صفحه و whitelist مرتب‌سازی</li>
+<li>ETag کهنه → 412</li>
+</ol>
+</div>
+</section>
+<!-- ==================== 23 ==================== -->
+<section id="s23">
+<h2><span class="kl-num">بخش ۲۳</span>سؤالات مصاحبه</h2>
+
+<h3>سطح پایه (Junior)</h3>
+
+<p><strong>سؤال ۱ — REST چیست؟</strong></p>
+<p>یک سبک معماری سیستم‌های توزیع‌شده است که <code>Roy Fielding</code> در پایان‌نامه‌ی ۲۰۰۰ معرفی کرد. بر پایه‌ی شش محدودیت استوار است: Client-Server، Statelessness، Cacheability، Uniform Interface، Layered System و Code on Demand (اختیاری). تمرکزش روی <strong>منابع</strong> و <strong>نمایش‌ها</strong> است.</p>
+
+<p><strong>سؤال ۲ — آیا هر API ای که JSON برمی‌گرداند RESTful است؟</strong></p>
+<p>خیر. JSON فقط قالب داده است و هیچ ارتباطی با تعریف REST ندارد. REST یعنی رعایت شش محدودیت: منبع‌محور بودن، متد HTTP درست، Statelessness، قابلیت کش و … . یک API که با <code>POST /getUser</code> کار می‌کند و JSON برمی‌گرداند، RESTful نیست.</p>
+
+<p><strong>سؤال ۳ — تفاوت PUT و PATCH؟</strong></p>
+<p><code>PUT</code> کل منبع را با بدنه‌ی داده‌شده <strong>جایگزین</strong> می‌کند؛ فیلدهای نیامده به پیش‌فرض می‌روند. <code>PATCH</code> فقط <strong>فیلدهای ارسالی</strong> را عوض می‌کند. هر دو می‌توانند ایدمپوتنت باشند، به شرطی که عملیات جایگزینی باشد.</p>
+
+<p><strong>سؤال ۴ — برای ساخت یک منبع کدام متد و کدام Status Code؟</strong></p>
+<p><code>POST</code> روی collection (مثلاً <code dir="ltr">/api/users</code>) با پاسخ <code dir="ltr">201 Created</code> و هدر <code>Location</code> که آدرس منبع تازه را مشخص می‌کند. هرگز <code>200</code> یا <code>GET</code> برای ساخت.</p>
+
+<p><strong>سؤال ۵ — 404 و 204 چه معنایی دارند؟</strong></p>
+<p><code>404</code> یعنی منبع وجود ندارد. <code>204</code> یعنی موفقیت بدون بدنه — معمولاً برای <code>DELETE</code> یا عملیاتی که چیزی برای برگرداندن ندارد. فرستادن 200 با بدنه‌ی خالی هم ممکن است ولی 204 صریح‌تر است.</p>
+
+<p><strong>سؤال ۶ — Idempotency یعنی چه؟ مثال بزنید.</strong></p>
+<p>یعنی تکرار درخواست، همان اثرِ یک بار را دارد. <code>PUT</code> و <code>DELETE</code> ذاتاً ایدمپوتنت‌اند (دو بار حذف = منبع از قبل حذف شده). <code>POST</code> نیست؛ برای آن از <code>Idempotency-Key</code> استفاده می‌کنیم.</p>
+
+<p><strong>سؤال ۷ — Statelessness یعنی چه و فایده‌اش چیست؟</strong></p>
+<p>سرور وضعیت نشست را بین درخواست‌ها نگه نمی‌دارد؛ هر درخواست خوداتکاست و اطلاعات لازم را حمل می‌کند (معمولاً توکن). فایده: می‌توانید بدون Sticky Session و پیکربندی خاص، نمونه‌های بیشتری اضافه و بار را تقسیم کنید.</p>
+
+<p><strong>سؤال ۸ — Content-Type و Accept چه فرقی دارند؟</strong></p>
+<p><code>Content-Type</code> نوع <strong>بدنه‌ی فعلی</strong> را می‌گوید (در Request: نوع بدنه‌ی ارسالی؛ در Response: نوع بدنه‌ی برگشتی). <code>Accept</code> فقط در درخواست است و می‌گوید Client <strong>چه قالب‌هایی را می‌پذیرد</strong>.</p>
+
+<p><strong>سؤال ۹ — ETag چیست؟</strong></p>
+<p>اثر انگشت محتوای یک پاسخ است. Client آن را نگه می‌دارد و در درخواست بعدی با <code>If-None-Match</code> برمی‌گرداند. اگر سرور محتوا را تغییر نداده باشد، با <code>304 Not Modified</code> پاسخ می‌دهد — بدون انتقال بدنه. نتیجه: پهنای باند و زمان پاسخ کمتر.</p>
+
+<p><strong>سؤال ۱۰ — چرا URI ها باید جمع باشند؟</strong></p>
+<p>چون منبع، خودِ موجودیت است نه عملیات. <code dir="ltr">/api/users/42/orders</code> یعنی «سفارش‌های این کاربر» — یک منبع. عملیات را متد HTTP بیان می‌کند، نه URI. نگاشت یک‌به‌یک «نام جدول ↔ نام endpoint» هم اشتباه است.</p>
+
+<h3>سطح متوسط (Mid)</h3>
+
+<p><strong>سؤال ۱۱ — Offset یا Cursor، کدام را انتخاب می‌کنید و چرا؟</strong></p>
+<p>برای فیدهای بلادرنگ و لیست‌های بسیار طولانی، <strong>cursor</strong> چون با <code>WHERE id &gt; X</code> ایندکس را مستقیم می‌زند و در عمق زیاد کند نمی‌شود. برای صفحه‌بندی شماره‌دار با صفحات کم، <strong>offset</strong> چون ساده و قابل پیمایش تصادفی است. نکته‌ی مهم: offset با درج هم‌زمان، آیتم‌ها را جابه‌جا می‌کند (رد شدن یا تکرار آیتم).</p>
+
+<p><strong>سؤال ۱۲ — اگر <code>?size=999999</code> بیاید چه می‌کنید؟</strong></p>
+<p>سقف را در سرور اعمال می‌کنم: <code>size = Math.min(Math.max(size,1), 100)</code>. و به Client اعلام می‌کنم سقف چقدر است (در مستندات یا در بدنه‌ی پاسخ). تکیه بر اعتبارسنجی Client کافی نیست — هرکسی می‌تواند curl بزند.</p>
+
+<p><strong>سؤال ۱۳ — HATEOAS چیست و چرا کمتر پیاده می‌شود؟</strong></p>
+<p>یعنی پاسخ، لینک اقدام بعدی را هم برمی‌گرداند تا Client رفتارش را از داده بیاموزد. عملاً کم رعایت می‌شود چون پیچیدگی سرور و تست را بالا می‌برد و اکثر تیم‌ها قرارداد ثابت + OpenAPI را کافی می‌دانند. صادقانه بگویید که رعایت نکرده‌اید — بدتر از آن، ادعای REST بدون HATEOAS است.</p>
+
+<p><strong>سؤال ۱۴ — تفاوت <code>private</code> و <code>public</code> در Cache-Control؟</strong></p>
+<p><code>public</code> یعنی هر کشی (شامل CDN) می‌تواند ذخیره کند — مناسب داده‌ی عمومی. <code>private</code> یعنی فقط کش مرورگر خود کاربر مجاز است — مناسب داده‌ی شخصی. اگر <code>public</code> را روی داده‌ی شخصی بگذارید، ممکن است پاسخ یک کاربر در CDN برای کاربر دیگر سرو شود — یک نشت واقعی.</p>
+
+<p><strong>سؤال ۱۵ — چرا <code>POST</code> کش نمی‌شود؟</strong></p>
+<p>چون <code>GET</code> تعریف‌شده‌اش ایمن و تکرارپذیر است؛ <code>POST</code> اثر جانبی ایجاد می‌کند و کش کردن آن یعنی اجرای نشدن عملیات واقعی. مرورگرها هم عملاً POST را کش نمی‌کنند. برای پاسخ‌های پس از POST باید Client صراحتاً یک GET بزند.</p>
+
+<p><strong>سؤال ۱۶ — محدودیت نرخ را کجا و با کدام الگوریتم؟</strong></p>
+<p>معمولاً در Gateway یا میدل‌ور وب، پیش از منطق دامنه و مبتنی بر شناسه‌ی Client (کلید یا IP). <strong>Token Bucket</strong> رایج‌ترین است چون موج کوتاه را می‌پذیرد؛ <strong>Sliding Window</strong> دقیق‌تر است ولی گران‌تر. پاسخ باید <code>429 + Retry-After</code> باشد.</p>
+
+<p><strong>سؤال ۱۷ — چطور از خواندن هم‌زمان روی یک رکورد جلوگیری می‌کنید؟</strong></p>
+<p>با <strong>optimistic locking</strong>: نسخه را در <code>ETag</code> برگردانید و Client آن را در <code>If-Match</code> بفرستد. اگر نسخه عوض شده باشد، <code>412 Precondition Failed</code>. جایگزین: <strong>pessimistic locking</strong> که قفل ردیف را می‌گیرد — ساده‌تر ولی در ترافیک بالا مقیاس نمی‌یابد.</p>
+
+<p><strong>سؤال ۱۸ — Mass Assignment چیست؟</strong></p>
+<p>وقتی کل بدنه‌ی درخواست مستقیماً به Entity دیتابیس bind می‌شود، Client می‌تواند فیلدی مثل <code dir="ltr">role=admin</code> یا <code dir="ltr">balance</code> بفرستد و اعمال شود. راه‌حل: DTO مجزا برای ورودی، با فیلدهای صریح و محدود — هرگز Entity را مستقیم bind نکنید.</p>
+
+<h3>سطح پیشرفته (Senior)</h3>
+
+<p><strong>سؤال ۱۹ — اگر تیمی بخواهد REST خالص رعایت شود ولی سقف ددلاین داشته باشید، چه می‌کنید؟</strong></p>
+<p>اول اهمیت هر محدودیت را برای این مسئله می‌سنجم. <strong>Statelessness</strong> و <strong>Cacheability</strong> معمولاً بیشترین ارزش عملی را دارند و باید بمانند. <strong>HATEOAS</strong> (جزء Uniform Interface) معمولاً کمترین بازده را در قیاس با هزینه‌اش دارد و می‌توان با قرارداد ثابت جایگزین کرد — ولی باید صریحاً اعلام شود که «عمداً کامل RESTful نیستیم» و دلیلش در مستندات باشد. تصمیم باید آگاهانه و مستند باشد، نه پیش‌فرض.</p>
+
+<p><strong>سؤال ۲۰ — یک API با ۱۰ round-trip برای رندر یک صفحه دارید. چه می‌کنید؟</strong></p>
+<p>سه گزینه را با هزینه‌ی هرکدام می‌سنجم: <strong>۱)</strong> تجمیع در سرور (endpoint فهرستی مثل <code dir="ltr">/dashboard</code>) — ساده، اما ممکن است مصرف‌کننده‌های دیگر را محدود کند؛ <strong>۲)</strong> پارامترهای <code>fields</code> و <code>expand</code> تا پاسخ دقیقاً همان چیزی را بدهد که لازم است — انعطاف‌پذیر ولی قرارداد را پیچیده می‌کند؛ <strong>۳)</strong> تغییر معماری به <a href="bff.html">BFF</a> برای آن کلاینت خاص یا <a href="graphql.html">GraphQL</a>. انتخاب به تعداد مصرف‌کننده‌ها، میزان تفاوت نیازشان و توان نگهداری تیم بستگی دارد — معمولاً برای یک صفحه، گزینه‌ی ۱ پایین‌ترین هزینه را دارد.</p>
+</section>
+
+<!-- ==================== 24 ==================== -->
+<section id="s24">
+<h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
+
+<div class="kl-box kl-hd"><span class="kl-h">آیا REST همان HTTP است؟</span><p>نه. HTTP یک پروتکل انتقال است و REST یک سبک معماری. REST می‌تواند روی هر پروتکلی پیاده شود، ولی در عمل تقریباً همیشه روی HTTP است. بالعکس هم درست است: هر API مبتنی بر HTTP لزوماً REST نیست.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">آیا REST باید حتماً JSON باشد؟</span><p>نه. REST با قالب داده کاری ندارد — XML، CSV، YAML و HTML هم می‌توانند نمایش (Representation) باشند. JSON فقط پرکاربردترین است چون سبک، خوانا و بومی مرورگرهاست.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">PUT و POST هر دو داده می‌فرستند؛ کدام را انتخاب کنم؟</span><p>اگر منبع را <strong>می‌سازید</strong> یا عملیاتی دارید که هر بار اثر جدیدی می‌سازد: <code>POST</code>. اگر منبعی با شناسه‌ی مشخص را <strong>جایگزین</strong> می‌کنید: <code>PUT</code>. قاعده‌ی سریع: POST برای ساخت، PUT برای بازنویسی.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">چرا <code>GET /users/42/delete</code> اشتباه است؟</span><p>چون سه مشکل دارد: <strong>۱)</strong> فعل در URI آمده؛ <strong>۲)</strong> <code>GET</code> باید ایمن باشد و نباید وضعیت عوض کند (مرورگر، کش و prefetch ممکن است آن را اجرا کنند)؛ <strong>۳)</strong> معنای درست، <code>DELETE /users/42</code> است. روش درست: <code>DELETE</code>.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">محدودیت نرخ با کدام Status Code پاسخ داده می‌شود؟</span><p><code dir="ltr">429 Too Many Requests</code> به‌همراه هدر <code>Retry-After</code> که مشخص می‌کند چند ثانیه بعد تلاش کنید، و هدرهای <code>X-RateLimit-*</code> برای نمایش باقی‌مانده. استفاده از 503 یا 403 اشتباه است.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">چه زمانی نسخه‌ی جدید بدهم؟</span><p>فقط برای تغییر شکننده: حذف یا تغییر نوع/معنای فیلد، تغییر Status Code، تغییر الزامی بودن. افزودن فیلد اختیاری، افزودن endpoint یا افزودن مقدار جدید به enum معمولاً نیاز ندارد. جزئیات در <a href="api-versioning.html">مقاله‌ی نسخه‌بندی</a>.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">آیا باید همه‌ی endpoints ها را مستند کنم؟</span><p>بله — و بهترین راه، مستندسازی خودکار با OpenAPI است که از annotation تولید می‌شود تا با کد به‌روز بماند. مستندِ کهنه بدتر از نبود مستند است چون Client را به مسیر غلط می‌برد. جزئیات در <a href="api-documentation.html">مقاله‌ی مستندسازی</a>.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">HATEOAS را باید پیاده کنم؟</span><p>اگر API عمومی با مصرف‌کننده‌های ناشناس دارید، ارزش بررسی دارد. اگر مصرف‌کننده‌ها داخلی و کنترل‌شده‌اند، قرارداد ثابت + OpenAPI معمولاً کافی است. مهم‌تر از آن: تصمیم را صریحاً بگیرید و مستند کنید.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">چطور یک خطای دیتابیس را به Client نشان ندهم؟</span><p>در لایه‌ی وب یک <code>ExceptionTranslator</code> (Spring) یا <code>ExceptionMiddleware</code> (ASP.NET) داشته باشید که استثناها را به پاسخ استاندارد تبدیل کند، جزئیات داخلی را فقط لاگ کند (با traceId) و در پاسخ فقط پیام عمومی + شناسه‌ی پیگیری بدهد.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">برای لیست‌های بزرگ، چرا <code>totalElements</code> خطرناک است؟</span><p>چون <code>COUNT(*)</code> روی جدول بزرگ می‌تواند صدها میلی‌ثانیه طول بکشد و در لیست‌های پرتکرار جمع می‌شود. جایگزین: شمارش تخمینی، شمارش فقط در صفحه‌ی اول، یا حذف آن در فیدهای بی‌انتها.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">آیا REST برای بلادرنگ مناسب است؟</span><p>نه به شکل ذاتی. مدل Request/Response برای جریان مداوم طراحی نشده. برای یک‌طرفه: <a href="sse.html">SSE</a>؛ برای دوطرفه: <a href="websocket.html">WebSocket</a>؛ برای انتشار رویداد: <a href="webhook.html">Webhook</a>.</p></div>
+
+<div class="kl-box kl-hd"><span class="kl-h">اگر عملیات چند ثانیه طول بکشد چه کنم؟</span><p>آن را از مسیر پاسخ خارج کنید: <code dir="ltr">202 Accepted</code> + آدرس پیگیری (مثلاً <code dir="ltr">/api/jobs/j_991</code>) برگردانید و نتیجه را بعداً با GET، یا از طریق Webhook/SSE اعلام کنید. علت: مرورگرها و پروکسی‌ها معمولاً پس از ۳۰–۶۰ ثانیه اتصال را می‌بندند.</p></div>
+</section>
+
+<!-- ==================== 25 ==================== -->
+<section id="s25">
+<h2><span class="kl-num">بخش ۲۵</span>جمع‌بندی و مقالات مرتبط</h2>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">آنچه باید به یاد بماند</span>
+<ol class="kl-check">
+<li><strong>اول منبع، بعد متد</strong> — بپرسید «چه چیزی؟» و بعد «چه عملیاتی؟»، نه برعکس.</li>
+<li><strong>شش محدودیت را بشناسید</strong> — و بدانید کدام را عمداً رعایت نمی‌کنید و چرا.</li>
+<li><strong>Status Code صادق باشد</strong> — 200 برای خطا ندهید؛ 401 و 403 را قاطی نکنید.</li>
+<li><strong>سقف و whitelist</strong> — هیچ پارامتری از Client بدون محدودیت به دیتابیس نرسد.</li>
+<li><strong>Idempotency-Key برای عملیات حساس</strong> — پرداخت، ثبت سفارش، انتقال وجه.</li>
+<li><strong>Cache-Control صریح</strong> — یا <code>private, no-store</code> برای داده‌ی حساس، یا <code>ETag + max-age</code> برای داده‌ی گران.</li>
+<li><strong>DTO از Entity جداست</strong> — قرارداد عمومی هرگز نباید به اسکیمای داخلی وابسته باشد.</li>
+</ol>
+</div>
+
+<h3>مسیر یادگیری</h3>
+
+<div class="ax-path">
+  <div class="ax-path-col ax-path-col--beginner">
+    <div class="ax-path-title">مبتدی</div>
+    <ul class="ax-path-steps">
+      <li><a href="api-fundamentals.html">API چیست؟</a></li>
+      <li><strong>REST API</strong></li>
+      <li><a href="api-security.html">امنیت API</a></li>
+      <li><a href="api-versioning.html">نسخه‌بندی</a></li>
+    </ul>
+  </div>
+  <div class="ax-path-col ax-path-col--mid">
+    <div class="ax-path-title">متوسط</div>
+    <ul class="ax-path-steps">
+      <li><a href="graphql.html">GraphQL</a></li>
+      <li><a href="soap.html">SOAP</a></li>
+      <li><a href="api-testing.html">تست API</a></li>
+      <li><a href="api-comparison.html">مقایسه‌ها</a></li>
+    </ul>
+  </div>
+  <div class="ax-path-col ax-path-col--advanced">
+    <div class="ax-path-title">پیشرفته</div>
+    <ul class="ax-path-steps">
+      <li><a href="grpc.html">gRPC</a></li>
+      <li><a href="api-gateway.html">API Gateway</a></li>
+      <li><a href="bff.html">BFF</a></li>
+      <li><a href="event-driven-api.html">API رویدادمحور</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="ax-related">
+<h3 class="ax-related-title">مقالات مرتبط</h3>
+<div class="ax-related-grid">
+  <a class="ax-related-card" href="api-fundamentals.html">
+    <span class="ax-related-card-cat">مبانی</span>
+    <div class="ax-related-card-title">API چیست؟ — Client/Server، HTTP و Status Code</div>
+  </a>
+  <a class="ax-related-card" href="graphql.html">
+    <span class="ax-related-card-cat">سبک API</span>
+    <div class="ax-related-card-title">GraphQL — وقتی Client شکل پاسخ را تعیین می‌کند</div>
+  </a>
+  <a class="ax-related-card" href="grpc.html">
+    <span class="ax-related-card-cat">RPC</span>
+    <div class="ax-related-card-title">gRPC — ارتباط داخلی با Protobuf و HTTP/2</div>
+  </a>
+  <a class="ax-related-card" href="api-security.html">
+    <span class="ax-related-card-cat">امنیت</span>
+    <div class="ax-related-card-title">امنیت API — OAuth، JWT، CORS و کنترل دسترسی</div>
+  </a>
+  <a class="ax-related-card" href="api-testing.html">
+    <span class="ax-related-card-cat">تست</span>
+    <div class="ax-related-card-title">تست API — MockMvc، WebApplicationFactory و Testcontainers</div>
+  </a>
+  <a class="ax-related-card" href="layered-architecture.html">
+    <span class="ax-related-card-cat">معماری نرم‌افزار</span>
+    <div class="ax-related-card-title">Layered Architecture — مرجع لایه‌بندی Controller → Service → Repository</div>
+  </a>
+</div>
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <nav class="ax-pager" aria-label="پیمایش مقالات سری API">
+            <a class="ax-pager-link" href="api-fundamentals.html">
+              <span class="ax-pager-dir">مقاله‌ی قبلی</span>
+              <span class="ax-pager-title">API چیست؟</span>
+            </a>
+            <a class="ax-pager-link ax-pager-link--next" href="../articles/#api">
+              <span class="ax-pager-dir">ادامه‌ی سری API</span>
+              <span class="ax-pager-title">فهرست مقالات API ←</span>
+            </a>
+          </nav>
+
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۲۵ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه و اهداف یادگیری</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">REST چیست؟ و تاریخچه‌ی Fielding</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">شش محدودیت معماری</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">طراحی منابع و URI</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">متدهای HTTP و عملیات CRUD</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جریان داده و نمونه‌ی Request/Response</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Representations و Content Negotiation</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">صفحه‌بندی، فیلتر، مرتب‌سازی و جستجو</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">HATEOAS</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">نسخه‌بندی (Versioning)</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Idempotency و مدیریت خطا</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">احراز هویت، امنیت و Rate Limiting</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">Caching و کارایی</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">پیاده‌سازی با Java و Spring Boot</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">پیاده‌سازی با C# و ASP.NET Core</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">ساختار پروژه و لایه‌بندی</span></a></li>
+              <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">نمونه‌های واقعی</span></a></li>
+              <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">مزایا</span></a></li>
+              <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">معایب</span></a></li>
+              <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">چه زمانی استفاده کنیم / نکنیم؟</span></a></li>
+              <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مقایسه با GraphQL، gRPC و SOAP</span></a></li>
+              <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">اشتباهات رایج و Testing</span></a></li>
+              <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">سؤالات مصاحبه</span></a></li>
+              <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+              <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s24" class="btn-action-block" style="text-align:center;">
+              <span>پاسخ سریع FAQ ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این راهنما برای توسعه‌دهندگانی که می‌خواهند برای مسئله‌ی واقعی، معماری مناسب انتخاب کنند نوشته شده است؛ نه برای حفظ کردن.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه و اهداف یادگیری</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">REST چیست؟ و تاریخچه‌ی Fielding</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">شش محدودیت معماری</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">طراحی منابع و URI</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">متدهای HTTP و عملیات CRUD</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جریان داده و نمونه‌ی Request/Response</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Representations و Content Negotiation</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">صفحه‌بندی، فیلتر، مرتب‌سازی و جستجو</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">HATEOAS</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">نسخه‌بندی (Versioning)</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Idempotency و مدیریت خطا</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">احراز هویت، امنیت و Rate Limiting</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">Caching و کارایی</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">پیاده‌سازی با Java و Spring Boot</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">پیاده‌سازی با C# و ASP.NET Core</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">ساختار پروژه و لایه‌بندی</span></a></li>
+        <li class="toc-item"><a href="#s17" class="toc-link" data-target="s17"><span class="toc-num">۱۷</span><span class="toc-text">نمونه‌های واقعی</span></a></li>
+        <li class="toc-item"><a href="#s18" class="toc-link" data-target="s18"><span class="toc-num">۱۸</span><span class="toc-text">مزایا</span></a></li>
+        <li class="toc-item"><a href="#s19" class="toc-link" data-target="s19"><span class="toc-num">۱۹</span><span class="toc-text">معایب</span></a></li>
+        <li class="toc-item"><a href="#s20" class="toc-link" data-target="s20"><span class="toc-num">۲۰</span><span class="toc-text">چه زمانی استفاده کنیم / نکنیم؟</span></a></li>
+        <li class="toc-item"><a href="#s21" class="toc-link" data-target="s21"><span class="toc-num">۲۱</span><span class="toc-text">مقایسه با GraphQL، gRPC و SOAP</span></a></li>
+        <li class="toc-item"><a href="#s22" class="toc-link" data-target="s22"><span class="toc-num">۲۲</span><span class="toc-text">اشتباهات رایج و Testing</span></a></li>
+        <li class="toc-item"><a href="#s23" class="toc-link" data-target="s23"><span class="toc-num">۲۳</span><span class="toc-text">سؤالات مصاحبه</span></a></li>
+        <li class="toc-item"><a href="#s24" class="toc-link" data-target="s24"><span class="toc-num">۲۴</span><span class="toc-text">پرسش‌های متداول (FAQ)</span></a></li>
+        <li class="toc-item"><a href="#s25" class="toc-link" data-target="s25"><span class="toc-num">۲۵</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

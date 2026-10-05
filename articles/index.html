@@ -124,21 +124,21 @@
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">📚</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۲۳</span>
+        <span class="posts-stat-value">۲۸</span>
         <span class="posts-stat-label">مقاله منتشرشده</span>
       </div>
     </div>
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">🗂️</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۵</span>
+        <span class="posts-stat-value">۶</span>
         <span class="posts-stat-label">موضوع اصلی</span>
       </div>
     </div>
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">⏱</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۱۱۴۲</span>
+        <span class="posts-stat-value">۱۳۷۲</span>
         <span class="posts-stat-label">دقیقه مطالعه</span>
       </div>
     </div>
@@ -174,30 +174,181 @@
     </div>
 
     <div class="tags-filter" id="articles-filters" role="group" aria-label="فیلتر بر اساس موضوع">
-      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۲۳</span></button>
+      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۲۸</span></button>
       <button type="button" class="tag-btn" data-filter="kotlin" data-label="کاتلین و هم‌زمانی" aria-pressed="false">کاتلین و هم‌زمانی <span class="chip-count" data-count="kotlin">۴</span></button>
       <button type="button" class="tag-btn" data-filter="android" data-label="اندروید و کامپوز" aria-pressed="false">اندروید و کامپوز <span class="chip-count" data-count="android">۴</span></button>
       <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۱۸</span></button>
+      <button type="button" class="tag-btn" data-filter="api" data-label="API و ارتباطات" aria-pressed="false">API و ارتباطات <span class="chip-count" data-count="api">۵</span></button>
       <button type="button" class="tag-btn" data-filter="performance" data-label="پرفورمنس و حافظه" aria-pressed="false">پرفورمنس و حافظه <span class="chip-count" data-count="performance">۲</span></button>
-      <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۴</span></button>
+      <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۵</span></button>
     </div>
   </div>
 
   <!-- ================= Results bar ================= -->
   <div class="posts-results">
     <h2 class="section-title">مقالات منتشرشده</h2>
-    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۲۳ مقاله</p>
+    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۲۸ مقاله</p>
   </div>
 
   <!-- ================= Articles grid ================= -->
   <main class="posts-container">
     <div class="posts-grid" id="articles-grid">
 
+      <article class="post-card" data-category="api" data-tags="api grpc rpc protobuf http2 backend" data-order="28" data-minutes="50" data-featured="true">
+        <a class="post-card-link" href="grpc.html">
+          <div class="post-card-head">
+            <span class="post-cat">API و ارتباطات</span>
+            <span class="post-badge">جدیدترین</span>
+          </div>
+          <h3 class="post-title">gRPC چیست؟ آموزش کامل Protobuf، Streaming و کارایی</h3>
+          <p class="post-excerpt">
+            قرارداد در فایل proto و کدنویسی خودکار، چهار نوع RPC و استریم، HTTP/2 و multiplexing،
+            Metadata و Deadline، مدیریت خطا و Status Code، Interceptor، پیاده‌سازی در Java و Go،
+            تست، مهاجرت از REST — با ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۵۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/grpc.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#gRPC</li>
+              <li class="post-tag">#Protobuf</li>
+              <li class="post-tag">#HTTP2</li>
+              <li class="post-tag">#Streaming</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="api" data-tags="api graphql query mutation backend" data-order="27" data-minutes="45" data-featured="true">
+        <a class="post-card-link" href="graphql.html">
+          <div class="post-card-head">
+            <span class="post-cat">API و ارتباطات</span>
+          </div>
+          <h3 class="post-title">GraphQL چیست؟ آموزش کامل Schema، Query و Mutation</h3>
+          <p class="post-excerpt">
+            Schema و سیستم انواع، Query و Mutation و Subscription، Resolver ها، حل مشکل N+1 با
+            DataLoader، صفحه‌بندی Cursor، خطا و داده‌ی جزئی — با پیاده‌سازی Apollo Server،
+            مقایسه با REST و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۴۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/graphql.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#GraphQL</li>
+              <li class="post-tag">#Schema</li>
+              <li class="post-tag">#Query</li>
+              <li class="post-tag">#Apollo</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="api" data-tags="api soap wsdl xml enterprise backend" data-order="26" data-minutes="45" data-featured="true">
+        <a class="post-card-link" href="soap.html">
+          <div class="post-card-head">
+            <span class="post-cat">API و ارتباطات</span>
+          </div>
+          <h3 class="post-title">SOAP چیست؟ آموزش کامل WSDL، Envelope و Header</h3>
+          <p class="post-excerpt">
+            ساختار پیام Envelope و Header، قرارداد WSDL و XSD، عملیات One-Way و Request-Response،
+            کدگذاری SOAP، مدیریت خطا و Fault — با مقایسه‌ی کامل با REST و gRPC
+            و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۴۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/soap.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#SOAP</li>
+              <li class="post-tag">#WSDL</li>
+              <li class="post-tag">#XML</li>
+              <li class="post-tag">#Enterprise</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="api" data-tags="api rest http backend" data-order="25" data-minutes="55" data-featured="true">
+        <a class="post-card-link" href="rest-api.html">
+          <div class="post-card-head">
+            <span class="post-cat">API و ارتباطات</span>
+          </div>
+          <h3 class="post-title">REST API چیست؟ آموزش کامل RESTful API</h3>
+          <p class="post-excerpt">
+            شش محدودیت معماری Roy Fielding، طراحی منابع و URI، متدها و Status Code، صفحه‌بندی
+            offset در برابر cursor، HATEOAS، نسخه‌بندی و Idempotency — با پیاده‌سازی کامل
+            Spring Boot و ASP.NET Core، تست و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۵۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/rest-api.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#REST</li>
+              <li class="post-tag">#HATEOAS</li>
+              <li class="post-tag">#Spring_Boot</li>
+              <li class="post-tag">#ASP.NET</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="api" data-tags="api fundamentals http json" data-order="24" data-minutes="35" data-featured="true">
+        <a class="post-card-link" href="api-fundamentals.html">
+          <div class="post-card-head">
+            <span class="post-cat">API و ارتباطات</span>
+          </div>
+          <h3 class="post-title">API چیست؟ راهنمای کامل API، HTTP، Client و Server</h3>
+          <p class="post-excerpt">
+            نقطه‌ی شروع سری API: تعریف API و Endpoint، متدهای HTTP و معنای Safe/Idempotent،
+            هدرها، Status Code و مدیریت خطا، تفاوت Authentication با Authorization،
+            Statelessness و Caching — با نمودار، مثال Java و C# و ۲۰ سؤال مصاحبه.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۳۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/api-fundamentals.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#API</li>
+              <li class="post-tag">#HTTP</li>
+              <li class="post-tag">#JSON</li>
+              <li class="post-tag">#Endpoint</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
       <article class="post-card" data-category="architecture" data-tags="java architecture" data-order="23" data-minutes="65" data-featured="true">
         <a class="post-card-link" href="microservices-architecture.html">
           <div class="post-card-head">
             <span class="post-cat">معماری نرم‌افزار</span>
-            <span class="post-badge">جدیدترین</span>
           </div>
           <h3 class="post-title">Microservices چیست؟ آموزش کامل معماری سرویس‌محور با مثال و ساختار پروژه</h3>
           <p class="post-excerpt">
