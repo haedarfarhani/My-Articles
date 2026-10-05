@@ -27,6 +27,8 @@
 
   /* ---------- REST call ---------- */
   function callFunction(name, params) {
+    if (HF.net) return HF.net.callFunction(name, params);
+
     if (!CFG.server || !CFG.appId) {
       return Promise.reject(new Error('پیکربندی Back4App کامل نیست (js/parse-config.js).'));
     }
@@ -64,6 +66,7 @@
       '</div>',
       '',
       '<form class="comment-form" data-comment-form novalidate>',
+      '  <div class="net-note-slot" data-net-slot></div>',
       '  <div class="form-row">',
       '    <div class="form-group">',
       '      <label class="form-label" for="cm-name">نام *</label>',
@@ -245,6 +248,21 @@
     let skip = 0;
     let total = 0;
     let loading = false;
+    let lastSubmit = null;
+
+    const notice = HF.net
+      ? HF.net.buildNotice({
+          title: 'برای ثبت نظر، VPN باید روشن باشد',
+          text: 'سرور سایت از داخل ایران پاسخ نمی‌دهد. قبل از ارسال، VPN را روشن کنید. ' +
+                'اگر VPN از قبل روشن بود، یک بار صفحه را تازه کنید.',
+          retry: function () { if (lastSubmit) lastSubmit(); else load(false); }
+        })
+      : null;
+
+    if (notice) {
+      const slot = section.querySelector('[data-net-slot]');
+      if (slot) slot.appendChild(notice.el);
+    }
 
     function updateCount() {
       countEl.textContent = total > 0 ? fa(total) + ' نظر' : 'هنوز نظری نیست';
@@ -282,10 +300,17 @@
 
           moreBtn.hidden = !(res.pagination && res.pagination.hasMore);
           updateCount();
+          if (notice) notice.markOk();
         })
         .catch(function (err) {
-          if (!append) setState(list, 'بارگذاری نظرات ممکن نشد: ' + (err.message || 'خطای نامشخص'));
-          else toast('بارگذاری توضیح داده نشد.', 'error');
+          if (HF.net && HF.net.isBlocked(err)) {
+            if (notice) notice.escalate();
+            if (!append) setState(list, 'برای دیدن و ثبت نظر باید VPN روشن باشد.');
+          } else if (!append) {
+            setState(list, 'بارگذاری نظرات ممکن نشد: ' + (err.message || 'خطای نامشخص'));
+          } else {
+            toast('بارگذاری توضیح داده نشد.', 'error');
+          }
         })
         .then(function () { loading = false; });
     }
@@ -296,9 +321,8 @@
       e.preventDefault();
 
       const nameEl = form.querySelector('#cm-name');
-      const emailEl = form.querySelector('#cm-email');
       const name = nameEl.value.trim();
-      const email = emailEl.value.trim();
+      const email = form.querySelector('#cm-email').value.trim();
       const content = contentEl.value.trim();
 
       if (!name || content.length < 3) {
@@ -307,30 +331,44 @@
         return;
       }
 
-      submitBtn.disabled = true;
-      statusEl.textContent = 'در حال ارسال…';
-      statusEl.className = 'comment-status';
-
-      callFunction('createComment', {
+      const payload = {
         articleId: id,
         name: name,
         email: email,
         content: content,
         website: form.querySelector('#cm-website').value
-      })
-        .then(function (res) {
-          statusEl.textContent = (res && res.message) || 'نظر شما ثبت شد.';
-          statusEl.className = 'comment-status is-success';
-          form.reset();
-          toast('نظر ثبت شد و پس از بررسی نمایش داده می‌شود.', 'success');
-          skip = 0;
-          load(false);
-        })
-        .catch(function (err) {
-          statusEl.textContent = err.message || 'ارسال نظر ناموفق بود.';
-          statusEl.className = 'comment-status is-error';
-        })
-        .then(function () { submitBtn.disabled = false; });
+      };
+
+      function send() {
+        submitBtn.disabled = true;
+        statusEl.textContent = 'در حال ارسال…';
+        statusEl.className = 'comment-status';
+
+        return callFunction('createComment', payload)
+          .then(function (res) {
+            statusEl.textContent = (res && res.message) || 'نظر شما ثبت شد.';
+            statusEl.className = 'comment-status is-success';
+            form.reset();
+            toast('نظر ثبت شد و پس از بررسی نمایش داده می‌شود.', 'success');
+            skip = 0;
+            load(false);
+          })
+          .catch(function (err) {
+            if (HF.net && HF.net.isBlocked(err)) {
+              if (notice) notice.escalate();
+              statusEl.textContent = 'ارسال انجام نشد؛ VPN را روشن کنید و دوباره تلاش کنید.';
+              statusEl.className = 'comment-status is-error';
+              toast('ارسال انجام نشد؛ VPN خاموش است.', 'error');
+            } else {
+              statusEl.textContent = err.message || 'ارسال نظر ناموفق بود.';
+              statusEl.className = 'comment-status is-error';
+            }
+          })
+          .then(function () { submitBtn.disabled = false; });
+      }
+
+      lastSubmit = send;
+      send();
     });
 
     updateCount();

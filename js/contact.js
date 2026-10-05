@@ -1,7 +1,8 @@
 /* ============================================================
    Contact page — sends the message to Back4App Cloud Code
    POST /functions/submitContactMessage
-   The clipboard button stays as an offline fallback.
+   Shows a VPN notice because the server is unreachable from Iran
+   without one; the clipboard button stays as an offline fallback.
    ============================================================ */
 (function () {
   'use strict';
@@ -16,11 +17,7 @@
     const sendBtn = form.querySelector('[data-contact-send]');
     const copyBtn = form.querySelector('[data-contact-copy]');
     const statusEl = form.querySelector('[data-contact-status]');
-
-    const nameEl = form.querySelector('#cf-name');
-    const emailEl = form.querySelector('#cf-email');
-    const topicEl = form.querySelector('#cf-topic');
-    const messageEl = form.querySelector('#cf-message');
+    const slot = form.querySelector('[data-net-slot]');
 
     function toast(msg, type) {
       if (HF.toast) HF.toast(msg, type);
@@ -32,8 +29,8 @@
       statusEl.className = 'contact-status' + (type ? ' is-' + type : '');
     }
 
-    function field(name) {
-      const el = form.querySelector(name);
+    function field(selector) {
+      const el = form.querySelector(selector);
       return el ? el.value.trim() : '';
     }
 
@@ -47,28 +44,22 @@
       ].filter(Boolean).join('\n');
     }
 
-    function callFunction(name, params) {
-      if (!CFG.server || !CFG.appId) {
-        return Promise.reject(new Error('پیکربندی Back4App کامل نیست (js/parse-config.js).'));
-      }
-      return fetch(CFG.server + '/functions/' + name, {
-        method: 'POST',
-        headers: {
-          'X-Parse-Application-Id': CFG.appId,
-          'X-Parse-Javascript-Key': CFG.jsKey || '',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params || {})
-      })
-        .then(function (r) {
-          return r.json().catch(function () {
-            throw new Error('پاسخ سرور قابل خواندن نبود.');
-          });
+    let lastSubmit = null;
+
+    const notice = HF.net
+      ? HF.net.buildNotice({
+          title: 'برای ارسال پیام، VPN باید روشن باشد',
+          text: 'سرور سایت از داخل ایران پاسخ نمی‌دهد. قبل از ارسال، VPN را روشن کنید. ' +
+                'اگر VPN از قبل روشن بود، یک بار صفحه را تازه کنید.',
+          retry: function () { if (lastSubmit) lastSubmit(); }
         })
-        .then(function (data) {
-          if (data && data.error) throw new Error(data.error);
-          return data.result || {};
-        });
+      : null;
+
+    if (notice && slot) slot.appendChild(notice.el);
+
+    function callFunction(name, params) {
+      if (HF.net) return HF.net.callFunction(name, params);
+      return Promise.reject(new Error('ماژول شبکه بارگذاری نشده است.'));
     }
 
     function copyFallback() {
@@ -81,52 +72,72 @@
       else failed();
     }
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const name = field('#cf-name');
-      const message = field('#cf-message');
-
-      if (!name || message.length < 5) {
+    function valid() {
+      if (!field('#cf-name') || field('#cf-message').length < 5) {
         setStatus('نام و متن پیام را کامل وارد کنید.', 'error');
         toast('نام و متن پیام را کامل وارد کنید.', 'error');
-        return;
+        return false;
       }
+      return true;
+    }
 
-      sendBtn.disabled = true;
-      setStatus('در حال ارسال…', '');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!valid()) return;
 
-      callFunction('submitContactMessage', {
-        name: name,
+      const payload = {
+        name: field('#cf-name'),
         email: field('#cf-email'),
         subject: field('#cf-topic'),
-        message: message,
+        message: field('#cf-message'),
         website: field('#cf-website')
-      })
-        .then(function (res) {
-          setStatus((res && res.message) || 'پیام شما با موفقیت ارسال شد.', 'success');
-          toast('پیام شما ارسال شد ✓', 'success');
-          form.reset();
-          setTimeout(function () {
-            if (statusEl) statusEl.textContent = '';
-          }, 6000);
-        })
-        .catch(function (err) {
-          const msg = err.message || 'ارسال پیام ناموفق بود.';
-          setStatus(msg + ' (می‌توانید از دکمه «کپی متن» استفاده کنید.)', 'error');
-          toast(msg, 'error');
-        })
-        .then(function () { sendBtn.disabled = false; });
+      };
+
+      function send() {
+        sendBtn.disabled = true;
+        setStatus('در حال ارسال…', '');
+
+        return callFunction('submitContactMessage', payload)
+          .then(function (res) {
+            setStatus((res && res.message) || 'پیام شما با موفقیت ارسال شد.', 'success');
+            toast('پیام شما ارسال شد ✓', 'success');
+            form.reset();
+            if (notice) notice.markOk();
+            setTimeout(function () {
+              if (statusEl) statusEl.textContent = '';
+            }, 6000);
+          })
+          .catch(function (err) {
+            if (HF.net && HF.net.isBlocked(err)) {
+              if (notice) notice.escalate();
+              setStatus('ارسال انجام نشد؛ VPN را روشن کنید و دوباره تلاش کنید.', 'error');
+              toast('ارسال انجام نشد؛ VPN خاموش است.', 'error');
+            } else {
+              const msg = err.message || 'ارسال پیام ناموفق بود.';
+              setStatus(msg + ' (می‌توانید از دکمه «کپی متن پیام» استفاده کنید.)', 'error');
+              toast(msg, 'error');
+            }
+          })
+          .then(function () { sendBtn.disabled = false; });
+      }
+
+      lastSubmit = send;
+      send();
     });
 
     if (copyBtn) {
       copyBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        if (!field('#cf-name') || !field('#cf-message')) {
-          toast('برای کپی، نام و متن پیام را وارد کنید.', 'error');
-          return;
-        }
+        if (!valid()) return;
         copyFallback();
+      });
+    }
+
+    /* Probe once on load so the reader learns the state before trying */
+    if (HF.net && notice) {
+      HF.net.probe().then(function (reachable) {
+        if (reachable) notice.markOk();
+        else notice.escalate();
       });
     }
   }

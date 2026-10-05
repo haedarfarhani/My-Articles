@@ -41,10 +41,12 @@
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/articles.css">
   <link rel="stylesheet" href="../css/contact.css">
+  <link rel="stylesheet" href="../css/net-guard.css">
   <link rel="stylesheet" href="../css/responsive.css">
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/net-guard.js"></script>
   <script defer src="../js/contact.js"></script>
 
   <script type="application/ld+json">
@@ -206,6 +208,8 @@
         </p>
 
         <form id="contact-form" novalidate>
+          <div class="net-note-slot" data-net-slot></div>
+
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="cf-name">نام *</label>
