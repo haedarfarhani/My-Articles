@@ -255,7 +255,7 @@
   margin: 2.5rem auto 3rem;
   padding-inline: clamp(0.85rem, 3vw, 1.5rem);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 1.25rem;
 }
 

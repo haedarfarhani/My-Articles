@@ -31,16 +31,19 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/comments.js"></script>
   <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
-  <script defer src="../api/js/api-demos.js"></script>
+  <script defer src="../js/api-demos.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
   <link rel="stylesheet" href="../css/diagram-anim.css">
-  <link rel="stylesheet" href="../api/css/api-series.css">
+  <link rel="stylesheet" href="../css/api-series.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -62,7 +65,8 @@
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
         { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
-        { "@type": "ListItem", "position": 3, "name": "REST API", "item": "https://haedarfarhani.github.io/My-Articles/articles/rest-api.html" }
+        { "@type": "ListItem", "position": 3, "name": "سری API", "item": "https://haedarfarhani.github.io/My-Articles/articles/#api" },
+        { "@type": "ListItem", "position": 4, "name": "REST API", "item": "https://haedarfarhani.github.io/My-Articles/articles/rest-api.html" }
       ]
     }
   }
@@ -84,9 +88,9 @@
       </a>
 
       <div class="nav-center">
-        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+        <a href="./" class="nav-breadcrumb-tag" title="بازگشت به فهرست سری API" style="text-decoration:none;color:inherit;">
           <span>&#128221;</span>
-          <span>مقالات و راهنماها</span>
+          <span>سری جامع API</span>
         </a>
       </div>
 
@@ -123,11 +127,12 @@
           </h1>
 
           <p class="hero-lead">
-            <code>REST</code> پرکاربردترین سبک API در جهان است — و پرسوءتفاهم‌ترین. در این
-            راهنما از <strong>شش محدودیت‌ی معماری</strong> که <code>Roy Fielding</code> در پایان‌نامه‌ی
-            ۲۰۰۰ تعریف کرد شروع می‌کنیم، به طراحی منابع و <code>URI</code>، صفحه‌بندی،
-            <code>HATEOAS</code>، نسخه‌بندی و <code>Caching</code> می‌رسیم و در پایان یک API کامل
-            با <code>Spring Boot</code> و <code>ASP.NET Core</code> می‌سازیم.
+            <code>REST</code> پرکاربردترین <strong>سبک معماری</strong> برای طراحی رابط برنامه‌نویسی
+            (API) در جهان است — و در عین حال پرسوءتفاهم‌ترین. در این راهنما از
+            <strong>شش محدودیت معماری</strong> که <code>Roy Fielding</code> در پایان‌نامه‌ی ۲۰۰۰ تعریف کرد
+            شروع می‌کنیم، به طراحی منابع و <code>URI</code>، صفحه‌بندی، <code>HATEOAS</code>،
+            کش‌پذیری و نسخه‌بندی می‌رسیم و در پایان یک رابط برنامه‌نویسی کامل با
+            <code>Spring Boot</code> و <code>ASP.NET Core</code> می‌سازیم.
           </p>
 
           <div class="hero-meta-bar">
@@ -167,14 +172,14 @@
               <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>شش محدودیت معماری</span></a></li>
               <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>طراحی منابع و URI</span></a></li>
               <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>متدهای HTTP و عملیات CRUD</span></a></li>
-              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>جریان داده و نمونه‌ی Request/Response</span></a></li>
-              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>Representations و Content Negotiation</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>جریان داده و نمونه‌ی درخواست و پاسخ</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>نمایش‌ها و مذاکره‌ی محتوا</span></a></li>
               <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>صفحه‌بندی، فیلتر، مرتب‌سازی و جستجو</span></a></li>
               <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>HATEOAS</span></a></li>
               <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>نسخه‌بندی (Versioning)</span></a></li>
-              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>Idempotency و مدیریت خطا</span></a></li>
-              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>احراز هویت، امنیت و Rate Limiting</span></a></li>
-              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>Caching و کارایی</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>ایدمپوتنت‌بودن و مدیریت خطا</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>احراز هویت، امنیت و محدودسازی نرخ</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>کش‌پذیری و کارایی</span></a></li>
               <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>پیاده‌سازی با Java و Spring Boot</span></a></li>
               <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>پیاده‌سازی با C# و ASP.NET Core</span></a></li>
               <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>ساختار پروژه و لایه‌بندی</span></a></li>
@@ -197,19 +202,19 @@
 <h2><span class="kl-num">بخش ۱</span>مقدمه و اهداف یادگیری</h2>
 
 <p>
-اگر در مصاحبه بپرسند «REST چیست؟»، اکثر مصاحبه‌شوندگان جواب می‌دهند: «API ای که با HTTP و JSON
+اگر در مصاحبه بپرسند «REST چیست؟»، اکثر مصاحبه‌شوندگان جواب می‌دهند: «رابطی که با HTTP و JSON
 کار می‌کند». این جواب <strong>اشتباه</strong> است — و دقیقاً همان سوءتفاهمی است که این مقاله می‌خواهد
-از بین ببرد. بسیاری از «API های RESTful» ادعایی، در واقع REST نیستند.
+از بین ببرد. بسیاری از «رابط‌های برنامه‌نویسی RESTful» که فقط ادعای REST بودن دارند، در واقع REST نیستند.
 </p>
 
 <div class="kl-box kl-hd">
 <span class="kl-h">اهداف یادگیری</span>
 <ol class="kl-check">
-<li>شش محدودیت معماری REST را بشناسید و بتوانید تشخیص دهید API شما REST هست یا نه</li>
-<li>منابع را به‌درستی نام‌گذاری و URI طراحی کنید</li><li>متد و Status Code درست را برای هر عملیات انتخاب کنید</li>
+<li>شش محدودیت معماری REST را بشناسید و بتوانید تشخیص دهید رابط برنامه‌نویسی شما REST است یا نه</li>
+<li>منابع را به‌درستی نام‌گذاری و URI طراحی کنید</li><li>متد و کد وضعیت درست را برای هر عملیات انتخاب کنید</li>
 <li>صفحه‌بندی، فیلتر و جستجو را استاندارد پیاده کنید</li>
 <li>نسخه‌بندی و سازگاری رو به عقب را مدیریت کنید</li>
-<li>یک API کامل با Spring Boot و ASP.NET Core بسازید</li>
+<li>یک رابط برنامه‌نویسی کامل با Spring Boot و ASP.NET Core بسازید</li>
 </ol>
 </div>
 
@@ -228,14 +233,14 @@
 <div class="kl-box kl-hd">
 <span class="kl-h">تعریف رسمی</span>
 <p>
-<strong>REST</strong> یک سبک معماری سیستم‌های توزیع‌شده است که <code>Roy Fielding</code> در
-<strong>پایان‌نامه‌ی دکترای ۲۰۰۰</strong> خود با عنوان
+<strong>REST</strong> یک <em>سبک معماری</em> برای سیستم‌های توزیع‌شده است که
+<code>Roy Fielding</code> در <strong>پایان‌نامه‌ی دکترای ۲۰۰۰</strong> خود با عنوان
 «<em>Architectural Styles and the Design of Network-based Software Architectures</em>»
 مطرح کرد. REST نتیجه‌ی تحلیل معماری‌های موفق اینترنت (HTTP، URIs، HTML) بود و
 <strong>شش محدودیت</strong> را به‌عنوان تعریف ارائه داد.
 </p>
 <p>
-نکته‌ی ظریف: REST برای وب جهانی طراحی شد، نه برای API های داخلی سازمان. به همین دلیل
+نکته‌ی ظریف: REST برای وب جهانی طراحی شد، نه برای رابط‌های برنامه‌نویسی داخلی سازمان. به همین دلیل
 رعایت کامل آن در ارتباط سرویس‌به‌سرویس، همیشه معنادار نیست — و این را در بخش مقایسه می‌بینید.
 </p>
 </div>
@@ -274,8 +279,8 @@
 <tr><td>واحد اصلی</td><td><strong>منبع (Resource)</strong></td><td>عملیات (Operation)</td><td>سرویس (Service)</td></tr>
 <tr><td>نام‌گذاری</td><td>منابع با URI</td><td>متدها با نام فعل</td><td>Operations در WSDL</td></tr>
 <tr><td>عملیات</td><td>HTTP methods</td><td>معمولاً فقط POST</td><td>SOAP verbs</td></tr>
-<tr><td>قرارداد</td><td>توافقی + OpenAPI</td><td>توافقی</td><td>WSDL + XSD (سفت)</td></tr>
-<tr><td>کش</td><td>بخش ذاتی (Cacheability)</td><td>معمولاً کل بی‌اثر</td><td>پیچیده</td></tr>
+<tr><td>قرارداد</td><td>قرارداد ضمنی + <span dir="ltr">OpenAPI</span></td><td>توافقی</td><td dir="ltr">WSDL + XSD</td> (سفت)</td></tr>
+<tr><td>کش</td><td>بخش ذاتی (Cacheability)</td><td>معمولاً نیست</td><td>پیچیده</td></tr>
 </tbody>
 </table>
 </section>
@@ -295,12 +300,12 @@
 <tr><th>#</th><th>محدودیت</th><th>چه می‌گوید</th><th>هزینه‌ی نقض</th></tr>
 </thead>
 <tbody>
-<tr><td>۱</td><td><strong>Client-Server</strong></td><td>مرز مشخص بین Client و Server؛ هرکدام مستقل تکامل می‌یابند</td><td>ترکیب منطق، امکان مستقل‌سازی از بین می‌رود</td></tr>
-<tr><td>۲</td><td><strong>Statelessness</strong></td><td>سرور هیچ وضعیت نشستی بین درخواست‌ها نگه نمی‌دارد؛ هر درخواست کامل است</td><td>مقیاس‌پذیری و بازیابی خرابی سخت می‌شود</td></tr>
-<tr><td>۳</td><td><strong>Cacheability</strong></td><td>هر پاسخ باید قابل کش باشد یا صریحاً غیرقابل کش بودنش را اعلام کند</td><td>بار بی‌مورد روی سرور و تأخیر غیرضروری</td></tr>
-<tr><td>۴</td><td><strong>Uniform Interface</strong></td><td>چهار جزء: شناسایی منابع، نمایش خودتوصیفی، خودتوضیحی درخواست، تعامل مبتنی بر HATEOAS</td><td>قرارداد پنهان، Client به جزئیات داخلی وابسته می‌شود</td></tr>
-<tr><td>۵</td><td><strong>Layered System</strong></td><td>Client نمی‌داند آیا مستقیم به سرور وصل است یا از لایه‌هایی (proxy, gateway) رد شده</td><td>امکان قرار دادن CDN و Gateway از بین می‌رود</td></tr>
-<tr><td>۶</td><td><strong>Code on Demand</strong> <span class="ax-badge ax-badge--pattern">اختیاری</span></td><td>سرور می‌تواند کد قابل اجرا (مثل اسکریپت) برای Client بفرستد</td><td>محدود — فقط افزودنی است</td></tr>
+<tr><td>۱</td><td><strong>کلاینت-سرور</strong> <span dir="ltr">(Client-Server)</span></td><td>مرز مشخص بین کلاینت و سرور؛ هرکدام مستقل تکامل می‌یابند</td><td>ترکیب منطق، امکان مستقل‌سازی از بین می‌رود</td></tr>
+<tr><td>۲</td><td><strong>بدون حالت</strong> <span dir="ltr">(Statelessness)</span></td><td>سرور هیچ وضعیت نشستی میان درخواست‌ها نگه نمی‌دارد؛ هر درخواست خودبسنده است</td><td>مقیاس‌پذیری و بازیابی خرابی دشوار می‌شود</td></tr>
+<tr><td>۳</td><td><strong>کش‌پذیری</strong> <span dir="ltr">(Cacheability)</span></td><td>هر پاسخ باید کش‌پذیر باشد یا صریحاً اعلام کند که کش نمی‌شود</td><td>بار بی‌مورد روی سرور و تأخیر غیرضروری</td></tr>
+<tr><td>۴</td><td><strong>رابط یکنواخت</strong> <span dir="ltr">(Uniform Interface)</span></td><td>چهار جزء: شناسایی منابع، نمایش خودتوصیف، خودتوضیحی بودن درخواست، و تعامل هدایت‌شده توسط <span dir="ltr">HATEOAS</span></td><td>قرارداد پنهان، کلاینت به جزئیات داخلی وابسته می‌شود</td></tr>
+<tr><td>۵</td><td><strong>سیستم لایه‌ای</strong> <span dir="ltr">(Layered System)</span></td><td>کلاینت نمی‌داند آیا مستقیم به سرور وصل است یا از لایه‌هایی مانند <span dir="ltr">proxy</span> و <span dir="ltr">gateway</span> رد شده</td><td>امکان قرار دادن CDN و Gateway از بین می‌رود</td></tr>
+<tr><td>۶</td><td><strong>کد روی تقاضا</strong> <span dir="ltr">(Code on Demand)</span> <span class="ax-badge ax-badge--pattern">اختیاری</span></td><td>سرور می‌تواند کد قابل اجرا (مثلاً اسکریپت) برای کلاینت بفرستد</td><td>محدود — فقط افزودنی است</td></tr>
 </tbody>
 </table>
 </div>
@@ -310,7 +315,7 @@
 <p>
 در مصاحبه اگر پرسیدند «چند محدودیت دارد؟» بگویید <strong>شش تا، که ششمی اختیاری است</strong>.
 و اگر پرسیدند «کدام مهم‌تر است؟» — پاسخ درست این است که هیچ‌کدام تنها نیست؛ ولی
-<strong>Uniform Interface</strong> هسته‌ی تمایز REST است، چون چهار جزءش دقیقاً همان چیزی است
+<strong>رابط یکنواخت</strong> هسته‌ی تمایز REST است، چون چهار جزءش دقیقاً همان چیزی است
 که «منبع + متد + نمایش» را می‌سازد.
 </p>
 </div>
@@ -342,8 +347,8 @@
 <h2><span class="kl-num">بخش ۴</span>طراحی منابع و URI</h2>
 
 <p>
-طراحی REST با <strong>شناسایی منابع</strong> شروع می‌شود، نه با نوشتن متد. اول بپرسید
-«چه چیزی را می‌خواهید نشان دهید؟» و بعد «با آن چه می‌خواهید بکنید؟».
+طراحی منابع در REST با <strong>شناسایی منابع (Resource Identification)</strong> شروع می‌شود، نه با
+نوشتن متد. اول بپرسید «چه چیزی را می‌خواهید نشان دهید؟» و بعد «با آن چه می‌خواهید بکنید؟».
 </p>
 
 <table>
@@ -356,7 +361,7 @@
 <tr><td>مرتب‌سازی سلسله‌مراتبی</td><td dir="ltr"><code>/api/orders/1042/items/3</code></td><td dir="ltr"><code>/api/orderItem?o=1042&amp;i=3</code></td></tr>
 <tr><td>حرف کوچک + جداکننده‌ی <code>-</code></td><td dir="ltr"><code>/api/order-items</code></td><td dir="ltr"><code>/api/OrderItems</code></td></tr>
 <tr><td>حالت را از URI حذف کنید</td><td dir="ltr"><code>DELETE /api/users/42</code></td><td dir="ltr"><code>/api/users/42/delete</code></td></tr>
-<tr><td>منابع دارایی (Collection)</td><td dir="ltr"><code>/api/users</code></td><td dir="ltr"><code>/api/userList</code></td></tr>
+<tr><td>منابع مجموعه‌ای (Collection)</td><td dir="ltr"><code>/api/users</code></td><td dir="ltr"><code>/api/userList</code></td></tr>
 </tbody>
 </table>
 
@@ -381,7 +386,7 @@
 <div class="kl-check">
 <ul>
 <li><strong>URI حساس به حروف بزرگ:</strong> <code dir="ltr">/API/Users</code> و <code dir="ltr">/api/users</code> دو چیز متفاوت‌اند. یکی را انتخاب و رعایت کنید.</li>
-<li><strong>حالت نهفته در URI:</strong> <code dir="ltr">/users/42/activate</code> مجاز نیست مگر اینکه activate یک sub-resource واقعی باشد؛ وگرنه متد <code dir="ltr">PATCH</code> با <code>{"active":true}</code> درست‌تر است.</li>
+<li><strong>حالت نهفته در URI:</strong> <code dir="ltr">/users/42/activate</code> مجاز نیست مگر اینکه activate نام یک زیرمنبع (sub-resource) واقعی باشد؛ وگرنه متد <code dir="ltr">PATCH</code> با <code>{"active":true}</code> درست‌تر است.</li>
 </ul>
 </div>
 </div>
@@ -392,7 +397,8 @@
 <h2><span class="kl-num">بخش ۵</span>متدهای HTTP و عملیات CRUD</h2>
 
 <p>
-روی هر منبع، این پنج متد معنای مشخصی دارند. نکته‌ی کلیدی: <strong>روی یک منبع واحد</strong>، نه در سطح کل API.
+روی هر منبع، این پنج متد معنای مشخصی دارند. نکته‌ی کلیدی: معنا را <strong>روی یک منبع واحد</strong>
+تعریف کنید، نه در سطح کل رابط برنامه‌نویسی.
 </p>
 
 <table>
@@ -410,7 +416,7 @@
 
 <table>
 <thead>
-<tr><th>متد</th><th>Safe</th><th>Idempotent</th><th>کش</th></tr>
+<tr><td>متد</td><th>ایمن (Safe)</th><th>ایدمپوتنت (Idempotent)</th><th>کش‌پذیر</th></tr>
 </thead>
 <tbody>
 <tr><td dir="ltr">GET</td><td>✅</td><td>✅</td><td>✅ قابل کش</td></tr>
@@ -420,6 +426,122 @@
 <tr><td dir="ltr">DELETE</td><td>❌</td><td>✅</td><td>❌</td></tr>
 </tbody>
 </table>
+
+<figure class="kl-fig">
+  <svg viewBox="0 0 770 430" role="img" aria-label="جدول معناشناختی متدهای HTTP روی سه محور ایمنی، ایدمپوتنت بودن و کش‌پذیری، همراه با تأکید بر تفاوت PUT و PATCH">
+  <!-- سربرگ ستون‌ها؛ نخستین ستون «متد» در راست قرار دارد -->
+  <rect class="s-group" x="14" y="10" width="736" height="42" rx="10"/>
+  <text class="s-group-t" x="693" y="37" text-anchor="middle">متد</text>
+  <text class="s-group-t" x="576" y="37" text-anchor="middle">ایمن</text>
+  <text class="s-group-t" x="458" y="37" text-anchor="middle">ایدمپوتنت</text>
+  <text class="s-group-t" x="339" y="37" text-anchor="middle">کش‌پذیر</text>
+  <text class="s-group-t" x="237" y="37" text-anchor="middle">بدنه</text>
+  <text class="s-group-t" x="100" y="37" text-anchor="middle">توضیح</text>
+
+  <!-- جداکننده‌های شبکه‌ی جدول -->
+  <path class="s-dash" d="M 14 52 L 750 52"/>
+  <path class="s-dash" d="M 14 100 L 750 100"/>
+  <path class="s-dash" d="M 14 146 L 750 146"/>
+  <path class="s-dash" d="M 14 192 L 750 192"/>
+  <path class="s-dash" d="M 14 238 L 750 238"/>
+  <path class="s-dash" d="M 14 284 L 750 284"/>
+  <path class="s-dash" d="M 196 10 L 196 284"/>
+  <path class="s-dash" d="M 278 10 L 278 284"/>
+  <path class="s-dash" d="M 390 10 L 390 284"/>
+  <path class="s-dash" d="M 516 10 L 516 284"/>
+  <path class="s-dash" d="M 626 10 L 626 284"/>
+
+  <!-- ردیف ۱ — GET -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="636" y="56" width="114" height="42" rx="9"/>
+    <text class="s-tc" x="693" y="83" text-anchor="middle">GET</text>
+    <rect class="s-ok" x="532" y="63" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="576" y="82" text-anchor="middle">بله</text>
+    <rect class="s-ok" x="414" y="63" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="458" y="82" text-anchor="middle">بله</text>
+    <rect class="s-ok" x="295" y="63" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="339" y="82" text-anchor="middle">بله</text>
+    <rect class="s-c6" x="197" y="63" width="80" height="28" rx="7"/>
+    <text class="s-t2" x="237" y="82" text-anchor="middle">ندارد</text>
+    <text class="s-t2" x="100" y="82" text-anchor="middle">فقط خواندن</text>
+  </g>
+  <!-- ردیف ۲ — POST -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="636" y="102" width="114" height="42" rx="9"/>
+    <text class="s-tc" x="693" y="129" text-anchor="middle">POST</text>
+    <rect class="s-bad" x="532" y="109" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="576" y="128" text-anchor="middle">خیر</text>
+    <rect class="s-bad" x="414" y="109" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="458" y="128" text-anchor="middle">خیر</text>
+    <rect class="s-bad" x="295" y="109" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="339" y="128" text-anchor="middle">خیر</text>
+    <rect class="s-acc" x="197" y="109" width="80" height="28" rx="7"/>
+    <text class="s-t2" x="237" y="128" text-anchor="middle">دارد</text>
+    <text class="s-t2" x="100" y="128" text-anchor="middle">اثر جانبی تازه</text>
+  </g>
+  <!-- ردیف ۳ — PUT -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="636" y="148" width="114" height="42" rx="9"/>
+    <text class="s-tc" x="693" y="175" text-anchor="middle">PUT</text>
+    <rect class="s-bad" x="532" y="155" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="576" y="174" text-anchor="middle">خیر</text>
+    <rect class="s-ok" x="414" y="155" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="458" y="174" text-anchor="middle">بله</text>
+    <rect class="s-bad" x="295" y="155" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="339" y="174" text-anchor="middle">خیر</text>
+    <rect class="s-acc" x="197" y="155" width="80" height="28" rx="7"/>
+    <text class="s-t2" x="237" y="174" text-anchor="middle">دارد</text>
+    <text class="s-t2" x="100" y="174" text-anchor="middle">جایگزینی کامل</text>
+  </g>
+  <!-- ردیف ۴ — PATCH -->
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-acc" x="636" y="194" width="114" height="42" rx="9"/>
+    <text class="s-tc" x="693" y="221" text-anchor="middle">PATCH</text>
+    <rect class="s-bad" x="532" y="201" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="576" y="220" text-anchor="middle">خیر</text>
+    <rect class="s-warn" x="414" y="201" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="458" y="220" text-anchor="middle">بستگی دارد</text>
+    <rect class="s-bad" x="295" y="201" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="339" y="220" text-anchor="middle">خیر</text>
+    <rect class="s-acc" x="197" y="201" width="80" height="28" rx="7"/>
+    <text class="s-t2" x="237" y="220" text-anchor="middle">دارد</text>
+    <text class="s-t2" x="100" y="220" text-anchor="middle">تغییر جزئی</text>
+  </g>
+  <!-- ردیف ۵ — DELETE -->
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-acc" x="636" y="240" width="114" height="42" rx="9"/>
+    <text class="s-tc" x="693" y="267" text-anchor="middle">DELETE</text>
+    <rect class="s-bad" x="532" y="247" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="576" y="266" text-anchor="middle">خیر</text>
+    <rect class="s-ok" x="414" y="247" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="458" y="266" text-anchor="middle">بله</text>
+    <rect class="s-bad" x="295" y="247" width="88" height="28" rx="7"/>
+    <text class="s-t2" x="339" y="266" text-anchor="middle">خیر</text>
+    <rect class="s-warn" x="197" y="247" width="80" height="28" rx="7"/>
+    <text class="s-t2" x="237" y="266" text-anchor="middle">اختیاری</text>
+    <text class="s-t2" x="100" y="266" text-anchor="middle">حذف منبع</text>
+  </g>
+
+  <!-- کادر تأکید: چرا PUT ذاتاً ایدمپوتنت است و PATCH نیست -->
+  <g class="s-node s-lo" style="--kl-i:6">
+    <rect class="s-group-acc" x="14" y="300" width="736" height="116" rx="12"/>
+    <text class="s-group-t" x="385" y="324" text-anchor="middle">تفاوت کلیدی PUT و PATCH</text>
+    <rect class="s-acc" x="404" y="336" width="344" height="50" rx="9"/>
+    <text class="s-tc" x="576" y="356" text-anchor="middle">PUT</text>
+    <text class="s-t2" x="576" y="376" text-anchor="middle">بدنه = نسخه‌ی کامل منبع</text>
+    <rect class="s-c6" x="16" y="336" width="344" height="50" rx="9"/>
+    <text class="s-tc" x="188" y="356" text-anchor="middle">PATCH</text>
+    <text class="s-t2" x="188" y="376" text-anchor="middle">بدنه = فقط فیلدهای تغییرکرده</text>
+    <path class="s-arr s-flow-soft" d="M 398 361 L 366 361"/>
+    <path class="s-head-dim" d="M 364 361 L 374 354 L 374 368 Z"/>
+    <circle class="s-runner-dim" r="4">
+      <animateMotion dur="2.4s" repeatCount="indefinite" path="M 398 361 L 366 361"/>
+    </circle>
+    <text class="s-t2 s-lbl" x="382" y="404" text-anchor="middle" style="--kl-i:6">دامنه‌ی اثر یکی نیست</text>
+  </g>
+</svg>
+<figcaption>معنای متدهای HTTP روی سه محور: <strong>ایمن</strong> یعنی فقط می‌خواند و وضعیت را عوض نمی‌کند؛ <strong>ایدمپوتنت</strong> یعنی تکرار درخواست همان اثر را دارد؛ و <strong>کش‌پذیر</strong> یعنی پاسخش را می‌توان ذخیره و دوباره استفاده کرد. <code>PUT</code> و <code>DELETE</code> ذاتاً ایدمپوتنت‌اند، اما <code>PATCH</code> این ویژگی را ندارد و به محتوای بدنه بستگی دارد.</figcaption>
+</figure>
 
 <h3>PUT در برابر PATCH</h3>
 
@@ -448,64 +570,117 @@
 <div class="kl-box kl-deep">
 <span class="kl-h">PUT یا PATCH؟</span>
 <p>
-اگر می‌توانید کل منبع را بدون اطلاع قبلی بازنویسی کنید، <code>PUT</code>. اگر کلاینت فقط
-بخشی را دارد (مثلاً فقط فیلد «نام خوانوادگی» عوض شده)، <code>PATCH</code>. اغلب سرویس‌ها هر دو را
-پشتیبانی می‌کنند و <code>PATCH</code> برای اپ‌های موبایل که فهرست فیلدها محدود است، راحت‌تر است.
+اگر می‌توانید کل منبع را بدون اطلاع قبلی بازنویسی کنید، <code>PUT</code> را انتخاب کنید. اگر کلاینت
+تنها بخشی از منبع را در اختیار دارد (مثلاً فقط فیلد «نام خوانوادگی» عوض شده است)، <code>PATCH</code>
+مناسب‌تر است. اغلب سرویس‌ها هر دو را پشتیبانی می‌کنند و <code>PATCH</code> برای اپ‌های موبایل که
+فهرست فیلدهایشان محدود است، راحت‌تر تمام می‌شود.
 </p>
 </div>
 </section>
 
 <!-- ==================== 6 ==================== -->
 <section id="s6">
-<h2><span class="kl-num">بخش ۶</span>جریان داده و نمونه‌ی Request/Response</h2>
+<h2><span class="kl-num">بخش ۶</span>جریان داده و نمونه‌ی درخواست و پاسخ</h2>
 
 <figure class="kl-fig">
-  <svg viewBox="0 0 780 300" role="img" aria-labelledby="fig-rest-t fig-rest-d" preserveAspectRatio="xMidYMid meet">
-    <title id="fig-rest-t">جریان کامل یک درخواست REST</title>
-    <desc id="fig-rest-d">Client درخواست GET را به Load Balancer می‌فرستد، به Controller، سپس Service، Repository و Database می‌رسد و پاسخ JSON با 200 OK برمی‌گردد.</desc>
+  <svg viewBox="0 0 770 426" role="img" aria-label="معماری لایه‌ای یک رابط برنامه‌نویسی REST در شش مرز عمودی: کلاینت، پروتکل HTTP یا HTTPS، کنترلر REST، سرویس کاربرد، مخزن و پایگاه داده؛ ذره‌ای درخواست را از راست به پایین و ذره‌ای پاسخ را از چپ به بالا طی می‌کند.">
+  <!-- مسیر درخواست: از کلاینت رو به پایین تا پایگاه داده -->
+  <text class="s-t2 s-lbl" x="716" y="28" text-anchor="middle" style="--kl-i:0">درخواست</text>
+  <path class="s-arr s-flow" d="M 716 67 L 716 131"/>
+  <path class="s-head" d="M 716 133 L 708 121 L 724 121 Z"/>
+  <path class="s-arr s-flow" d="M 716 131 L 716 195"/>
+  <path class="s-head" d="M 716 197 L 708 185 L 724 185 Z"/>
+  <path class="s-arr s-flow" d="M 716 195 L 716 259"/>
+  <path class="s-head" d="M 716 261 L 708 249 L 724 249 Z"/>
+  <path class="s-arr s-flow" d="M 716 259 L 716 323"/>
+  <path class="s-head" d="M 716 325 L 708 313 L 724 313 Z"/>
+  <path class="s-arr s-flow" d="M 716 323 L 716 387"/>
+  <path class="s-head" d="M 716 389 L 708 377 L 724 377 Z"/>
 
-    <rect x="16" y="120" width="130" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="81" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">Client</text>
-    <text x="81" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">GET /users/42</text>
+  <!-- مسیر پاسخ: از پایگاه داده رو به بالا تا کلاینت -->
+  <text class="s-t2 s-lbl" x="54" y="28" text-anchor="middle" style="--kl-i:0">پاسخ</text>
+  <path class="s-arr s-flow-soft" d="M 54 387 L 54 323"/>
+  <path class="s-head-dim" d="M 54 321 L 46 333 L 62 333 Z"/>
+  <path class="s-arr s-flow-soft" d="M 54 323 L 54 259"/>
+  <path class="s-head-dim" d="M 54 257 L 46 269 L 62 269 Z"/>
+  <path class="s-arr s-flow-soft" d="M 54 259 L 54 195"/>
+  <path class="s-head-dim" d="M 54 193 L 46 205 L 62 205 Z"/>
+  <path class="s-arr s-flow-soft" d="M 54 195 L 54 131"/>
+  <path class="s-head-dim" d="M 54 129 L 46 141 L 62 141 Z"/>
+  <path class="s-arr s-flow-soft" d="M 54 131 L 54 67"/>
+  <path class="s-head-dim" d="M 54 65 L 46 77 L 62 77 Z"/>
 
-    <rect x="186" y="120" width="118" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="245" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">Gateway</text>
-    <text x="245" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">auth + limit</text>
+  <!-- رابط‌های افقی میان هر مرز و ستون جریان -->
+  <path class="s-line" d="M 674 67 L 708 67"/>
+  <path class="s-line" d="M 674 131 L 708 131"/>
+  <path class="s-line" d="M 674 195 L 708 195"/>
+  <path class="s-line" d="M 674 259 L 708 259"/>
+  <path class="s-line" d="M 674 323 L 708 323"/>
+  <path class="s-line" d="M 674 387 L 708 387"/>
+  <path class="s-line" d="M 60 67 L 96 67"/>
+  <path class="s-line" d="M 60 131 L 96 131"/>
+  <path class="s-line" d="M 60 195 L 96 195"/>
+  <path class="s-line" d="M 60 259 L 96 259"/>
+  <path class="s-line" d="M 60 323 L 96 323"/>
+  <path class="s-line" d="M 60 387 L 96 387"/>
 
-    <rect x="344" y="120" width="118" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="403" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">Controller</text>
-    <text x="403" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">HTTP</text>
+  <!-- ذره‌های متحرک: درخواست پایین می‌رود، پاسخ بالا می‌آید -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 716 67 L 716 387"/>
+  </circle>
+  <circle class="s-runner-dim" r="5">
+    <animateMotion dur="3s" begin="1.2s" repeatCount="indefinite" path="M 54 387 L 54 67"/>
+  </circle>
 
-    <rect x="502" y="120" width="118" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="561" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">Service</text>
-    <text x="561" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">domain</text>
-
-    <rect x="660" y="120" width="104" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="712" y="146" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">DB</text>
-    <text x="712" y="166" text-anchor="middle" font-size="11" fill="var(--text-muted)">Repository</text>
-
-    <defs>
-      <marker id="arr-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill="var(--color-primary)"/>
-      </marker>
-    </defs>
-
-    <g stroke="var(--color-primary)" stroke-width="2.4" fill="none" class="s-arr">
-      <line x1="146" y1="135" x2="182" y2="135" marker-end="url(#arr-r)"/>
-      <line x1="304" y1="135" x2="340" y2="135" marker-end="url(#arr-r)"/>
-      <line x1="462" y1="135" x2="498" y2="135" marker-end="url(#arr-r)"/>
-      <line x1="620" y1="135" x2="656" y2="135" marker-end="url(#arr-r)"/>
-    </g>
-    <g class="s-flow" stroke="var(--color-secondary)" stroke-width="2.4" fill="none">
-      <path d="M712,184 L712,236 L81,236 L81,186" marker-end="url(#arr-r)"/>
-    </g>
-    <text x="396" y="256" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-secondary)">پاسخ JSON: HTTP/1.1 200 OK</text>
-    <text x="396" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-primary)">درخواست: اعتبارسنجی → احراز هویت → منطق → داده</text>
-  </svg>
-  <figcaption>مسیر یک درخواست GET از Client تا دیتابیس و برگشت — هر جعبه یک مرز مسئولیت است.</figcaption>
+  <!-- مرز ۱ — کلاینت (نخستین مرز، در راست) -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-c6" x="96" y="44" width="578" height="46" rx="10"/>
+    <text class="s-t2" x="126" y="71" text-anchor="middle">۱</text>
+    <text class="s-t" x="252" y="72" text-anchor="middle">Client</text>
+    <text class="s-t2" x="470" y="71" text-anchor="middle">کلاینت؛ سازنده‌ی درخواست</text>
+  </g>
+  <!-- مرز ۲ — پروتکل انتقال -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c5" x="96" y="108" width="578" height="46" rx="10"/>
+    <text class="s-t2" x="126" y="135" text-anchor="middle">۲</text>
+    <text class="s-t" x="252" y="136" text-anchor="middle">HTTP / HTTPS</text>
+    <text class="s-t2" x="470" y="135" text-anchor="middle">پروتکل؛ نشانی، متد و هدر</text>
+  </g>
+  <!-- مرز ۳ — کنترلر REST -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-acc" x="96" y="172" width="578" height="46" rx="10"/>
+    <text class="s-t2" x="126" y="199" text-anchor="middle">۳</text>
+    <text class="s-t" x="252" y="200" text-anchor="middle">REST Controller</text>
+    <text class="s-t2" x="470" y="199" text-anchor="middle">کنترلر؛ تبدیل درخواست به فرمان</text>
+  </g>
+  <!-- مرز ۴ — سرویس کاربرد -->
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-warn" x="96" y="236" width="578" height="46" rx="10"/>
+    <text class="s-t2" x="126" y="263" text-anchor="middle">۴</text>
+    <text class="s-t" x="252" y="264" text-anchor="middle">Application Service</text>
+    <text class="s-t2" x="470" y="263" text-anchor="middle">سرویس کاربرد؛ منطق دامنه و تراکنش</text>
+  </g>
+  <!-- مرز ۵ — مخزن -->
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c4" x="96" y="300" width="578" height="46" rx="10"/>
+    <text class="s-t2" x="126" y="327" text-anchor="middle">۵</text>
+    <text class="s-t" x="252" y="328" text-anchor="middle">Repository</text>
+    <text class="s-t2" x="470" y="327" text-anchor="middle">مخزن؛ دسترسی به داده با قرارداد ثابت</text>
+  </g>
+  <!-- مرز ۶ — پایگاه داده -->
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-ok" x="96" y="364" width="578" height="46" rx="10"/>
+    <text class="s-t2" x="126" y="391" text-anchor="middle">۶</text>
+    <text class="s-t" x="252" y="392" text-anchor="middle">Database</text>
+    <text class="s-t2" x="470" y="391" text-anchor="middle">پایگاه داده؛ ماندگاری رکوردها</text>
+  </g>
+</svg>
+<figcaption>مسیر یک درخواست از کلاینت تا پایگاه داده و بازگشت آن. هر مرز یک قرارداد صریح دارد و فقط از بالا به پایین صدا زده می‌شود؛ در <strong>بدون حالت</strong> بودن این مسیر، سرور هیچ نشستی میان درخواست‌ها نگه نمی‌دارد و به همین دلیل افزودن نمونه‌های تازه بدون پیکربندی خاص ممکن است.</figcaption>
 </figure>
 
-<h3>یک چرخه‌ی کامل</h3><pre class="kl-code"data-lang="text"><code>① Client          GET /api/users/42
+<h3>یک چرخه‌ی کامل</h3>
+
+<pre class="kl-code" data-lang="text"><code>① Client          GET /api/users/42
                   Accept: application/json
                   Authorization: Bearer ...
 
@@ -545,19 +720,20 @@
     </div>
     <p class="ax-demo-caption" data-rest-caption></p>
     <pre class="ax-http-pre"><code dir="ltr" data-rest-out></code></pre>
-    <p class="ax-demo-hint">متد را عوض کنید: بدنه، هدرها، ایدمپوتنت بودن و Status Code پاسخ تغییر می‌کنند.</p>
+    <p class="ax-demo-hint">متد را عوض کنید: بدنه، هدرها، ایدمپوتنت بودن و کد وضعیت پاسخ تغییر می‌کند.</p>
   </div>
 </div>
 </section>
 
 <!-- ==================== 7 ==================== -->
 <section id="s7">
-<h2><span class="kl-num">بخش ۷</span>Representations و Content Negotiation</h2>
+<h2><span class="kl-num">بخش ۷</span>نمایش‌ها (Representation) و مذاکره‌ی محتوا (Content Negotiation)</h2>
 
 <p>
-نکته‌ی ظریف REST این است: <strong>منبع و نمایش آن، دو چیز جدا هستند</strong>. شما URL را
-<span dir="ltr">/api/users/42</span> می‌گیرید، ولی می‌توانید JSON، XML یا حتی CSV بگیرید.
-همان منبع، نمایش‌های متعدد دارد.
+نکته‌ی ظریف REST این است که <strong>منبع و نمایش (Representation) آن دو چیز جدا هستند</strong>.
+شما یک شناسه‌ی یکتا (<code dir="ltr">URI</code>) می‌گیرید، ولی می‌توانید نمایش
+<code>JSON</code>، <code>XML</code> یا حتی <code>CSV</code> بخواهید. یعنی یک منبع، چند نمایش
+می‌تواند داشته باشد.
 </p>
 
 <table>
@@ -565,7 +741,7 @@
 <tr><th>نمایش</th><th>هدر</th><th>کاربرد</th></tr>
 </thead>
 <tbody>
-<tr><td>JSON</td><td dir="ltr"><code>application/json</code></td><td>پیش‌فرض اکثر API ها</td></tr>
+<tr><td><code>JSON</code></td><td dir="ltr"><code>application/json</code></td><td>پیش‌فرض بیشتر رابط‌های برنامه‌نویسی</td></tr>
 <tr><td>XML</td><td dir="ltr"><code>application/xml</code></td><td>یکپارچگی سازمانی، SOAP</td></tr>
 <tr><td>CSV</td><td dir="ltr"><code>text/csv</code></td><td>گزارش‌گیری و اکسل</td></tr>
 <tr><td>HTML</td><td dir="ltr"><code>text/html</code></td><td>HATEOAS و نمایش انسانی</td></tr>
@@ -585,15 +761,15 @@ Vary: Accept, Accept-Language
 Vary: Accept-Encoding</code></pre>
 
 <div class="kl-box kl-deep">
-<span class="kl-h">هدر Vary را فراموش نکنید</span>
+<span class="kl-h">هدر <code dir="ltr">Vary</code> را فراموش نکنید</span>
 بدون <code>Vary: Accept</code>، یک کش می‌تواند پاسخ JSON را به درخواست XML برگرداند. این
 یکی از رایج‌ترین خطاهای کش در سیستم‌های چندزبانه و چندقالبی است.
 </div>
 
 <div class="kl-box kl-warn">
 <span class="kl-h">واقعیت عملی</span>
-اکثر تیم‌ها فقط JSON تولید می‌کنند و این کاملاً قابل قبول است — به شرط آنکه صریحاً
-مستند کنند: «فقط JSON». سکوت درباره‌ی قالب‌ها، Client را وادار به حدس می‌کند.
+اکثر تیم‌ها فقط نمایش <code>JSON</code> تولید می‌کنند و این کاملاً قابل قبول است — به شرط آنکه صریحاً
+مستند کنند: «فقط JSON». سکوت درباره‌ی قالب‌ها، کلاینت را وادار به حدس زدن می‌کند.
 </div>
 </section>
 <!-- ==================== 8 ==================== -->
@@ -601,9 +777,9 @@ Vary: Accept-Encoding</code></pre>
 <h2><span class="kl-num">بخش ۸</span>صفحه‌بندی، فیلتر، مرتب‌سازی و جستجو</h2>
 
 <p>
-هر فهرستی در مرحله‌ای از رشد، بدون صفحه‌بندی از کار می‌افتد. قاعده: <strong>هیچ‌وقت یک endpoint
-فهرست بدون سقف تعداد نسازید</strong> — یک <code dir="ltr">?size=999999</code> می‌تواند کل
-دیتابیس را بیرون بکشد و سرور را زمین بزند.
+هر فهرستی در مرحله‌ای از رشد، بدون صفحه‌بندی از کار می‌افتد. قاعده: <strong>هیچ‌وقت نقطه‌ی پایانی
+(Endpoint) فهرستی را بدون سقف تعداد نسازید</strong> — یک <code dir="ltr">?size=999999</code> می‌تواند کل
+پایگاه داده را بیرون بکشد و سرور را از کار بیندازد.
 </p>
 
 <table>
@@ -620,7 +796,7 @@ Vary: Accept-Encoding</code></pre>
 </tbody>
 </table>
 
-<h3>Offset یا Cursor؟</h3>
+<h3>صفحه‌بندی با Offset یا Cursor؟</h3>
 
 <div class="ax-versus">
   <div class="ax-versus-side">
@@ -628,7 +804,7 @@ Vary: Accept-Encoding</code></pre>
     <ul>
       <li><code dir="ltr">?page=3&amp;size=20</code></li>
       <li>ساده و قابل فهم</li>
-      <li>در صفحات عمیق <strong>کند</strong> می‌شود (database باید ۶۰ رکورد را دور بریزد)</li>
+      <li>در صفحات عمیق <strong>کند</strong> می‌شود (پایگاه داده باید ۶۰ رکورد را دور بریزد)</li>
       <li><strong>ناسازگار</strong> با داده‌ی در حال تغییر: رکورد جدید، آیتم را جابه‌جا می‌کند</li>
     </ul>
   </div>
@@ -667,10 +843,10 @@ Vary: Accept-Encoding</code></pre>
 }</code></pre>
 
 <div class="kl-box kl-warn">
-<span class="kl-h">تله‌ی <code>totalElements</code></span>
-شمارش کل (<code dir="ltr">COUNT(*)</code>) روی جدول‌های بزرگ بسیار گران است. در لیست‌های
+<span class="kl-h">تله‌ی <code dir="ltr">totalElements</code></span>
+شمارش کل (<code dir="ltr">COUNT(*)</code>) روی جدول‌های بزرگ بسیار گران است. در فهرست‌های
 پرحجم، یا از تخمین استفاده کنید، یا شمارش را پشت صفحه‌ی بعدی و پرکاربرد قرار دهید، یا
-آن را در لیست‌های بی‌انتها به‌کل حذف کنید.
+آن را در فهرست‌های بی‌انتها به‌کل حذف کنید.
 </div>
 </section>
 
@@ -681,8 +857,8 @@ Vary: Accept-Encoding</code></pre>
 <div class="kl-box kl-hd">
 <span class="kl-h">تعریف</span>
 <strong>HATEOAS</strong> مخفف <em>Hypermedia As The Engine Of Application State</em> است: پاسخ
-علاوه بر داده، <strong>لینک‌های اقدام بعدی ممکن</strong> را هم برمی‌گرداند تا Client رفتارش را از
-خودِ پاسخ بیاموزد، نه از دانش ازپیش‌کدشده.
+علاوه بر داده، <strong>لینک‌های اقدام بعدی ممکن</strong> را هم برمی‌گرداند تا کلاینت رفتارش را از
+خودِ پاسخ بیاموزد، نه از دانش از پیش کدشده.
 </div>
 
 <pre class="kl-code" data-lang="json"><code>{
@@ -698,7 +874,7 @@ Vary: Accept-Encoding</code></pre>
 }</code></pre>
 
 <p>
-وقتی سفارش لغو می‌شود، لینک <code>cancel</code> دیگر برنمی‌گردد. Client مجبور نیست بداند
+وقتی سفارش لغو می‌شود، لینک <code>cancel</code> دیگر برنمی‌گردد. کلاینت مجبور نیست بداند
 «سفارشِ لغوشده قابل لغو نیست» — خودِ داده به او می‌گوید چه می‌تواند بکند.
 </p>
 
@@ -708,7 +884,7 @@ Vary: Accept-Encoding</code></pre>
 سه هزینه دارد: پیچیدگی سمت سرور، پیچیدگی تست (پاسخ‌ها به وابستگی حساس‌اند)، و نیاز به
 قرارداد لینک‌ها. به همین دلیل اکثر تیم‌ها به <strong>قرارداد ثابت + OpenAPI</strong> بسنده می‌کنند
 و HATEOAS را رها می‌کنند. این انتخاب آگاهانه‌ای است و اشکالی ندارد — فقط به یاد داشته
-باشید که در آن صورت، API شما <em>کامل</em> RESTful نیست.
+باشید که در آن صورت، رابط برنامه‌نویسی شما <em>کاملاً</em> RESTful نیست.
 </p>
 <p>
 فرمت‌های رایج لینک: <code>HAL</code>، <code>JSON:API</code> و <code>Siren</code>.
@@ -721,8 +897,8 @@ Vary: Accept-Encoding</code></pre>
 <h2><span class="kl-num">بخش ۱۰</span>نسخه‌بندی (Versioning)</h2>
 
 <p>
-نسخه‌بندی فقط برای <strong>تغییر شکننده</strong> لازم است. اگر فیلدی اضافه می‌کنید یا endpoint
-تازه می‌سازید، نسخه‌ی جدید لازم نیست.
+نسخه‌بندی فقط برای <strong>تغییر شکننده</strong> لازم است. اگر فیلدی اضافه می‌کنید یا نقطه‌ی پایانی
+تازه‌ای می‌سازید، نسخه‌ی جدید لازم نیست.
 </p>
 
 <div class="ax-tablewrap">
@@ -734,7 +910,7 @@ Vary: Accept-Encoding</code></pre>
 <tr><td><strong>URI</strong></td><td dir="ltr"><code>/api/v1/users</code></td><td>ساده، قابل تشخیص، کش‌پذیر</td><td>مسیر را شلوغ می‌کند؛ از نظر REST خالص اشکال دارد (منبع باید پایدار بماند)</td></tr>
 <tr><td><strong>هدر</strong></td><td dir="ltr"><code>Accept: application/vnd.myapp.v1+json</code></td><td>URI تمیز می‌ماند</td><td>تست و کش سخت‌تر؛ در مرورگر مستقیم قابل تست نیست</td></tr>
 <tr><td><strong>Query</strong></td><td dir="ltr"><code>?version=1</code></td><td>خیلی ساده</td><td>در همه‌ی درخواست‌ها باید تکرار شود؛ فراموش‌شدنی است</td></tr>
-<tr><td><strong>Media Type</strong></td><td dir="ltr"><code>application/vnd.myapp.v1+json</code></td><td>از Content Negotiation واقعی استفاده می‌کند</td><td>پیچیده‌ترین پیاده‌سازی</td></tr>
+<tr><td><strong>Media Type</strong></td><td dir="ltr"><code>application/vnd.myapp.v1+json</code></td><td>از مذاکره‌ی محتوا (Content Negotiation) واقعی استفاده می‌کند</td><td>پیچیده‌ترین پیاده‌سازی</td></tr>
 </tbody>
 </table>
 </div>
@@ -770,21 +946,21 @@ Link: &lt;https://api.example.com/v2/users&gt;; rel="successor-version"</code></
 
 <div class="kl-box kl-ok">
 <span class="kl-h">روش پیشنهادی</span>
-<strong>URI versioning</strong> برای اکثر تیم‌ها عملی‌ترین انتخاب است: واضح، در لاگ‌ها قابل ردیابی،
-و در Gateway به‌سادگی مسیریابی می‌شود. پیچیدگی هدر را فقط وقتی بپذیرید که واقعاً نیاز دارید
-URI را تمیز نگه دارید.
+<strong>نسخه‌بندی در URI</strong> برای اکثر تیم‌ها عملی‌ترین انتخاب است: واضح، در لاگ‌ها قابل ردیابی،
+و در Gateway به‌سادگی مسیریابی می‌شود. پیچیدگی هدر را فقط وقتی بپذیرید که واقعاً لازم دارید
+تا URI تمیز بماند.
 </div>
 </section>
 
 <!-- ==================== 11 ==================== -->
 <section id="s11">
-<h2><span class="kl-num">بخش ۱۱</span>Idempotency و مدیریت خطا</h2>
+<h2><span class="kl-num">بخش ۱۱</span>ایدمپوتنت‌بودن (Idempotency) و مدیریت خطا</h2>
 
-<h3>ایدمپوتنت بودن در عمل</h3>
+<h3>ایدمپوتنت بودن (Idempotency) در عمل</h3>
 
 <p>
-وقتی شبکه قطع می‌شود، Client نمی‌داند درخواست به سرور رسیده یا نه. تنها راه امن،
-<strong>تلاش مجدد</strong> است — و تنها راه امنِ تلاش مجدد، ایدمپوتنت بودن است.
+وقتی شبکه قطع می‌شود، کلاینت نمی‌داند درخواست به سرور رسیده است یا نه. تنها راه امن،
+<strong>تلاش مجدد</strong> است — و تنها راهِ امنِ تلاش مجدد، <strong>ایدمپوتنت بودن</strong> است.
 </p>
 
 <pre class="kl-code" data-lang="http"><code>POST /api/payments HTTP/1.1
@@ -808,7 +984,7 @@ Idempotency-Replayed: true
 <ol class="kl-check">
 <li>کلید را <strong>همراه با درخواست اصلی</strong> در یک تراکنش ذخیره کنید، نه بعد از پاسخ.</li>
 <li>اگر همان کلید با <strong>بدنه‌ی متفاوت</strong> آمد، خطا بدهید (<code dir="ltr">409</code>) — این
-یک باگ Client است و باید دیده شود.</li>
+یک باگ کلاینت است و باید دیده شود.</li>
 <li>کلید را برای مدت مشخص (مثلاً ۲۴ ساعت) نگه دارید و بعد پاک‌سازی کنید.</li>
 </ol>
 </div>
@@ -827,6 +1003,65 @@ Idempotency-Replayed: true
   ]
 }</code></pre>
 
+<figure class="kl-fig">
+  <svg viewBox="0 0 770 406" role="img" aria-label="قالب ساختاریافته‌ی خطا در قالب داده JSON به همراه برچسب‌های فارسی که هر بخش از سربرگ و بدنه را توضیح می‌دهند">
+  <!-- خط راهنما از برچسب تا بخش مورد نظر -->
+  <path class="s-arr s-flow-soft" d="M 168 46 L 240 46"/>
+  <path class="s-head-dim" d="M 244 46 L 236 40 L 236 52 Z"/>
+  <path class="s-arr s-flow-soft" d="M 168 76 L 240 76"/>
+  <path class="s-head-dim" d="M 244 76 L 236 70 L 236 82 Z"/>
+  <path class="s-arr s-flow-soft" d="M 168 106 L 240 106"/>
+  <path class="s-head-dim" d="M 244 106 L 236 100 L 236 112 Z"/>
+  <path class="s-arr s-flow-soft" d="M 168 200 L 240 200"/>
+  <path class="s-head-dim" d="M 244 200 L 236 194 L 236 206 Z"/>
+  <path class="s-arr s-flow-soft" d="M 168 224 L 240 224"/>
+  <path class="s-head-dim" d="M 244 224 L 236 218 L 236 230 Z"/>
+  <path class="s-arr s-flow-soft" d="M 168 272 L 240 272"/>
+  <path class="s-head-dim" d="M 244 272 L 236 266 L 236 278 Z"/>
+  <path class="s-arr s-flow-soft" d="M 168 344 L 240 344"/>
+  <path class="s-head-dim" d="M 244 344 L 236 338 L 236 350 Z"/>
+
+  <!-- ذره‌های متحرک روی خط‌های راهنما -->
+  <circle class="s-runner" r="4">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 168 46 L 240 46"/>
+  </circle>
+  <circle class="s-runner" r="4">
+    <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite" path="M 168 200 L 240 200"/>
+  </circle>
+
+  <!-- بلوک سربرگ پاسخ -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-chip" x="250" y="12" width="506" height="122" rx="10"/>
+    <text class="s-tc" x="503" y="46" text-anchor="middle">HTTP/1.1 409 Conflict</text>
+    <text class="s-tc" x="503" y="76" text-anchor="middle">Content-Type: application/json</text>
+    <text class="s-tc" x="503" y="106" text-anchor="middle">X-Trace-Id: 8f14e45f-ea2c</text>
+  </g>
+  <!-- بلوک بدنه‌ی پاسخ -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-c6" x="250" y="150" width="506" height="240" rx="10"/>
+    <text class="s-tc" x="503" y="176" text-anchor="middle">{</text>
+    <text class="s-tc" x="503" y="200" text-anchor="middle">"status": 409,</text>
+    <text class="s-tc" x="503" y="224" text-anchor="middle">"error": "Conflict",</text>
+    <text class="s-tc" x="503" y="248" text-anchor="middle">"message": "شماره ثبت شده",</text>
+    <text class="s-tc" x="503" y="272" text-anchor="middle">"path": "/api/users",</text>
+    <text class="s-tc" x="503" y="296" text-anchor="middle">"traceId": "8f14e45f-ea2c",</text>
+    <text class="s-tc" x="503" y="320" text-anchor="middle">"errors": [</text>
+    <text class="s-tc" x="503" y="344" text-anchor="middle">{ "field": "phone" }</text>
+    <text class="s-tc" x="503" y="368" text-anchor="middle">] }</text>
+  </g>
+
+  <!-- برچسب‌های توضیحی -->
+  <text class="s-t2 s-lbl" x="100" y="46" text-anchor="middle" style="--kl-i:1">وضعیت HTTP</text>
+  <text class="s-t2 s-lbl" x="100" y="76" text-anchor="middle" style="--kl-i:2">نوع قالب داده</text>
+  <text class="s-t2 s-lbl" x="100" y="106" text-anchor="middle" style="--kl-i:3">شناسه‌ی پیگیری</text>
+  <text class="s-t2 s-lbl" x="100" y="200" text-anchor="middle" style="--kl-i:4">کد وضعیت در بدنه</text>
+  <text class="s-t2 s-lbl" x="100" y="224" text-anchor="middle" style="--kl-i:5">پیام برای مصرف‌کننده</text>
+  <text class="s-t2 s-lbl" x="100" y="272" text-anchor="middle" style="--kl-i:6">مسیر درخواست</text>
+  <text class="s-t2 s-lbl" x="100" y="344" text-anchor="middle" style="--kl-i:7">خطای هر فیلد</text>
+</svg>
+<figcaption>شکل ساختاریافته‌ی خطا. سربرگ‌ها <strong>وضعیت</strong>، <strong>قالب داده</strong> و <strong>شناسه‌ی پیگیری</strong> را می‌دهند و بدنه‌ی <code>JSON</code> هم پیام قابل فهم برای مصرف‌کننده را نگه می‌دارد و هم فهرست خطاهای هر فیلد را، تا کلاینت بتواند خطا را دقیقاً کنار همان فیلد فرم نشان دهد.</figcaption>
+</figure>
+
 <table>
 <thead>
 <tr><th>وضعیت</th><th>کد</th><th>چه موقع</th></tr>
@@ -838,23 +1073,112 @@ Idempotency-Replayed: true
 <tr><td>منبع ناموجود</td><td dir="ltr">404</td><td>شناسه وجود ندارد</td></tr>
 <tr><td>تضاد</td><td dir="ltr">409</td><td>وضعیت فعلی اجازه نمی‌دهد</td></tr>
 <tr><td>پیش‌شرط شکسته</td><td dir="ltr">412</td><td><code>If-Match</code> ناموفق</td></tr>
-<tr><td>بیش از حد مجاز</td><td dir="ltr">429</td><td>Rate limit</td></tr>
+<tr><td>نرخ درخواست‌ها بیش از حد</td><td dir="ltr">429</td><td>محدودسازی نرخ فعال شده</td></tr>
 <tr><td>خطای سرور</td><td dir="ltr">500</td><td>خطای غیرمنتظره</td></tr>
 </tbody>
 </table>
 
+<figure class="kl-fig">
+  <svg viewBox="0 0 770 324" role="img" aria-label="سه خانواده‌ی کد وضعیت ۲xx و ۴xx و ۵xx، هرکدام با یک کد نماینده، چند کد پرکاربرد و واکنش درست کلاینت">
+  <!-- ستون نخست (۲xx) در راست قرار دارد -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-ok" x="526" y="8" width="230" height="36" rx="9"/>
+    <text class="s-group-t" x="641" y="31" text-anchor="middle">۲xx — موفق</text>
+    <path class="s-arr s-flow" d="M 641 48 L 641 66"/>
+    <path class="s-head" d="M 641 70 L 634 59 L 648 59 Z"/>
+    <circle class="s-runner" r="4.5">
+      <animateMotion dur="2.2s" repeatCount="indefinite" path="M 641 48 L 641 66"/>
+    </circle>
+    <rect class="s-c6" x="526" y="72" width="230" height="42" rx="9"/>
+    <text class="s-tc" x="641" y="99" text-anchor="middle">200 OK</text>
+    <path class="s-dash" d="M 538 126 L 744 126"/>
+    <g class="s-node s-lo" style="--kl-i:4">
+      <text class="s-tc" x="641" y="150" text-anchor="middle">۲۰۱ Created</text>
+      <text class="s-t2" x="641" y="168" text-anchor="middle">منبع تازه ساخته شد</text>
+    </g>
+    <g class="s-node s-lo" style="--kl-i:5">
+      <text class="s-tc" x="641" y="196" text-anchor="middle">۲۰۴ No Content</text>
+      <text class="s-t2" x="641" y="214" text-anchor="middle">موفقیت بدون بدنه</text>
+    </g>
+    <g class="s-node s-lo" style="--kl-i:6">
+      <text class="s-tc" x="641" y="242" text-anchor="middle">۲۰۲ Accepted</text>
+      <text class="s-t2" x="641" y="260" text-anchor="middle">پردازش ناهم‌زمان</text>
+    </g>
+    <rect class="s-ok" x="526" y="274" width="230" height="36" rx="9"/>
+    <text class="s-t2" x="641" y="297" text-anchor="middle">نتیجه را مصرف کنید</text>
+  </g>
+
+  <!-- ستون دوم (۴xx) -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-warn" x="270" y="8" width="230" height="36" rx="9"/>
+    <text class="s-group-t" x="385" y="31" text-anchor="middle">۴xx — خطای کلاینت</text>
+    <path class="s-arr s-flow" d="M 385 48 L 385 66"/>
+    <path class="s-head" d="M 385 70 L 378 59 L 392 59 Z"/>
+    <circle class="s-runner" r="4.5">
+      <animateMotion dur="2.2s" begin="0.6s" repeatCount="indefinite" path="M 385 48 L 385 66"/>
+    </circle>
+    <rect class="s-c6" x="270" y="72" width="230" height="42" rx="9"/>
+    <text class="s-tc" x="385" y="99" text-anchor="middle">404 Not Found</text>
+    <path class="s-dash" d="M 282 126 L 488 126"/>
+    <g class="s-node s-lo" style="--kl-i:7">
+      <text class="s-tc" x="385" y="150" text-anchor="middle">۴۰۰ Bad Request</text>
+      <text class="s-t2" x="385" y="168" text-anchor="middle">درخواست نامعتبر</text>
+    </g>
+    <g class="s-node s-lo" style="--kl-i:8">
+      <text class="s-tc" x="385" y="196" text-anchor="middle">۴۰۱ / ۴۰۳</text>
+      <text class="s-t2" x="385" y="214" text-anchor="middle">هویت یا مجوز ناکافی</text>
+    </g>
+    <g class="s-node s-lo" style="--kl-i:9">
+      <text class="s-tc" x="385" y="242" text-anchor="middle">۴۲۹ Too Many Requests</text>
+      <text class="s-t2" x="385" y="260" text-anchor="middle">محدودسازی نرخ درخواست</text>
+    </g>
+    <rect class="s-warn" x="270" y="274" width="230" height="36" rx="9"/>
+    <text class="s-t2" x="385" y="297" text-anchor="middle">ورودی را اصلاح کنید</text>
+  </g>
+
+  <!-- ستون سوم (۵xx) -->
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-bad" x="14" y="8" width="230" height="36" rx="9"/>
+    <text class="s-group-t" x="129" y="31" text-anchor="middle">۵xx — خطای سرور</text>
+    <path class="s-arr s-flow" d="M 129 48 L 129 66"/>
+    <path class="s-head" d="M 129 70 L 122 59 L 136 59 Z"/>
+    <circle class="s-runner" r="4.5">
+      <animateMotion dur="2.2s" begin="1.2s" repeatCount="indefinite" path="M 129 48 L 129 66"/>
+    </circle>
+    <rect class="s-c6" x="14" y="72" width="230" height="42" rx="9"/>
+    <text class="s-tc" x="129" y="99" text-anchor="middle">500 Internal Error</text>
+    <path class="s-dash" d="M 26 126 L 232 126"/>
+    <g class="s-node s-lo" style="--kl-i:10">
+      <text class="s-tc" x="129" y="150" text-anchor="middle">۵۰۲ Bad Gateway</text>
+      <text class="s-t2" x="129" y="168" text-anchor="middle">دروازه پاسخ معتبر نداد</text>
+    </g>
+    <g class="s-node s-lo" style="--kl-i:11">
+      <text class="s-tc" x="129" y="196" text-anchor="middle">۵۰۳ Service Unavailable</text>
+      <text class="s-t2" x="129" y="214" text-anchor="middle">سرویس موقتاً در دسترس نیست</text>
+    </g>
+    <g class="s-node s-lo" style="--kl-i:12">
+      <text class="s-tc" x="129" y="242" text-anchor="middle">۵۰۴ Gateway Timeout</text>
+      <text class="s-t2" x="129" y="260" text-anchor="middle">مهلت دروازه به پایان رسید</text>
+    </g>
+    <rect class="s-bad" x="14" y="274" width="230" height="36" rx="9"/>
+    <text class="s-t2" x="129" y="297" text-anchor="middle">با تأخیر دوباره تلاش کنید</text>
+  </g>
+</svg>
+<figcaption>سه خانواده‌ی کد وضعیت و واکنش درست کلاینت در برابر هرکدام: <code>۲xx</code> یعنی درخواست پذیرفته شده، <code>۴xx</code> یعنی ایراد از سمت کلاینت است و تکرار بی‌فایده، و <code>۵xx</code> یعنی خطا از سمت سرور است و تلاش مجدد با تأخیر منطقی است. کد وضعیت را صادقانه انتخاب کنید؛ کلاینت‌ها و ابزارهای پایش بر پایه‌ی همین عدد تصمیم می‌گیرند.</figcaption>
+</figure>
+
 <div class="kl-box kl-deep">
 <span class="kl-h">کنترل هم‌زمانی با ETag</span>
 برای جلوگیری از اینکه دو کاربر هم‌زمان یک رکورد را بازنویسی کنند، از
-<strong> optimistic locking </strong> استفاده کنید: سرور <code>ETag</code> بدهد، Client هنگام
-به‌روزرسانی آن را در <code>If-Match</code> برگرداند، و اگر منبع عوض شده باشد سرور
+<strong>قفل‌گذاری خوش‌بینانه (optimistic locking)</strong> استفاده کنید: سرور <code>ETag</code> بدهد،
+کلاینت هنگام به‌روزرسانی آن را در <code>If-Match</code> بفرستد، و اگر منبع عوض شده باشد سرور
 <code dir="ltr">412 Precondition Failed</code> بدهد.
 </div>
 </section>
 
 <!-- ==================== 12 ==================== -->
 <section id="s12">
-<h2><span class="kl-num">بخش ۱۲</span>احراز هویت، امنیت و Rate Limiting</h2>
+<h2><span class="kl-num">بخش ۱۲</span>احراز هویت، امنیت و محدودسازی نرخ (Rate Limiting)</h2>
 
 <h3>چهار لایه‌ی دفاع</h3>
 
@@ -866,7 +1190,7 @@ Idempotency-Replayed: true
 <tr><td><strong>انتقال</strong></td><td>HTTPS + HSTS</td><td>رمزنگاری ترافیک؛ بدون آن هر هدری قابل خواندن است</td></tr>
 <tr><td><strong>هویت</strong></td><td>OAuth 2.0 + JWT</td><td>می‌گوید کی هستید</td></tr>
 <tr><td><strong>مجوز</strong></td><td>RBAC / ownership check</td><td>می‌گوید چه اجازه‌ای دارید — <strong>روی هر منبع</strong></td></tr>
-<tr><td><strong>نرخ</strong></td><td>Rate Limiting + quota</td><td>جلوی سوءاستفاده و ترافیک غیرعادی</td></tr>
+<tr><td><strong>نرخ</strong></td><td dir="ltr">Rate Limiting</td> + سهمیه</td><td>جلوی سوءاستفاده و ترافیک غیرعادی</td></tr>
 </tbody>
 </table>
 
@@ -931,7 +1255,7 @@ public class OwnershipFilter extends OncePerRequestFilter {
 }
 </code></pre>
 
-<h3>Rate Limiting</h3>
+<h3>محدودسازی نرخ (Rate Limiting)</h3>
 
 <table>
 <thead>
@@ -956,20 +1280,20 @@ X-RateLimit-Reset: 1791500000</code></pre>
 <div class="kl-check">
 <ul>
 <li><strong>IDOR:</strong> با تغییر <code dir="ltr">/users/41</code> به <code dir="ltr">/users/42</code> به داده‌ی دیگران دسترسی — بدون بررسی مالکیت.</li>
-<li><strong>Mass Assignment:</strong> Client فیلد <code dir="ltr">role</code> را در بدنه می‌فرستد و آبجکت کامل bind می‌شود.</li>
+<li><strong>Mass Assignment:</strong> کلاینت فیلد <code dir="ltr">role</code> را در بدنه می‌فرستد و شیء کامل bind می‌شود.</li>
 <li><strong>Excessive Data Exposure:</strong> برگرداندن کل رکورد به‌جای DTO حداقلی.</li>
-<li><strong>CORS باز:</strong> <code dir="ltr">Allow-Origin: *</code> در کنار credential.</li>
+<li><strong>CORS باز:</strong> هدر <code dir="ltr">Access-Control-Allow-Origin: *</code> در کنار ارسال credential.</li>
 </ul>
 </div>
 </div>
 </section>
 <!-- ==================== 13 ==================== -->
 <section id="s13">
-<h2><span class="kl-num">بخش ۱۳</span>Caching و کارایی</h2>
+<h2><span class="kl-num">بخش ۱۳</span>کش‌پذیری (Caching) و کارایی</h2>
 
 <p>
-<code>Cacheability</code> یکی از شش محدودیت REST است — یعنی کش فقط «قابلیت اضافه» نیست،
-بخشی از تعریف است. پاسخ باید یا قابل کش باشد، یا صریحاً غیرقابل کش بودنش را اعلام کند.
+<code>Cacheability</code> یا همان <strong>کش‌پذیری</strong> یکی از شش محدودیت REST است — یعنی کش فقط
+«قابلیت اضافه» نیست، بخشی از تعریف است. پاسخ باید یا کش‌پذیر باشد، یا صریحاً اعلام کند که کش نمی‌شود.
 </p>
 
 <table>
@@ -979,7 +1303,7 @@ X-RateLimit-Reset: 1791500000</code></pre>
 <tbody>
 <tr><td dir="ltr"><code>Cache-Control</code></td><td>قواعد اصلی</td><td dir="ltr"><code>public, max-age=60</code></td></tr>
 <tr><td dir="ltr"><code>ETag</code></td><td>اثر انگشت نسخه</td><td dir="ltr"><code>"a1b2c3"</code></td></tr>
-<tr><td dir="ltr"><code>If-None-Match</code></td><td>درخواست اعتبارسنجی نسخه</td><td>در Request Client</td></tr>
+<tr><td dir="ltr"><code>If-None-Match</code></td><td>درخواست اعتبارسنجی نسخه</td><td>در درخواست کلاینت</td></tr>
 <tr><td dir="ltr"><code>Last-Modified</code></td><td>تاریخ آخرین تغییر</td><td dir="ltr"><code>Sat, 03 Oct 2026...</code></td></tr>
 <tr><td dir="ltr"><code>Vary</code></td><td>کش بسته به هدر متفاوت باشد</td><td dir="ltr"><code>Accept, Accept-Encoding</code></td></tr>
 <tr><td dir="ltr"><code>no-store</code></td><td>هرگز ذخیره نشود (داده‌ی حساس)</td><td>اطلاعات پرداخت</td></tr>
@@ -1031,9 +1355,9 @@ HTTP/1.1 304 Not Modified</code></pre>
 
 <div class="kl-box kl-ok">
 <span class="kl-h">نکته‌ی مهم درباره‌ی کارایی</span>
-هرگز ننویسید «X سریع‌تر از Y است». آنچه مهم است، <strong>تعداد round-trip</strong>،
-<strong>حجم payload</strong>، <strong>زمان دیتابیس</strong> و <strong>تعداد پرس‌وجو</strong> است. این‌ها را اندازه
-بگیرید و همان را گزارش کنید — نه عددی که از وبلاگی خوانده‌اید.
+هرگز ننویسید «X سریع‌تر از Y است». آنچه مهم است، <strong>تعداد رفت‌وبرگشت (round-trip)</strong>،
+<strong>حجم داده (payload)</strong>، <strong>زمان پایگاه داده</strong> و <strong>تعداد پرس‌وجو</strong> است. این‌ها را
+اندازه بگیرید و همان را گزارش کنید — نه عددی که از وبلاگی خوانده‌اید.
 </div>
 </section>
 
@@ -1271,7 +1595,7 @@ public record LineDto(long ProductId, int Qty);
 <tbody>
 <tr><td>صفحه‌بندی</td><td dir="ltr"><code>Page&lt;T&gt; + Pageable</code></td><td dir="ltr"><code>IQueryable.Skip/Take</code></td></tr>
 <tr><td>کش</td><td dir="ltr"><code>ETag + ShallowETagHeaderFilter</code></td><td dir="ltr"><code>OutputCache</code></td></tr>
-<tr><td>پاسخ 201</td><td dir="ltr"><code>ResponseEntity.created(uri)</code></td><td dir="ltr"><code>Results.Created(...)</code></td></tr>
+<tr><td>پاسخ ۲۰۱</td><td dir="ltr"><code>ResponseEntity.created(uri)</code></td><td dir="ltr"><code>Results.Created(...)</code></td></tr>
 <tr><td>پیش‌شرط نسخه</td><td dir="ltr"><code>OptimisticLocking + 412</code></td><td dir="ltr"><code>ConcurrencyCheck</code></td></tr>
 <tr><td>اعتبارسنجی</td><td dir="ltr"><code>jakarta.validation</code></td><td dir="ltr"><code>DataAnnotations / FluentValidation</code></td></tr>
 <tr><td>تست</td><td dir="ltr"><code>MockMvc + JUnit 5</code></td><td dir="ltr"><code>WebApplicationFactory + xUnit</code></td></tr>
@@ -1337,9 +1661,9 @@ Databaseِ
 <div class="kl-box kl-deep">
 <span class="kl-h">چرا این ساختار؟</span>
 Controller نباید منطق دامنه داشته باشد (تست‌پذیری پایین). Domain نباید Spring یا EF بشناسد
-(تک‌منبعی و تست بدون زیرساخت). و DTO نباید Entity باشد (امنیت + قرارداد ثابت). هر سه این
-ها اگر رعایت نشوند، تغییر قرارداد API با تغییر جدول دیتابیس یکی می‌شود — و آن‌وقت
-دیگر نمی‌توانید مستقل تکامل دهید.
+(نبود وابستگی بیرونی و امکان تست بدون زیرساخت). و DTO نباید Entity باشد (امنیت + قرارداد پایدار).
+هر سه‌ی این قاعده‌ها اگر رعایت نشوند، تغییر قرارداد رابط برنامه‌نویسی با تغییر جدول پایگاه داده یکی
+می‌شود — و آن‌وقت دیگر نمی‌توانید مستقل تکامل دهید.
 </div>
 </section>
 
@@ -1388,15 +1712,15 @@ If-None-Match: "r7f2"
     <div class="ax-pc-body">
       <ul>
         <li><strong>سادگی مدل فکری</strong> — منبع + متد + پاسخ؛ هر کسی در چند دقیقه می‌فهمد.</li>
-        <li><strong>بی‌طرفی کامل</strong> — زبان، فریم‌ورک و سیستم‌عامل مهم نیست؛ HTTP زبان مشترک است.</li>
-        <li><strong>کش ذاتی</strong> — به‌لطف Cacheability، کش مرورگر/CDN/سرور بدون طراحی خاصی ممکن است.</li>
-        <li><strong>مستندسازی ساده</strong> — OpenAPI از annotation تولید و خودکار نگه داشته می‌شود.</li>
-        <li><strong>تست‌پذیری</strong> — با هر HTTP client ابزاری قابل آزمون است.</li>
-        <li><strong>مقیاس‌پذیری</strong> — Statelessness امکان افزودن نمونه بدون پیکربندی خاص می‌دهد.</li>
-        <li><strong>محدودیت نرخ و امنیت</strong> — در Gateway یکجا پیاده می‌شود.</li>
+        <li><strong>بی‌طرفی کامل</strong> — زبان، فریم‌ورک و سیستم‌عامل مهم نیست؛ پروتکل HTTP زبان مشترک است.</li>
+        <li><strong>کش ذاتی</strong> — به‌لطف کش‌پذیری (Cacheability)، کش مرورگر، CDN و سرور بدون طراحی خاصی ممکن است.</li>
+        <li><strong>مستندسازی ساده</strong> — <span dir="ltr">OpenAPI</span> از annotation تولید و خودکار نگه داشته می‌شود.</li>
+        <li><strong>تست‌پذیری</strong> — با هر ابزار HTTP قابل آزمون است.</li>
+        <li><strong>مقیاس‌پذیری</strong> — بی‌حالتی (Statelessness) امکان افزودن نمونه بدون پیکربندی خاص می‌دهد.</li>
+        <li><strong>محدودسازی نرخ و امنیت</strong> — در Gateway یکجا پیاده می‌شود.</li>
         <li><strong>زبان صنعت</strong> — تقریباً هر توسعه‌دهنده‌ای آن را می‌شناسد؛ هزینه‌ی استخدام کم.</li>
-        <li><strong>مرحله‌به‌مرحله</strong> — می‌توانید endpoint را کم‌کم عرضه و نسخه‌بندی کنید.</li>
-        <li><strong>پایش‌پذیری</strong> — هر درخواست قابل لاگ، متریک و ردیابی است.</li>
+        <li><strong>مرحله‌به‌مرحله</strong> — می‌توانید نقطه‌ی پایانی (Endpoint) را کم‌کم عرضه و نسخه‌بندی کنید.</li>
+        <li><strong>پایش‌پذیری</strong> — هر درخواست را می‌توان در لاگ ثبت، سنجش و ردیابی کرد.</li>
         <li><strong>سازگار با وب</strong> — مرورگر، CDN و ابزارهای شبکه بی‌واسطه کار می‌کنند.</li>
       </ul>
     </div>
@@ -1413,17 +1737,17 @@ If-None-Match: "r7f2"
     <div class="ax-pc-head" style="background:var(--color-danger-soft);color:var(--color-danger);">⚠️ معایب</div>
     <div class="ax-pc-body">
       <ul>
-        <li><strong>Over-fetching</strong> — ممکن است فیلدهایی را بگیرید که لازم ندارید (چون مسیر از پیش تعریف شده).</li>
-        <li><strong>Under-fetching</strong> — برای نمایش یک صفحه‌ی پیچیده، چند round-trip لازم است.</li>
-        <li><strong>تعداد round-trip بالا</strong> — در لایه‌ی UI پرحجم واقعاً به چشم می‌آید.</li>
+        <li><strong>سرریز داده (Over-fetching)</strong> — ممکن است فیلدهایی را بگیرید که لازم ندارید، چون مسیر از پیش تعریف شده است.</li>
+        <li><strong>کمبود داده (Under-fetching)</strong> — برای نمایش یک صفحه‌ی پیچیده، چند رفت‌وبرگشت لازم است.</li>
+        <li><strong>تعداد رفت‌وبرگشت بالا</strong> — در لایه‌ی رابط کاربری پرحجم واقعاً به چشم می‌آید.</li>
         <li><strong>HTTP/1.1 محدودیت اتصال دارد</strong> — در ترافیک بالا، بهینه‌سازی لازم است.</li>
         <li><strong>هیچ قرارداد زمان‌دار ندارد</strong> — Webhook و جریان بلادرنگ خارج از مدل طبیعی REST هستند.</li>
         <li><strong>نیاز به صریح‌سازی مداوم</strong> — بدون نسخه‌بندی و مستند، به‌سرعت فرسوده می‌شود.</li>
         <li><strong>REST خالص به‌ندرت رعایت می‌شود</strong> — HATEOAS معمولاً حذف می‌شود و این باعث سوءتفاهم می‌شود.</li>
-        <li><strong>امنیت وظیفه‌ی همیشگی است</strong> — CORS، rate limit، اعتبارسنجی، مالکیت — همیشه.</li>
-        <li><strong>سرریز (Serialization)</strong> — تبدیل اشیاء به JSON در حجم بالا هزینه دارد.</li>
-        <li><strong>پنهان‌سازی خطای دیتابیس</strong> — بدون قاعده، جزئیات خطا نشت می‌کند.</li>
-        <li><strong>هیچ تضمین تحویلی ندارد</strong> — برای عملیات حساس به ایدمپوتنتی نیاز است.</li>
+        <li><strong>امنیت وظیفه‌ی همیشگی است</strong> — <span dir="ltr">CORS</span>، محدودسازی نرخ، اعتبارسنجی و بررسی مالکیت — همیشه.</li>
+        <li><strong>هزینه‌ی سریال‌سازی</strong> — تبدیل اشیا به JSON در حجم بالا هزینه دارد.</li>
+        <li><strong>پنهان‌سازی خطای پایگاه داده</strong> — بدون قاعده، جزئیات خطا نشت می‌کند.</li>
+        <li><strong>هیچ تضمین تحویلی ندارد</strong> — برای عملیات حساس باید به ایدمپوتنت بودن تکیه کنید.</li>
       </ul>
     </div>
   </div>
@@ -1431,9 +1755,9 @@ If-None-Match: "r7f2"
 
 <div class="kl-box kl-bad">
 <span class="kl-h">بزرگ‌ترین سوءتفاهم</span>
-«هر API ای که JSON برمی‌گرداند REST است» — غلط. اگر از POST برای خواندن استفاده می‌کنید،
-یا وضعیت را در سرور نگه می‌دارید، یا کش را کاملاً غیرفعال کرده‌اید، <strong>RESTful نیستید</strong>.
-این اشکالی ندارد — ولی باید بدانید و بتوانید دلیلش را توضیح دهید.
+«هر رابط برنامه‌نویسی‌ای که JSON برمی‌گرداند REST است» — غلط. اگر از <code dir="ltr">POST</code> برای
+خواندن استفاده می‌کنید، یا وضعیت را در سرور نگه می‌دارید، یا کش را کاملاً غیرفعال کرده‌اید،
+<strong>RESTful نیستید</strong>. این اشکالی ندارد — ولی باید بدانید و بتوانید دلیلش را توضیح دهید.
 </div>
 </section>
 
@@ -1447,7 +1771,7 @@ If-None-Match: "r7f2"
   <div class="ax-versus-side" style="border-top:3px solid var(--color-success);">
     <h4>✅ استفاده کنید وقتی</h4>
     <ul>
-      <li><strong>API عمومی یا بیرونی</strong> دارید — زبان مشترک، پذیرش حداکثری</li>
+      <li><strong>رابط برنامه‌نویسی عمومی یا بیرونی</strong> دارید — زبان مشترک، پذیرش حداکثری</li>
       <li><strong>مصرف‌کننده‌های متنوع</strong> — وب، iOS، Android، دسکتاپ</li>
       <li><strong>منابع مدل‌سازی‌شده</strong> — کاربر، سفارش، محصول، سند</li>
       <li><strong>CRUD با منطق متوسط</strong> — رایج‌ترین حالت کاری</li>
@@ -1466,7 +1790,7 @@ If-None-Match: "r7f2"
       <li><strong>تعداد زیاد پیام ریز</strong> — MQTT یا صف پیام</li>
       <li><strong>چند کلاینت با نیاز متضاد</strong> — شاید GraphQL یا BFF</li>
       <li><strong>یکپارچگی سازمانی قدیمی</strong> — SOAP / OData در آن فضا استاندارد است</li>
-      <li><strong>فراخوانی داخلی همان فرایند</strong> — اصلاً API لازم نیست</li>
+      <li><strong>فراخوانی داخلی همان فرایند</strong> — اصلاً رابط برنامه‌نویسی لازم نیست</li>
     </ul>
   </div>
 </div>
@@ -1484,12 +1808,12 @@ If-None-Match: "r7f2"
 </thead>
 <tbody>
 <tr><td>واحد اصلی</td><td>منبع</td><td>پرسش روی گراف</td><td>سرویس و متد</td><td>سرویس و عملیات</td></tr>
-<tr><td>قالب</td><td>JSON</td><td>JSON</td><td>Protobuf</td><td>XML</td></tr>
-<tr><td>پروتکل</td><td>HTTP/1.1–3</td><td>HTTP</td><td>HTTP/2</td><td>HTTP + SOAP envelope</td></tr>
-<tr><td>تایپ‌سیستم</td><td>قرارداد ضعیف</td><td>Schema قوی</td><td>.proto قوی</td><td>XSD بسیار قوی</td></tr>
-<tr><td>نقطه‌ی قوت</td><td>سادگی + کش</td><td>دقیقاً همان فیلدها</td><td>کارایی + نوع</td><td>قرارداد سفت + WS-*</td></tr>
-<tr><td>نقطه‌ی ضعف</td><td>Over/Under-fetching</td><td>امنیت و کش سخت</td><td>مرورگر محدود</td><td>وزن و پیچیدگی</td></tr>
-<tr><td>بهترین کاربرد</td><td>API عمومی وب</td><td>چند کلاینت با نیاز متفاوت</td><td>ارتباط داخلی</td><td>بانک و سازمان قدیمی</td></tr>
+<tr><td>قالب داده</td><td>JSON</td><td>JSON</td><td>Protobuf</td><td>XML</td></tr>
+<tr><td>پروتکل</td><td>HTTP/1.1–3</td><td>HTTP</td><td>HTTP/2</td><td>HTTP + پاکت SOAP</td></tr>
+<tr><td>نوع‌دهی</td><td>قرارداد ضعیف</td><td>Schema قوی</td><td><span dir="ltr">.proto</span> قوی</td><td>XSD بسیار قوی</td></tr>
+<tr><td>نقطه‌ی قوت</td><td>سادگی + کش</td><td>دقیقاً همان فیلدها</td><td>کارایی + نوع‌دهی</td><td>قرارداد سفت + WS-*</td></tr>
+<tr><td>نقطه‌ی ضعف</td><td>دریافت بیش از حد / کمتر از حد</td><td>امنیت و کش سخت</td><td>مرورگر محدود</td><td>وزن و پیچیدگی</td></tr>
+<tr><td>بهترین کاربرد</td><td>رابط عمومی وب</td><td>چند کلاینت با نیاز متفاوت</td><td>ارتباط داخلی</td><td>بانک و سازمان قدیمی</td></tr>
 <tr><td>کارایی انتقال</td><td>متوسط</td><td>متوسط</td><td>بالا</td><td>پایین</td></tr>
 </tbody>
 </table>
@@ -1502,12 +1826,12 @@ If-None-Match: "r7f2"
 </p>
 <div class="kl-check">
 <ul>
-<li><strong>پاسخ‌ها دقیقاً فیلدهای متفاوت می‌خواهند و round-trip زیاد است</strong> → <a href="graphql.html">GraphQL</a></li>
+<li><strong>پاسخ‌ها دقیقاً فیلدهای متفاوت می‌خواهند و رفت‌وبرگشت زیاد است</strong> → <a href="graphql.html">GraphQL</a></li>
 <li><strong>ارتباط داخلی پرحجم با نوع‌دهی قوی</strong> → <a href="grpc.html">gRPC</a></li>
 <li><strong>قرارداد سفت سازمانی و WS-Security لازم است</strong> → <a href="soap.html">SOAP</a></li>
 </ul>
 </div>
-<p>جدول کامل ۱۳ سبک را در <a href="api-comparison.html">مقاله‌ی مقایسه‌ی API ها</a> ببینید.</p>
+<p>جدول کامل ۱۳ سبک را در <a href="api-comparison.html">مقاله‌ی مقایسه‌ی رابط‌های برنامه‌نویسی</a> ببینید.</p>
 </div>
 </section>
 
@@ -1525,14 +1849,14 @@ If-None-Match: "r7f2"
 <tbody>
 <tr><td>۱</td><td>اسم فعل در URI (<code dir="ltr">/getUser</code>)</td><td>قرارداد REST را می‌شکند</td><td>منبع + متد</td></tr>
 <tr><td>۲</td><td><code>GET</code> که وضعیت عوض کند</td><td>کش و prefetch داده خراب می‌کنند</td><td>فقط خواندن</td></tr>
-<tr><td>۳</td><td>۲۰۰ برای خطا</td><td>Client و ابزارها را فریب می‌دهد</td><td>4xx/5xx واقعی</td></tr>
+<tr><td>۳</td><td>۲۰۰ برای خطا</td><td>کلاینت و ابزارهای پایش را فریب می‌دهد</td><td>کدهای ۴xx و ۵xx واقعی</td></tr>
 <tr><td>۴</td><td>نبود سقف صفحه</td><td><code>?size=99999</code> سرور را زمین می‌زند</td><td><code>Math.min(size,100)</code></td></tr>
 <tr><td>۵</td><td>بدون Idempotency-Key</td><td>تلاش مجدد = رکورد تکراری</td><td>کلید در تراکنش اصلی</td></tr>
 <tr><td>۶</td><td>برگرداندن Entity خام</td><td>نشت داده و قرارداد شکننده</td><td>DTO مجزا</td></tr>
 <tr><td>۷</td><td>بدون ETag/Cache-Control</td><td>یا هیچ کشی نیست یا داده‌ی کهنه</td><td>اعلام صریح</td></tr>
 <tr><td>۸</td><td>بدون Vary روی Accept</td><td>پاسخ JSON به درخواست XML می‌رود</td><td><code>Vary: Accept</code></td></tr>
-<tr><td>۹</td><td>sort بدون whitelist</td><td>Sort Injection / خطای دیتابیس</td><td>فیلدهای مجاز</td></tr>
-<tr><td>۱۰</td><td>نادیده گرفتن CORS</td><td>خطای مرورگر یا نشت credential</td><td>لیست دامنه‌ی مشخص</td></tr>
+<tr><td>۹</td><td>مرتب‌سازی بدون فهرست سفید</td><td>تزریق در دستور مرتب‌سازی یا خطای پایگاه داده</td><td>فقط فیلدهای مجاز</td></tr>
+<tr><td>۱۰</td><td>نادیده گرفتن <span dir="ltr">CORS</span></td><td>خطای مرورگر یا نشت credential</td><td>فهرست دامنه‌های مشخص</td></tr>
 <tr><td>۱۱</td><td>بدون بررسی مالکیت</td><td>IDOR — دسترسی به داده‌ی دیگران</td><td>Ownership در هر منبع</td></tr>
 <tr><td>۱۲</td><td>بدون traceId</td><td>عیب‌یابی غیرممکن</td><td>شناسه از Gateway تا آخر</td></tr>
 </tbody>
@@ -1547,7 +1871,7 @@ If-None-Match: "r7f2"
 </thead>
 <tbody>
 <tr><td>واحد</td><td>منطق دامنه بدون HTTP</td><td dir="ltr">JUnit 5 + AssertJ</td><td dir="ltr">xUnit</td></tr>
-<tr><td>API</td><td>endpoint با HTTP واقعی</td><td dir="ltr">MockMvc</td><td dir="ltr">WebApplicationFactory</td></tr>
+<tr><td>رابط برنامه‌نویسی</td><td>نقطه‌ی پایانی با HTTP واقعی</td><td dir="ltr">MockMvc</td><td dir="ltr">WebApplicationFactory</td></tr>
 <tr><td>یکپارچه</td><td>+ دیتابیس واقعی</td><td dir="ltr">Testcontainers</td><td dir="ltr">Testcontainers</td></tr>
 <tr><td>قرارداد</td><td>سازگاری با مصرف‌کننده</td><td dir="ltr">Spring Cloud Contract</td><td dir="ltr">Pact</td></tr>
 <tr><td>بار</td><td>رفتار در فشار</td><td dir="ltr">Gatling</td><td dir="ltr">k6</td></tr>
@@ -1581,16 +1905,16 @@ void unauthorized() throws Exception {
 </code></pre>
 
 <div class="kl-box kl-hd">
-<span class="kl-h">کمینه‌ی تست برای هر endpoint جدید</span>
+<span class="kl-h">کمینه‌ی تست برای هر نقطه‌ی پایانی تازه</span>
 <ol class="kl-check">
-<li>مسیر موفق → Status Code + شکل بدنه + هدرها</li>
-<li>منبع ناموجود → 404</li>
-<li>ورودی نامعتبر → 400/422 با فهرست فیلدها</li>
-<li>بدون مجوز → 401 ؛ با مجوز ناکافی → 403</li>
-<li>مالکیت دیگری → 403</li>
+<li>مسیر موفق → کد وضعیت، شکل بدنه و هدرها</li>
+<li>منبع ناموجود → ۴۰۴</li>
+<li>ورودی نامعتبر → ۴۰۰ یا ۴۲۲، همراه با فهرست فیلدها</li>
+<li>بدون مجوز → ۴۰۱؛ با مجوز ناکافی → ۴۰۳</li>
+<li>مالکیت دیگری → ۴۰۳</li>
 <li>تکرار عملیات حساس → نتیجه‌ی یکسان</li>
-<li>سقف صفحه و whitelist مرتب‌سازی</li>
-<li>ETag کهنه → 412</li>
+<li>سقف صفحه و فهرست سفیدِ فیلدهای مرتب‌سازی</li>
+<li><code>ETag</code> کهنه → ۴۱۲</li>
 </ol>
 </div>
 </section>
@@ -1601,93 +1925,93 @@ void unauthorized() throws Exception {
 <h3>سطح پایه (Junior)</h3>
 
 <p><strong>سؤال ۱ — REST چیست؟</strong></p>
-<p>یک سبک معماری سیستم‌های توزیع‌شده است که <code>Roy Fielding</code> در پایان‌نامه‌ی ۲۰۰۰ معرفی کرد. بر پایه‌ی شش محدودیت استوار است: Client-Server، Statelessness، Cacheability، Uniform Interface، Layered System و Code on Demand (اختیاری). تمرکزش روی <strong>منابع</strong> و <strong>نمایش‌ها</strong> است.</p>
+<p>یک <strong>سبک معماری</strong> برای سیستم‌های توزیع‌شده است که <code>Roy Fielding</code> در پایان‌نامه‌ی ۲۰۰۰ معرفی کرد. بر پایه‌ی شش محدودیت استوار است: کلاینت-سرور، بدون حالت، کش‌پذیری، رابط یکنواخت، سیستم لایه‌ای و «کد روی تقاضا» (اختیاری). تمرکزش روی <strong>منابع</strong> و <strong>نمایش‌ها</strong> است.</p>
 
-<p><strong>سؤال ۲ — آیا هر API ای که JSON برمی‌گرداند RESTful است؟</strong></p>
-<p>خیر. JSON فقط قالب داده است و هیچ ارتباطی با تعریف REST ندارد. REST یعنی رعایت شش محدودیت: منبع‌محور بودن، متد HTTP درست، Statelessness، قابلیت کش و … . یک API که با <code>POST /getUser</code> کار می‌کند و JSON برمی‌گرداند، RESTful نیست.</p>
+<p><strong>سؤال ۲ — آیا هر رابط برنامه‌نویسی‌ای که JSON برمی‌گرداند RESTful است؟</strong></p>
+<p>خیر. <code>JSON</code> فقط قالب داده است و هیچ ارتباطی با تعریف REST ندارد. REST یعنی رعایت شش محدودیت: منبع‌محور بودن، متد HTTP درست، بدون حالت بودن، کش‌پذیری و … یک رابط برنامه‌نویسی که با <code>POST /getUser</code> کار می‌کند و JSON برمی‌گرداند، RESTful نیست.</p>
 
 <p><strong>سؤال ۳ — تفاوت PUT و PATCH؟</strong></p>
-<p><code>PUT</code> کل منبع را با بدنه‌ی داده‌شده <strong>جایگزین</strong> می‌کند؛ فیلدهای نیامده به پیش‌فرض می‌روند. <code>PATCH</code> فقط <strong>فیلدهای ارسالی</strong> را عوض می‌کند. هر دو می‌توانند ایدمپوتنت باشند، به شرطی که عملیات جایگزینی باشد.</p>
+<p><code>PUT</code> کل منبع را با بدنه‌ی داده‌شده <strong>جایگزین</strong> می‌کند؛ فیلدهای نیامده مقدار پیش‌فرض می‌گیرند یا حذف می‌شوند. <code>PATCH</code> فقط <strong>فیلدهای ارسالی</strong> را عوض می‌کند و بقیه دست‌نخورده می‌مانند. <code>PATCH</code> هم می‌تواند ایدمپوتنت باشد، اما فقط اگر عملیاتِ ارسالی خودش جایگزینیِ مقدار باشد.</p>
 
-<p><strong>سؤال ۴ — برای ساخت یک منبع کدام متد و کدام Status Code؟</strong></p>
-<p><code>POST</code> روی collection (مثلاً <code dir="ltr">/api/users</code>) با پاسخ <code dir="ltr">201 Created</code> و هدر <code>Location</code> که آدرس منبع تازه را مشخص می‌کند. هرگز <code>200</code> یا <code>GET</code> برای ساخت.</p>
+<p><strong>سؤال ۴ — برای ساخت یک منبع کدام متد و کدام کد وضعیت؟</strong></p>
+<p><code>POST</code> روی مجموعه (Collection) — مثلاً <code dir="ltr">/api/users</code> — با پاسخ <code dir="ltr">201 Created</code> و هدر <code>Location</code> که نشانی منبع تازه را مشخص می‌کند. هرگز <code>200</code> یا <code>GET</code> برای ساخت.</p>
 
 <p><strong>سؤال ۵ — 404 و 204 چه معنایی دارند؟</strong></p>
-<p><code>404</code> یعنی منبع وجود ندارد. <code>204</code> یعنی موفقیت بدون بدنه — معمولاً برای <code>DELETE</code> یا عملیاتی که چیزی برای برگرداندن ندارد. فرستادن 200 با بدنه‌ی خالی هم ممکن است ولی 204 صریح‌تر است.</p>
+<p><code>404</code> یعنی منبع وجود ندارد. <code>204</code> یعنی موفقیت بدون بدنه — معمولاً برای <code>DELETE</code> یا عملیاتی که چیزی برای برگرداندن ندارد. فرستادن <code>200</code> با بدنه‌ی خالی هم ممکن است، ولی <code>204</code> صریح‌تر است.</p>
 
-<p><strong>سؤال ۶ — Idempotency یعنی چه؟ مثال بزنید.</strong></p>
-<p>یعنی تکرار درخواست، همان اثرِ یک بار را دارد. <code>PUT</code> و <code>DELETE</code> ذاتاً ایدمپوتنت‌اند (دو بار حذف = منبع از قبل حذف شده). <code>POST</code> نیست؛ برای آن از <code>Idempotency-Key</code> استفاده می‌کنیم.</p>
+<p><strong>سؤال ۶ — ایدمپوتنت بودن یعنی چه؟ مثال بزنید.</strong></p>
+<p>یعنی تکرار درخواست همان اثرِ یک‌باره را دارد. <code>PUT</code> و <code>DELETE</code> ذاتاً ایدمپوتنت‌اند (دو بار حذف یعنی منبع از قبل حذف شده است). <code>POST</code> ایدمپوتنت نیست؛ برای آن از هدر <code>Idempotency-Key</code> استفاده می‌کنیم.</p>
 
-<p><strong>سؤال ۷ — Statelessness یعنی چه و فایده‌اش چیست؟</strong></p>
-<p>سرور وضعیت نشست را بین درخواست‌ها نگه نمی‌دارد؛ هر درخواست خوداتکاست و اطلاعات لازم را حمل می‌کند (معمولاً توکن). فایده: می‌توانید بدون Sticky Session و پیکربندی خاص، نمونه‌های بیشتری اضافه و بار را تقسیم کنید.</p>
+<p><strong>سؤال ۷ — بدون حالت بودن (Statelessness) یعنی چه و فایده‌اش چیست؟</strong></p>
+<p>سرور وضعیت نشست را میان درخواست‌ها نگه نمی‌دارد؛ هر درخواست خودبسنده است و اطلاعات لازم را همراه خود می‌آورد (معمولاً توکن). فایده: می‌توانید بدون نشست چسبان (Sticky Session) و پیکربندی خاص، نمونه‌های بیشتری اضافه کنید و بار را میان آن‌ها تقسیم کنید.</p>
 
 <p><strong>سؤال ۸ — Content-Type و Accept چه فرقی دارند؟</strong></p>
-<p><code>Content-Type</code> نوع <strong>بدنه‌ی فعلی</strong> را می‌گوید (در Request: نوع بدنه‌ی ارسالی؛ در Response: نوع بدنه‌ی برگشتی). <code>Accept</code> فقط در درخواست است و می‌گوید Client <strong>چه قالب‌هایی را می‌پذیرد</strong>.</p>
+<p><code>Content-Type</code> نوع <strong>بدنه‌ی فعلی</strong> را می‌گوید (در درخواست: نوع بدنه‌ی ارسالی؛ در پاسخ: نوع بدنه‌ی برگشتی). <code>Accept</code> فقط در درخواست می‌آید و می‌گوید کلاینت <strong>چه قالب‌هایی را می‌پذیرد</strong>.</p>
 
 <p><strong>سؤال ۹ — ETag چیست؟</strong></p>
-<p>اثر انگشت محتوای یک پاسخ است. Client آن را نگه می‌دارد و در درخواست بعدی با <code>If-None-Match</code> برمی‌گرداند. اگر سرور محتوا را تغییر نداده باشد، با <code>304 Not Modified</code> پاسخ می‌دهد — بدون انتقال بدنه. نتیجه: پهنای باند و زمان پاسخ کمتر.</p>
+<p>اثر انگشت محتوای یک پاسخ است. کلاینت آن را نگه می‌دارد و در درخواست بعدی با <code>If-None-Match</code> برمی‌گرداند. اگر سرور محتوا را تغییر نداده باشد، با <code>304 Not Modified</code> پاسخ می‌دهد — بدون انتقال بدنه. نتیجه: پهنای باند و زمان پاسخ کمتر می‌شود.</p>
 
-<p><strong>سؤال ۱۰ — چرا URI ها باید جمع باشند؟</strong></p>
-<p>چون منبع، خودِ موجودیت است نه عملیات. <code dir="ltr">/api/users/42/orders</code> یعنی «سفارش‌های این کاربر» — یک منبع. عملیات را متد HTTP بیان می‌کند، نه URI. نگاشت یک‌به‌یک «نام جدول ↔ نام endpoint» هم اشتباه است.</p>
+<p><strong>سؤال ۱۰ — چرا نشانی‌ها (URI) باید جمع باشند؟</strong></p>
+<p>چون منبع، خودِ موجودیت است نه عملیات. <code dir="ltr">/api/users/42/orders</code> یعنی «سفارش‌های این کاربر» — یک منبع. عملیات را متد HTTP بیان می‌کند، نه <code>URI</code>. نگاشت یک‌به‌یک «نام جدول ↔ نام نقطه‌ی پایانی» هم اشتباه است.</p>
 
 <h3>سطح متوسط (Mid)</h3>
 
 <p><strong>سؤال ۱۱ — Offset یا Cursor، کدام را انتخاب می‌کنید و چرا؟</strong></p>
-<p>برای فیدهای بلادرنگ و لیست‌های بسیار طولانی، <strong>cursor</strong> چون با <code>WHERE id &gt; X</code> ایندکس را مستقیم می‌زند و در عمق زیاد کند نمی‌شود. برای صفحه‌بندی شماره‌دار با صفحات کم، <strong>offset</strong> چون ساده و قابل پیمایش تصادفی است. نکته‌ی مهم: offset با درج هم‌زمان، آیتم‌ها را جابه‌جا می‌کند (رد شدن یا تکرار آیتم).</p>
+<p>برای فهرست‌های بلادرنگ و فهرست‌های بسیار طولانی، <strong>cursor</strong> چون با <code>WHERE id &gt; X</code> ایندکس را مستقیم می‌خواند و در عمق زیاد کند نمی‌شود. برای صفحه‌بندی شماره‌دار با صفحات کم، <strong>offset</strong> چون ساده و قابل پیمایش تصادفی است. نکته‌ی مهم: offset با درج هم‌زمان، آیتم‌ها را جابه‌جا می‌کند (رد شدن یا تکرار آیتم).</p>
 
 <p><strong>سؤال ۱۲ — اگر <code>?size=999999</code> بیاید چه می‌کنید؟</strong></p>
-<p>سقف را در سرور اعمال می‌کنم: <code>size = Math.min(Math.max(size,1), 100)</code>. و به Client اعلام می‌کنم سقف چقدر است (در مستندات یا در بدنه‌ی پاسخ). تکیه بر اعتبارسنجی Client کافی نیست — هرکسی می‌تواند curl بزند.</p>
+<p>سقف را در سرور اعمال می‌کنم: <code>size = Math.min(Math.max(size,1), 100)</code>. و به کلاینت اعلام می‌کنم سقف چقدر است (در مستندات یا در بدنه‌ی پاسخ). تکیه بر اعتبارسنجی کلاینت کافی نیست — هرکسی می‌تواند <code dir="ltr">curl</code> بزند.</p>
 
 <p><strong>سؤال ۱۳ — HATEOAS چیست و چرا کمتر پیاده می‌شود؟</strong></p>
-<p>یعنی پاسخ، لینک اقدام بعدی را هم برمی‌گرداند تا Client رفتارش را از داده بیاموزد. عملاً کم رعایت می‌شود چون پیچیدگی سرور و تست را بالا می‌برد و اکثر تیم‌ها قرارداد ثابت + OpenAPI را کافی می‌دانند. صادقانه بگویید که رعایت نکرده‌اید — بدتر از آن، ادعای REST بدون HATEOAS است.</p>
+<p>یعنی پاسخ، لینکِ اقدام بعدی را هم برمی‌گرداند تا کلاینت رفتارش را از داده بیاموزد. عملاً کم رعایت می‌شود چون پیچیدگی سرور و تست را بالا می‌برد و اکثر تیم‌ها قرارداد ثابت + <span dir="ltr">OpenAPI</span> را کافی می‌دانند. صادقانه بگویید که رعایت نکرده‌اید — بدتر از آن، ادعای REST بدون HATEOAS است.</p>
 
 <p><strong>سؤال ۱۴ — تفاوت <code>private</code> و <code>public</code> در Cache-Control؟</strong></p>
 <p><code>public</code> یعنی هر کشی (شامل CDN) می‌تواند ذخیره کند — مناسب داده‌ی عمومی. <code>private</code> یعنی فقط کش مرورگر خود کاربر مجاز است — مناسب داده‌ی شخصی. اگر <code>public</code> را روی داده‌ی شخصی بگذارید، ممکن است پاسخ یک کاربر در CDN برای کاربر دیگر سرو شود — یک نشت واقعی.</p>
 
 <p><strong>سؤال ۱۵ — چرا <code>POST</code> کش نمی‌شود؟</strong></p>
-<p>چون <code>GET</code> تعریف‌شده‌اش ایمن و تکرارپذیر است؛ <code>POST</code> اثر جانبی ایجاد می‌کند و کش کردن آن یعنی اجرای نشدن عملیات واقعی. مرورگرها هم عملاً POST را کش نمی‌کنند. برای پاسخ‌های پس از POST باید Client صراحتاً یک GET بزند.</p>
+<p>چون <code>GET</code> تعریف‌شده‌اش ایمن است؛ <code>POST</code> اثر جانبی ایجاد می‌کند و کش کردن آن یعنی اجرای نشدن عملیات واقعی. مرورگرها هم عملاً POST را کش نمی‌کنند. برای پاسخ‌های پس از POST باید کلاینت صراحتاً یک GET بزند.</p>
 
-<p><strong>سؤال ۱۶ — محدودیت نرخ را کجا و با کدام الگوریتم؟</strong></p>
-<p>معمولاً در Gateway یا میدل‌ور وب، پیش از منطق دامنه و مبتنی بر شناسه‌ی Client (کلید یا IP). <strong>Token Bucket</strong> رایج‌ترین است چون موج کوتاه را می‌پذیرد؛ <strong>Sliding Window</strong> دقیق‌تر است ولی گران‌تر. پاسخ باید <code>429 + Retry-After</code> باشد.</p>
+<p><strong>سؤال ۱۶ — محدودسازی نرخ را کجا و با کدام الگوریتم انجام می‌دهید؟</strong></p>
+<p>معمولاً در Gateway یا میان‌افزار وب (middleware)، پیش از منطق دامنه و مبتنی بر شناسه‌ی کلاینت (کلید یا <span dir="ltr">IP</span>). <strong>Token Bucket</strong> رایج‌ترین است چون موج کوتاه را می‌پذیرد؛ <strong>Sliding Window</strong> دقیق‌تر است ولی گران‌تر. پاسخ باید <code dir="ltr">429 + Retry-After</code> باشد.</p>
 
 <p><strong>سؤال ۱۷ — چطور از خواندن هم‌زمان روی یک رکورد جلوگیری می‌کنید؟</strong></p>
-<p>با <strong>optimistic locking</strong>: نسخه را در <code>ETag</code> برگردانید و Client آن را در <code>If-Match</code> بفرستد. اگر نسخه عوض شده باشد، <code>412 Precondition Failed</code>. جایگزین: <strong>pessimistic locking</strong> که قفل ردیف را می‌گیرد — ساده‌تر ولی در ترافیک بالا مقیاس نمی‌یابد.</p>
+<p>با <strong>قفل‌گذاری خوش‌بینانه (optimistic locking)</strong>: نسخه را در <code>ETag</code> برگردانید و کلاینت آن را در <code>If-Match</code> بفرستد. اگر نسخه عوض شده باشد، پاسخ <code dir="ltr">412 Precondition Failed</code> است. جایگزین: <strong>قفل‌گذاری بدبینانه (pessimistic locking)</strong> که قفل ردیف را می‌گیرد — ساده‌تر است ولی در ترافیک بالا مقیاس نمی‌یابد.</p>
 
 <p><strong>سؤال ۱۸ — Mass Assignment چیست؟</strong></p>
-<p>وقتی کل بدنه‌ی درخواست مستقیماً به Entity دیتابیس bind می‌شود، Client می‌تواند فیلدی مثل <code dir="ltr">role=admin</code> یا <code dir="ltr">balance</code> بفرستد و اعمال شود. راه‌حل: DTO مجزا برای ورودی، با فیلدهای صریح و محدود — هرگز Entity را مستقیم bind نکنید.</p>
+<p>وقتی کل بدنه‌ی درخواست مستقیماً به موجودیت پایگاه داده bind می‌شود، کلاینت می‌تواند فیلدی مثل <code dir="ltr">role=admin</code> یا <code dir="ltr">balance</code> بفرستد و اعمال شود. راه‌حل: DTO مجزا برای ورودی، با فیلدهای صریح و محدود — هرگز Entity را مستقیم bind نکنید.</p>
 
 <h3>سطح پیشرفته (Senior)</h3>
 
-<p><strong>سؤال ۱۹ — اگر تیمی بخواهد REST خالص رعایت شود ولی سقف ددلاین داشته باشید، چه می‌کنید؟</strong></p>
-<p>اول اهمیت هر محدودیت را برای این مسئله می‌سنجم. <strong>Statelessness</strong> و <strong>Cacheability</strong> معمولاً بیشترین ارزش عملی را دارند و باید بمانند. <strong>HATEOAS</strong> (جزء Uniform Interface) معمولاً کمترین بازده را در قیاس با هزینه‌اش دارد و می‌توان با قرارداد ثابت جایگزین کرد — ولی باید صریحاً اعلام شود که «عمداً کامل RESTful نیستیم» و دلیلش در مستندات باشد. تصمیم باید آگاهانه و مستند باشد، نه پیش‌فرض.</p>
+<p><strong>سؤال ۱۹ — اگر تیمی بخواهد REST خالص رعایت شود ولی برای تحویل ضرب‌الاجل تعیین کرده باشد، چه می‌کنید؟</strong></p>
+<p>اول اهمیت هر محدودیت را برای این مسئله می‌سنجم. <strong>بدون حالت بودن</strong> و <strong>کش‌پذیری</strong> معمولاً بیشترین ارزش عملی را دارند و باید بمانند. <strong>HATEOAS</strong> (بخشی از رابط یکنواخت) معمولاً کمترین بازده را در قیاس با هزینه‌اش دارد و می‌توان با قرارداد ثابت جایگزینش کرد — ولی باید صریحاً اعلام شود که «عمداً کاملاً RESTful نیستیم» و دلیلش در مستندات بیاید. تصمیم باید آگاهانه و مستند باشد، نه پیش‌فرض.</p>
 
-<p><strong>سؤال ۲۰ — یک API با ۱۰ round-trip برای رندر یک صفحه دارید. چه می‌کنید؟</strong></p>
-<p>سه گزینه را با هزینه‌ی هرکدام می‌سنجم: <strong>۱)</strong> تجمیع در سرور (endpoint فهرستی مثل <code dir="ltr">/dashboard</code>) — ساده، اما ممکن است مصرف‌کننده‌های دیگر را محدود کند؛ <strong>۲)</strong> پارامترهای <code>fields</code> و <code>expand</code> تا پاسخ دقیقاً همان چیزی را بدهد که لازم است — انعطاف‌پذیر ولی قرارداد را پیچیده می‌کند؛ <strong>۳)</strong> تغییر معماری به <a href="bff.html">BFF</a> برای آن کلاینت خاص یا <a href="graphql.html">GraphQL</a>. انتخاب به تعداد مصرف‌کننده‌ها، میزان تفاوت نیازشان و توان نگهداری تیم بستگی دارد — معمولاً برای یک صفحه، گزینه‌ی ۱ پایین‌ترین هزینه را دارد.</p>
+<p><strong>سؤال ۲۰ — یک رابط برنامه‌نویسی با ۱۰ رفت‌وبرگشت برای رندر یک صفحه دارید. چه می‌کنید؟</strong></p>
+<p>سه گزینه را با هزینه‌ی هرکدام می‌سنجم: <strong>۱)</strong> تجمیع در سرور (نقطه‌ی پایانی فهرستی مثل <code dir="ltr">/dashboard</code>) — ساده، اما ممکن است مصرف‌کننده‌های دیگر را محدود کند؛ <strong>۲)</strong> پارامترهای <code>fields</code> و <code>expand</code> تا پاسخ دقیقاً همان چیزی را بدهد که لازم است — انعطاف‌پذیر ولی قرارداد را پیچیده می‌کند؛ <strong>۳)</strong> تغییر معماری به <a href="bff.html">BFF</a> برای آن کلاینت خاص یا <a href="graphql.html">GraphQL</a>. انتخاب به تعداد مصرف‌کننده‌ها، میزان تفاوت نیازشان و توان نگهداری تیم بستگی دارد — معمولاً برای یک صفحه، گزینه‌ی ۱ پایین‌ترین هزینه را دارد.</p>
 </section>
 
 <!-- ==================== 24 ==================== -->
 <section id="s24">
 <h2><span class="kl-num">بخش ۲۴</span>پرسش‌های متداول (FAQ)</h2>
 
-<div class="kl-box kl-hd"><span class="kl-h">آیا REST همان HTTP است؟</span><p>نه. HTTP یک پروتکل انتقال است و REST یک سبک معماری. REST می‌تواند روی هر پروتکلی پیاده شود، ولی در عمل تقریباً همیشه روی HTTP است. بالعکس هم درست است: هر API مبتنی بر HTTP لزوماً REST نیست.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">آیا REST همان HTTP است؟</span><p>نه. <code>HTTP</code> یک پروتکل انتقال است و REST یک سبک معماری. REST می‌تواند روی هر پروتکلی پیاده شود، ولی در عمل تقریباً همیشه روی HTTP است. بالعکس هم درست است: هر رابط برنامه‌نویسی مبتنی بر HTTP لزوماً REST نیست.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">آیا REST باید حتماً JSON باشد؟</span><p>نه. REST با قالب داده کاری ندارد — XML، CSV، YAML و HTML هم می‌توانند نمایش (Representation) باشند. JSON فقط پرکاربردترین است چون سبک، خوانا و بومی مرورگرهاست.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">آیا REST باید حتماً JSON باشد؟</span><p>نه. REST با قالب داده کاری ندارد — <code>XML</code>، <code>CSV</code>، <code>YAML</code> و <code>HTML</code> هم می‌توانند نمایش (Representation) باشند. <code>JSON</code> فقط پرکاربردترین است، چون سبک، خوانا و بومی مرورگر است.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">PUT و POST هر دو داده می‌فرستند؛ کدام را انتخاب کنم؟</span><p>اگر منبع را <strong>می‌سازید</strong> یا عملیاتی دارید که هر بار اثر جدیدی می‌سازد: <code>POST</code>. اگر منبعی با شناسه‌ی مشخص را <strong>جایگزین</strong> می‌کنید: <code>PUT</code>. قاعده‌ی سریع: POST برای ساخت، PUT برای بازنویسی.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">چرا <code>GET /users/42/delete</code> اشتباه است؟</span><p>چون سه مشکل دارد: <strong>۱)</strong> فعل در URI آمده؛ <strong>۲)</strong> <code>GET</code> باید ایمن باشد و نباید وضعیت عوض کند (مرورگر، کش و prefetch ممکن است آن را اجرا کنند)؛ <strong>۳)</strong> معنای درست، <code>DELETE /users/42</code> است. روش درست: <code>DELETE</code>.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">محدودیت نرخ با کدام Status Code پاسخ داده می‌شود؟</span><p><code dir="ltr">429 Too Many Requests</code> به‌همراه هدر <code>Retry-After</code> که مشخص می‌کند چند ثانیه بعد تلاش کنید، و هدرهای <code>X-RateLimit-*</code> برای نمایش باقی‌مانده. استفاده از 503 یا 403 اشتباه است.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">محدودسازی نرخ با کدام کد وضعیت پاسخ داده می‌شود؟</span><p><code dir="ltr">429 Too Many Requests</code> به‌همراه هدر <code>Retry-After</code> که مشخص می‌کند چند ثانیه بعد دوباره تلاش کنید، و هدرهای <code>X-RateLimit-*</code> برای نمایش باقی‌مانده. استفاده از <code dir="ltr">503</code> یا <code dir="ltr">403</code> اشتباه است.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">چه زمانی نسخه‌ی جدید بدهم؟</span><p>فقط برای تغییر شکننده: حذف یا تغییر نوع/معنای فیلد، تغییر Status Code، تغییر الزامی بودن. افزودن فیلد اختیاری، افزودن endpoint یا افزودن مقدار جدید به enum معمولاً نیاز ندارد. جزئیات در <a href="api-versioning.html">مقاله‌ی نسخه‌بندی</a>.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">چه زمانی نسخه‌ی جدید بدهم؟</span><p>فقط برای تغییر شکننده: حذف یا تغییر نوع/معنای فیلد، تغییر کد وضعیت، تغییر الزامی بودن. افزودن فیلد اختیاری، افزودن نقطه‌ی پایانی یا افزودن مقدار جدید به <code dir="ltr">enum</code> معمولاً نیاز ندارد. جزئیات در <a href="api-versioning.html">مقاله‌ی نسخه‌بندی</a>.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">آیا باید همه‌ی endpoints ها را مستند کنم؟</span><p>بله — و بهترین راه، مستندسازی خودکار با OpenAPI است که از annotation تولید می‌شود تا با کد به‌روز بماند. مستندِ کهنه بدتر از نبود مستند است چون Client را به مسیر غلط می‌برد. جزئیات در <a href="api-documentation.html">مقاله‌ی مستندسازی</a>.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">آیا باید همه‌ی نقطه‌های پایانی را مستند کنم؟</span><p>بله — و بهترین راه، مستندسازی خودکار با <span dir="ltr">OpenAPI</span> است که از annotation تولید می‌شود تا با کد به‌روز بماند. مستند کهنه بدتر از نبود مستند است، چون کلاینت را به مسیر غلط می‌برد. جزئیات در <a href="api-documentation.html">مقاله‌ی مستندسازی</a>.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">HATEOAS را باید پیاده کنم؟</span><p>اگر API عمومی با مصرف‌کننده‌های ناشناس دارید، ارزش بررسی دارد. اگر مصرف‌کننده‌ها داخلی و کنترل‌شده‌اند، قرارداد ثابت + OpenAPI معمولاً کافی است. مهم‌تر از آن: تصمیم را صریحاً بگیرید و مستند کنید.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">HATEOAS را باید پیاده کنم؟</span><p>اگر رابط برنامه‌نویسی عمومی با مصرف‌کننده‌های ناشناس دارید، ارزش بررسی دارد. اگر مصرف‌کننده‌ها داخلی و کنترل‌شده‌اند، قرارداد ثابت + <span dir="ltr">OpenAPI</span> معمولاً کافی است. مهم‌تر از آن: تصمیم را صریحاً بگیرید و مستند کنید.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">چطور یک خطای دیتابیس را به Client نشان ندهم؟</span><p>در لایه‌ی وب یک <code>ExceptionTranslator</code> (Spring) یا <code>ExceptionMiddleware</code> (ASP.NET) داشته باشید که استثناها را به پاسخ استاندارد تبدیل کند، جزئیات داخلی را فقط لاگ کند (با traceId) و در پاسخ فقط پیام عمومی + شناسه‌ی پیگیری بدهد.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">چطور یک خطای پایگاه داده را به کلاینت نشان ندهم؟</span><p>در لایه‌ی وب یک <code>ExceptionTranslator</code> (در Spring) یا <code>ExceptionMiddleware</code> (در ASP.NET) داشته باشید که استثناها را به پاسخ ساختاریافته تبدیل کند، جزئیات داخلی را فقط در لاگ ثبت کند (همراه <code>traceId</code>) و در پاسخ فقط پیام عمومی به‌همراه شناسه‌ی پیگیری بدهد.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">برای لیست‌های بزرگ، چرا <code>totalElements</code> خطرناک است؟</span><p>چون <code>COUNT(*)</code> روی جدول بزرگ می‌تواند صدها میلی‌ثانیه طول بکشد و در لیست‌های پرتکرار جمع می‌شود. جایگزین: شمارش تخمینی، شمارش فقط در صفحه‌ی اول، یا حذف آن در فیدهای بی‌انتها.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">برای فهرست‌های بزرگ، چرا <code>totalElements</code> خطرناک است؟</span><p>چون <code>COUNT(*)</code> روی جدول بزرگ می‌تواند صدها میلی‌ثانیه طول بکشد و در فهرست‌های پرتکرار جمع می‌شود. جایگزین: شمارش تخمینی، شمارش فقط در صفحه‌ی اول، یا حذف آن در فهرست‌های بی‌انتها.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">آیا REST برای بلادرنگ مناسب است؟</span><p>نه به شکل ذاتی. مدل Request/Response برای جریان مداوم طراحی نشده. برای یک‌طرفه: <a href="sse.html">SSE</a>؛ برای دوطرفه: <a href="websocket.html">WebSocket</a>؛ برای انتشار رویداد: <a href="webhook.html">Webhook</a>.</p></div>
 
@@ -1703,8 +2027,8 @@ void unauthorized() throws Exception {
 <ol class="kl-check">
 <li><strong>اول منبع، بعد متد</strong> — بپرسید «چه چیزی؟» و بعد «چه عملیاتی؟»، نه برعکس.</li>
 <li><strong>شش محدودیت را بشناسید</strong> — و بدانید کدام را عمداً رعایت نمی‌کنید و چرا.</li>
-<li><strong>Status Code صادق باشد</strong> — 200 برای خطا ندهید؛ 401 و 403 را قاطی نکنید.</li>
-<li><strong>سقف و whitelist</strong> — هیچ پارامتری از Client بدون محدودیت به دیتابیس نرسد.</li>
+<li><strong>کد وضعیت صادق باشد</strong> — ۲۰۰ برای خطا ندهید؛ ۴۰۱ و ۴۰۳ را قاطی نکنید.</li>
+<li><strong>سقف و فهرست سفید</strong> — هیچ پارامتری از کلاینت بدون محدودیت به پایگاه داده نرسد.</li>
 <li><strong>Idempotency-Key برای عملیات حساس</strong> — پرداخت، ثبت سفارش، انتقال وجه.</li>
 <li><strong>Cache-Control صریح</strong> — یا <code>private, no-store</code> برای داده‌ی حساس، یا <code>ETag + max-age</code> برای داده‌ی گران.</li>
 <li><strong>DTO از Entity جداست</strong> — قرارداد عمومی هرگز نباید به اسکیمای داخلی وابسته باشد.</li>
@@ -1748,11 +2072,11 @@ void unauthorized() throws Exception {
 <div class="ax-related-grid">
   <a class="ax-related-card" href="api-fundamentals.html">
     <span class="ax-related-card-cat">مبانی</span>
-    <div class="ax-related-card-title">API چیست؟ — Client/Server، HTTP و Status Code</div>
+    <div class="ax-related-card-title">API چیست؟ — کلاینت و سرور، HTTP و کد وضعیت</div>
   </a>
   <a class="ax-related-card" href="graphql.html">
     <span class="ax-related-card-cat">سبک API</span>
-    <div class="ax-related-card-title">GraphQL — وقتی Client شکل پاسخ را تعیین می‌کند</div>
+    <div class="ax-related-card-title">GraphQL — وقتی کلاینت شکل پاسخ را تعیین می‌کند</div>
   </a>
   <a class="ax-related-card" href="grpc.html">
     <span class="ax-related-card-cat">RPC</span>
@@ -1781,7 +2105,7 @@ void unauthorized() throws Exception {
               <span class="ax-pager-dir">مقاله‌ی قبلی</span>
               <span class="ax-pager-title">API چیست؟</span>
             </a>
-            <a class="ax-pager-link ax-pager-link--next" href="../articles/#api">
+            <a class="ax-pager-link ax-pager-link--next" href="./">
               <span class="ax-pager-dir">ادامه‌ی سری API</span>
               <span class="ax-pager-title">فهرست مقالات API ←</span>
             </a>
@@ -1818,14 +2142,14 @@ void unauthorized() throws Exception {
               <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">شش محدودیت معماری</span></a></li>
               <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">طراحی منابع و URI</span></a></li>
               <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">متدهای HTTP و عملیات CRUD</span></a></li>
-              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جریان داده و نمونه‌ی Request/Response</span></a></li>
-              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Representations و Content Negotiation</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جریان داده و نمونه‌ی درخواست و پاسخ</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">نمایش‌ها و مذاکره‌ی محتوا</span></a></li>
               <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">صفحه‌بندی، فیلتر، مرتب‌سازی و جستجو</span></a></li>
               <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">HATEOAS</span></a></li>
               <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">نسخه‌بندی (Versioning)</span></a></li>
-              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Idempotency و مدیریت خطا</span></a></li>
-              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">احراز هویت، امنیت و Rate Limiting</span></a></li>
-              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">Caching و کارایی</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ایدمپوتنت‌بودن و مدیریت خطا</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">احراز هویت، امنیت و محدودسازی نرخ</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">کش‌پذیری و کارایی</span></a></li>
               <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">پیاده‌سازی با Java و Spring Boot</span></a></li>
               <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">پیاده‌سازی با C# و ASP.NET Core</span></a></li>
               <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">ساختار پروژه و لایه‌بندی</span></a></li>
@@ -1883,14 +2207,14 @@ void unauthorized() throws Exception {
         <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">شش محدودیت معماری</span></a></li>
         <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">طراحی منابع و URI</span></a></li>
         <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">متدهای HTTP و عملیات CRUD</span></a></li>
-        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جریان داده و نمونه‌ی Request/Response</span></a></li>
-        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Representations و Content Negotiation</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جریان داده و نمونه‌ی درخواست و پاسخ</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">نمایش‌ها و مذاکره‌ی محتوا</span></a></li>
         <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">صفحه‌بندی، فیلتر، مرتب‌سازی و جستجو</span></a></li>
         <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">HATEOAS</span></a></li>
         <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">نسخه‌بندی (Versioning)</span></a></li>
-        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Idempotency و مدیریت خطا</span></a></li>
-        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">احراز هویت، امنیت و Rate Limiting</span></a></li>
-        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">Caching و کارایی</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ایدمپوتنت‌بودن و مدیریت خطا</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">احراز هویت، امنیت و محدودسازی نرخ</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">کش‌پذیری و کارایی</span></a></li>
         <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">پیاده‌سازی با Java و Spring Boot</span></a></li>
         <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">پیاده‌سازی با C# و ASP.NET Core</span></a></li>
         <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">ساختار پروژه و لایه‌بندی</span></a></li>

@@ -26,21 +26,24 @@
   <meta name="twitter:description" content="Schema و Type System، Query و Mutation و Subscription، DataLoader و حل N+1، Apollo Server و مقایسه با REST.">
   <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
   <meta name="theme-color" content="#0F766E">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>ح</text></svg>">
 
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/comments.js"></script>
   <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
-  <script defer src="../api/js/api-demos.js"></script>
+  <script defer src="../js/api-demos.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
   <link rel="stylesheet" href="../css/diagram-anim.css">
-  <link rel="stylesheet" href="../api/css/api-series.css">
+  <link rel="stylesheet" href="../css/api-series.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -62,7 +65,8 @@
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
         { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
-        { "@type": "ListItem", "position": 3, "name": "GraphQL", "item": "https://haedarfarhani.github.io/My-Articles/articles/graphql.html" }
+        { "@type": "ListItem", "position": 3, "name": "سری API", "item": "https://haedarfarhani.github.io/My-Articles/articles/#api" },
+        { "@type": "ListItem", "position": 4, "name": "GraphQL", "item": "https://haedarfarhani.github.io/My-Articles/articles/graphql.html" }
       ]
     }
   }
@@ -84,9 +88,9 @@
       </a>
 
       <div class="nav-center">
-        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+        <a href="./" class="nav-breadcrumb-tag" title="بازگشت به فهرست سری API" style="text-decoration:none;color:inherit;">
           <span>&#128221;</span>
-          <span>مقالات و راهنماها</span>
+          <span>سری جامع API</span>
         </a>
       </div>
 
@@ -119,14 +123,14 @@
           </div>
 
           <h1 class="post-title">
-            <span class="gradient-text">GraphQL</span> چیست؟ آموزش کامل Schema، Query و Mutation
+            <span class="gradient-text">GraphQL</span> چیست؟ آموزش کامل طرحواره، Query و Mutation
           </h1>
 
           <p class="hero-lead">
             <code>GraphQL</code> به‌جای اینکه به کلاینت بگوید «چه endpoint هایی موجود است»،
-            یک <strong>Schema</strong> منتشر می‌کند و کلاینت دقیقاً می‌گوید چه می‌خواهد.
-            در این راهنما <code>Type System</code>، <code>Query</code>، <code>Mutation</code> و
-            <code>Subscription</code>، <code>Resolver</code> ها، مشکل معروف <code>N+1</code> و راه‌حل
+            یک <strong>طرحواره (Schema)</strong> منتشر می‌کند و کلاینت دقیقاً می‌گوید چه می‌خواهد.
+            در این راهنما <code>نظام نوع (Type System)</code>، <code>Query</code>، <code>Mutation</code> و
+            <code>اشتراک (رویدادمحور)</code>، <code>حل‌کننده (resolver)</code> ها، مشکل معروف <code>N+1</code> و راه‌حل
             <code>DataLoader</code>، صفحه‌بندی <code>Cursor</code>، مدیریت خطا و داده‌ی جزئی را می‌بینید،
             با <code>Apollo Server</code> پیاده‌سازی می‌کنید و در پایان آن را با REST مقایسه می‌کنید.
           </p>
@@ -153,7 +157,7 @@
             <span class="post-tag">#Schema</span>
             <span class="post-tag">#Query</span>
             <span class="post-tag">#Mutation</span>
-            <span class="post-tag">#Subscription</span>
+            <span class="post-tag">#اشتراک (رویدادمحور)</span>
             <span class="post-tag">#Apollo</span>
           </div>
 
@@ -169,8 +173,8 @@
               <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>Schema و سیستم انواع</span></a></li>
               <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>Query و خواندن داده</span></a></li>
               <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Mutation و نوشتن داده</span></a></li>
-              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>Subscription و داده‌ی بلادرنگ</span></a></li>
-              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>Resolver ها و جریان یک درخواست</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>اشتراک (رویدادمحور) و داده‌ی بلادرنگ</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>حل‌کننده‌ها (resolver) و جریان یک درخواست</span></a></li>
               <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>GraphQL روی HTTP</span></a></li>
               <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>نمونه‌ی Request و Response کامل</span></a></li>
               <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>Variables، Fragments و Directives</span></a></li>
@@ -198,7 +202,7 @@
 <h2><span class="kl-num">بخش ۱</span>مقدمه و اهداف یادگیری</h2>
 
 <p>
-در REST، قرارداد این است که سرور <strong>endpoint ها را طراحی می‌کند</strong> و کلاینت باید با
+در REST (سبک معماری)، قرارداد این است که سرور <strong>endpoint ها را طراحی می‌کند</strong> و کلاینت باید با
 همان مسیرها کنار بیاید. اگر صفحه‌ی محصول هم <code>نام</code>، هم <code>قیمت</code>، هم
 <code>موجودی</code> و هم <code>نظرات</code> می‌خواهد، کلاینت سه یا چهار درخواست جدا می‌فرستد و
 بخشی از پاسخ‌ها را دور می‌ریزد. <code>GraphQL</code> این معادله را برعکس می‌کند: سرور یک
@@ -210,12 +214,12 @@
 <span class="kl-h">اهداف یادگیری</span>
 <ol class="kl-check">
 <li>فهمیدن اینکه GraphQL دقیقاً کدام مشکل REST را حل می‌کند و کدام مشکلات را حل <strong>نمی‌کند</strong>.</li>
-<li>نوشتن Schema با <code>Scalar</code>، <code>Object</code>، <code>Input</code>، <code>Enum</code>، <code>Interface</code> و <code>Union</code>.</li>
-<li>تسلط بر سه عملیات اصلی: <code>Query</code>، <code>Mutation</code> و <code>Subscription</code>.</li>
-<li>نوشتن <code>Resolver</code> و فهمیدن ترتیب اجرای فیلدها در یک درخواست.</li>
+<li>نوشتن طرحواره با <code>Scalar</code>، <code>Object</code>، <code>Input</code>، <code>Enum</code>، <code>Interface</code> و <code>Union</code>.</li>
+<li>تسلط بر سه عملیات اصلی: <code>Query</code>، <code>Mutation</code> و <code>اشتراک (رویدادمحور)</code>.</li>
+<li>نوشتن <code>حل‌کننده (resolver)</code> و فهمیدن ترتیب اجرای فیلدها در یک درخواست.</li>
 <li>تشخیص و رفع مشکل کلاسیک <code>N+1</code> با <code>DataLoader</code> و batch کردن درخواست‌ها.</li>
 <li>صفحه‌بندی درست با <code>Cursor</code> به‌جای <code>offset</code>.</li>
-<li>طراحی دفاعی در برابر کوئری‌های مخرب: <code>depth limit</code>، <code>cost analysis</code> و غیرفعال کردن introspection در production.</li>
+<li>طراحی دفاعی در برابر کوئری‌های مخرب: <code>depth limit</code>، <code>cost analysis</code> و غیرفعال کردن درون‌نگری (درون‌نگری (introspection)) در production.</li>
 <li>تصمیم‌گیری آگاهانه بین GraphQL و REST برای پروژه‌ی واقعی.</li>
 </ol>
 </div>
@@ -237,9 +241,9 @@
 <div class="kl-box kl-hd">
 <span class="kl-h">تعریف</span>
 <p>
-<code>GraphQL</code> یک <strong>زبان پرسش برای API</strong> و یک مشخصات باز است که به کلاینت
-اجازه می‌دهد شکل و محتوای پاسخ را <strong>خودش تعیین کند</strong>. سرور یک Schema تعریف می‌کند و
-یک نقطه‌ی ورودی (معمولاً <code dir="ltr">/graphql</code>) که Query، Mutation و Subscription را
+<code>GraphQL</code> (زبان کوئری + زمان اجرا) یک مشخصات باز است که به کلاینت اجازه می‌دهد شکل و محتوای پاسخ را <strong>خودش تعیین کند</strong> که به کلاینت
+اجازه می‌دهد شکل و محتوای پاسخ را <strong>خودش تعیین کند</strong>. سرور یک طرحواره تعریف می‌کند و
+یک نقطه‌ی ورودی (معمولاً <code dir="ltr">/graphql</code>) که Query، Mutation و اشتراک (رویدادمحور) را
 اجرا می‌کند و JSON برمی‌گرداند. ریشه‌ی نام آن از «گراف» می‌آید: داده یک <strong>گراف</strong> از
 موجودیت‌ها و رابطه‌های بین آن‌هاست، نه جدول‌های جدا و بی‌ارتباط.
 </p>
@@ -253,10 +257,10 @@
 <tr><th>سال</th><th>رویداد</th><th>معنی</th></tr>
 </thead>
 <tbody>
-<tr><td dir="ltr">۲۰۱۲</td><td>شروع کار داخلی در فیس‌بوک</td><td>برای حل مشکل over-fetching در اپ موبایل با تیم‌های بزرگ</td></tr>
+<tr><td dir="ltr">۲۰۱۲</td><td>شروع کار داخلی در فیس‌بوک</td><td>برای حل مشکل بیش‌دریافت (واکشی بیش از نیاز) در اپ موبایل با تیم‌های بزرگ</td></tr>
 <tr><td dir="ltr">۲۰۱۵</td><td>انتشار عمومی Specification</td><td>مستقل از فیس‌بوک و اجرا توسط بنیاد GraphQL</td></tr>
 <tr><td dir="ltr">۲۰۱۶</td><td>کتابخانه‌های Apollo و Relay</td><td>اکوسیستم عملی سمت سرور و کلاینت شکل گرفت</td></tr>
-<tr><td dir="ltr">۲۰۱۸ به بعد</td><td>بلوغ Schema Federation</td><td>ترکیب چند سرویس و چند تیم در یک Graph واحد</td></tr>
+<tr><td dir="ltr">۲۰۱۸ به بعد</td><td>بلوغ طرحواره Federation</td><td>ترکیب چند سرویس و چند تیم در یک Graph واحد</td></tr>
 <tr><td dir="ltr">امروز</td><td>GitHub، Shopify، Yelp، Hasura</td><td>GraphQL به یکی از سبک‌های استاندارد API سازمانی تبدیل شده است</td></tr>
 </tbody>
 </table>
@@ -267,7 +271,7 @@
 <p>
 GraphQL <strong>زبان پرسش</strong> است، نه زبان برنامه‌نویسی و نه پایگاه‌داده. یعنی نمی‌توانید در
 آن حلقه بنویسید، یا کد دلخواه اجرا کنید. فقط می‌نویسید چه داده‌ای می‌خواهید؛ اجرای واقعی در
-Resolver های شما و در کد سمت سرور اتفاق می‌افتد. همین محدودیت امنیت را ساده‌تر می‌کند، چون کلاینت
+حل‌کننده های شما و در کد سمت سرور اتفاق می‌افتد. همین محدودیت امنیت را ساده‌تر می‌کند، چون کلاینت
 نمی‌تواند کد دلخواه روی سرور اجرا کند — اگر کوئری‌ها را محدود کنید.
 </p>
 </div>
@@ -287,61 +291,39 @@ Resolver های شما و در کد سمت سرور اتفاق می‌افتد. 
 آخر. در REST این‌ها معمولاً سه endpoint جدا هستند و کلاینت سه درخواست می‌فرستد.
 </p>
 
-<div class="kl-fig">
-  <svg viewBox="0 0 780 330" role="img" aria-labelledby="fig-gq-t fig-gq-d" preserveAspectRatio="xMidYMid meet">
-    <title id="fig-gq-t">معماری GraphQL در برابر REST</title>
-    <desc id="fig-gq-d">در REST کلاینت سه درخواست جدا به سه endpoint می‌فرستد و هر کدام بخشی از داده را برمی‌گردانند. در GraphQL یک درخواست به یک endpoint می‌رود، schema اعتبارسنجی می‌شود، resolver ها داده را از چند منبع می‌گیرند و یک پاسخ دقیق شکل می‌گیرد.</desc>
+<figure class="kl-fig">
+  <svg viewBox="0 0 770 340" role="img" aria-label="مقایسه بیش‌دریافت و کم‌دریافت در REST با پاسخ دقیق GraphQL">
+    <g class="s-node" style="--kl-i:1"><rect x="14" y="14" width="340" height="312" rx="16" class="s-group"/><text text-anchor="middle" x="184" y="40" class="s-group-t">REST — بیش‌دریافت و کم‌دریافت</text></g>
+    <g class="s-node" style="--kl-i:2"><rect x="416" y="14" width="340" height="312" rx="16" class="s-group-acc"/><text text-anchor="middle" x="586" y="40" class="s-group-t">GraphQL — پاسخ دقیق</text></g>
 
-    <text x="390" y="30" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">REST: چند endpoint، داده‌ی تکراری و اضافه</text>
-    <rect x="20" y="46" width="120" height="52" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="80" y="70" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">Client</text>
-    <text x="80" y="88" text-anchor="middle" font-size="11" fill="var(--text-muted)">۳ درخواست</text>
+    <g class="s-node" style="--kl-i:3"><rect x="120" y="80" width="130" height="50" rx="12" class="s-acc"/><text text-anchor="middle" x="185" y="104" font-size="13" font-weight="800">Client</text><text text-anchor="middle" x="185" y="122" font-size="10" fill="var(--text-muted)">۳ درخواست جدا</text></g>
+    <g class="s-node" style="--kl-i:4"><rect x="40" y="50" width="150" height="36" rx="10" class="s-chip"/><text text-anchor="middle" x="115" y="66" font-size="11">/products/42</text><text text-anchor="middle" x="115" y="78" font-size="9" fill="var(--text-muted)">۴۰ فیلد اضافه — بیش‌دریافت</text></g>
+    <g class="s-node" style="--kl-i:5"><rect x="40" y="110" width="150" height="36" rx="10" class="s-chip"/><text text-anchor="middle" x="115" y="126" font-size="11">/inventory?ids=42</text><text text-anchor="middle" x="115" y="138" font-size="9" fill="var(--text-muted)">کم‌دریافت</text></g>
+    <g class="s-node" style="--kl-i:6"><rect x="40" y="170" width="150" height="36" rx="10" class="s-chip"/><text text-anchor="middle" x="115" y="186" font-size="11">/reviews?productId=42</text><text text-anchor="middle" x="115" y="198" font-size="9" fill="var(--text-muted)">کم‌دریافت</text></g>
+    <g class="s-node" style="--kl-i:7"><rect x="40" y="240" width="220" height="52" rx="10" class="s-bad"/><text text-anchor="middle" x="150" y="260" font-size="11">پاسخ: ۴۰+ فیلد ناخواسته</text><text text-anchor="middle" x="150" y="276" font-size="10">۲/۳ داده دور می‌رود</text><text text-anchor="middle" x="150" y="290" font-size="10">۳ رفت‌وبرگشت شبکه</text></g>
 
-    <rect x="190" y="36" width="150" height="34" rx="10" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="265" y="58" text-anchor="middle" font-size="11" fill="var(--text-main)">/products/42 (۴۰ فیلد اضافه)</text>
-    <rect x="190" y="78" width="150" height="34" rx="10" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="265" y="100" text-anchor="middle" font-size="11" fill="var(--text-main)">/inventory?ids=42</text>
-    <rect x="190" y="120" width="150" height="34" rx="10" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="265" y="142" text-anchor="middle" font-size="11" fill="var(--text-main)">/reviews?productId=42</text>
+    <path class="s-arr s-flow-bad" d="M185,130 L185,86"/><path class="s-head s-head-bad" d="M180,86 L185,81 L190,86 Z"/>
+    <path class="s-arr s-flow-bad" d="M185,80 L185,66"/><path class="s-head s-head-bad" d="M180,66 L185,61 L190,66 Z"/>
+    <path class="s-arr s-flow-bad" d="M185,126 L185,146"/><path class="s-head s-head-bad" d="M180,146 L185,151 L190,146 Z"/>
+    <path class="s-arr s-flow-bad" d="M185,172 L185,188"/><path class="s-head s-head-bad" d="M180,188 L185,193 L190,188 Z"/>
+    <path class="s-arr s-flow-bad" d="M160,240 L160,206"/><path class="s-head s-head-bad" d="M155,206 L160,201 L165,206 Z"/>
 
-    <text x="390" y="196" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">GraphQL: یک endpoint، پاسخ دقیقاً همان‌قدر که خواسته شد</text>
-    <rect x="20" y="212" width="120" height="52" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="80" y="236" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">Client</text>
-    <text x="80" y="254" text-anchor="middle" font-size="11" fill="var(--text-muted)">۱ درخواست</text>
+    <g class="s-node" style="--kl-i:8"><rect x="520" y="180" width="130" height="50" rx="12" class="s-acc"/><text text-anchor="middle" x="585" y="204" font-size="13" font-weight="800">Client</text><text text-anchor="middle" x="585" y="222" font-size="10" fill="var(--text-muted)">۱ درخواست</text></g>
+    <g class="s-node" style="--kl-i:9"><rect x="520" y="100" width="130" height="50" rx="12" class="s-chip"/><text text-anchor="middle" x="585" y="124" font-size="13" font-weight="800">/graphql</text><text text-anchor="middle" x="585" y="142" font-size="10" fill="var(--text-muted)">parse + validate</text></g>
+    <g class="s-node" style="--kl-i:10"><rect x="520" y="30" width="130" height="50" rx="12" class="s-c4"/><text text-anchor="middle" x="585" y="48" font-size="11">منابع داده</text><text text-anchor="middle" x="585" y="64" font-size="10">DB · سرویس‌ها</text></g>
 
-    <rect x="186" y="212" width="128" height="52" rx="12" fill="var(--bg-surface)" stroke="var(--color-primary)" stroke-width="2"/>
-    <text x="250" y="236" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">/graphql</text>
-    <text x="250" y="254" text-anchor="middle" font-size="11" fill="var(--text-muted)">parse + validate</text>
+    <path class="s-arr s-flow-ok" d="M520,205 L520,150"/><path class="s-head s-head-ok" d="M515,150 L520,145 L525,150 Z"/>
+    <path class="s-arr s-flow-ok" d="M520,125 L520,80"/><path class="s-head s-head-ok" d="M515,80 L520,75 L525,80 Z"/>
+    <path class="s-arr s-flow" d="M520,55 L520,30 L660,30 L660,180"/><path class="s-head" d="M655,180 L660,175 L665,180 Z"/>
 
-    <rect x="360" y="212" width="128" height="52" rx="12" fill="var(--bg-surface)" stroke="var(--color-primary)" stroke-width="2"/>
-    <text x="424" y="236" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">Resolvers</text>
-    <text x="424" y="254" text-anchor="middle" font-size="11" fill="var(--text-muted)">اجرای فیلدها</text>
+    <g class="s-node" style="--kl-i:11"><rect x="520" y="250" width="220" height="50" rx="10" class="s-ok"/><text text-anchor="middle" x="630" y="270" font-size="11">پاسخ: ۴ فیلد دقیق</text><text text-anchor="middle" x="630" y="286" font-size="10">بدون اضافه، بدون دور ریختن</text></g>
 
-    <rect x="534" y="212" width="210" height="52" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="639" y="236" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">منابع داده</text>
-    <text x="639" y="254" text-anchor="middle" font-size="11" fill="var(--text-muted)">DB · سرویس A · سرویس B</text>
+    <circle class="s-runner" r="5"><animateMotion dur="2.5s" repeatCount="indefinite" begin="0.5s" path="M585,205 L585,150 L585,125 L585,80"/></circle>
 
-    <defs>
-      <marker id="arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill="var(--color-primary)"/>
-      </marker>
-    </defs>
-
-    <g stroke="var(--color-danger)" stroke-width="2.2" fill="none" class="s-arr">
-      <line x1="140" y1="72" x2="186" y2="58"/>
-      <line x1="140" y1="72" x2="186" y2="95"/>
-      <line x1="140" y1="72" x2="186" y2="137"/>
-    </g>
-    <g class="s-flow" stroke="var(--color-primary)" stroke-width="2.4" fill="none">
-      <line x1="140" y1="238" x2="182" y2="238" marker-end="url(#arr-g)"/>
-      <line x1="314" y1="238" x2="356" y2="238" marker-end="url(#arr-g)"/>
-      <line x1="488" y1="238" x2="530" y2="238" marker-end="url(#arr-g)"/>
-      <path d="M639,264 L639,300 L80,300 L80,268" marker-end="url(#arr-g)"/>
-    </g>
-    <text x="396" y="322" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-primary)">پاسخ: دقیقاً همان فیلدهایی که کلاینت نوشت — بدون یک بایت اضافه</text>
+    <text text-anchor="middle" x="385" y="326" class="s-t2 s-lbl" style="--kl-i:12">REST: ۳ رفت‌وبرگشت و داده‌ی اضافه — GraphQL: ۱ درخواست و پاسخ دقیق</text>
   </svg>
-  <figcaption>بالا: الگوی REST با سه رفت‌وبرگشت و داده‌ی اضافه. پایین: یک درخواست GraphQL و یک پاسخ دقیق.</figcaption>
-</div>
+  <figcaption>بالا: REST با سه درخواست جدا، بیش‌دریافت و کم‌دریافت. پایین: GraphQL با یک درخواست و پاسخ دقیق.</figcaption>
+</figure>
 
 <h3>یک request در برابر سه request</h3>
 
@@ -370,7 +352,7 @@ query ProductPage {
 
 <div class="kl-box kl-deep">
 <span class="kl-h">نکته‌ای که اغلب نادیده گرفته می‌شود</span>
-<strong>Over-fetching</strong> (داده‌ی اضافه) مشکل REST است و <strong>Under-fetching</strong> (نبود داده‌ی
+<strong>بیش‌دریافت</strong> (داده‌ی اضافه) مشکل REST است و <strong>کم‌دریافت</strong> (نبود داده‌ی
 لازم) هم مشکل REST است که به درخواست‌های اضافه و N+1 می‌انجامد. GraphQL هر دو را کم می‌کند چون
 پاسخ دقیقاً برابر انتخاب کلاینت است. اما این «دقیقاً» هزینه دارد: <strong>پیچیدگی به کلاینت منتقل می‌شود</strong> و
 سرور باید کوئری‌های پیچیده را ایمن و کند اجرا کند — بخش‌های ۱۲، ۱۳ و ۱۷ دقیقاً به همین می‌پردازند.
@@ -383,7 +365,7 @@ query ProductPage {
 
 <p>
 قلب GraphQL یک <strong>Schema</strong> است: یک سند machine-readable که می‌گوید چه نوع‌هایی وجود
-دارند، چه فیلدهایی دارند و چه ارتباطی بینشان است. Schema هم <strong>قرارداد</strong> است و هم
+دارند، چه فیلدهایی دارند و چه ارتباطی بینشان است. طرحواره هم <strong>قرارداد</strong> است و هم
 <strong>مستند زنده</strong>؛ از روی آن هم کلاینت تایپ‌دار تولید می‌شود و هم مستندات.
 </p>
 
@@ -426,7 +408,7 @@ enum Category { ELECTRONICS, BOOK, CLOTHING }</code></pre>
 </thead>
 <tbody>
 <tr><td dir="ltr"><code>Scalar</code></td><td>مقدار تک‌ورقی‌ای</td><td dir="ltr"><code>Int</code>، <code>Float</code>، <code>String</code>، <code>Boolean</code>، <code>ID</code></td><td>برای تاریخ، پول و UUID معمولاً <strong>Scalar سفارشی</strong> می‌سازند</td></tr>
-<tr><td dir="ltr"><code>Object</code></td><td>نوع اصلی با فیلد</td><td dir="ltr"><code>type Product { ... }</code></td><td>نام نوع در Schema یکتا و single source of truth است</td></tr>
+<tr><td dir="ltr"><code>Object</code></td><td>نوع اصلی با فیلد</td><td dir="ltr"><code>type Product { ... }</code></td><td>نام نوع در طرحواره یکتا و single source of truth است</td></tr>
 <tr><td dir="ltr"><code>Input</code></td><td>ورودی نوشتن یا آرگومان</td><td dir="ltr"><code>input CreateProductInput</code></td><td>فیلدهای <code>output</code> و <code>resolver</code> ندارد؛ عمداً جدا نگه داشته شده</td></tr>
 <tr><td dir="ltr"><code>Enum</code></td><td>مجموعه‌ی مقدار بسته</td><td dir="ltr"><code>enum Status { PENDING SHIPPED }</code></td><td>به‌جای رشته‌های آزاد؛ جلوی خطای تایپی را می‌گیرد</td></tr>
 <tr><td dir="ltr"><code>Interface</code></td><td>قرارداد مشترک چند نوع</td><td dir="ltr"><code>interface Node { id: ID! }</code></td><td>کلاینت با fragment روی آن query می‌نویسد</td></tr>
@@ -440,7 +422,7 @@ enum Category { ELECTRONICS, BOOK, CLOTHING }</code></pre>
 <div class="kl-box kl-warn">
 <span class="kl-h">تصمیمی که باید آگاهانه بگیرید: Nullability</span>
 <p>
-بزرگ‌ترین تصمیم طراحی Schema این است که کدام فیلدها <code dir="ltr">!</code> داشته باشند.
+بزرگ‌ترین تصمیم طراحی طرحواره این است که کدام فیلدها <code dir="ltr">!</code> داشته باشند.
 قاعده‌ی عملی: <strong>فیلدی که همیشه وجود دارد را Non-null کنید</strong>. اگر Client روی یک فیلد
 Non-null خطا بگیرد، GraphQL <strong>کل پاسخ را null</strong> می‌کند و خطا را به بالا می‌فرستد. یعنی یک
 فیلد اشتباه می‌تواند کل صفحه را خالی کند. در مقابل، فیلد Nullable خطا را فقط در همان مسیر نشان
@@ -515,7 +497,7 @@ Non-null خطا بگیرد، GraphQL <strong>کل پاسخ را null</strong> م
 <div class="kl-checkgrid">
   <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>Query فقط خواندن است</span></label>
   <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>هر operation نام دارد (مثلاً GetProductPage)</span></label>
-  <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>type Query در Schema اجباری است</span></label>
+  <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>type Query در طرحواره اجباری است</span></label>
   <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>فیلدهای انتخاب‌شده دقیقاً در پاسخ می‌آیند</span></label>
   <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>alias برای صدا زدن چندباره‌ی یک فیلد استفاده می‌شود</span></label>
   <label class="ax-check ax-check--rtl"><input type="checkbox"> <span>آرگومان‌ها بهتر است با variables بیایند</span></label>
@@ -531,6 +513,29 @@ Non-null خطا بگیرد، GraphQL <strong>کل پاسخ را null</strong> م
 </p>
 </div>
 </section>
+
+<figure class="kl-fig">
+  <svg viewBox="0 0 770 280" role="img" aria-label="سه عملیات اصلی GraphQL: Query برای خواندن، Mutation برای نوشتن و اشتراک (رویدادمحور) برای جریان رویداد">
+    <text text-anchor="middle" x="385" y="28" class="s-t2 s-lbl" style="--kl-i:1">سه عملیات اصلی GraphQL</text>
+
+    <g class="s-node" style="--kl-i:2"><rect x="460" y="60" width="160" height="160" rx="16" class="s-ok"/><text text-anchor="middle" x="540" y="88" font-size="15" font-weight="800">Query</text><text text-anchor="middle" x="540" y="112" font-size="12">خواندن داده</text><text text-anchor="middle" x="540" y="132" font-size="11" fill="var(--text-muted)">فیلدهای موازی</text><text text-anchor="middle" x="540" y="152" font-size="10">مثال:</text><text text-anchor="middle" x="540" y="168" font-size="10" fill="var(--text-muted)">product { name price }</text></g>
+    <g class="s-node" style="--kl-i:3"><rect x="250" y="60" width="160" height="160" rx="16" class="s-warn"/><text text-anchor="middle" x="330" y="88" font-size="15" font-weight="800">Mutation</text><text text-anchor="middle" x="330" y="112" font-size="12">نوشتن داده</text><text text-anchor="middle" x="330" y="132" font-size="11" fill="var(--text-muted)">فیلدهای سریال</text><text text-anchor="middle" x="330" y="152" font-size="10">مثال:</text><text text-anchor="middle" x="330" y="168" font-size="10" fill="var(--text-muted)">createProduct(input)</text></g>
+    <g class="s-node" style="--kl-i:4"><rect x="40" y="60" width="160" height="160" rx="16" class="s-c4"/><text text-anchor="middle" x="120" y="88" font-size="15" font-weight="800">اشتراک (رویدادمحور)</text><text text-anchor="middle" x="120" y="112" font-size="12">جریان رویداد</text><text text-anchor="middle" x="120" y="132" font-size="11" fill="var(--text-muted)">WebSocket بلادرنگ</text><text text-anchor="middle" x="120" y="152" font-size="10">مثال:</text><text text-anchor="middle" x="120" y="168" font-size="10" fill="var(--text-muted)">messageAdded { body }</text></g>
+
+    <path class="s-arr s-flow-ok" d="M460,140 L410,140"/><path class="s-head s-head-ok" d="M405,140 L410,135 L415,140 Z"/>
+    <path class="s-arr s-flow-bad" d="M410,180 L410,220"/><path class="s-head s-head-bad" d="M405,220 L410,225 L415,220 Z"/>
+    <path class="s-arr s-flow-soft" d="M250,140 L200,140"/><path class="s-head s-head-dim" d="M195,140 L200,135 L205,140 Z"/>
+
+    <circle class="s-runner" r="4"><animateMotion dur="2s" repeatCount="indefinite" begin="0.3s" path="M540,140 L410,140 L410,220"/></circle>
+    <circle class="s-runner" r="4"><animateMotion dur="2.2s" repeatCount="indefinite" begin="0.8s" path="M330,140 L200,140 L200,220"/></circle>
+
+    <text text-anchor="middle" x="540" y="236" class="s-t2 s-lbl" style="--kl-i:5">کوئری برای خواندن</text>
+    <text text-anchor="middle" x="330" y="236" class="s-t2 s-lbl" style="--kl-i:6">موتیشن برای تغییر وضعیت</text>
+    <text text-anchor="middle" x="120" y="236" class="s-t2 s-lbl" style="--kl-i:7">اشتراک برای رویدادهای زنده</text>
+  </svg>
+  <figcaption>سه عملیات اصلی GraphQL: Query برای خواندن، Mutation برای نوشتن و اشتراک (رویدادمحور) برای جریان رویدادهای بلادرنگ.</figcaption>
+</figure>
+
 <!-- ==================== 6 ==================== -->
 <section id="s6">
 <h2><span class="kl-num">بخش ۶</span>Mutation و نوشتن داده</h2>
@@ -603,7 +608,7 @@ enum ErrorCode {
 <div class="kl-check">
 <ul>
 <li><strong>Mutation بدون احراز هویت:</strong> هر Mutation نوشتن را در resolver با
-<code>requireUser(context)</code> محافظت کنید. داشتن Schema به‌معنای داشتن دسترسی نیست.</li>
+<code>requireUser(context)</code> محافظت کنید. داشتن طرحواره به‌معنای داشتن دسترسی نیست.</li>
 <li><strong>Idempotency:</strong> در REST با هدر <code dir="ltr">Idempotency-Key</code> تکرار درخواست را کنترل می‌کردید. در GraphQL هیچ هدر استانداردی نیست؛ خودتان این کلید را به‌عنوان آرگومان Mutation بگیرید و در Redis نگه دارید تا ارسال دوباره‌ی یک فرم، رکورد تکراری نسازد.</li>
 </ul>
 </div>
@@ -612,11 +617,11 @@ enum ErrorCode {
 
 <!-- ==================== 7 ==================== -->
 <section id="s7">
-<h2><span class="kl-num">بخش ۷</span>Subscription و داده‌ی بلادرنگ</h2>
+<h2><span class="kl-num">بخش ۷</span>اشتراک (رویدادمحور) و داده‌ی بلادرنگ</h2>
 
 <p>
 اگر REST با long-polling و WebSocket خام این کار را با کد زیاد انجام می‌دهد، GraphQL آن را به
-بخشی از <strong>قرارداد رسمی</strong> تبدیل کرده است: <code>Subscription</code>. کلاینت یک کوئری
+بخشی از <strong>قرارداد رسمی</strong> تبدیل کرده است: <code>اشتراک (رویدادمحور)</code>. کلاینت یک کوئری
 می‌فرستد و تا وقتی اتصال باز است، هر بار داده عوض شود پیام جدید دریافت می‌کند.
 </p>
 
@@ -678,11 +683,11 @@ enum ErrorCode {
 
 <!-- ==================== 8 ==================== -->
 <section id="s8">
-<h2><span class="kl-num">بخش ۸</span>Resolver ها و جریان یک درخواست</h2>
+<h2><span class="kl-num">بخش ۸</span>حل‌کننده‌ها (resolver) و جریان یک درخواست</h2>
 
 <p>
-Schema می‌گوید <strong>چه چیزی</strong> وجود دارد؛ Resolver می‌گوید <strong>از کجا بیاید</strong>.
-Resolver ها همان جایی هستند که منطق واقعی می‌نشیند و می‌توانند به دیتابیس، سرویس دیگر یا API
+طرحواره می‌گوید <strong>چه چیزی</strong> وجود دارد؛ حل‌کننده می‌گوید <strong>از کجا بیاید</strong>.
+حل‌کننده ها همان جایی هستند که منطق واقعی می‌نشیند و می‌توانند به دیتابیس، سرویس دیگر یا API
 بیرونی وصل شوند.
 </p>
 
@@ -734,7 +739,7 @@ Resolver ها همان جایی هستند که منطق واقعی می‌نش�
 <tr><td dir="ltr">Query فیلدها موازی اجرا می‌شوند</td><td>همه‌ی فیلدهای سطح یک Query با هم شروع می‌شوند</td><td>دلیل نیاز به DataLoader برای جلوگیری از N+1</td></tr>
 <tr><td dir="ltr">Mutation فیلدها سریال اجرا می‌شوند</td><td>هر فیلد Mutation بعد از قبلی شروع می‌شود</td><td>ترتیب «ایجاد کاربر» سپس «ارسال ایمیل» تضمین می‌شود</td></tr>
 <tr><td dir="ltr">فیلدهای فرزند بعد از حل مقدار والد</td><td>تا <code dir="ltr">product</code> حل نشود، <code dir="ltr">reviews</code> شروع نمی‌شود</td><td>resolver فرزند می‌داند <code>parent</code> را</td></tr>
-<tr><td dir="ltr">اجرا تا عمق درخت ادامه دارد</td><td>Resolver ها به‌صورت درختی اجرا می‌شوند</td><td>کوئری عمیق می‌تواند گران شود — depth limit لازم است</td></tr>
+<tr><td dir="ltr">اجرا تا عمق درخت ادامه دارد</td><td>حل‌کننده‌ها (resolver) به‌صورت درختی اجرا می‌شوند</td><td>کوئری عمیق می‌تواند گران شود — depth limit لازم است</td></tr>
 <tr><td dir="ltr">یک resolver می‌تواند مقدار ثابت برگرداند</td><td>عدد، رشته، null یا حتی خودش</td><td>برای فیلدهای ساده‌ی <code dir="ltr">__typename</code> و شمارش‌ها</td></tr>
 </tbody>
 </table>
@@ -750,6 +755,51 @@ Resolver ها همان جایی هستند که منطق واقعی می‌نش�
 </p>
 </div>
 </section>
+
+<figure class="kl-fig">
+  <svg viewBox="0 0 770 340" role="img" aria-label="یک کوئری GraphQL که به سه منبع داده همزمان دسترسی می‌یابد">
+    <text text-anchor="middle" x="385" y="28" class="s-t2 s-lbl" style="--kl-i:1">یک کوئری، چند منبع داده — قدرت اصلی GraphQL</text>
+    
+    <g class="s-node" style="--kl-i:2"><rect x="560" y="60" width="140" height="56" rx="12" class="s-acc"/><text text-anchor="middle" x="630" y="84" font-size="13" font-weight="800">Client</text><text text-anchor="middle" x="630" y="102" font-size="10" fill="var(--text-muted)">query { ... }</text></g>
+    <g class="s-node" style="--kl-i:3"><rect x="380" y="60" width="140" height="56" rx="12" class="s-chip"/><text text-anchor="middle" x="450" y="84" font-size="13" font-weight="800">GraphQL Engine</text><text text-anchor="middle" x="450" y="102" font-size="10" fill="var(--text-muted)">اجرای همزمان فیلدها</text></g>
+    <g class="s-node s-pulse" style="--kl-i:4"><rect x="200" y="60" width="140" height="56" rx="12" class="s-c4"/><text text-anchor="middle" x="270" y="84" font-size="13" font-weight="800">حل‌کننده A</text><text text-anchor="middle" x="270" y="102" font-size="10" fill="var(--text-muted)">Users DB</text></g>
+    <g class="s-node s-pulse" style="--kl-i:5"><rect x="200" y="140" width="140" height="56" rx="12" class="s-c5"/><text text-anchor="middle" x="270" y="164" font-size="13" font-weight="800">حل‌کننده B</text><text text-anchor="middle" x="270" y="182" font-size="10" fill="var(--text-muted)">Orders DB</text></g>
+    <g class="s-node s-pulse" style="--kl-i:6"><rect x="200" y="220" width="140" height="56" rx="12" class="s-c6"/><text text-anchor="middle" x="270" y="244" font-size="13" font-weight="800">حل‌کننده C</text><text text-anchor="middle" x="270" y="262" font-size="10" fill="var(--text-muted)">Payments Service</text></g>
+
+    <path class="s-arr s-flow" d="M560,88 L520,88"/><path class="s-head" d="M515,88 L520,83 L525,88 Z"/>
+    <path class="s-arr s-flow" d="M380,88 L340,88"/><path class="s-head" d="M335,88 L340,83 L345,88 Z"/>
+    <path class="s-arr s-flow" d="M340,88 L340,140"/><path class="s-head" d="M335,140 L340,135 L345,140 Z"/>
+    <path class="s-arr s-flow" d="M340,140 L340,220"/><path class="s-head" d="M335,220 L340,215 L345,220 Z"/>
+
+    <circle class="s-runner" r="5"><animateMotion dur="3s" repeatCount="indefinite" begin="0.5s" path="M520,88 L340,88 L340,88"/></circle>
+    <circle class="s-runner" r="5"><animateMotion dur="3s" repeatCount="indefinite" begin="1.0s" path="M520,88 L340,140 L340,140"/></circle>
+    <circle class="s-runner" r="5"><animateMotion dur="3s" repeatCount="indefinite" begin="1.5s" path="M520,88 L340,220 L340,220"/></circle>
+
+    <path class="s-arr s-flow-ok" d="M340,88 L200,88"/><path class="s-head s-head-ok" d="M195,88 L200,83 L205,88 Z"/>
+    <path class="s-arr s-flow-ok" d="M340,140 L200,140"/><path class="s-head s-head-ok" d="M195,140 L200,135 L205,140 Z"/>
+    <path class="s-arr s-flow-ok" d="M340,220 L200,220"/><path class="s-head s-head-ok" d="M195,220 L200,215 L205,220 Z"/>
+
+    <g class="s-node" style="--kl-i:7"><rect x="20" y="60" width="140" height="56" rx="12" class="s-ok"/><text text-anchor="middle" x="90" y="84" font-size="13" font-weight="800">DB: users</text><text text-anchor="middle" x="90" y="102" font-size="10" fill="var(--text-muted)">۲ رکورد</text></g>
+    <g class="s-node" style="--kl-i:8"><rect x="20" y="140" width="140" height="56" rx="12" class="s-ok"/><text text-anchor="middle" x="90" y="164" font-size="13" font-weight="800">DB: orders</text><text text-anchor="middle" x="90" y="182" font-size="10" fill="var(--text-muted)">۵ رکورد</text></g>
+    <g class="s-node" style="--kl-i:9"><rect x="20" y="220" width="140" height="56" rx="12" class="s-ok"/><text text-anchor="middle" x="90" y="244" font-size="13" font-weight="800">Service</text><text text-anchor="middle" x="90" y="262" font-size="10" fill="var(--text-muted)">payments</text></g>
+
+    <path class="s-arr s-flow-soft" d="M90,116 L90,140"/><path class="s-head s-head-dim" d="M85,140 L90,135 L95,140 Z"/>
+    <path class="s-arr s-flow-soft" d="M90,196 L90,220"/><path class="s-head s-head-dim" d="M85,220 L90,215 L95,220 Z"/>
+
+    <path class="s-arr s-flow" d="M270,116 L270,140"/><path class="s-head" d="M265,140 L270,135 L275,140 Z"/>
+    <path class="s-arr s-flow" d="M270,196 L270,220"/><path class="s-head" d="M265,220 L270,215 L275,220 Z"/>
+
+    <path class="s-arr s-flow-ok" d="M90,88 L200,88"/><path class="s-head s-head-ok" d="M195,88 L200,83 L205,88 Z"/>
+    <path class="s-arr s-flow-ok" d="M90,140 L200,140"/><path class="s-head s-head-ok" d="M195,140 L200,135 L205,140 Z"/>
+    <path class="s-arr s-flow-ok" d="M90,220 L200,220"/><path class="s-head s-head-ok" d="M195,220 L200,215 L205,220 Z"/>
+
+    <path class="s-arr s-flow" d="M270,268 L270,300 L450,300 L450,116"/><path class="s-head" d="M445,116 L450,111 L455,116 Z"/>
+    <path class="s-arr s-flow" d="M520,116 L560,88"/><path class="s-head" d="M555,88 L560,83 L565,88 Z"/>
+
+    <text text-anchor="middle" x="385" y="326" class="s-t2 s-lbl" style="--kl-i:10">Engine فیلدها را موازی اجرا می‌کند و پاسخ را از داده‌های جدا ترکیب می‌کند.</text>
+  </svg>
+  <figcaption>یک کوئری GraphQL به موازی به سه resolver و سه منبع داده دسترسی می‌یابد و پاسخ را ترکیب می‌کند.</figcaption>
+</figure>
 
 <!-- ==================== 9 ==================== -->
 <section id="s9">
@@ -772,7 +822,7 @@ GraphQL روی HTTP اجرا می‌شود، ولی قرارداد HTTP با چ�
 <tr><td>متد نوشتن</td><td dir="ltr"><code>POST</code>، <code>PUT</code>، <code>PATCH</code>، <code>DELETE</code></td><td>همه با <code>POST</code> و عملیات <code>mutation</code></td></tr>
 <tr><td>Status Code خطا</td><td dir="ltr"><code>404</code>، <code>422</code>، <code>409</code></td><td>تقریباً همیشه <code dir="ltr">200</code>؛ خطا داخل <code>errors</code></td></tr>
 <tr><td>کش</td><td dir="ltr">قوی، بر اساس URL</td><td>ضعیف؛ فقط با query key اختصاصی (مثلاً Apollo Client)</td></tr>
-<tr><td>مستندسازی</td><td dir="ltr">OpenAPI</td><td>خود Schema + GraphiQL؛ همچنین خروجی OpenAPI</td></tr>
+<tr><td>مستندسازی</td><td dir="ltr">OpenAPI</td><td>خود طرحواره + GraphiQL؛ همچنین خروجی OpenAPI</td></tr>
 <tr><td>احراز هویت</td><td dir="ltr">هدر <code>Authorization</code></td><td>همان هدر، داخل <code>context</code> به resolver می‌رسد</td></tr>
 </tbody>
 </table>
@@ -876,7 +926,7 @@ cache و دوباره استفاده کند.
     </div>
     <pre class="ax-http-pre"><code dir="ltr" data-graphql-out></code></pre>
     <p class="ax-demo-hint" data-graphql-note></p>
-    <p class="ax-demo-hint">تیک‌ها را بزنید و ببینید کوئری و پاسخ چطور متناسب با انتخاب شما ساخته می‌شوند — همین مکانیزم <code>over-fetching</code> را حذف و <code>under-fetching</code> را ممکن می‌کند.</p>
+    <p class="ax-demo-hint">تیک‌ها را بزنید و ببینید کوئری و پاسخ چطور متناسب با انتخاب شما ساخته می‌شوند — همین مکانیزم <code>بیش‌دریافت (واکشی بیش از نیاز)</code> را حذف و <code>کم‌دریافت</code> را ممکن می‌کند.</p>
   </div>
 </div>
 </section>
@@ -911,7 +961,7 @@ cache و دوباره استفاده کند.
 <span class="kl-h">چرا همیشه variables؟</span>
 <p>
 بدون variables باید مقدار را داخل رشته‌ی کوئری بچسبانید، که یعنی ساختن رشته‌ی جدید برای هر درخواست و
-باز شدن سطح تازه‌ای از <strong>تزریق</strong>. با variables، نوع مقدار را Schema اعتبارسنجی می‌کند و
+باز شدن سطح تازه‌ای از <strong>تزریق</strong>. با variables، نوع مقدار را طرحواره اعتبارسنجی می‌کند و
 کوئری قابل cache و قابل ثبت در لاگ است.
 </p>
 </div>
@@ -984,7 +1034,7 @@ query Compare {
   <div class="ax-versus-side" style="border-top:3px solid var(--color-danger);">
     <h4>❌ خطای غیرقابل بازیابی</h4>
     <ul>
-      <li>Resolver فیلد Non-null خطا داد</li>
+      <li>حل‌کننده (resolver) فیلد Non-null خطا داد</li>
       <li>قانون: خطا به بالا تا نزدیک‌ترین فیلد Nullable بالا می‌رود</li>
       <li>اگر به <code>Query</code> رسید، کل <code>data</code> می‌شود <code>null</code></li>
       <li>نمونه: دیتابیس قطع، توکن نامعتبر</li>
@@ -1139,6 +1189,47 @@ app.use((req, res, next) =&gt; {
 </div>
 </section>
 
+<figure class="kl-fig">
+  <svg viewBox="0 0 770 360" role="img" aria-label="مقایسه مسئله‌ی N+1 با راه‌حل DataLoader">
+    <text text-anchor="middle" x="385" y="26" class="s-t2 s-lbl" style="--kl-i:1">مشکل N+1 در برابر DataLoader</text>
+
+    <g class="s-node" style="--kl-i:2"><rect x="14" y="50" width="360" height="140" rx="16" class="s-group"/><text text-anchor="middle" x="194" y="72" class="s-group-t">N+1 — بدون DataLoader</text></g>
+    <g class="s-node" style="--kl-i:3"><rect x="396" y="50" width="360" height="140" rx="16" class="s-group-acc"/><text text-anchor="middle" x="576" y="72" class="s-group-t">DataLoader — بارگذاری دسته‌ای</text></g>
+
+    <g class="s-node" style="--kl-i:4"><rect x="120" y="100" width="130" height="50" rx="12" class="s-acc"/><text text-anchor="middle" x="185" y="124" font-size="13" font-weight="800">Query</text><text text-anchor="middle" x="185" y="142" font-size="10" fill="var(--text-muted)">products(first: 20)</text></g>
+    <g class="s-node" style="--kl-i:5"><rect x="40" y="40" width="120" height="40" rx="10" class="s-bad"/><text text-anchor="middle" x="100" y="58" font-size="11">category { name }</text><text text-anchor="middle" x="100" y="70" font-size="9" fill="var(--text-muted)">۱۰۰ کوئری جدا</text></g>
+    <g class="s-node" style="--kl-i:6"><rect x="40" y="100" width="120" height="40" rx="10" class="s-bad"/><text text-anchor="middle" x="100" y="118" font-size="11">reviews { totalCount }</text><text text-anchor="middle" x="100" y="130" font-size="9" fill="var(--text-muted)">۱۰۰ کوئری جدا</text></g>
+    <g class="s-node" style="--kl-i:7"><rect x="40" y="160" width="120" height="40" rx="10" class="s-bad"/><text text-anchor="middle" x="100" y="178" font-size="11">DB</text><text text-anchor="middle" x="100" y="190" font-size="9" fill="var(--text-muted)">۲۰۱ کوئری</text></g>
+
+    <path class="s-arr s-flow-bad" d="M185,100 L185,80"/><path class="s-head s-head-bad" d="M180,80 L185,75 L190,80 Z"/>
+    <path class="s-arr s-flow-bad" d="M160,60 L120,60"/><path class="s-head s-head-bad" d="M115,60 L120,55 L125,60 Z"/>
+    <path class="s-arr s-flow-bad" d="M160,120 L160,100"/><path class="s-head s-head-bad" d="M155,100 L160,95 L165,100 Z"/>
+    <path class="s-arr s-flow-bad" d="M160,140 L160,160"/><path class="s-head s-head-bad" d="M155,160 L160,165 L165,160 Z"/>
+
+    <circle class="s-runner s-runner-bad" r="4"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0.2s" path="M160,60 L160,100 L160,140 L160,160"/></circle>
+
+    <g class="s-node" style="--kl-i:8"><rect x="500" y="100" width="130" height="50" rx="12" class="s-acc"/><text text-anchor="middle" x="565" y="124" font-size="13" font-weight="800">Query</text><text text-anchor="middle" x="565" y="142" font-size="10" fill="var(--text-muted)">products(first: 20)</text></g>
+    <g class="s-node" style="--kl-i:9"><rect x="500" y="40" width="130" height="40" rx="12" class="s-chip"/><text text-anchor="middle" x="565" y="58" font-size="11">DataLoader</text><text text-anchor="middle" x="565" y="70" font-size="10" fill="var(--text-muted)">batch + cache</text></g>
+    <g class="s-node" style="--kl-i:10"><rect x="500" y="160" width="130" height="40" rx="10" class="s-ok"/><text text-anchor="middle" x="565" y="178" font-size="11">DB</text><text text-anchor="middle" x="565" y="190" font-size="9" fill="var(--text-muted)">۱ کوئری IN(...)</text></g>
+
+    <path class="s-arr s-flow-ok" d="M565,100 L565,80"/><path class="s-head s-head-ok" d="M560,80 L565,75 L570,80 Z"/>
+    <path class="s-arr s-flow-ok" d="M565,150 L565,160"/><path class="s-head s-head-ok" d="M560,160 L565,165 L570,160 Z"/>
+    <path class="s-arr s-flow-ok" d="M500,60 L420,60"/><path class="s-head s-head-ok" d="M415,60 L420,55 L425,60 Z"/>
+
+    <circle class="s-runner" r="4"><animateMotion dur="2.2s" repeatCount="indefinite" begin="1.0s" path="M420,60 L500,60 L565,80 L565,150 L565,160"/></circle>
+
+    <g class="s-node" style="--kl-i:11"><rect x="14" y="220" width="360" height="120" rx="16" class="s-group"/><text text-anchor="middle" x="194" y="242" class="s-group-t">نتیجه</text></g>
+    <text text-anchor="middle" x="194" y="268" class="s-t2 s-lbl" style="--kl-i:12">N+1: ۲۰۱ کوئری، timeout و فشار DB</text>
+    <text text-anchor="middle" x="194" y="292" class="s-t2 s-lbl" style="--kl-i:13">DataLoader: ۱ کوئری دسته‌ای، کش درون‌یای، پاسخ سریع</text>
+
+    <text text-anchor="middle" x="576" y="268" class="s-t2 s-lbl" style="--kl-i:14">هر درخواست HTTP یک نمونه DataLoader تازه</text>
+    <text text-anchor="middle" x="576" y="292" class="s-t2 s-lbl" style="--kl-i:15">کش فقط تا پایان درخواست زنده است</text>
+
+    <text text-anchor="middle" x="385" y="346" class="s-t2 s-lbl" style="--kl-i:16">DataLoader، حل‌کننده‌ی کلاسیک مسئله‌ی N+1 در GraphQL است.</text>
+  </svg>
+  <figcaption>بالا: بدون DataLoader، هر رکورد Parent یک کوئری جدا می‌زند. پایین: DataLoader همه‌ی کلیدها را جمع کرده و یک کوئری دسته‌ای می‌زند.</figcaption>
+</figure>
+
 <!-- ==================== 14 ==================== -->
 <section id="s14">
 <h2><span class="kl-num">بخش ۱۴</span>صفحه‌بندی با Cursor</h2>
@@ -1225,7 +1316,7 @@ async function listProducts({ first = 20, after }, context) {
 
 <p>
 GraphQL یک مشخصات است، نه یک محصول. ارزش واقعی‌اش از ابزارهای پیرامونش می‌آید: کتابخانه‌های سرور،
-کلاینت‌ها، ابزارهای تولید کد از Schema و پایش.
+کلاینت‌ها، ابزارهای تولید کد از طرحواره و پایش.
 </p>
 
 <div class="ax-tablewrap">
@@ -1234,7 +1325,7 @@ GraphQL یک مشخصات است، نه یک محصول. ارزش واقعی‌�
 <tr><th>ابزار</th><th>سمت</th><th>چه می‌کند</th><th>چه زمانی انتخابش کنید</th></tr>
 </thead>
 <tbody>
-<tr><td dir="ltr"><strong>GraphiQL</strong></td><td>هر دو</td><td>محیط تعاملی کاوش Schema در مرورگر</td><td>همیشه — حتی در production برای تیم داخلی</td></tr>
+<tr><td dir="ltr"><strong>GraphiQL</strong></td><td>هر دو</td><td>محیط تعاملی کاوش طرحواره در مرورگر</td><td>همیشه — حتی در production برای تیم داخلی</td></tr>
 <tr><td dir="ltr"><strong>Apollo Server</strong></td><td>سرور</td><td>سرور کامل GraphQL برای Node.js با اکوسیستم بزرگ</td><td>اکوسیستم بزرگ و تیمی که پشتیبانی می‌خواهد</td></tr>
 <tr><td dir="ltr"><strong>GraphQL Yoga / Mercurius</strong></td><td>سرور</td><td>پیاده‌سازی سبک برای Node و Fastify</td><td>می‌خواهید وابستگی کمتر داشته باشید</td></tr>
 <tr><td dir="ltr"><strong>Strawberry / Ariadne</strong></td><td>سرور</td><td>کتابخانه‌ی schema-first برای پایتون</td><td>بک‌اند پایتون دارید</td></tr>
@@ -1244,18 +1335,18 @@ GraphQL یک مشخصات است، نه یک محصول. ارزش واقعی‌�
 <tr><td dir="ltr"><strong>urql</strong></td><td>کلاینت</td><td>سبک و قابل تعویض، حجم کم</td><td>وقتی حجم باندل مهم است</td></tr>
 <tr><td dir="ltr"><strong>Codegen</strong></td><td>هر دو</td><td>تولید تایپ و کلاینت از Schema</td><td>تقریباً همیشه، از روز اول</td></tr>
 <tr><td dir="ltr"><strong>Hasura / Prisma</strong></td><td>داده</td><td>تولید resolver از دیتابیس</td><td>نمونه‌سازی سریع روی یک پایگاه‌داده</td></tr>
-<tr><td dir="ltr"><strong>Apollo Federation</strong></td><td>معماری</td><td>ترکیب چند Schema تیمی در یک Graph</td><td>سازمان با چند تیم مستقل API</td></tr>
+<tr><td dir="ltr"><strong>Apollo Federation</strong></td><td>معماری</td><td>ترکیب چند طرحواره تیمی در یک Graph</td><td>سازمان با چند تیم مستقل API</td></tr>
 <tr><td dir="ltr"><strong>Envelop / Hive</strong></td><td>سرور</td><td>plugin های مشترک برای auth، tracing، limit</td><td>چند سرویس GraphQL با نیازهای یکسان</td></tr>
 </tbody>
 </table>
 </div>
 
 <div class="kl-box kl-ok">
-<span class="kl-h">ویژگی‌ای که همه را شگفت‌زده می‌کند: Introspection</span>
+<span class="kl-h">ویژگی‌ای که همه را شگفت‌زده می‌کند: درون‌نگری (درون‌نگری (درون‌نگری (introspection)))</span>
 <p>
 سرور GraphQL می‌تواند <strong>Schema خودش را به‌صورت داده برگرداند</strong> (به‌جای اینکه کسی فایل آن را بنویسد).
-به همین دلیل ابزارها می‌توانند Schema را بخوانند، کلاینت تولید کنند، مستندات بسازند و GraphiQL
-کار کند. در production معمولاً introspection را خاموش می‌کنند (بخش ۱۷)، ولی در محیط توسعه نگهش می‌دارند.
+به همین دلیل ابزارها می‌توانند طرحواره را بخوانند، کلاینت تولید کنند، مستندات بسازند و GraphiQL
+کار کند. در production معمولاً درون‌نگری (درون‌نگری (introspection)) را خاموش می‌کنند (بخش ۱۷)، ولی در محیط توسعه نگهش می‌دارند.
 </p>
 </div>
 </section>
@@ -1263,50 +1354,6 @@ GraphQL یک مشخصات است، نه یک محصول. ارزش واقعی‌�
 <!-- ==================== 16 ==================== -->
 <section id="s16">
 <h2><span class="kl-num">بخش ۱۶</span>پیاده‌سازی با Apollo Server</h2>
-
-<figure class="kl-fig">
-  <svg viewBox="0 0 780 260" role="img" aria-labelledby="fig-ap-t fig-ap-d" preserveAspectRatio="xMidYMid meet">
-    <title id="fig-ap-t">مسیر یک کوئری با Apollo Client و Apollo Server</title>
-    <desc id="fig-ap-d">کوئری ابتدا در کش نرمال‌شده‌ی Apollo Client جست‌وجو می‌شود؛ اگر نبود روی HTTP به Apollo Server می‌رود، اعتبارسنجی می‌شود، resolver اجرا می‌شود و پاسخ به کش بازگردانده می‌شود.</desc>
-
-    <rect x="16" y="100" width="140" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="86" y="126" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">Component</text>
-    <text x="86" y="146" text-anchor="middle" font-size="11" fill="var(--text-muted)">useQuery</text>
-
-    <rect x="192" y="100" width="150" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--color-secondary)" stroke-width="2"/>
-    <text x="267" y="126" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">InMemoryCache</text>
-    <text x="267" y="146" text-anchor="middle" font-size="11" fill="var(--text-muted)">normalization</text>
-
-    <rect x="378" y="100" width="130" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--color-primary)" stroke-width="2"/>
-    <text x="443" y="126" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">/graphql</text>
-    <text x="443" y="146" text-anchor="middle" font-size="11" fill="var(--text-muted)">parse + validate</text>
-
-    <rect x="544" y="100" width="120" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--color-primary)" stroke-width="2"/>
-    <text x="604" y="126" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">Resolvers</text>
-    <text x="604" y="146" text-anchor="middle" font-size="11" fill="var(--text-muted)">+ DataLoader</text>
-
-    <rect x="690" y="100" width="74" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="727" y="126" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">DB</text>
-    <text x="727" y="146" text-anchor="middle" font-size="11" fill="var(--text-muted)">batch</text>
-
-    <defs>
-      <marker id="arr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill="var(--color-primary)"/>
-      </marker>
-    </defs>
-
-    <g class="s-flow" stroke="var(--color-primary)" stroke-width="2.4" fill="none">
-      <line x1="156" y1="130" x2="188" y2="130" marker-end="url(#arr-a)"/>
-      <line x1="342" y1="130" x2="374" y2="130" marker-end="url(#arr-a)"/>
-      <line x1="508" y1="130" x2="540" y2="130" marker-end="url(#arr-a)"/>
-      <line x1="664" y1="130" x2="686" y2="130" marker-end="url(#arr-a)"/>
-      <path d="M267,100 L267,52 L86,52 L86,96" marker-end="url(#arr-a)"/>
-    </g>
-    <text x="176" y="44" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-secondary)">کش hit: بدون رفت‌وبرگشت شبکه</text>
-    <text x="443" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-primary)">کش miss: رفت به سرور و نوشتن نتیجه در کش نرمال‌شده</text>
-  </svg>
-  <figcaption>نرمال‌سازی کش، کلید موفقیت Apollo Client است: داده‌ی تکراری فقط یک‌بار ذخیره می‌شود.</figcaption>
-</figure>
 
 <h3>سرور</h3>
 
@@ -1385,29 +1432,29 @@ function ProductCard({ id }) {
 </div>
 
 <div class="kl-box kl-hd">
-<span class="kl-h">آیا Schema-first یا code-first؟</span>
+<span class="kl-h">آیا طرحواره-first یا code-first؟</span>
 <div class="ax-versus">
   <div class="ax-versus-side">
     <h4>Schema-first</h4>
     <ul>
       <li>اول <strong>SDL</strong> نوشته می‌شود، بعد resolver</li>
       <li>خوانا، مستقل از زبان، مناسب تیم‌های بزرگ</li>
-      <li>هشدار: Schema و کد ممکن است از هم جدا بیفتند</li>
+      <li>هشدار: طرحواره و کد ممکن است از هم جدا بیفتند</li>
     </ul>
   </div>
   <div class="ax-versus-mid">VS</div>
   <div class="ax-versus-side">
     <h4>Code-first</h4>
     <ul>
-      <li>اول کد و decoratorها، Schema از کد ساخته می‌شود</li>
+      <li>اول کد و decoratorها، طرحواره از کد ساخته می‌شود</li>
       <li>همیشه هماهنگ با کد، تایپ‌ها یکپارچه</li>
-      <li>هشدار: Schema دیگر سند مستقل و قابل استفاده‌ی چندزبانه نیست</li>
+      <li>هشدار: طرحواره دیگر سند مستقل و قابل استفاده‌ی چندزبانه نیست</li>
     </ul>
   </div>
 </div>
 <p>
 برای پروژه‌های سازمانی و چندتیمی معمولاً <strong>schema-first</strong> انتخاب امن‌تری است، چون
-Schema به یک محصول تیمی تبدیل می‌شود که می‌توان روی آن کامنت، تست و review نوشت.
+طرحواره به یک محصول تیمی تبدیل می‌شود که می‌توان روی آن کامنت، تست و review نوشت.
 </p>
 </div>
 </section>
@@ -1421,11 +1468,11 @@ Schema به یک محصول تیمی تبدیل می‌شود که می‌توا
     <div class="ax-pc-head">✅ مزایا</div>
     <div class="ax-pc-body">
       <ul>
-        <li><strong>پاسخ دقیقاً مطابق نیاز</strong> — نه over-fetching، نه under-fetching، و همه در یک رفت‌وبرگشت.</li>
+        <li><strong>پاسخ دقیقاً مطابق نیاز</strong> — نه بیش‌دریافت، نه کم‌دریافت، و همه در یک رفت‌وبرگشت.</li>
         <li><strong>کاهش شدید تعداد درخواست‌ها</strong> — برای صفحات ترکیبی از ۵ فراخوانی به ۱ می‌رسید.</li>
-        <li><strong>تیپ‌بودن در هر دو طرف</strong> — Schema منبع حقیقت است و کلاینت تایپ‌دار از آن ساخته می‌شود.</li>
-        <li><strong>ساختار تیمی روشن</strong> — هر تیم Schema خودش را دارد و Federation آن‌ها را ترکیب می‌کند.</li>
-        <li><strong>مستندسازی زنده</strong> — مستندات از خود Schema تولید می‌شود و هرگز کهنه نمی‌ماند.</li>
+        <li><strong>تیپ‌بودن در هر دو طرف</strong> — طرحواره منبع حقیقت است و کلاینت تایپ‌دار از آن ساخته می‌شود.</li>
+        <li><strong>ساختار تیمی روشن</strong> — هر تیم طرحواره خودش را دارد و Federation آن‌ها را ترکیب می‌کند.</li>
+        <li><strong>مستندسازی زنده</strong> — مستندات از خود طرحواره تولید می‌شود و هرگز کهنه نمی‌ماند.</li>
         <li><strong>یک نقطه‌ی ورود برای داده‌های چندمنبعی</strong> — کلاینت فقط یک میزبان را می‌شناسد.</li>
         <li><strong>قابلیت توسعه بدون تغییر سرور</strong> — فیلد جدید فقط با افزودن فیلد و resolver اضافه می‌شود.</li>
         <li><strong>کش نرمال‌شده سمت کلاینت</strong> — داده‌ی تکراری یک‌بار ذخیره و در صفحه‌های بعدی استفاده می‌شود.</li>
@@ -1449,13 +1496,13 @@ Schema به یک محصول تیمی تبدیل می‌شود که می‌توا
         <li><strong>مقیاس‌پذیری سخت‌تر</strong> — یک کوئری می‌تواند کل دیتابیس را درگیر کند؛ نیاز به limit و تحلیل هزینه دارید.</li>
         <li><strong>کش HTTP بی‌اثر</strong> — چون مسیر و متد ثابت است، باید کش اختصاصی بسازید.</li>
         <li><strong>هزینه‌ی سرور بیشتر</strong> — همان کوئری می‌تواند از ۱ مسیر به ۵۰ مسیر داده تبدیل شود.</li>
-        <li><strong>نیاز به مهارت جدید</strong> — طراحی Schema، تفکر گرافی و ابزارهای اختصاصی یادگیری لازم دارد.</li>
+        <li><strong>نیاز به مهارت جدید</strong> — طراحی طرحواره، تفکر گرافی و ابزارهای اختصاصی یادگیری لازم دارد.</li>
         <li><strong>مشاهده‌پذیری کمتر</strong> — یک درخواست HTTP به ده‌ها query داخلی نگاشت می‌شود؛ APM باید per-field را نشان دهد.</li>
         <li><strong>منحنی یادگیری برای کلاینت</strong> — ذهنیت «فیلد را انتخاب کن» جایگزین «endpoint را صدا بزن» می‌شود.</li>
-        <li><strong>ریسک امنیتی</strong> — کوئری عمیق، alias زیاد و introspection عمومی می‌توانند به کار زیاد روی سرور تبدیل شوند.</li>
+        <li><strong>ریسک امنیتی</strong> — کوئری عمیق، alias زیاد و درون‌نگری (درون‌نگری (introspection)) عمومی می‌توانند به کار زیاد روی سرور تبدیل شوند.</li>
         <li><strong>خطاهای موازی و پیچیده</strong> — داده‌ی جزئی درست کار می‌کند ولی مدیریت آن در کلاینت سخت‌تر است.</li>
         <li><strong>مناسب همه‌ی مصرف‌کننده‌ها نیست</strong> — وب‌سایت عمومی ساده با HTML ایستا بهتر از GraphQL است.</li>
-        <li><strong>versioning سخت‌تر</strong> — تغییر Schema می‌تواند کلاینت‌های قدیمی را بشکند؛ deprecation لازم می‌شود.</li>
+        <li><strong>versioning سخت‌تر</strong> — تغییر طرحواره می‌تواند کلاینت‌های قدیمی را بشکند؛ deprecation لازم می‌شود.</li>
       </ul>
     </div>
   </div>
@@ -1480,7 +1527,7 @@ REST با یک CDN ساده هم جواب می‌دهد — بخش‌های ۱۹
   <div class="ax-versus-side" style="border-top:3px solid var(--color-success);">
     <h4>✅ استفاده کنید وقتی</h4>
     <ul>
-      <li><strong>تیم بزرگ و چند کلاینت</strong> — وب، موبایل و CLI همه از یک Schema استفاده می‌کنند</li>
+      <li><strong>تیم بزرگ و چند کلاینت</strong> — وب، موبایل و CLI همه از یک طرحواره استفاده می‌کنند</li>
       <li><strong>نیازهای متنوع و در حال تغییر</strong> — هر کلاینت فیلدهای متفاوتی می‌خواهد</li>
       <li><strong>داده از چند منبع</strong> می‌آید و کلاینت نباید سه endpoint را بشناسد</li>
       <li><strong>صفحات ترکیبی</strong> — داشبورد، صفحه‌ی جزئیات، فید خانه</li>
@@ -1506,7 +1553,7 @@ REST با یک CDN ساده هم جواب می‌دهد — بخش‌های ۱۹
 <span class="kl-h">الگوی ورود کم‌ریسک: GraphQL به‌عنوان لایه‌ی رویی</span>
 <p>
 لازم نیست همه‌ی سرویس‌ها را بازنویسی کنید. یک <strong>GraphQL BFF</strong> جلوی سرویس‌های REST موجود
-بگذارید: کلاینت‌های جدید یک Schema می‌بینند و این لایه با REST داخلی حرف می‌زند. مهاجرت تدریجی،
+بگذارید: کلاینت‌های جدید یک طرحواره می‌بینند و این لایه با REST داخلی حرف می‌زند. مهاجرت تدریجی،
 بازگشت‌پذیر و قابل اندازه‌گیری است.
 </p>
 </div>
@@ -1551,7 +1598,7 @@ REST با یک CDN ساده هم جواب می‌دهد — بخش‌های ۱۹
 <span class="kl-h">تله‌ی معماری</span>
 <p>
 بدترین حالت این است که GraphQL را برای «مدیریت داده‌ی داخلی پنل ادمین» راه بیندازید، جایی که صفحه‌ی
-کاربر ثابت است و تیم کوچک است. آنجا over-fetching معنا ندارد و شما فقط یک لایه‌ی پیچیدگی اضافه کرده‌اید.
+کاربر ثابت است و تیم کوچک است. آنجا بیش‌دریافت معنا ندارد و شما فقط یک لایه‌ی پیچیدگی اضافه کرده‌اید.
 <strong>ساده‌ترین راه درست: REST + یک endpoint برای همان صفحه.</strong>
 </p>
 </div>
@@ -1617,7 +1664,7 @@ BFF کلاینت‌های محصول، و REST برای وب‌هوک‌ها و 
 <li><strong>فاش کردن خطای داخلی</strong> — پیام استثنا و مسیر فایل نباید به کلاینت برسد.</li>
 <li><strong>پیام خطای فارسی بدون کد</strong> — کلاینت باید روی <code>extensions.code</code> تکیه کند، نه متن.</li>
 <li><strong>مجوز دادن فقط در وب‌سایمکان</strong> — فیلد حساس باید خودش سطح دسترسی را بررسی کند.</li>
-<li><strong>ساخت Schema بدون مکث برای داده‌ی ناقص</strong> — Non-null کردن فیلدی که همیشه پر نیست، کل پاسخ را null می‌کند.</li>
+<li><strong>ساخت طرحواره بدون مکث برای داده‌ی ناقص</strong> — Non-null کردن فیلدی که همیشه پر نیست، کل پاسخ را null می‌کند.</li>
 <li><strong>نادیده گرفتن هزینه‌ی کوئری</strong> — تحلیل هزینه روی هر فیلد، نه روی هر درخواست.</li>
 </ol>
 </div>
@@ -1649,7 +1696,7 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
 <li>تست خطا: شناسه‌ی ناموجود، مجوز ناکافی، ورودی نامعتبر</li>
 <li>تست N+1: شمارش کوئری‌های DB در یک کوئری صفحه‌بندی‌شده</li>
 <li>تست عمق و هزینه: کوئری مخرب باید رد شود</li>
-<li>تست قرارداد Schema: فایل اسنپ‌شات Schema در CI</li>
+<li>تست قرارداد طرحواره: فایل اسنپ‌شات طرحواره در CI</li>
 </ol>
 </div>
 
@@ -1670,16 +1717,16 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
 <h3>سطح پایه (Junior)</h3>
 
 <p><strong>سؤال ۱ — GraphQL چیست و چه مشکلی را حل می‌کند؟</strong></p>
-<p>یک زبان پرسش برای API است که به کلاینت اجازه می‌دهد شکل و محتوای پاسخ را خودش تعیین کند. مشکل اصلی‌ای که حل می‌کند، <strong>over-fetching</strong> (دریافت فیلدهای اضافه) و <strong>under-fetching</strong> (نبود داده‌ی لازم و در نتیجه درخواست‌های اضافه) در الگوی endpoint محور REST است.</p>
+<p>یک زبان پرسش برای API است که به کلاینت اجازه می‌دهد شکل و محتوای پاسخ را خودش تعیین کند. مشکل اصلی‌ای که حل می‌کند، <strong>بیش‌دریافت</strong> (دریافت فیلدهای اضافه) و <strong>کم‌دریافت</strong> (نبود داده‌ی لازم و در نتیجه درخواست‌های اضافه) در الگوی endpoint محور REST است.</p>
 
 <p><strong>سؤال ۲ — تفاوت اصلی GraphQL با REST چیست؟</strong></p>
-<p>در REST <strong>سرور</strong> مسیرها را طراحی می‌کند و کلاینت باید با آن‌ها کنار بیاید؛ در GraphQL <strong>سرور</strong> یک Schema از همه‌ی فیلدها منتشر می‌کند و کلاینت کوئری خودش را می‌نویسد. نتیجه: در REST مسیر و متدها متنوع و کش‌پذیرند؛ در GraphQL یک مسیر ثابت است و کش HTTP ضعیف، ولی پاسخ دقیق و کارایی کلاینت بالا.</p>
+<p>در REST <strong>سرور</strong> مسیرها را طراحی می‌کند و کلاینت باید با آن‌ها کنار بیاید؛ در GraphQL <strong>سرور</strong> یک طرحواره از همه‌ی فیلدها منتشر می‌کند و کلاینت کوئری خودش را می‌نویسد. نتیجه: در REST مسیر و متدها متنوع و کش‌پذیرند؛ در GraphQL یک مسیر ثابت است و کش HTTP ضعیف، ولی پاسخ دقیق و کارایی کلاینت بالا.</p>
 
-<p><strong>سؤال ۳ — Schema چیست؟</strong></p>
-<p>سند machine-readable که همه‌ی نوع‌ها، فیلدها، آرگومان‌ها و ارتباطشان را تعریف می‌کند. Schema هم‌زمان قرارداد، مستند و منبع تولید کد تایپ‌دار است. مهم‌تر اینکه یک <code>type Query</code> در آن اجباری است، وگرنه سرور هیچ عملیات خواندنی ندارد.</p>
+<p><strong>سؤال ۳ — طرحواره چیست؟</strong></p>
+<p>سند machine-readable که همه‌ی نوع‌ها، فیلدها، آرگومان‌ها و ارتباطشان را تعریف می‌کند. طرحواره هم‌زمان قرارداد، مستند و منبع تولید کد تایپ‌دار است. مهم‌تر اینکه یک <code>type Query</code> در آن اجباری است، وگرنه سرور هیچ عملیات خواندنی ندارد.</p>
 
-<p><strong>سؤال ۴ — Query، Mutation و Subscription چه تفاوتی دارند؟</strong></p>
-<p><code>Query</code> فقط می‌خواند و فیلدهایش <strong>موازی</strong> اجرا می‌شوند. <code>Mutation</code> می‌نویسد و فیلدهایش <strong>سریال</strong> اجرا می‌شوند تا ترتیب عملیات حفظ شود. <code>Subscription</code> یک جریان بلادرنگ از طریق WebSocket باز می‌کند که تا وقتی اتصال باز است ادامه دارد.</p>
+<p><strong>سؤال ۴ — Query، Mutation و اشتراک (رویدادمحور) چه تفاوتی دارند؟</strong></p>
+<p><code>Query</code> فقط می‌خواند و فیلدهایش <strong>موازی</strong> اجرا می‌شوند. <code>Mutation</code> می‌نویسد و فیلدهایش <strong>سریال</strong> اجرا می‌شوند تا ترتیب عملیات حفظ شود. <code>اشتراک (رویدادمحور)</code> یک جریان بلادرنگ از طریق WebSocket باز می‌کند که تا وقتی اتصال باز است ادامه دارد.</p>
 
 <p><strong>سؤال ۵ — تفاوت Object و Input در چیست؟</strong></p>
 <p>هر دو مجموعه‌ی فیلد هستند، ولی <code>Object</code> برای خروجی است (فیلد <code>output</code> دارد و resolver می‌گیرد) و <code>Input</code> برای ورودی (فیلد <code>input</code> دارد، resolver ندارد و می‌تواند مقدار پیش‌فرض داشته باشد). جدا کردنشان مانع آن می‌شود که کلاینت بتواند فیلدی را که سرور باید محاسبه کند، مستقیم در ورودی بنویسد.</p>
@@ -1693,11 +1740,11 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
 <p><strong>سؤال ۸ — خطای کوئری چه Status Code دارد؟</strong></p>
 <p>تقریباً همیشه <code dir="ltr">200 OK</code>. خطا داخل آرایه‌ی <code>errors</code> با <code>message</code>، <code>path</code>، <code>locations</code> و <code>extensions.code</code> برمی‌گردد. اگر رسیدگی به خطا نکنید، کلاینت خطا را نمی‌بیند چون Status Code موفق است.</p>
 
-<p><strong>سؤال ۹ — اگر کوئری فیلدی را بخواهد که در Schema نیست چه می‌شود؟</strong></p>
+<p><strong>سؤال ۹ — اگر کوئری فیلدی را بخواهد که در طرحواره نیست چه می‌شود؟</strong></p>
 <p>در مرحله‌ی <strong>اعتبارسنجی</strong> رد می‌شود، پیش از آنکه resolver صدا زده شود. کلاینت یک پیام روشن با مسیر دقیق فیلد مشکل‌دار می‌گیرد. این نکته‌ی خوبی است: اعتبارسنجی نوع‌ها از کار کلاینت و سرور در زمان اجرا محافظت می‌کند.</p>
 
-<p><strong>سؤال ۱۰ — introspection چیست؟</strong></p>
-<p>قابلیتی که به کلاینت اجازه می‌دهد Schema زنده را به‌صورت داده بپرسد. به همین دلیل GraphiQL، تولید کد و مستندسازی خودکار ممکن است. در production معمولاً آن را غیرفعال می‌کنند تا مهاجم نقشه‌ی کامل داده را نبیند، و برای ابزارهای داخلی از حساب جدا با آن باز می‌کنند.</p>
+<p><strong>سؤال ۱۰ — درون‌نگری (درون‌نگری (introspection)) چیست؟</strong></p>
+<p>قابلیتی که به کلاینت اجازه می‌دهد طرحواره زنده را به‌صورت داده بپرسد. به همین دلیل GraphiQL، تولید کد و مستندسازی خودکار ممکن است. در production معمولاً آن را غیرفعال می‌کنند تا مهاجم نقشه‌ی کامل داده را نبیند، و برای ابزارهای داخلی از حساب جدا با آن باز می‌کنند.</p>
 
 <h3>سطح متوسط (Mid)</h3>
 
@@ -1705,7 +1752,7 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
 <p>بخش‌های تکراری کوئری را یک‌بار تعریف و چند جا استفاده می‌کنید، و مخصوصاً روی <code>Interface</code> و <code>Union</code> فیلدهای مخصوص هر نوع را می‌نویسید. fragment روی <code>interface Node</code> در واقع الگویی است که باعث می‌شود کلاینت بتواند هر نوعی را که در پاسخ آمده با فیلدهای درست بخواند.</p>
 
 <p><strong>سؤال ۱۲ — چرا variables مهم‌اند؟</strong></p>
-<p>سه دلیل: نوع مقادیر در Schema اعتبارسنجی می‌شود؛ کوئری یک رشته‌ی ثابت و قابل cache و قابل ثبت در لاگ می‌ماند؛ و از تزریق کد جلوگیری می‌شود، چون داده هرگز داخل رشته‌ی کوئری چسبانده نمی‌شود. تقریباً قانون است: کوئری با متغیر، نه با چسباندن مقدار.</p>
+<p>سه دلیل: نوع مقادیر در طرحواره اعتبارسنجی می‌شود؛ کوئری یک رشته‌ی ثابت و قابل cache و قابل ثبت در لاگ می‌ماند؛ و از تزریق کد جلوگیری می‌شود، چون داده هرگز داخل رشته‌ی کوئری چسبانده نمی‌شود. تقریباً قانون است: کوئری با متغیر، نه با چسباندن مقدار.</p>
 
 <p><strong>سؤال ۱۳ — مشکل N+1 چیست و چرا در GraphQL رایج است؟</strong></p>
 <p>کوئری‌ای که فیلدهای سطح اول خوب کار می‌کنند، ولی هر رکورد در نتیجه یک درخواست جدا به منبع داده می‌زند. در GraphQL رایج است چون فیلدهای یک Query موازی اجرا می‌شوند و درخت به‌راحتی عمیق می‌شود: ۲۰ محصول × ۲ رابطه = ۴۱ کوئری. نتیجه timeout یا فشار کامل روی دیتابیس.</p>
@@ -1728,10 +1775,10 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
 <h3>سطح پیشرفته (Senior)</h3>
 
 <p><strong>سؤال ۱۹ — در سازمانی با ۳۰ تیم و API های REST موجود، چگونه GraphQL را معرفی می‌کنید؟</strong></p>
-<p>هرگز با مهاجرت همه‌جا شروع نمی‌کنم. <strong>۱)</strong> یک GraphQL BFF جلوی چند سرویس پرترافیک می‌گذارم که فقط خواندن را انجام می‌دهد؛ ریسک کم است. <strong>۲)</strong> Schema را به‌عنوان محصول تیمی معرفی می‌کنم: مالکیت مشخص، بازبینی، و تست اسنپ‌شات در CI. <strong>۳)</strong> استانداردها را از روز اول می‌گذارم: نام‌گذاری، صفحه‌بندی Connection، کد خطا، و depth limit در همه‌ی سرویس‌ها. <strong>۴)</strong> ابزار مشاهده‌پذیری per-field را قبل از اولین ترافیک واقعی راه می‌اندازم. <strong>۵)</strong> به‌جای مهاجرت اجباری، مسیر تدریجی باز می‌گذارم و با معیار عددی (تعداد رفت‌وبرگشت، زمان بارگذاری، نرخ خطا) تصمیم را ادامه می‌دهم. مهم‌ترین تصمیم این است که GraphQL را در جایی بگذاریم که واقعاً ارزش دارد: جایی که چند کلاینت، داده‌ی چندمنبعی و نیازهای متنوع دارند.</p>
+<p>هرگز با مهاجرت همه‌جا شروع نمی‌کنم. <strong>۱)</strong> یک GraphQL BFF جلوی چند سرویس پرترافیک می‌گذارم که فقط خواندن را انجام می‌دهد؛ ریسک کم است. <strong>۲)</strong> طرحواره را به‌عنوان محصول تیمی معرفی می‌کنم: مالکیت مشخص، بازبینی، و تست اسنپ‌شات در CI. <strong>۳)</strong> استانداردها را از روز اول می‌گذارم: نام‌گذاری، صفحه‌بندی Connection، کد خطا، و depth limit در همه‌ی سرویس‌ها. <strong>۴)</strong> ابزار مشاهده‌پذیری per-field را قبل از اولین ترافیک واقعی راه می‌اندازم. <strong>۵)</strong> به‌جای مهاجرت اجباری، مسیر تدریجی باز می‌گذارم و با معیار عددی (تعداد رفت‌وبرگشت، زمان بارگذاری، نرخ خطا) تصمیم را ادامه می‌دهم. مهم‌ترین تصمیم این است که GraphQL را در جایی بگذاریم که واقعاً ارزش دارد: جایی که چند کلاینت، داده‌ی چندمنبعی و نیازهای متنوع دارند.</p>
 
 <p><strong>سؤال ۲۰ — GraphQL Federation چیست و چه زمانی واقعاً لازم می‌شود؟</strong></p>
-<p>وقتی چند تیم هر کدام Schema خودش را دارند، Federation آن‌ها را در یک <strong>Graph واحد</strong> ترکیب می‌کند: هر تیم یک <em>subgraph</em> دارد و یک <em>router</em> کوئری را می‌گیرد، به هر subgraph جداگانه می‌فرستد و نتیجه را نرمال می‌کند. مزیت اصلی، مالکیت مستقل تیم‌ها با یک قرارداد مشترک است. هشدار: Federation سربار معماری واقعی دارد — نسخه‌بندی subgraph، تشخیص نسخه ناسازگار، و پیچیدگی عیب‌یابی. اگر فقط یک تیم دارید، این پیچیدگی را نپردازید.</p>
+<p>وقتی چند تیم هر کدام طرحواره خودش را دارند، Federation آن‌ها را در یک <strong>Graph واحد</strong> ترکیب می‌کند: هر تیم یک <em>subgraph</em> دارد و یک <em>router</em> کوئری را می‌گیرد، به هر subgraph جداگانه می‌فرستد و نتیجه را نرمال می‌کند. مزیت اصلی، مالکیت مستقل تیم‌ها با یک قرارداد مشترک است. هشدار: Federation سربار معماری واقعی دارد — نسخه‌بندی subgraph، تشخیص نسخه ناسازگار، و پیچیدگی عیب‌یابی. اگر فقط یک تیم دارید، این پیچیدگی را نپردازید.</p>
 </section>
 <!-- ==================== 24 ==================== -->
 <section id="s24">
@@ -1743,13 +1790,13 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
 
 <div class="kl-box kl-hd"><span class="kl-h">آیا GraphQL جایگزین REST می‌شود؟</span><p>معمولاً نه. در معماری‌های بالغ هر سه با هم هستند: gRPC برای ارتباط داخلی بین سرویس‌ها، GraphQL به‌عنوان لایه‌ی تجمیع برای کلاینت‌های محصول، و REST برای وب‌هوک‌ها و API های عمومی. GraphQL جای خود را در لایه‌ی BFF پیدا کرده است.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">برای یک پروژه‌ی کوچک مناسب است؟</span><p>اغلب نه. اگر یک اپ کوچک با دو یا سه صفحه دارید، REST با JSON کامل پاسخ‌گو و سریع‌تر است. هزینه‌ی اولیه‌ی GraphQL (Schema، resolver، DataLoader، ابزار پایش) در مقیاس کوچک توجیه ندارد.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">برای یک پروژه‌ی کوچک مناسب است؟</span><p>اغلب نه. اگر یک اپ کوچک با دو یا سه صفحه دارید، REST با JSON کامل پاسخ‌گو و سریع‌تر است. هزینه‌ی اولیه‌ی GraphQL (طرحواره، resolver، DataLoader، ابزار پایش) در مقیاس کوچک توجیه ندارد.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">مستندات GraphQL را چطور نگه دارم؟</span><p>Schema خودش مستند زنده است: کامنت‌ها با triple-quote کنار هر نوع و فیلد، مستندات GraphiQL و مستندات تولیدشده را پر می‌کنند. این‌ها را در مخزن نسخه‌بندی کنید و تغییرات Schema را در CI با تست اسنپ‌شات بسنجید تا کامنت‌ها هرگز از کد عقب نیفتند.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">مستندات GraphQL را چطور نگه دارم؟</span><p>Schema خودش مستند زنده است: کامنت‌ها با triple-quote کنار هر نوع و فیلد، مستندات GraphiQL و مستندات تولیدشده را پر می‌کنند. این‌ها را در مخزن نسخه‌بندی کنید و تغییرات طرحواره را در CI با تست اسنپ‌شات بسنجید تا کامنت‌ها هرگز از کد عقب نیفتند.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">GraphQL چطور کش می‌شود؟</span><p>کش HTTP معمولی تقریباً بی‌فایده است چون همه‌ی کوئری‌ها به یک مسیر با متد POST می‌روند. راه‌حل‌های عملی: کش نرمال‌شده‌ی سمت کلاینت (Apollo Client)، persisted queries با کلید هش، کش اختصاصی در Gateway بر اساس متن کوئری و variables، و CDN با هدرهای سفارشی برای کوئری‌های بدون mutation.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">آیا introspection را در production خاموش کنم؟</span><p>بله، معمولاً. introspection نقشه‌ی کامل مدل داده را به هر کسی می‌دهد و برای حمله‌ی DoS با کوئری‌های تودرتو هم مفید است. اما ابزارهای داخلی و مستندات را نابود نکنید: introspection را محدود به حساب‌های داخلی کنید یا schema snapshot را در یک مستندات عمومی منتشر کنید.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">آیا درون‌نگری (درون‌نگری (introspection)) را در production خاموش کنم؟</span><p>بله، معمولاً. درون‌نگری (درون‌نگری (introspection)) نقشه‌ی کامل مدل داده را به هر کسی می‌دهد و برای حمله‌ی DoS با کوئری‌های تودرتو هم مفید است. اما ابزارهای داخلی و مستندات را نابود نکنید: درون‌نگری (درون‌نگری (introspection)) را محدود به حساب‌های داخلی کنید یا schema snapshot را در یک مستندات عمومی منتشر کنید.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">Mutation را چطور idempotent کنم؟</span><p>REST با هدر <code dir="ltr">Idempotency-Key</code> این کار را می‌کند، ولی GraphQL چنین استانداردی ندارد. راه عملی: یک آرگومان <code dir="ltr">clientMutationId</code> در Mutation بگذارید، آن را در Redis نگه دارید و اگر تکرار شد نتیجه‌ی ذخیره‌شده را برگردانید. برای عملیات مالی، کلید یکتای خود کاربر هم معمولاً کافی است.</p></div>
 
@@ -1757,15 +1804,15 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
 
 <div class="kl-box kl-hd"><span class="kl-h">GraphQL و gRPC چه تفاوتی دارند؟</span><p>مکمل‌اند. <code>gRPC</code> یک RPC با قرارداد سفت و باینری است که در آن کلاینت متدهای مشخص را صدا می‌زند — مناسب ارتباط داخلی و کارایی بالا. <code>GraphQL</code> یک زبان پرسش است که کلاینت شکل داده را تعیین می‌کند — مناسب لایه‌ی تجمیع و کلاینت‌های محصول. بسیاری از سازمان‌ها هر دو را دارند و حتی gRPC را پشت GraphQL قرار می‌دهند.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">اگر Schema خیلی بزرگ شد چه کنم؟</span><p>سه مسیر دارید: تقسیم به چند سرویس با Federation، یا یک BFF کوچک که فقط فیلدهای مورد نیاز محصول را نگه می‌دارد، یا بازبینی مدل و حذف فیلدهای منسوخ با <code dir="ltr">@deprecated</code>. مهم‌تر اینکه Schema را قبل از بزرگ شدن <strong>مالکیت‌دار</strong> کنید: هر بخش یک مالک و یک بازبین داشته باشد.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">اگر طرحواره خیلی بزرگ شد چه کنم؟</span><p>سه مسیر دارید: تقسیم به چند سرویس با Federation، یا یک BFF کوچک که فقط فیلدهای مورد نیاز محصول را نگه می‌دارد، یا بازبینی مدل و حذف فیلدهای منسوخ با <code dir="ltr">@deprecated</code>. مهم‌تر اینکه طرحواره را قبل از بزرگ شدن <strong>مالکیت‌دار</strong> کنید: هر بخش یک مالک و یک بازبین داشته باشد.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">Subscription در مقیاس بالا چطور کار می‌کند؟</span><p>هر کلاینت یک اتصال باز نگه می‌دارد، پس سرور باید از یک broker مثل Redis Pub/Sub، Kafka یا NATS استفاده کند تا رویداد از سرویسی که تولیدش کرده به همه‌ی سرورهای نگه‌دارنده‌ی اتصال برسد. در مقیاس خیلی بزرگ، ابزارهایی مثل <code dir="ltr">GraphQL over Server-Sent Events</code> یا polling کوتاه‌تر ساده‌تر و ارزان‌تر تمام می‌شوند.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">اشتراک (رویدادمحور) در مقیاس بالا چطور کار می‌کند؟</span><p>هر کلاینت یک اتصال باز نگه می‌دارد، پس سرور باید از یک broker مثل Redis Pub/Sub، Kafka یا NATS استفاده کند تا رویداد از سرویسی که تولیدش کرده به همه‌ی سرورهای نگه‌دارنده‌ی اتصال برسد. در مقیاس خیلی بزرگ، ابزارهایی مثل <code dir="ltr">GraphQL over Server-Sent Events</code> یا polling کوتاه‌تر ساده‌تر و ارزان‌تر تمام می‌شوند.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">آیا GraphQL فقط برای اپ موبایل است؟</span><p>نه. ریشه‌اش در اپ موبایل فیس‌بوک است چون آن‌جا مشکل over-fetching شدید بود، ولی امروز در داشبورد‌های وب، پنل‌های ادمین و محصولات SaaS هم استفاده می‌شود. هرجا چند کلاینت با نیازهای متفاوت به همان داده‌ها دسترسی دارند، GraphQL کاندیدای خوبی است.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">آیا GraphQL فقط برای اپ موبایل است؟</span><p>نه. ریشه‌اش در اپ موبایل فیس‌بوک است چون آن‌جا مشکل بیش‌دریافت شدید بود، ولی امروز در داشبورد‌های وب، پنل‌های ادمین و محصولات SaaS هم استفاده می‌شود. هرجا چند کلاینت با نیازهای متفاوت به همان داده‌ها دسترسی دارند، GraphQL کاندیدای خوبی است.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">یادگیری GraphQL چقدر طول می‌کشد؟</span><p>مفاهیم پایه (Schema، Query، Mutation، variables و fragment) در یک روز قابل یادگیری است. بخش‌های سخت‌تر—DataLoader، طراحی Nullability، صفحه‌بندی Connection و امنیت—چند هفته تمرین واقعی می‌خواهد. مهارت اصلی که باید از قبل داشته باشید، طراحی قرارداد داده و توانایی خواندن کد تولیدشده از Schema است.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">یادگیری GraphQL چقدر طول می‌کشد؟</span><p>مفاهیم پایه (طرحواره، Query، Mutation، variables و fragment) در یک روز قابل یادگیری است. بخش‌های سخت‌تر—DataLoader، طراحی Nullability، صفحه‌بندی Connection و امنیت—چند هفته تمرین واقعی می‌خواهد. مهارت اصلی که باید از قبل داشته باشید، طراحی قرارداد داده و توانایی خواندن کد تولیدشده از طرحواره است.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">اگر مجبور به استفاده از GraphQL شدم، از کجا شروع کنم؟</span><p>۱) کوچک‌ترین دامنه‌ی واقعی را انتخاب کنید، مثلاً صفحه‌ی جزئیات سفارش. ۲) Schema را بنویسید و آن را با تیم بازبینی کنید. ۳) resolver ها و DataLoader را کامل کنید. ۴) depth limit و cost analysis را از روز اول بگذارید. ۵) پایش per-field را فعال کنید. ۶) با یک کلاینت واقعی و اندازه‌گیری زمان بارگذاری، نتیجه را تأیید کنید.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">اگر مجبور به استفاده از GraphQL شدم، از کجا شروع کنم؟</span><p>۱) کوچک‌ترین دامنه‌ی واقعی را انتخاب کنید، مثلاً صفحه‌ی جزئیات سفارش. ۲) طرحواره را بنویسید و آن را با تیم بازبینی کنید. ۳) resolver ها و DataLoader را کامل کنید. ۴) depth limit و cost analysis را از روز اول بگذارید. ۵) پایش per-field را فعال کنید. ۶) با یک کلاینت واقعی و اندازه‌گیری زمان بارگذاری، نتیجه را تأیید کنید.</p></div>
 </section>
 
 <!-- ==================== 25 ==================== -->
@@ -1843,7 +1890,7 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
   </a>
   <a class="ax-related-card" href="api-security.html">
     <span class="ax-related-card-cat">امنیت</span>
-    <div class="ax-related-card-title">امنیت API — محدودسازی عمق، هزینه و introspection</div>
+    <div class="ax-related-card-title">امنیت API — محدودسازی عمق، هزینه و درون‌نگری (درون‌نگری (introspection))</div>
   </a>
 </div>
 </div>
@@ -1894,8 +1941,8 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
               <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Schema و سیستم انواع</span></a></li>
               <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Query و خواندن داده</span></a></li>
               <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Mutation و نوشتن داده</span></a></li>
-              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Subscription و داده‌ی بلادرنگ</span></a></li>
-              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Resolver ها و جریان یک درخواست</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">اشتراک (رویدادمحور) و داده‌ی بلادرنگ</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">حل‌کننده‌ها (resolver) و جریان یک درخواست</span></a></li>
               <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">GraphQL روی HTTP</span></a></li>
               <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">نمونه‌ی Request و Response کامل</span></a></li>
               <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Variables، Fragments و Directives</span></a></li>
@@ -1959,8 +2006,8 @@ expect(response.body.errors[0].extensions.code).toBe("QUERY_TOO_COMPLEX");</code
         <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Schema و سیستم انواع</span></a></li>
         <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Query و خواندن داده</span></a></li>
         <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Mutation و نوشتن داده</span></a></li>
-        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Subscription و داده‌ی بلادرنگ</span></a></li>
-        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Resolver ها و جریان یک درخواست</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">اشتراک (رویدادمحور) و داده‌ی بلادرنگ</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">حل‌کننده‌ها (resolver) و جریان یک درخواست</span></a></li>
         <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">GraphQL روی HTTP</span></a></li>
         <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">نمونه‌ی Request و Response کامل</span></a></li>
         <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Variables، Fragments و Directives</span></a></li>

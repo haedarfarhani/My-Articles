@@ -100,6 +100,7 @@ my-articales/
 │   ├── article-content.css       # تایپوگرافی محتوا، کد، جدول، Callout، شکل
 │   ├── diagram-anim.css          # کلاس‌های انیمیشن SVG و نمودار (تم‌آگاه) + reduced-motion
 │   ├── rx-stream.css             # انیمیشن‌های ماربل مقاله‌ی RxJava
+│   ├── comments.css              # بخش نظرات مقاله (فرم + لیست + صفحه‌بندی)
 │   ├── responsive.css            # لایه‌ی نهایی واکنش‌گرایی همه‌ی صفحات
 │   ├── projects.css | libraries.css | about.css | contact.css
 │
@@ -107,10 +108,15 @@ my-articales/
 │   ├── theme.js                  # تم تیره/روشن + کلید hf_theme
 │   ├── main.js                   # نویگیشن، منوی موبایل، toast، نوار مهارت، سال
 │   ├── article.js                # پیشرفت خواندن، کپی کد، ScrollSpy، اشتراک‌گذاری
+│   ├── comments.js               # بخش نظرات: بارگذاری لیست + ارسال فرم به Back4App
+│   ├── parse-config.js           # server / appId / jsKey (بدون Master Key)
 │   ├── diagrams.js               # اجرای انیمیشن شکل‌ها با IntersectionObserver + شمارنده‌ی اعداد
 │   ├── rx-stream-animations.js   # موتور انیمیشن ماربل (پخش/توقف/سرعت + reduced-motion)
 │   ├── views.js                  # شمارنده بازدید (Page Views API)
 │   ├── articles.js | projects.js | libraries.js | contact.js
+│
+├── cloud/
+│   └── main.js                   # Cloud Code برای Back4App (Parse Server)
 │
 └── assets/
     └── fonts/                    # woff2 وزیرمتن و JetBrains Mono (بدون وابستگی به CDN)
@@ -128,6 +134,111 @@ my-articales/
 - **شکل و نمودار انیمیشنی**: همه‌ی دیاگرام‌ها SVG درون‌خطی و تم‌آگاه هستند؛ جریان داده با خط مارچینگ، نودها با ورود پلکانی، میله‌های نمودار با رشد تدریجی و ذره‌های متحرک روی مسیر (`css/diagram-anim.css` + `js/diagrams.js`). بدون mermaid و بدون وابستگی به CDN.
 - **شمارنده بازدید**: با [Page Views API](https://page-views-api.ratneshc.com/) — بدون کوکی، بدون ذخیره‌ی IP، شمارش یکتا در بازه‌ی ۳۰ دقیقه.
 - **کاملاً واکنش‌گرا و RTL**: موبایل/تبلت/دسکتاپ، منوی همبرگری، کشوی موبایل فهرست مطالب.
+- **بخش نظرات مقاله**: ثبت نظر و نمایش لیست نظرات با Cloud Code روی [Back4App](https://backend.back4app.com/)
+  (اعتبارسنجی سرور، تأیید مدیر، ضداسپم و صفحه‌بندی).
+
+## نظرات مقاله (Back4App Cloud Code)
+
+بخش نظرات پایین هر مقاله با `js/comments.js` ساخته می‌شود و فقط از طریق
+Cloud Function با Back4App حرف می‌زند؛ کلاینت هیچ دسترسی مستقیمی به کلاس
+`ArticleComment` ندارد.
+
+```
+My-Articles (GitHub Pages)
+      │  HTTPS  ← fetch با Application ID + JavaScript Key
+      ▼
+Back4App Cloud Functions
+      ├─ createComment  (اعتبارسنجی، ضدتکرار، محدودیت نرخ، approved=false)
+      └─ getComments    (فقط نظرات approved، صفحه‌بندی)
+      ▼
+ArticleComment
+```
+
+### ۱. ساخت کلاس در Back4App
+
+در پنل Back4App یک کلاس به نام `ArticleComment` بسازید و مقادیر اولیه‌ی زیر را
+(از طریق **Add a column** یا همان Cloud Code) ثبت کنید:
+
+| Field | Type | Required | توضیح |
+|-------|------|----------|-------|
+| `articleId` | String | ✓ | نام فایل مقاله، مثلاً `mvvm-architecture` |
+| `name` | String | ✓ | نام نمایش‌داده‌شده |
+| `email` | String | | فقط برای پاسخ‌دادن به نویسنده؛ در خروجی عمومی برنمی‌گردد |
+| `content` | String | ✓ | متن نظر |
+| `approved` | Boolean | ✓ | پیش‌فرض `false` |
+| `spam` | Boolean | | پیش‌فرض `false` |
+| `likes` | Number | | پیش‌فرض `0` |
+
+دسترسی کلاس (Class Permissions / CLP) را روی **نیست** بگذارید
+(`find/create/update/delete` برای Public خاموش). دسترسی از طریق Cloud Code
+و Master Key انجام می‌شود و تریگرهای `beforeFind`/`beforeSave` هم سطح دسترسی
+را دوباره کنترل می‌کنند.
+
+### ۲. انتشار Cloud Code
+
+فایل [`cloud/main.js`](cloud/main.js) را کپی کنید و در پنل Back4App مسیر
+**Cloud Code → Overview → Edit** بگذارید، سپس **Deploy**.
+
+توابع تعریف‌شده:
+
+| Function | دسترسی | کار |
+|----------|--------|-----|
+| `createComment` | عمومی | ثبت نظر (نام، ایمیل اختیاری، متن) |
+| `getComments` | عمومی | لیست نظرات تأییدشده با `limit`/`skip` |
+| `listPendingComments` | Master Key | نظرات در انتظار برای پنل مدیریت |
+| `setCommentStatus` | Master Key | `approve` / `reject` / `spam` / `delete` |
+
+### ۳. تنظیم کلاینت
+
+[`js/parse-config.js`](js/parse-config.js) فقط سه مقدار دارد:
+
+```js
+window.HF_PARSE = {
+  server: 'https://parseapi.back4app.com',
+  appId: '...',
+  jsKey: '...'
+};
+```
+
+کلاینت با هدر `X-Parse-Javascript-Key` احراز هویت می‌کند؛ این کلید مخصوص
+کلاینت‌های JavaScript است و جایگزین REST Key شده است.
+
+- **Master Key را هرگز داخل سایت نگذارید.** سایت روی GitHub Pages عمومی است و
+  هر چیزی در JS آن قابل استخراج است؛ Master Key فقط در پنل Back4App بماند.
+- **JavaScript Key ذاتاً یک کلید عمومی است** و برای استفاده در مرورگر ساخته شده؛
+  بنابراین بودنش در سایت اشکالی ندارد. سطح دسترسی واقعی را CLP کلاس و Cloud Code
+  تعیین می‌کنند، نه مخفی‌کردن این کلید.
+- اگر خواستید کلید را از رابط کاربری پنهان کنید، آن را در یک Proxy/Worker
+  خودتان قرار دهید و `server` را به آن تغییر دهید.
+- کلیدها را می‌توانید با GitHub Actions در زمان build تزریق کنید.
+
+تست سریع:
+
+```bash
+curl -X POST https://parseapi.back4app.com/functions/getComments \
+  -H "X-Parse-Application-Id: YOUR_APP_ID" \
+  -H "X-Parse-Javascript-Key: YOUR_JAVASCRIPT_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"articleId":"mvvm-architecture","limit":5,"skip":0}'
+```
+
+### ۴. تأیید نظرات
+
+نظرات با `approved=false` ذخیره می‌شوند و تا تأیید مدیر در سایت دیده نمی‌شوند؛
+از پنل Back4App می‌توانید فیلد `approved` را `true` کنید، یا با Master Key
+`setCommentStatus` را صدا بزنید:
+
+```bash
+curl -X POST https://parseapi.back4app.com/functions/setCommentStatus \
+  -H "X-Parse-Application-Id: YOUR_APP_ID" \
+  -H "X-Parse-Master-Key: YOUR_MASTER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"commentId":"OBJECT_ID","action":"approve"}'
+```
+
+شناسه‌ی هر مقاله از نام فایل آن گرفته می‌شود
+(`articles/mvvm-architecture.html` → `mvvm-architecture`). اگر می‌خواهید شناسه
+دلخواه باشد، `<body>` را با `data-article-id="..."` علامت‌گذاری کنید.
 
 ## انتشار روی GitHub Pages
 
@@ -204,6 +315,8 @@ python -m http.server 8080     # یا: npx serve .
 - [ ] تم تیره/روشن در همه‌ی صفحات پابرجا می‌ماند (کلید `hf_theme`).
 - [ ] جستجو/فیلتر در `articles/` و `libraries/` لحظه‌ای است؛ نوشتن چیزی نامربوط حالت خالی نشان می‌دهد.
 - [ ] نوار پیشرفت خواندن، کپی کد و ScrollSpy در مقالات کار می‌کنند.
+- [ ] بخش نظرات پایین هر مقاله ظاهر می‌شود؛ بدون اینترنت پیام خطا نشان می‌دهد
+      و با پر کردن فرم، درخواست `createComment` به Back4App می‌رود.
 - [ ] URL ناموجود (مثل `/foo`) صفحه‌ی ۴۰۴ درست با لینک‌های سالم نشان می‌دهد.
 
 ## افزودن محتوا

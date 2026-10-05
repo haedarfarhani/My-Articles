@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>حیدر فرحانی — مهندس نرم‌افزار | مقالات، پروژه‌ها و کتابخانه‌ها</title>
-  <meta name="description" content="سایت شخصی حیدر فرحانی؛ مهندس نرم‌افزار. مقالات عمیق مهندسی نرم‌افزار، پروژه‌های متن‌باز و کتابخانه‌های نرم‌افزاری محبوب من در یک جا.">
-  <meta name="keywords" content="حیدر فرحانی, مهندسی نرم‌افزار, معماری نرم‌افزار, کاتلین, اندروید, Jetpack Compose, مقالات فنی">
+  <meta name="description" content="سایت شخصی حیدر فرحانی؛ مهندس نرم‌افزار. مقالات عمیق مهندسی نرم‌افزار و سری جامع API، پروژه‌های متن‌باز و کتابخانه‌های نرم‌افزاری محبوب من در یک جا.">
+  <meta name="keywords" content="حیدر فرحانی, مهندسی نرم‌افزار, معماری نرم‌افزار, API, REST, GraphQL, gRPC, SOAP, کاتلین, اندروید, Jetpack Compose, مقالات فنی">
   <meta name="author" content="حیدر فرحانی">
   <meta name="theme-color" content="#0F766E">
   <meta property="og:title" content="حیدر فرحانی — مهندس نرم‌افزار">
-  <meta property="og:description" content="مقالات عمیق مهندسی نرم‌افزار، پروژه‌ها و کتابخانه‌های نرم‌افزاری.">
+  <meta property="og:description" content="مقالات عمیق مهندسی نرم‌افزار، سری جامع API، پروژه‌ها و کتابخانه‌های نرم‌افزاری.">
   <meta property="og:type" content="website">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/">
@@ -22,7 +22,7 @@
   <meta property="og:image:alt" content="حیدر فرحانی — مهندس نرم‌افزار">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="حیدر فرحانی — مهندس نرم‌افزار">
-  <meta name="twitter:description" content="مقالات عمیق مهندسی نرم‌افزار، پروژه‌ها و کتابخانه‌های نرم‌افزاری.">
+  <meta name="twitter:description" content="مقالات عمیق مهندسی نرم‌افزار، سری جامع API، پروژه‌ها و کتابخانه‌های نرم‌افزاری.">
   <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
   <meta name="twitter:image:alt" content="حیدر فرحانی — مهندس نرم‌افزار">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>ح</text></svg>">
@@ -127,11 +127,12 @@
     <p class="hero-description">
       من حیدر فرحانی، مهندس نرم‌افزار هستم. اینجا یادداشت‌های عمیق درباره‌ی معماری نرم‌افزار،
       کیفیت کد، همزمانی و کارایی سیستم‌ها را کنار پروژه‌ها و ابزارهایی که می‌سازم یا استفاده می‌کنم،
-      منتشر می‌کنم — از اندروید و کاتلین تا معماری کلی سیستم‌ها.
+      منتشر می‌کنم — از اندروید و کاتلین تا معماری کلی سیستم‌ها و <strong>طراحی رابط برنامه‌نویسی</strong>.
     </p>
 
     <div class="hero-actions">
       <a href="articles/" class="btn btn-primary btn-lg">مشاهده مقالات</a>
+      <a href="articles/#api" class="btn btn-secondary btn-lg">سری جامع API</a>
       <a href="projects/" class="btn btn-secondary btn-lg">پروژه‌ها</a>
       <a href="contact/" class="btn btn-accent btn-lg">تماس با من</a>
     </div>
@@ -140,7 +141,7 @@
       <div class="author-mini-avatar">ح</div>
       <div class="author-mini-text">
         <div class="author-mini-name">حیدر فرحانی</div>
-        <div class="author-mini-role">مهندس نرم‌افزار — معماری، کاتلین و اندروید</div>
+        <div class="author-mini-role">مهندس نرم‌افزار — معماری، API و کاتلین و اندروید</div>
       </div>
     </div>
   </section>
@@ -150,6 +151,10 @@
     <a class="stat-card" href="articles/">
       <div class="stat-number">۲۸</div>
       <div class="stat-label">مقاله جامع و عمیق</div>
+    </a>
+    <a class="stat-card" href="articles/#api">
+      <div class="stat-number">۵</div>
+      <div class="stat-label">مقاله در سری API</div>
     </a>
     <a class="stat-card" href="articles/">
       <div class="stat-number">۶</div>
@@ -163,6 +168,146 @@
       <div class="stat-number" id="stat-views">···</div>
       <div class="stat-label">بازدید مجموع مقالات</div>
     </a>
+  </section>
+
+  <!-- ================= API series highlight ================= -->
+  <section class="section-block">
+    <div class="section-head">
+      <div class="section-head-text">
+        <h2>سری جامع <span class="gradient-text">API</span></h2>
+        <p>پنج مقاله‌ی پیاپی که از تعریف رابط برنامه‌نویسی تا انتخاب پروتکل درست را قدم‌به‌قدم پیش می‌برند.</p>
+      </div>
+      <a class="section-more" href="articles/#api">همه مقالات API
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </a>
+    </div>
+
+    <div class="articles-grid">
+      <a href="articles/api-fundamentals.html" class="article-card" data-tags="api http fundamentals">
+        <div class="card-top">
+          <div class="card-meta-row">
+            <span class="card-time">⏱ ~۳۵ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="articles/api-fundamentals.html">👁 —</span>
+            <span class="card-date">مهر ۱۴۰۵</span>
+          </div>
+          <h3 class="card-title">API چیست؟ راهنمای کامل API، HTTP، Client و Server</h3>
+          <p class="card-excerpt">
+            نقطه‌ی شروع سری API: تعریف API و نقطه‌ی پایانی، متدهای HTTP و معنای ایمن/ایدمپوتنت بودن،
+            هدرها، کد وضعیت و مدیریت خطا، تفاوت احراز هویت با مجوز، بدون حالت بودن و کش.
+          </p>
+        </div>
+        <div class="card-bottom">
+          <div class="card-tags">
+            <span class="card-tag">#API</span>
+            <span class="card-tag">#HTTP</span>
+            <span class="card-tag">#Endpoint</span>
+          </div>
+          <div class="card-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+        </div>
+      </a>
+
+      <a href="articles/rest-api.html" class="article-card" data-tags="api rest http">
+        <div class="card-top">
+          <div class="card-meta-row">
+            <span class="card-time">⏱ ~۵۵ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="articles/rest-api.html">👁 —</span>
+            <span class="card-date">مهر ۱۴۰۵</span>
+          </div>
+          <h3 class="card-title">REST API چیست؟ آموزش کامل RESTful API</h3>
+          <p class="card-excerpt">
+            شش محدودیت معماری روی فیلدینگ، طراحی منابع و نشانی، متدها و کد وضعیت، صفحه‌بندی،
+            HATEOAS، نسخه‌بندی و ایدمپوتنت بودن — با پیاده‌سازی کامل Spring Boot و ASP.NET Core.
+          </p>
+        </div>
+        <div class="card-bottom">
+          <div class="card-tags">
+            <span class="card-tag">#REST</span>
+            <span class="card-tag">#HATEOAS</span>
+            <span class="card-tag">#Spring_Boot</span>
+          </div>
+          <div class="card-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+        </div>
+      </a>
+
+      <a href="articles/graphql.html" class="article-card" data-tags="api graphql query">
+        <div class="card-top">
+          <div class="card-meta-row">
+            <span class="card-time">⏱ ~۴۵ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="articles/graphql.html">👁 —</span>
+            <span class="card-date">مهر ۱۴۰۵</span>
+          </div>
+          <h3 class="card-title">GraphQL چیست؟ آموزش کامل Schema، Query و Mutation</h3>
+          <p class="card-excerpt">
+            طرحواره و نظام نوع، کوئری و موتیویشن و اشتراک، حل‌کننده‌ها، رفع مشکل N+1 با DataLoader،
+            صفحه‌بندی مکان‌نما و خطا — با مقایسه‌ی کامل با REST.
+          </p>
+        </div>
+        <div class="card-bottom">
+          <div class="card-tags">
+            <span class="card-tag">#GraphQL</span>
+            <span class="card-tag">#Schema</span>
+            <span class="card-tag">#Query</span>
+          </div>
+          <div class="card-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+        </div>
+      </a>
+
+      <a href="articles/grpc.html" class="article-card" data-tags="api grpc protobuf rpc">
+        <div class="card-top">
+          <div class="card-meta-row">
+            <span class="card-time">⏱ ~۵۰ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="articles/grpc.html">👁 —</span>
+            <span class="card-date">مهر ۱۴۰۵</span>
+          </div>
+          <h3 class="card-title">gRPC چیست؟ آموزش کامل Protobuf، Streaming و کارایی</h3>
+          <p class="card-excerpt">
+            قرارداد در فایل proto و تولید خودکار کد، چهار نوع فراخوانی و استریم، HTTP/2 و چندگانه‌سازی،
+            فراداده و مهلت، مدیریت خطا و کد وضعیت — با پیاده‌سازی در Java و Go.
+          </p>
+        </div>
+        <div class="card-bottom">
+          <div class="card-tags">
+            <span class="card-tag">#gRPC</span>
+            <span class="card-tag">#Protobuf</span>
+            <span class="card-tag">#HTTP2</span>
+          </div>
+          <div class="card-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+        </div>
+      </a>
+
+      <a href="articles/soap.html" class="article-card" data-tags="api soap wsdl xml enterprise">
+        <div class="card-top">
+          <div class="card-meta-row">
+            <span class="card-time">⏱ ~۴۵ دقیقه مطالعه</span>
+            <span class="card-views" data-pv="articles/soap.html">👁 —</span>
+            <span class="card-date">مهر ۱۴۰۵</span>
+          </div>
+          <h3 class="card-title">SOAP چیست؟ آموزش کامل WSDL، Envelope و Header</h3>
+          <p class="card-excerpt">
+            ساختار پیام پوشش و هدر، قرارداد WSDL و XSD، عملیات یک‌طرفه و درخواست-پاسخ،
+            کدگذاری SOAP و خطای Fault — با مقایسه‌ی کامل با REST و gRPC.
+          </p>
+        </div>
+        <div class="card-bottom">
+          <div class="card-tags">
+            <span class="card-tag">#SOAP</span>
+            <span class="card-tag">#WSDL</span>
+            <span class="card-tag">#Enterprise</span>
+          </div>
+          <div class="card-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+        </div>
+      </a>
+    </div>
   </section>
 
   <!-- ================= Latest articles ================= -->
@@ -310,8 +455,8 @@
         <ul>
           <li><a href="about/">درباره من</a></li>
           <li><a href="contact/">تماس</a></li>
+          <li><a href="articles/#api">سری جامع API</a></li>
           <li><a href="articles/#architecture">مقالات معماری</a></li>
-          <li><a href="articles/#kotlin">مقالات کاتلین</a></li>
         </ul>
       </div>
     </div>

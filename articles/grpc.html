@@ -31,16 +31,19 @@
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/comments.js"></script>
   <script defer src="../js/diagrams.js"></script>
   <script defer src="../js/views.js"></script>
-  <script defer src="../api/js/api-demos.js"></script>
+  <script defer src="../js/api-demos.js"></script>
 
   <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/article-shell.css">
   <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
   <link rel="stylesheet" href="../css/diagram-anim.css">
-  <link rel="stylesheet" href="../api/css/api-series.css">
+  <link rel="stylesheet" href="../css/api-series.css">
   <link rel="stylesheet" href="../css/responsive.css">
 
   <script type="application/ld+json">
@@ -62,7 +65,8 @@
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
         { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
-        { "@type": "ListItem", "position": 3, "name": "gRPC", "item": "https://haedarfarhani.github.io/My-Articles/articles/grpc.html" }
+        { "@type": "ListItem", "position": 3, "name": "سری API", "item": "https://haedarfarhani.github.io/My-Articles/articles/#api" },
+        { "@type": "ListItem", "position": 4, "name": "gRPC", "item": "https://haedarfarhani.github.io/My-Articles/articles/grpc.html" }
       ]
     }
   }
@@ -84,9 +88,9 @@
       </a>
 
       <div class="nav-center">
-        <a href="../articles/" class="nav-breadcrumb-tag" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+        <a href="./" class="nav-breadcrumb-tag" title="بازگشت به فهرست سری API" style="text-decoration:none;color:inherit;">
           <span>&#128221;</span>
-          <span>مقالات و راهنماها</span>
+          <span>سری جامع API</span>
         </a>
       </div>
 
@@ -124,11 +128,12 @@
 
           <p class="hero-lead">
             در REST کلاینت باید <em>ساختار</em> مسیر و پارامترها را حدس بزند و JSON را با دست تفسیر کند.
-            در <code>gRPC</code> قرارداد در یک فایل <code>proto</code> تعریف می‌شود، هر دو طرف کد
-            <strong>تایپ‌دار</strong> از روی همان فایل تولید می‌کنند و ارتباط روی <code>HTTP/2</code> با
-            <strong>فریم باینری</strong> انجام می‌گیرد. در این راهنما آناتومی <code>proto</code>،
-            کدنویسی خودکار، چهار نوع <code>RPC</code> و استریم، <code>Metadata</code> و <code>Deadline</code>،
-            مدیریت خطا و <code>Status Code</code>، <code>Interceptor</code>، پیاده‌سازی در <code>Java</code> و
+            در <code>gRPC</code> — که یک <strong>فریم‌ورک RPC</strong> (فراخوانی از راه دور) است — قرارداد در
+            فایل تعریف قرارداد <code>.proto</code> نوشته می‌شود، هر دو طرف کد <strong>تایپ‌دار</strong> را از روی
+            همان یک فایل تولید می‌کنند و پیام‌ها با قالب <strong>باینری</strong> روی پروتکل انتقال
+            <code>HTTP/2</code> جابه‌جا می‌شوند. در این راهنما آناتومی <code>.proto</code>، تولید خودکار کد،
+            چهار نوع <code>RPC</code> و استریم، فراداده (metadata) و مهلت (deadline)، مدیریت خطا و
+            <code>Status Code</code>، بین‌افزار (interceptor)، پیاده‌سازی در <code>Java</code> و
             <code>Go</code>، تست، مهاجرت از REST و در پایان مقایسه با REST و SOAP را می‌بینید.
           </p>
 
@@ -169,13 +174,13 @@
               <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>چرا gRPC؟ مسئله‌ای که حل می‌کند</span></a></li>
               <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>معماری و اجزای gRPC</span></a></li>
               <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>آناتومی فایل proto</span></a></li>
-              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Protobuf و کدنویسی خودکار</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Protobuf و تولید خودکار کد</span></a></li>
               <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>چهار نوع RPC</span></a></li>
               <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>HTTP/2: قلب gRPC</span></a></li>
               <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>gRPC روی HTTP: متد، هدر و Trailers</span></a></li>
-              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>Metadata، Deadline و لغو درخواست</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>فراداده، مهلت و لغو درخواست</span></a></li>
               <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>خطا و Status Code</span></a></li>
-              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>Interceptor ها و میان‌افزار</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>بین‌افزارها (Interceptor)</span></a></li>
               <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>Flow Control و بک‌پرسور</span></a></li>
               <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>پیاده‌سازی در Java و Spring Boot</span></a></li>
               <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>پیاده‌سازی در Go و سایر زبان‌ها</span></a></li>
@@ -208,10 +213,12 @@
 </p>
 
 <p>
-نکته‌ی دوم که gRPC را از REST متمایز می‌کند <strong>سرعت و کارایی</strong> است. داده در قالب باینری
-و فشرده‌ی <code>Protobuf</code> روی <code>HTTP/2</code> جابه‌جا می‌شود؛ چند درخواست روی یک اتصال
-و بدون هدر تکراری؛ و استریم در هر دو جهت به‌صورت بومی پشتیبانی می‌شود. نتیجه: تاخیر کمتر، پهنای باند
-کمتر و رفتار قابل پیش‌بینی‌تر در بارهای زیاد.
+تفاوت دوم gRPC با REST در <strong>هزینه‌ی انتقال</strong> است، نه در یک تضمین سرعت. پیام در قالب
+باینریِ <strong>بافر پروتکل</strong> (Protocol Buffers) کدگذاری می‌شود، چند فراخوانی با چندگانه‌سازی
+روی یک اتصال <code>HTTP/2</code> جابه‌جا می‌شوند و استریم در هر دو جهت بومی است. نتیجه معمولاً پیام
+کوچک‌تر، سربار اتصال کمتر و رفتار قابل پیش‌بینی‌تر زیر بار زیاد است؛ ولی اینکه در عمل چقدر
+سود می‌برید به اندازه‌ی پیام، تعداد رفت‌وبرگشت، هزینه‌ی سریال‌سازی در زبان انتخابی و کیفیت
+پیاده‌سازی شما بستگی دارد.
 </p>
 
 <div class="kl-box kl-hd">
@@ -219,11 +226,13 @@
 <ol class="kl-check">
 <li>فهمیدن اینکه gRPC دقیقاً کدام مشکل ارتباط سرویس‌به‌سرویس را حل می‌کند و کدام را نه.</li>
 <li>نوشتن یک فایل <code>proto</code> درست با <code>package</code>، <code>message</code>، <code>enum</code>، <code>service</code> و <code>option</code>.</li>
-<li>تسلط بر چهار نوع RPC: <code>Unary</code>، <code>Server Streaming</code>، <code>Client Streaming</code> و <code>Bidirectional Streaming</code>.</li>
-<li>درک نقش <code>HTTP/2</code> ( multiplexing، جریان، HPACK) و اینکه چرا gRPC روی <code>HTTP/1.1</code> کار نمی‌کند.</li>
-<li>کار با <code>Metadata</code> برای هدر و احراز هویت، و با <code>Deadline</code> برای کنترل زمان و لغو.</li>
+<li>تسلط بر چهار نوع RPC: تک‌طرفه (Unary)، استریم سرور (Server Streaming)، استریم کلاینت
+(Client Streaming) و دوطرفه (Bidirectional Streaming).</li>
+<li>درک نقش <code>HTTP/2</code> (چندگانه‌سازی، جریان دوسویه و HPACK) و اینکه چرا gRPC روی
+<code>HTTP/1.1</code> کار نمی‌کند.</li>
+<li>کار با فراداده (metadata) برای سرآیندها و احراز هویت، و با مهلت (deadline) برای کنترل زمان و لغو.</li>
 <li>طراحی خطا با <code>Status</code> به‌جای exception، و ترجمه‌ی آن به <code>HTTP status</code> در مرز.</li>
-<li>نوشتن <code>Interceptor</code> برای لاگ، احراز هویت، retry و metrics به‌صورت متمرکز.</li>
+<li>نوشتن بین‌افزار (interceptor) برای لاگ، احراز هویت، retry و metrics به‌صورت متمرکز.</li>
 <li>پیاده‌سازی عملی در <code>Java</code> و <code>Go</code> و نوشتن تست واحد و تست یکپارچه.</li>
 <li>مهاجرت مرحله‌به‌مرحله از یک سرویس REST موجود، بدون توقف سرویس.</li>
 <li>تصمیم‌گیری آگاهانه بین gRPC، REST و SOAP با معیارهای مشخص.</li>
@@ -234,7 +243,7 @@
 <span class="kl-h">پیش‌نیاز</span>
 <p>
 درک خوبی از <code>HTTP/1.1</code> لازم است. آشنایی با <code>HTTP/2</code> و مفاهیمی مثل
-<code>Stream</code>، <code>Frame</code> و <code>Multiplexing</code> کمک بزرگی است ولی پیش‌شرط
+<code>Stream</code>، <code>Frame</code> و <code>multiplexing</code> کمک بزرگی است ولی پیش‌شرط
 نیست. اگر با protobuf یا قراردادهای باینری کار کرده‌اید، بخش ۵ و ۶ برایتان سریع‌تر خواهد بود.
 </p>
 </div>
@@ -247,11 +256,11 @@
 <div class="kl-box kl-hd">
 <span class="kl-h">تعریف</span>
 <p>
-<code>gRPC</code> یک <strong>فریم‌ورک RPC</strong> (فراخوانی رویه‌ای از راه دور) است: به‌جای اینکه کلاینت
+<code>gRPC</code> یک <strong>فریم‌ورک RPC</strong> (فراخوانی از راه دور) است: به‌جای اینکه کلاینت
 مسیر HTTP و شکل JSON را حدس بزند، یک <strong>سرویس با متدهای نام‌دار</strong> صدا می‌زند و پیام‌ها را
-در قالب باینری روی <code>HTTP/2</code> جابه‌جا می‌کند. قرارداد در فایل <code>proto</code> نوشته می‌شود
-و کد هر دو طرف از روی آن <strong>تولید</strong> می‌شود. یعنی سه چیز با هم می‌آیند: قراردادِ ماشین‌خوان،
-کد تایپ‌دار، و کانال انتقال کارا.
+در قالب باینری روی <code>HTTP/2</code> جابه‌جا می‌کند. قرارداد در فایل تعریف قرارداد
+<code>.proto</code> نوشته می‌شود و کد هر دو طرف از روی آن <strong>تولید</strong> می‌شود. یعنی سه چیز
+با هم می‌آیند: قرارداد ماشین‌خوان، کد تایپ‌دار، و کانال انتقال کارا.
 </p>
 </div>
 
@@ -268,9 +277,9 @@
 <tr><th>لایه</th><th>نام رسمی</th><th>کارش چیست</th><th>قابل تعویض؟</th></tr>
 </thead>
 <tbody>
-<tr><td>قرارداد</td><td>Protocol Buffers</td><td>تعریف پیام‌ها و سرویس‌ها، سریال‌سازی باینری</td><td>بله — با <code>Cap'n Proto</code> یا <code>FlatBuffers</code></td></tr>
+<tr><td>قرارداد</td><td>بافر پروتکل (Protocol Buffers)</td><td>تعریف پیام‌ها و سرویس‌ها، کدگذاری باینری</td><td>بله — با <code>Cap'n Proto</code> یا <code>FlatBuffers</code></td></tr>
 <tr><td>کد تولیدشده</td><td>Stubs / Generated Code</td><td>کلاس‌های آماده‌ی پیام و متد، تایپ ایمن</td><td>خیر — تولیدی است</td></tr>
-<tr><td>انتقال</td><td>gRPC over HTTP/2</td><td>ارسال فریم‌ها، multiplexing، جریان داده</td><td>بله — <code>grpc-web</code>، <code>Connect</code></td></tr>
+<tr><td>انتقال</td><td>gRPC over HTTP/2</td><td>ارسال فریم‌ها، چندگانه‌سازی، جریان داده</td><td>بله — <code>gRPC-Web</code>، <code>Connect</code></td></tr>
 </tbody>
 </table>
 </div>
@@ -286,8 +295,8 @@
 <tr><td dir="ltr">۲۰۱۵</td><td>معرفی gRPC توسط گوگل</td><td>برای ارتباط داخلی سریع بین سرویس‌های گوگل</td></tr>
 <tr><td dir="ltr">۲۰۱۶</td><td>انتشار <code>grpc-core</code> به‌صورت متن‌باز</td><td>استقلال از گوگل و جذب مشارکت بیرونی</td></tr>
 <tr><td dir="ltr">۲۰۱۷</td><td>ورود به CNCF</td><td>پذیرش به‌عنوان پروژه‌ی پایدار زیرساختی</td></tr>
-<tr><td dir="ltr">۲۰۱۹</td><td>حذف نام <code>RPC</code> از مسیر فراخوانی</td><td>یکنواخت‌سازی نام‌گذاری در همه‌ی زبان‌ها</td></tr>
-<tr><td dir="ltr">۲۰۲۰ به بعد</td><td>بلوغ اکوسیستم و <code>grpc-web</code></td><td>استفاده از مرورگر و از بیرون شبکه‌ی داخلی</td></tr>
+<tr><td dir="ltr">۲۰۱۹</td><td>یکسان‌سازی قالب مسیر فراخوانی</td><td>مسیرها به شکل ثابت <code dir="ltr">/package.Service/Method</code> درآمدند</td></tr>
+<tr><td dir="ltr">۲۰۲۰ به بعد</td><td>بلوغ اکوسیستم و <code>gRPC-Web</code></td><td>استفاده از مرورگر و از بیرون شبکه‌ی داخلی</td></tr>
 <tr><td dir="ltr">امروز</td><td>پایه‌ی ارتباط داخلی در معماری‌های میکروسرویسی</td><td>در کنار REST برای بیرون و GraphQL برای تجمیع</td></tr>
 </tbody>
 </table>
@@ -321,12 +330,13 @@ gRPC دقیقاً همان ایده را روی زیرساخت امروزی — 
 این یعنی بایت بی‌فایده روی شبکه.</li>
 <li><strong>نبود استریم بومی</strong> — در REST، جریان داده‌ی پیوسته با SSE یا WebSocket و یک پروتکل
 اضافه ساخته می‌شود، نه با همان قرارداد اصلی.</li>
+
 </ol>
 
 <h3>مقایسه‌ی بایت یک پیام کوچک</h3>
 
 <p>
-برای یک پیام ساده‌ی «سلام، نام کاربر چیست؟» با سه فیلد، JSON تقریباً این‌طور می‌شود. نام فیلدها در
+برای یک پیام ساده‌ی «کاربر» با سه فیلد، JSON تقریباً این‌طور می‌شود. نام فیلدها در
 هر پیام تکرار می‌شود، چون JSON خودتوصیف است اما پرهزینه:
 </p>
 
@@ -352,58 +362,70 @@ gRPC دقیقاً همان ایده را روی زیرساخت امروزی — 
 }</code></pre>
 </div>
 
-<div class="kl-fig">
-  <svg viewBox="0 0 780 340" role="img" aria-labelledby="fig-gr-t fig-gr-d" preserveAspectRatio="xMidYMid meet">
-    <title id="fig-gr-t">مقایسه‌ی قرارداد REST و gRPC</title>
-    <desc id="fig-gr-d">در REST مستندات دستی باید با کد هماهنگ نگه داشته شوند و هر تغییر می‌تواند ناسازگاری بسازد. در gRPC فایل proto منبع حقیقت است و کد هر دو طرف از روی همان فایل تولید می‌شود.</desc>
 
-    <text x="390" y="28" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">REST: قرارداد کاغذی، هماهنگی دستی</text>
-    <rect x="30" y="46" width="150" height="46" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="105" y="68" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text-main)">مستندات</text>
-    <text x="105" y="84" text-anchor="middle" font-size="10" fill="var(--text-muted)">دستی · دیرهنگام</text>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 400" role="img" aria-label="قرارداد اول: فایل orders.proto تنها منبع حقیقت است؛ با اجرای protoc از روی همان یک فایل، کلاس پایه در سمت سرور و stub در سمت کلاینت تولید می‌شود و هر دو طرف دقیقاً یک قرارداد را می‌بینند">
+  <!-- منبع حقیقت -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="230" y="16" width="310" height="74" rx="10"/>
+    <text class="s-t" x="385" y="40" text-anchor="middle">فایل تعریف قرارداد</text>
+    <text class="s-tc" x="385" y="62" text-anchor="middle">orders.proto</text>
+    <text class="s-t2" x="385" y="80" text-anchor="middle">تنها منبع حقیقت؛ بقیه کد تولیدی است</text>
+  </g>
 
-    <rect x="220" y="46" width="150" height="46" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="295" y="68" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text-main)">سرور</text>
-    <text x="295" y="84" text-anchor="middle" font-size="10" fill="var(--text-muted)">JSON</text>
+  <!-- پیکان‌های تولید کد -->
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 470 90 L 470 124 L 593 124 L 593 148"/>
+  <path class="s-head-ok" d="M 593 148 L 581 136 L 605 136 Z"/>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 300 90 L 300 124 L 177 124 L 177 148"/>
+  <path class="s-head-ok" d="M 177 148 L 189 136 L 165 136 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="118" text-anchor="middle" style="--kl-i:1">تولید کد با protoc</text>
 
-    <rect x="600" y="46" width="150" height="46" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="675" y="68" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text-main)">کلاینت</text>
-    <text x="675" y="84" text-anchor="middle" font-size="10" fill="var(--text-muted)">تشریح دستی JSON</text>
+  <!-- کد تولیدشده در دو طرف -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="430" y="148" width="326" height="76" rx="10"/>
+    <text class="s-t" x="593" y="172" text-anchor="middle">stub تولیدشده — سمت کلاینت</text>
+    <text class="s-tc" x="593" y="194" text-anchor="middle">OrderServiceClient</text>
+    <text class="s-t2" x="593" y="214" text-anchor="middle">متد تایپ‌دار، بدون نگاشت دستی JSON</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="14" y="148" width="326" height="76" rx="10"/>
+    <text class="s-t" x="177" y="172" text-anchor="middle">پایه‌ی تولیدشده — سمت سرور</text>
+    <text class="s-tc" x="177" y="194" text-anchor="middle">OrderServiceImplBase</text>
+    <text class="s-t2" x="177" y="214" text-anchor="middle">شما این کلاس را پیاده‌سازی می‌کنید</text>
+  </g>
 
-    <text x="390" y="182" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-main)">gRPC: یک منبع حقیقت، دو کد تولیدشده</text>
-    <rect x="300" y="200" width="180" height="46" rx="12" fill="var(--bg-surface)" stroke="var(--color-primary)" stroke-width="2"/>
-    <text x="390" y="222" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text-main)">orders.proto</text>
-    <text x="390" y="238" text-anchor="middle" font-size="10" fill="var(--text-muted)">منبع حقیقت</text>
+  <!-- پیکان به دو طرف در حال اجرا -->
+  <path class="s-arr s-flow" d="M 593 224 L 593 292"/>
+  <path class="s-head" d="M 593 292 L 581 280 L 605 280 Z"/>
+  <path class="s-arr s-flow" d="M 177 224 L 177 292"/>
+  <path class="s-head" d="M 177 292 L 189 280 L 165 280 Z"/>
 
-    <rect x="60" y="200" width="180" height="46" rx="12" fill="var(--bg-surface)" stroke="var(--color-success)" stroke-width="2"/>
-    <text x="150" y="222" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text-main)">کد سمت سرور</text>
-    <text x="150" y="238" text-anchor="middle" font-size="10" fill="var(--text-muted)">OrderServiceGrpc</text>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-c6" x="430" y="292" width="326" height="62" rx="10"/>
+    <text class="s-t" x="593" y="318" text-anchor="middle">کلاینت (Client)</text>
+    <text class="s-t2" x="593" y="340" text-anchor="middle">stub را صدا می‌زند، نه مسیر HTTP را</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-c6" x="14" y="292" width="326" height="62" rx="10"/>
+    <text class="s-t" x="177" y="318" text-anchor="middle">سرور (Server)</text>
+    <text class="s-t2" x="177" y="340" text-anchor="middle">منطق کسب‌وکار، مستقل از gRPC</text>
+  </g>
 
-    <rect x="540" y="200" width="180" height="46" rx="12" fill="var(--bg-surface)" stroke="var(--color-success)" stroke-width="2"/>
-    <text x="630" y="222" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text-main)">کد سمت کلاینت</text>
-    <text x="630" y="238" text-anchor="middle" font-size="10" fill="var(--text-muted)">OrderServiceClient</text>
+  <!-- ذره‌های متحرک روی پیکان‌های تولید کد -->
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 470 90 L 470 124 L 593 124 L 593 148"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M 300 90 L 300 124 L 177 124 L 177 148"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3s" begin="0.75s" repeatCount="indefinite" path="M 593 224 L 593 292"/>
+  </circle>
 
-    <defs>
-      <marker id="arr-gr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill="var(--color-primary)"/>
-      </marker>
-    </defs>
-
-    <g class="s-arr" stroke="var(--color-danger)" stroke-width="2.2" fill="none">
-      <line x1="180" y1="69" x2="216" y2="69"/>
-      <line x1="370" y1="69" x2="596" y2="69"/>
-    </g>
-    <text x="483" y="62" text-anchor="middle" font-size="10" fill="var(--color-danger)">ناهماهنگی محتمل</text>
-
-    <g class="s-flow" stroke="var(--color-primary)" stroke-width="2.4" fill="none">
-      <path d="M350,200 L200,200 L200,250" marker-end="url(#arr-gr)"/>
-      <path d="M430,200 L580,200 L580,250" marker-end="url(#arr-gr)"/>
-    </g>
-    <text x="390" y="290" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-primary)">کد تولیدشده هرگز از قرارداد عقب نمی‌ماند</text>
-    <text x="390" y="314" text-anchor="middle" font-size="11" fill="var(--text-muted)">تغییر در proto ⇒ بازتولید ⇒ خطای کامپایل اگر کلاینت هماهنگ نباشد</text>
-  </svg>
-  <figcaption>بالا: در REST سه نقطه‌ی تماس جدا دارید و هماهنگی دستی است. پایین: در gRPC یک فایل، دو خروجی.</figcaption>
-</div>
+  <text class="s-t2 s-lbl" x="385" y="386" text-anchor="middle" style="--kl-i:6">تغییر در فایل قرارداد ⇒ بازتولید کد ⇒ خطای کامپایل، اگر دو طرف با هم هماهنگ نباشند</text>
+</svg>
+<figcaption><b>قرارداد اول:</b> فایل <code>.proto</code> تنها منبع حقیقت است. با اجرای <code>protoc</code> روی همان یک فایل، هم کلاس پایه‌ی سمت سرور و هم <code>stub</code> سمت کلاینت تولید می‌شوند؛ برای همین کلاینت و سرور عملاً نمی‌توانند از قرارداد عقب بیفتند.</figcaption>
+</figure>
 
 <div class="kl-box kl-warn">
 <span class="kl-h">نکته‌ی صادقانه: سربار کمتر یعنی چه؟</span>
@@ -422,8 +444,8 @@ gRPC دقیقاً همان ایده را روی زیرساخت امروزی — 
 <h2><span class="kl-num">بخش ۴</span>معماری و اجزای gRPC</h2>
 
 <p>
-یک سرویس gRPC از نظر ساختار کد، سه لایه‌ی روشن دارد. شناخت این سه لایه باعث می‌شود بدانید منطق
-کسب‌وکار را کجا بنویسید و کد فقط زیرساختی است.
+یک سرویس gRPC از نظر ساختار کد، سه لایه‌ی روشن دارد. شناخت این سه لایه کمک می‌کند بدانید منطق
+کسب‌وکار را کجا بنویسید و کد زیرساختی کجاست.
 </p>
 
 <div class="kl-box kl-hd">
@@ -431,9 +453,9 @@ gRPC دقیقاً همان ایده را روی زیرساخت امروزی — 
 <ul>
 <li><strong>لایه‌ی پیام (Message Layer)</strong> — کلاس‌های <code>User</code>، <code>Order</code> و … که
 <strong>تولید</strong> شده‌اند. فقط داده، بدون منطق. شما این‌ها را دست نمی‌زنید.</li>
-<li><strong>لایه‌ی سرویس (Service Layer)</strong> — کلاس <code>OrderServiceGrpc</code> با متد
-<code>getOrder</code> و یک متد پایه به نام <code>getOrder</code> در ارث که مربوط به HTTP است.
-کد تولیدشده است و شما آن را override می‌کنید.</li>
+<li><strong>لایه‌ی سرویس (Service Layer)</strong> — کد تولیدشده‌ی سرویس: کلاس <code>OrderServiceGrpc</code>
+با متد <code>getOrder</code> در سمت سرور، و کلاس‌های <code>OrderServiceBlockingStub</code> و
+<code>OrderServiceFutureStub</code> در سمت کلاینت. این‌ها تولیدی‌اند و نباید دستی ویرایش شوند.</li>
 <li><strong>لایه‌ی منطق (Business Layer)</strong> — کد شما. سرویس‌دهنده‌ی واقعی، جایی که قواعد
 کسب‌وکار و تراکنش دیتابیس زندگی می‌کنند. این لایه هیچ چیزی از gRPC نمی‌داند.</li>
 </ul>
@@ -454,9 +476,9 @@ gRPC دقیقاً همان ایده را روی زیرساخت امروزی — 
 </thead>
 <tbody>
 <tr><td>۱</td><td>پیام درخواست را با <code>Protobuf</code> سریال می‌کند</td><td>فریم را روی اتصال <code>HTTP/2</code> می‌گیرد</td></tr>
-<tr><td>۲</td><td>متادیتا را در هدرهای HTTP/2 می‌فرستد</td><td>متادیتا را به <code>Context</code> تبدیل می‌کند</td></tr>
-<tr><td>۳</td><td><code>DEADLINE</code> را در هدر <code>grpc-timeout</code> می‌گذارد</td><td>زمان باقی‌مانده را استخراج می‌کند</td></tr>
-<tr><td>۴</td><td>منتظر پاسخ می‌ماند یا استریم را می‌خواند</td><td><code>Interceptor</code> ها را اجرا می‌کند</td></tr>
+<tr><td>۲</td><td>فراداده را در سرآیندهای HTTP/2 می‌فرستد</td><td>فراداده را به <code>Context</code> تبدیل می‌کند</td></tr>
+<tr><td>۳</td><td><code>DEADLINE</code> را در سرآیند <code>grpc-timeout</code> می‌گذارد</td><td>زمان باقی‌مانده را استخراج می‌کند</td></tr>
+<tr><td>۴</td><td>منتظر پاسخ می‌ماند یا استریم را می‌خواند</td><td>بین‌افزارها را اجرا می‌کند</td></tr>
 <tr><td>۵</td><td>پاسخ را به مدل کلاینت تبدیل می‌کند</td><td>منطق کسب‌وکار را صدا می‌زند</td></tr>
 <tr><td>۶</td><td>اگر خطا بود، <code>Status</code> را به exception تبدیل می‌کند</td><td>نتیجه یا <code>Status</code> خطا را می‌فرستد</td></tr>
 </tbody>
@@ -478,8 +500,8 @@ gRPC دقیقاً همان ایده را روی زیرساخت امروزی — 
 <h2><span class="kl-num">بخش ۵</span>آناتومی فایل proto</h2>
 
 <p>
-فایل <code>.proto</code> تنها چیزی است که باید دستی بنویسید. بقیه‌ی کد — کلاس‌های پیام، سریال‌ساز،
-سرویس‌دهنده و کلاینت — همه از روی همین فایل تولید می‌شوند. پس کیفیت کل ارتباط سرویس به کیفیت این
+فایل <code>.proto</code> تنها چیزی است که باید دستی بنویسید. بقیه‌ی کد — کلاس‌های پیام، کدگذار و
+کدگشا، سرویس‌دهنده و کلاینت — همه از روی همین فایل تولید می‌شوند. پس کیفیت کل ارتباط سرویس به کیفیت این
 یک فایل گره خورده است.
 </p>
 
@@ -559,8 +581,8 @@ message SyncEvent {
 <code>string</code> است و فردا <code>int64</code> می‌شود، داده‌ی ذخیره‌شده را خراب می‌کند.</li>
 <li><strong>شماره‌ها را از ۱ شروع کنید و بدون وقفه بالا بروید.</strong> عدد ۰ در proto3
 <code>unset</code> است.</li>
-<li><strong>پیام را تغییر ندهید؛ پیام تازه بسازید.</strong> برای هر تغییر سازگار یک نوع جدید مثل
-<code>GetProductV2Request</code> تعریف کنید.</li>
+<li><strong>پیام را تغییر ندهید؛ برای هر تغییر ناسازگار پیام تازه بسازید.</strong> مثلاً به‌جای دست‌زدن به
+<code>GetProductRequest</code> یک <code>GetProductV2Request</code> تازه تعریف کنید.</li>
 <li><strong>فیلد را حذف نکنید، <code>reserved</code> کنید.</strong> این کار مانع استفاده‌ی تصادفی
 دوباره از شماره می‌شود.</li>
 <li><strong>مقادیر enum را جابه‌جا نکنید</strong> و برای عضو صفر یک نام
@@ -590,10 +612,10 @@ message SyncEvent {
 <tbody>
 <tr><td>افزودن فیلد تازه</td><td>✅ بله</td><td>طرف قدیمی فیلد ناشناخته را نادیده می‌گیرد</td></tr>
 <tr><td>حذف فیلد با <code>reserved</code></td><td>✅ بله</td><td>شماره رزرو می‌شود و داده قدیمی هنوز خوانده می‌شود</td></tr>
-<tr><td>افزودن مقدار به enum</td><td>✅ با احتیاط</td><td>طرف‌های قدیمی مقدار ناشناخته را به مقدار پیش‌فرض می‌ map کنند</td></tr>
+<tr><td>افزودن مقدار به enum</td><td>✅ با احتیاط</td><td>طرف‌های قدیمی مقدار ناشناخته را به مقدار پیش‌فرض نگاشت می‌کنند</td></tr>
 <tr><td>تغییر <code>repeated</code> به تکی</td><td>❌ نه</td><td>ساختار باینری عوض می‌شود</td></tr>
 <tr><td>تغییر <code>string</code> به <code>int32</code></td><td>❌ نه</td><td>خواننده‌ی قدیمی عدد را به‌عنوان متن می‌خواند</td></tr>
-<tr><td>تغییر <code>int32</code> به <code>int64</code></td><td>⚠️ نوع متفاوت</td><td>در spec ناسازگار شمرده می‌شود؛ پیام تازه بسازید</td></tr>
+<tr><td>تغییر <code>int32</code> به <code>int64</code></td><td>⚠️ نوع متفاوت</td><td>در قرارداد (spec) ناسازگار شمرده می‌شود؛ پیام تازه بسازید</td></tr>
 <tr><td>تغییر <code>sint32</code> به <code>int32</code></td><td>❌ نه</td><td>نمایش varint متفاوت است</td></tr>
 <tr><td>تغییر نام فیلد با حفظ شماره</td><td>⚠️ فقط درون سازمانی</td><td>روی سیم بی‌اثر است ولی کد همه را می‌شکند</td></tr>
 </tbody>
@@ -606,7 +628,7 @@ message SyncEvent {
 <code>Protobuf</code> روی سیم فقط <strong>شماره‌ی فیلد + نوع varint</strong> می‌گذارد و نام‌ها را
 اصلاً نمی‌فرستد. پس اگر شما <code>price_cents</code> را از <code>int64</code> به
 <code>string</code> تغییر دهید، خواننده‌ی قدیمی عدد را با طول بایت‌های <code>string</code> تفسیر
-می‌کند و به نتیجه‌ی کاملاً garbage می‌رسد — بدون هیچ خطایی. به همین دلیل در سیستم‌های توزیع‌شده
+می‌کند و به نتیجه‌ای کاملاً نادرست می‌رسد — بدون هیچ خطایی. به همین دلیل در سیستم‌های توزیع‌شده
 تغییر ناسازگار یعنی <strong>نسخه‌ی تازه از سرویس</strong>.
 </p>
 </div>
@@ -614,7 +636,7 @@ message SyncEvent {
 
 <!-- ==================== 6 ==================== -->
 <section id="s6">
-<h2><span class="kl-num">بخش ۶</span>Protobuf و کدنویسی خودکار</h2>
+<h2><span class="kl-num">بخش ۶</span>Protobuf و تولید خودکار کد</h2>
 
 <p>
 فایل <code>proto</code> فقط ورودی نیست؛ خروجی‌اش کد است. این همان چیزی است که gRPC را از
@@ -660,18 +682,18 @@ grpcurl -plaintext -d '{"id":"p-42"}' localhost:9090 shop.v1.ProductService/GetP
 <h3>چه چیزی تولید می‌شود؟</h3>
 
 <p>
-خروجی <code>protoc</code> برای هر زبان کمی متفاوت است ولی سه چیز ثابت دارد: کلاس‌های پیام با
-گتر و ست، متدهای سریال‌ساز/دسریال‌ساز، و یک پایه‌ی سرویس که هم در سمت سرور و هم در سمت کلاینت
-استفاده می‌شود.
+خروجی <code>protoc</code> برای هر زبان کمی متفاوت است، ولی سه چیز ثابت دارد: کلاس‌های پیام با
+گِتر و ستِر، متدهای کدگذاری و کدگشایی پیام، و کد سرویس‌دهنده. کلاس پایه‌ی سرویس‌دهنده فقط در سمت
+سرور به کار می‌آید و کلاس <code>stub</code> فقط در سمت کلاینت.
 </p>
 
 <div class="ax-versus">
   <div class="ax-versus-side">
     <h4>سمت سرور (Server)</h4>
     <ul>
-      <li>کلاس <code>ProductServiceGrpc</code> با متد <code>getProduct</code> به‌عنوان نقطه‌ی ورود</li>
-      <li>متد پایه <code>build</code> که سرور و کلاینت را به هم می‌دوزد</li>
-      <li>شما کلاس خود را <code>extends ProductServiceGrpc.ProductServiceImplBase</code> می‌کنید</li>
+      <li>کلاس <code>ProductServiceGrpc</code> با متدهای <code>getProduct</code> و <code>listProducts</code> به‌عنوان نقطه‌ی ورود</li>
+      <li>کلاس پایه‌ی <code>ProductServiceImplBase</code> که سرویس را برای ثبت روی سرور آماده می‌کند</li>
+      <li>شما کلاس خود را <code>extends ProductServiceGrpc.ProductServiceImplBase</code> می‌کنید و متدها را پیاده‌سازی می‌کنید</li>
       <li>متد <code>bindService()</code> سرویس را برای ثبت روی سرور تحویل می‌دهد</li>
     </ul>
   </div>
@@ -698,10 +720,10 @@ grpcurl -plaintext -d '{"id":"p-42"}' localhost:9090 shop.v1.ProductService/GetP
 <tbody>
 <tr><td>خوانایی برای انسان</td><td>زیاد</td><td>کم (فقط در فایل proto)</td></tr>
 <tr><td>حجم روی سیم</td><td>بزرگ‌تر</td><td>کوچک‌تر، مخصوصاً با فیلدهای کم‌شماره</td></tr>
-<tr><td>سرعت سریال‌سازی</td><td>متوسط</td><td>بسیار بالا</td></tr>
+<tr><td>سرعت کدگذاری</td><td>متوسط</td><td>معمولاً بالاتر، ولی به زبان و کتابخانه وابسته است</td></tr>
 <tr><td>سازگاری رو به جلو</td><td>خوب</td><td>عالی، چون شماره‌ی فیلد قرارداد است</td></tr>
 <tr><td>دیباگ بدون ابزار</td><td>بله</td><td>خیر — به <code>protoc --decode</code> نیاز دارید</td></tr>
-<tr><td>مناسب کاربر نهایی و مرورگر</td><td>بله</td><td>نه، برای داخل شبکه‌ی قابل اعتماد</td></tr>
+<tr><td>مناسب کاربر نهایی و مرورگر</td><td>بله</td><td>نه، مگر با <code>gRPC-Web</code> یا یک پراکسی</td></tr>
 </tbody>
 </table>
 </div>
@@ -711,9 +733,9 @@ grpcurl -plaintext -d '{"id":"p-42"}' localhost:9090 shop.v1.ProductService/GetP
 <p>
 <code>option java_multiple_files = true</code> باعث می‌شود هر پیام در فایل جدا بیفتد و
 <code>option java_package</code> مسیر بسته‌ی جاوا را تعیین می‌کند. بدون این دو، همه‌ی کلاس‌ها در
-یک فایل بزرگ با پسوند <code>OuterClass</code> جمع می‌شوند که به‌سرعت غیرقابل استفاده می‌شود.
-همچنین <code>option optimize_for = SPEED</code> یا <code>LITE_RUNTIME</code> می‌تواند روی
-سرویس‌های کم‌مصرف اعمال شود.
+یک فایل بزرگ با نامی شبیه <code>OuterClass</code> جمع می‌شوند که به‌سرعت غیرقابل استفاده
+می‌شود. برای سرویس‌های کم‌مصرف هم می‌توان از <code>option optimize_for = LITE_RUNTIME</code>
+استفاده کرد.
 </p>
 </div>
 </section>
@@ -723,7 +745,7 @@ grpcurl -plaintext -d '{"id":"p-42"}' localhost:9090 shop.v1.ProductService/GetP
 <h2><span class="kl-num">بخش ۷</span>چهار نوع RPC</h2>
 
 <p>
-gRPC چهار شکل فراخوانی دارد. انتخاب شکل درست مهم است چون هم روی کارایی اثر می‌گذارد و هم روی
+gRPC چهار شکل فراخوانی دارد. انتخاب شکل درست مهم است، چون هم روی کارایی اثر می‌گذارد و هم روی
 طراحی مدیریت منابع و جریان کنترل.
 </p>
 
@@ -733,30 +755,30 @@ gRPC چهار شکل فراخوانی دارد. انتخاب شکل درست م�
 <tr><th>نوع</th><th>درخواست</th><th>پاسخ</th><th>کاربرد نمونه</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Unary</strong></td><td>یک پیام</td><td>یک پیام</td><td>خواندن یک رکورد، ثبت یک سفارش</td></tr>
-<tr><td><strong>Server Streaming</strong></td><td>یک پیام</td><td>جریانی از پیام‌ها</td><td>خروجی نتیجه‌ی جستجو، لاگ زنده، دانلود تکه‌تکه</td></tr>
-<tr><td><strong>Client Streaming</strong></td><td>جریانی از پیام‌ها</td><td>یک پیام</td><td>آپلود دسته‌ای، ارسال گزارش بزرگ</td></tr>
-<tr><td><strong>Bidirectional</strong></td><td>جریانی</td><td>جریانی</td><td>چت، همگام‌سازی دوطرفه، پردازش جریانی رویداد</td></tr>
+<tr><td><strong>تک‌طرفه (Unary)</strong></td><td>یک پیام</td><td>یک پیام</td><td>خواندن یک رکورد، ثبت یک سفارش</td></tr>
+<tr><td><strong>استریم سرور (Server Streaming)</strong></td><td>یک پیام</td><td>جریانی از پیام‌ها</td><td>خروجی نتیجه‌ی جست‌وجو، لاگ زنده، دانلود تکه‌تکه</td></tr>
+<tr><td><strong>استریم کلاینت (Client Streaming)</strong></td><td>جریانی از پیام‌ها</td><td>یک پیام</td><td>آپلود دسته‌ای، ارسال گزارش بزرگ</td></tr>
+<tr><td><strong>دوطرفه (Bidirectional Streaming)</strong></td><td>جریانی</td><td>جریانی</td><td>چت، همگام‌سازی دوطرفه، پردازش جریانی رویداد</td></tr>
 </tbody>
 </table>
 </div>
 
-<h3>۱) Unary — پرکاربردترین شکل</h3>
+<h3>۱) تک‌طرفه (Unary) — پرکاربردترین شکل</h3>
 
 <p>
-یک درخواست، یک پاسخ. همان چیزی که ۸۰ درصد ارتباطات داخلی را پوشش می‌دهد. نکته‌ای که اغلب
-اشتباه می‌شود: یک Unary در هر دو طرف <strong>blocking</strong> است و در نتیجه یک جریان یکتا از
+یک درخواست، یک پاسخ — پرکاربردترین شکل در ارتباط داخلی. نکته‌ای که اغلب
+اشتباه می‌شود: یک فراخوانی تک‌طرفه در هر دو طرف <strong>مسدودکننده</strong> است و در نتیجه یک جریان یکتا از
 داده اشغال می‌کند؛ پس نباید آن را به‌عنوان راه‌حل «صدها درخواست هم‌زمان» به کار ببرید.
 </p>
 
 <div class="kl-scroll">
 <pre class="kl-code" data-lang="protobuf"><code>service ProductService {
-  # Unary: يک درخواست، يک پاسخ
+  # Unary: یک درخواست، یک پاسخ
   rpc GetProduct(GetProductRequest) returns (GetProductResponse);
 }</code></pre>
 </div>
 
-<h3>۲) Server Streaming — یک درخواست، جریان پاسخ</h3>
+<h3>۲) استریم سرور (Server Streaming) — یک درخواست، جریان پاسخ</h3>
 
 <p>
 سرور بعد از دریافت یک درخواست، پیام‌ها را پشت‌سرهم می‌فرستد تا وقتی کلاینت لغو کند یا سرور
@@ -779,10 +801,130 @@ func (s *searchServer) Search(req *pb.SearchRequest, stream pb.SearchService_Sea
     }
   }
   return nil                     # پایان عادی جریان
+<figure class="kl-fig">
+<svg viewBox="0 0 770 470" role="img" aria-label="چهار نوع RPC در gRPC: تک‌طرفه، استریم سرور، استریم کلاینت و دوطرفه؛ هر کدام با دو خط زندگی کلاینت و سرور و پیکان‌هایی که جهت جریان داده را نشان می‌دهند">
+  <!-- ۱) تک‌طرفه -->
+  <rect class="s-group" x="398" y="28" width="358" height="190" rx="12"/>
+  <text class="s-group-t" x="577" y="54" text-anchor="middle">۱) تک‌طرفه (Unary)</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="672" y="64" width="84" height="30" rx="8"/>
+    <text class="s-t" x="714" y="84" text-anchor="middle">کلاینت</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="398" y="64" width="84" height="30" rx="8"/>
+    <text class="s-t" x="440" y="84" text-anchor="middle">سرور</text>
+  </g>
+  <path class="s-dash" stroke-dasharray="4 4" d="M 714 94 L 714 188"/>
+  <path class="s-dash" stroke-dasharray="4 4" d="M 440 94 L 440 188"/>
+  <path class="s-arr s-flow" d="M 714 116 L 452 116"/>
+  <path class="s-head" d="M 452 116 L 464 109 L 464 123 Z"/>
+  <text class="s-t2 s-lbl" x="583" y="109" text-anchor="middle" style="--kl-i:1">درخواست</text>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 440 160 L 702 160"/>
+  <path class="s-head-ok" d="M 702 160 L 690 153 L 690 167 Z"/>
+  <text class="s-t2 s-lbl" x="577" y="153" text-anchor="middle" style="--kl-i:2">پاسخ</text>
+  <text class="s-t2 s-lbl" x="577" y="210" text-anchor="middle" style="--kl-i:3">یک درخواست، یک پاسخ</text>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 714 116 L 452 116"/>
+  </circle>
+
+  <!-- ۲) استریم سرور -->
+  <rect class="s-group" x="14" y="28" width="358" height="190" rx="12"/>
+  <text class="s-group-t" x="193" y="54" text-anchor="middle">۲) استریم سرور (Server Streaming)</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="288" y="64" width="84" height="30" rx="8"/>
+    <text class="s-t" x="330" y="84" text-anchor="middle">کلاینت</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="14" y="64" width="84" height="30" rx="8"/>
+    <text class="s-t" x="56" y="84" text-anchor="middle">سرور</text>
+  </g>
+  <path class="s-dash" stroke-dasharray="4 4" d="M 330 94 L 330 188"/>
+  <path class="s-dash" stroke-dasharray="4 4" d="M 56 94 L 56 188"/>
+  <path class="s-arr s-flow" d="M 330 116 L 68 116"/>
+  <path class="s-head" d="M 68 116 L 80 109 L 80 123 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="109" text-anchor="middle" style="--kl-i:1">درخواست</text>
+  <path class="s-arr s-arr-ok s-flow-soft" d="M 56 138 L 318 138"/>
+  <path class="s-head-ok" d="M 318 138 L 306 131 L 306 145 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="131" text-anchor="middle" style="--kl-i:2">پاسخ ۱</text>
+  <path class="s-arr s-arr-ok s-flow-soft" d="M 56 160 L 318 160"/>
+  <path class="s-head-ok" d="M 318 160 L 306 153 L 306 167 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="153" text-anchor="middle" style="--kl-i:2">پاسخ ۲</text>
+  <path class="s-arr s-arr-ok s-flow-soft" d="M 56 182 L 318 182"/>
+  <path class="s-head-ok" d="M 318 182 L 306 175 L 306 189 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="175" text-anchor="middle" style="--kl-i:2">پاسخ ۳</text>
+  <text class="s-t2 s-lbl" x="193" y="210" text-anchor="middle" style="--kl-i:3">یک درخواست، جریانی از پاسخ‌ها</text>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" begin="1.3s" repeatCount="indefinite" path="M 330 116 L 68 116"/>
+  </circle>
+
+  <!-- ۳) استریم کلاینت -->
+  <rect class="s-group" x="398" y="236" width="358" height="190" rx="12"/>
+  <text class="s-group-t" x="577" y="262" text-anchor="middle">۳) استریم کلاینت (Client Streaming)</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="672" y="272" width="84" height="30" rx="8"/>
+    <text class="s-t" x="714" y="292" text-anchor="middle">کلاینت</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="398" y="272" width="84" height="30" rx="8"/>
+    <text class="s-t" x="440" y="292" text-anchor="middle">سرور</text>
+  </g>
+  <path class="s-dash" stroke-dasharray="4 4" d="M 714 302 L 714 396"/>
+  <path class="s-dash" stroke-dasharray="4 4" d="M 440 302 L 440 396"/>
+  <path class="s-arr s-flow" d="M 714 324 L 452 324"/>
+  <path class="s-head" d="M 452 324 L 464 317 L 464 331 Z"/>
+  <text class="s-t2 s-lbl" x="583" y="317" text-anchor="middle" style="--kl-i:1">درخواست ۱</text>
+  <path class="s-arr s-flow" d="M 714 346 L 452 346"/>
+  <path class="s-head" d="M 452 346 L 464 339 L 464 353 Z"/>
+  <text class="s-t2 s-lbl" x="583" y="339" text-anchor="middle" style="--kl-i:1">درخواست ۲</text>
+  <path class="s-arr s-flow" d="M 714 368 L 452 368"/>
+  <path class="s-head" d="M 452 368 L 464 361 L 464 375 Z"/>
+  <text class="s-t2 s-lbl" x="583" y="361" text-anchor="middle" style="--kl-i:1">درخواست ۳</text>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 440 390 L 702 390"/>
+  <path class="s-head-ok" d="M 702 390 L 690 383 L 690 397 Z"/>
+  <text class="s-t2 s-lbl" x="577" y="383" text-anchor="middle" style="--kl-i:2">پاسخ نهایی</text>
+  <text class="s-t2 s-lbl" x="577" y="418" text-anchor="middle" style="--kl-i:3">جریانی از درخواست، یک پاسخ</text>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" repeatCount="indefinite" path="M 714 324 L 452 324"/>
+  </circle>
+
+  <!-- ۴) دوطرفه -->
+  <rect class="s-group" x="14" y="236" width="358" height="190" rx="12"/>
+  <text class="s-group-t" x="193" y="262" text-anchor="middle">۴) دوطرفه (Bidirectional Streaming)</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="288" y="272" width="84" height="30" rx="8"/>
+    <text class="s-t" x="330" y="292" text-anchor="middle">کلاینت</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-acc" x="14" y="272" width="84" height="30" rx="8"/>
+    <text class="s-t" x="56" y="292" text-anchor="middle">سرور</text>
+  </g>
+  <path class="s-dash" stroke-dasharray="4 4" d="M 330 302 L 330 396"/>
+  <path class="s-dash" stroke-dasharray="4 4" d="M 56 302 L 56 396"/>
+  <path class="s-arr s-flow" d="M 330 324 L 68 324"/>
+  <path class="s-head" d="M 68 324 L 80 317 L 80 331 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="317" text-anchor="middle" style="--kl-i:1">درخواست</text>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 56 346 L 318 346"/>
+  <path class="s-head-ok" d="M 318 346 L 306 339 L 306 353 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="339" text-anchor="middle" style="--kl-i:2">پاسخ</text>
+  <path class="s-arr s-flow" d="M 330 368 L 68 368"/>
+  <path class="s-head" d="M 68 368 L 80 361 L 80 375 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="361" text-anchor="middle" style="--kl-i:1">درخواست</text>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 56 390 L 318 390"/>
+  <path class="s-head-ok" d="M 318 390 L 306 383 L 306 397 Z"/>
+  <text class="s-t2 s-lbl" x="193" y="383" text-anchor="middle" style="--kl-i:2">پاسخ</text>
+  <text class="s-t2 s-lbl" x="193" y="418" text-anchor="middle" style="--kl-i:3">جریان در هر دو جهت، هم‌زمان</text>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.6s" begin="1.3s" repeatCount="indefinite" path="M 56 346 L 318 346"/>
+  </circle>
+
+  <text class="s-t2 s-lbl" x="385" y="444" text-anchor="middle" style="--kl-i:4">جهت هر پیکان جهت جریان داده است؛ تکرار پیکان در یک جهت یعنی استریم.</text>
+</svg>
+<figcaption><b>چهار شکل فراخوانی:</b> هر ستون دو خط زندگی (کلاینت و سرور) دارد و هر پیکان یک پیام است. تفاوت چهار نوع فقط در تعداد و جهت پیام‌هاست؛ به همین دلیل انتخاب شکل، مستقیماً روی طراحی مدیریت منابع و بک‌پرسور اثر می‌گذارد.</figcaption>
+</figure>
 }</code></pre>
 </div>
 
-<h3>۳) Client Streaming — جریان درخواست</h3>
+<h3>۳) استریم کلاینت (Client Streaming) — جریان درخواست</h3>
 
 <div class="kl-scroll">
 <pre class="kl-code" data-lang="go"><code>// کلاینت: چند محصول را پشت سرهم می فرستد، یک خلاصه می گیرد
@@ -802,12 +944,12 @@ if err != nil {
 log.Printf("پذیرفته: %d رد: %d", summary.Accepted, summary.Rejected)</code></pre>
 </div>
 
-<h3>۴) Bidirectional — دو جریان هم‌زمان</h3>
+<h3>۴) دوطرفه (Bidirectional Streaming) — دو جریان هم‌زمان</h3>
 
 <p>
-کلاینت جریانی باز می‌کند، در آن می‌نویسد و هم‌زمان از آن می‌خواند. این شکل پیچیده‌ترین حالت
-است چون باید هم‌زمان چند سرور در حال استفاده از یک استریم باشند و مراقبت کنید که هر پیام دقیقاً
-یک بار پردازش شود.
+کلاینت جریانی باز می‌کند، در آن می‌نویسد و هم‌زمان از همان جریان می‌خواند. این پیچیده‌ترین حالت
+است، چون فرستنده و گیرنده هم‌زمان فعال‌اند: باید مراقب باشید هر پیام دقیقاً یک بار پردازش شود و
+ترتیب پاسخ‌ها قابل پیش‌بینی بماند.
 </p>
 
 <div class="kl-scroll">
@@ -858,11 +1000,11 @@ public StreamObserver&lt;ClientMessage&gt; syncCatalog(
 <div class="kl-box kl-hd">
 <span class="kl-h">قاعده‌ی انتخاب شکل</span>
 <ul>
-<li>اگر پاسخ کامل جا می‌شود و یک‌باره لازم است: <strong>Unary</strong>.</li>
-<li>اگر نتیجه‌ها تدریجی به دست می‌آیند یا داده بزرگ است: <strong>Server Streaming</strong>.</li>
-<li>اگر داده‌ی ورودی بزرگ است و فقط یک نتیجه‌ی خلاصه می‌خواهید: <strong>Client Streaming</strong>.</li>
-<li>اگر گفتگو دوطرفه‌ی واقعی است: <strong>Bidirectional</strong> — ولی قبل از انتخابش، ببینید
-آیا یک Unary با چند فراخوانی ساده‌تر نیست.</li>
+<li>اگر پاسخ کامل جا می‌شود و یک‌باره لازم است: <strong>تک‌طرفه</strong>.</li>
+<li>اگر نتیجه‌ها تدریجی به دست می‌آیند یا داده بزرگ است: <strong>استریم سرور</strong>.</li>
+<li>اگر داده‌ی ورودی بزرگ است و فقط یک نتیجه‌ی خلاصه می‌خواهید: <strong>استریم کلاینت</strong>.</li>
+<li>اگر گفتگوی دوطرفه‌ی واقعی است: <strong>دوطرفه</strong> — ولی قبل از انتخابش، ببینید
+آیا چند فراخوانی تک‌طرفه ساده‌تر نیست.</li>
 </ul>
 </div>
 </section>
@@ -871,9 +1013,10 @@ public StreamObserver&lt;ClientMessage&gt; syncCatalog(
 <h2><span class="kl-num">بخش ۸</span>HTTP/2: قلب gRPC</h2>
 
 <p>
-gRPC روی <code>HTTP/1.1</code> کار نمی‌کند، نه به‌خاطر محدودیت دلخواه، بلکه چون یکی از چهار ویژگی
-کلیدی <code>HTTP/2</code> را نیاز دارد: <strong>جریان‌های مستقل روی یک اتصال</strong>. فهم دقیق
-این چهار ویژگی، هم کارایی gRPC را توضیح می‌دهد و هم دلیل مشکلات رایج را.
+gRPC روی <code>HTTP/1.1</code> کار نمی‌کند، و دلیلش سلیقه نیست: به دو قابلیت کلیدی
+<code>HTTP/2</code> نیاز دارد — <strong>جریان‌های مستقل روی یک اتصال</strong> و
+<strong>جریان دوسویه</strong>. شناخت دقیق این قابلیت‌ها هم کارایی gRPC را توضیح می‌دهد و هم ریشه‌ی
+بیشتر مشکلات رایج را.
 </p>
 
 <div class="ax-tablewrap">
@@ -882,77 +1025,115 @@ gRPC روی <code>HTTP/1.1</code> کار نمی‌کند، نه به‌خاطر 
 <tr><th>ویژگی HTTP/2</th><th>معنا</th><th>فایده‌ی gRPC</th></tr>
 </thead>
 <tbody>
-<tr><td>Multiplexing</td><td>چند درخواست روی یک اتصال TCP با شماره‌ی جریان</td><td>ده‌ها فراخوانی هم‌زمان بدون باز کردن اتصال جدید</td></tr>
-<tr><td>Streams دوسویه</td><td>هر جریان می‌تواند در هر دو جهت داده بفرستد</td><td>پایه‌ی Server و Bidirectional Streaming</td></tr>
+<tr><td>چندگانه‌سازی (multiplexing)</td><td>چند فراخوانی روی یک اتصال TCP با شماره‌ی جریان مستقل</td><td>ده‌ها فراخوانی هم‌زمان بدون باز کردن اتصال جدید</td></tr>
+<tr><td>جریان‌های دوسویه</td><td>هر جریان می‌تواند در هر دو جهت داده بفرستد</td><td>پایه‌ی استریم سرور و دوطرفه</td></tr>
 <tr><td>فریم باینری</td><td>داده به‌صورت فریم کوتاه فشرده می‌آید</td><td>پارس سریع‌تر و بدون تبدیل متن</td></tr>
-<tr><td>HPACK</td><td>فشرده‌سازی هدر با جدول پویا</td><td>هدر کمتر روی سیم در هر فریم</td></tr>
-<tr><td>Server Push / Trailers</td><td>ارسال فیلدهای پایانی بعد از بدنه</td><td>کد وضعیت و پیام خطای gRPC در trailer می‌آید</td></tr>
+<tr><td>HPACK</td><td>فشرده‌سازی سرآیندها با جدول پویا</td><td>سرآیند کمتر روی سیم در هر فریم</td></tr>
+<tr><td>Trailer</td><td>ارسال فیلدهای پایانی پس از بدنه</td><td>کد وضعیت و پیام خطای gRPC در trailer می‌آید</td></tr>
 </tbody>
 </table>
 </div>
 
-<h3>مفهوم بنیادی: Stream در HTTP/2</h3>
+<h3>مفهوم بنیادی: جریان (Stream) در HTTP/2</h3>
 
-<div class="kl-fig">
-  <svg viewBox="0 0 780 330" role="img" aria-labelledby="fig-h2-t fig-h2-d" preserveAspectRatio="xMidYMid meet">
-    <title id="fig-h2-t">جریان های HTTP/2 روی یک اتصال</title>
-    <desc id="fig-h2-d">یک اتصال TCP برای ده ها فراخوانی gRPC استفاده می شود و هر فراخوانی شماره جریان مستقل خود را دارد و با فریم های DATA پیام ها را جابه جا می کند.</desc>
 
-    <rect x="30" y="40" width="150" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="105" y="66" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">Client</text>
-    <text x="105" y="86" text-anchor="middle" font-size="10" fill="var(--text-muted)">1 اتصال TCP</text>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 500" role="img" aria-label="مقایسه HTTP/1.1 با HTTP/2: در HTTP/1.1 هر فراخوانی یک اتصال تازه می‌خواهد، اما در HTTP/2 هر چهار فراخوانی با چندگانه‌سازی روی یک اتصال TCP واحد و چند جریان مستقل جابه‌جا می‌شوند">
+  <!-- HTTP/1.1 -->
+  <text class="s-t" x="385" y="52" text-anchor="middle">HTTP/1.1 — برای هر فراخوانی یک اتصال تازه</text>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-c6" x="580" y="62" width="176" height="152" rx="10"/>
+    <text class="s-t" x="668" y="132" text-anchor="middle">کلاینت</text>
+    <text class="s-t2" x="668" y="154" text-anchor="middle">۴ فراخوانی هم‌زمان</text>
+  </g>
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-c6" x="14" y="62" width="176" height="152" rx="10"/>
+    <text class="s-t" x="102" y="132" text-anchor="middle">سرور</text>
+    <text class="s-t2" x="102" y="154" text-anchor="middle">۴ اتصال جدا</text>
+  </g>
 
-    <rect x="600" y="40" width="150" height="60" rx="12" fill="var(--bg-surface)" stroke="var(--border-subtle)" stroke-width="2"/>
-    <text x="675" y="66" text-anchor="middle" font-size="13" font-weight="800" fill="var(--text-main)">Server</text>
-    <text x="675" y="86" text-anchor="middle" font-size="10" fill="var(--text-muted)">1 اتصال TCP</text>
+  <path class="s-arr s-arr-bad s-flow-bad" d="M 580 82 L 202 82"/>
+  <path class="s-head-bad" d="M 202 82 L 214 75 L 214 89 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="75" text-anchor="middle" style="--kl-i:1">اتصال ۱ — فراخوانی gRPC</text>
+  <path class="s-arr s-arr-bad s-flow-bad" d="M 580 118 L 202 118"/>
+  <path class="s-head-bad" d="M 202 118 L 214 111 L 214 125 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="111" text-anchor="middle" style="--kl-i:1">اتصال ۲ — فراخوانی gRPC</text>
+  <path class="s-arr s-arr-bad s-flow-bad" d="M 580 154 L 202 154"/>
+  <path class="s-head-bad" d="M 202 154 L 214 147 L 214 161 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="147" text-anchor="middle" style="--kl-i:1">اتصال ۳ — بررسی سلامت</text>
+  <path class="s-arr s-arr-bad s-flow-bad" d="M 580 190 L 202 190"/>
+  <path class="s-head-bad" d="M 202 190 L 214 183 L 214 197 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="183" text-anchor="middle" style="--kl-i:1">اتصال ۴ — گزارش‌گیری</text>
 
-    <rect x="30" y="130" width="720" height="150" rx="14" fill="var(--bg-surface)" stroke="var(--color-primary)" stroke-width="2"/>
-    <text x="390" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text-main)">جریان های مستقل HTTP/2 — شماره ی جریان مشخص</text>
+  <path class="s-arr s-arr-bad s-flow-bad" d="M 580 232 L 202 232"/>
+  <path class="s-head-bad" d="M 202 232 L 214 225 L 214 239 Z"/>
+  <text class="s-t2 s-lbl" x="385" y="225" text-anchor="middle" style="--kl-i:2">هر فراخوانی تازه یعنی یک اتصال تازه و یک دست‌دادن دوباره</text>
 
-    <rect x="60" y="172" width="180" height="26" rx="8" fill="var(--bg-surface)" stroke="var(--color-success)" stroke-width="1.6"/>
-    <text x="150" y="189" text-anchor="middle" font-size="11" fill="var(--text-main)">Stream 1 · GetProduct</text>
+  <text class="s-t2 s-lbl" x="385" y="262" text-anchor="middle" style="--kl-i:3">حالا همان چهار فراخوانی را روی HTTP/2 ببینید</text>
 
-    <rect x="260" y="172" width="180" height="26" rx="8" fill="var(--bg-surface)" stroke="var(--color-success)" stroke-width="1.6"/>
-    <text x="350" y="189" text-anchor="middle" font-size="11" fill="var(--text-main)">Stream 3 · ListOrders</text>
+  <!-- HTTP/2 -->
+  <text class="s-t" x="385" y="292" text-anchor="middle">HTTP/2 — یک اتصال، چند جریان مستقل (چندگانه‌سازی)</text>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-acc" x="580" y="302" width="176" height="150" rx="10"/>
+    <text class="s-t" x="668" y="372" text-anchor="middle">کلاینت</text>
+    <text class="s-t2" x="668" y="394" text-anchor="middle">۴ جریان، یک اتصال</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-acc" x="14" y="302" width="176" height="150" rx="10"/>
+    <text class="s-t" x="102" y="372" text-anchor="middle">سرور</text>
+    <text class="s-t2" x="102" y="394" text-anchor="middle">یک پورت، یک اتصال</text>
+  </g>
 
-    <rect x="460" y="172" width="260" height="26" rx="8" fill="var(--bg-surface)" stroke="var(--color-success)" stroke-width="1.6"/>
-    <text x="590" y="189" text-anchor="middle" font-size="11" fill="var(--text-main)">Stream 7 · WatchInventory (جریان باز)</text>
+  <rect class="s-group-acc" x="214" y="302" width="322" height="150" rx="12"/>
+  <text class="s-group-t" x="375" y="322" text-anchor="middle">یک اتصال TCP</text>
 
-    <rect x="60" y="214" width="180" height="26" rx="8" fill="var(--bg-surface)" stroke="var(--color-secondary)" stroke-width="1.6"/>
-    <text x="150" y="231" text-anchor="middle" font-size="11" fill="var(--text-main)">Stream 9 · CreateOrder</text>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-chip" x="232" y="330" width="286" height="26" rx="7"/>
+    <text class="s-t2" x="375" y="347" text-anchor="middle">جریان ۱ · فراخوانی gRPC</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-chip" x="232" y="360" width="286" height="26" rx="7"/>
+    <text class="s-t2" x="375" y="377" text-anchor="middle">جریان ۲ · بررسی سلامت</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-chip" x="232" y="390" width="286" height="26" rx="7"/>
+    <text class="s-t2" x="375" y="407" text-anchor="middle">جریان ۳ · فهرست سفارش‌ها</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-chip" x="232" y="420" width="286" height="26" rx="7"/>
+    <text class="s-t2" x="375" y="437" text-anchor="middle">جریان ۴ · استریم زنده</text>
+  </g>
+  <path class="s-grid" d="M 226 358 L 524 358"/>
+  <path class="s-grid" d="M 226 388 L 524 388"/>
+  <path class="s-grid" d="M 226 418 L 524 418"/>
 
-    <rect x="260" y="214" width="180" height="26" rx="8" fill="var(--bg-surface)" stroke="var(--color-secondary)" stroke-width="1.6"/>
-    <text x="350" y="231" text-anchor="middle" font-size="11" fill="var(--text-main)">Stream 11 · UploadItems</text>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 580 343 L 546 343"/>
+  <path class="s-head-ok" d="M 546 343 L 558 336 L 558 350 Z"/>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 214 343 L 190 343"/>
+  <path class="s-head-ok" d="M 190 343 L 202 336 L 202 350 Z"/>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 580 433 L 546 433"/>
+  <path class="s-head-ok" d="M 546 433 L 558 426 L 558 440 Z"/>
+  <path class="s-arr s-arr-ok s-flow-ok" d="M 214 433 L 190 433"/>
+  <path class="s-head-ok" d="M 190 433 L 202 426 L 202 440 Z"/>
 
-    <rect x="460" y="214" width="260" height="26" rx="8" fill="var(--bg-surface)" stroke="var(--color-secondary)" stroke-width="1.6"/>
-    <text x="590" y="231" text-anchor="middle" font-size="11" fill="var(--text-main)">Stream 15 · GetProfile</text>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.2s" repeatCount="indefinite" path="M 580 343 L 546 343"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.2s" begin="1.1s" repeatCount="indefinite" path="M 214 433 L 190 433"/>
+  </circle>
 
-    <defs>
-      <marker id="arr-h2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill="var(--color-primary)"/>
-      </marker>
-    </defs>
-
-    <g class="s-flow" stroke="var(--color-primary)" stroke-width="2.2" fill="none">
-      <line x1="180" y1="90" x2="180" y2="168"/>
-      <line x1="380" y1="90" x2="380" y2="168"/>
-      <line x1="580" y1="90" x2="580" y2="168"/>
-      <line x1="180" y1="244" x2="180" y2="266"/>
-      <line x1="380" y1="244" x2="380" y2="266"/>
-      <line x1="580" y1="244" x2="580" y2="266"/>
-    </g>
-
-    <text x="390" y="300" text-anchor="middle" font-size="12" font-weight="700" fill="var(--color-primary)">همه ی این فراخوانی ها با هم روی یک اتصال و یک پورت</text>
-  </svg>
-  <figcaption>هر ستون یک Stream مستقل است؛ باز کردن اتصال TCP تازه برای هر درخواست لازم نیست.</figcaption>
-</div>
+  <text class="s-t2 s-lbl" x="385" y="478" text-anchor="middle" style="--kl-i:6">همه‌ی این جریان‌ها با یک اتصال، یک پورت و یک دست‌دادن باز می‌شوند و در هر جهت پنجره‌ی مستقل دارند.</text>
+</svg>
+<figcaption><b>چندگانه‌سازی در برابر اتصال تازه برای هر درخواست:</b> بالا الگوی <code>HTTP/1.1</code> است که برای هر فراخوانی اتصال جدا باز می‌کند؛ پایین همان چهار فراخوانی روی <code>HTTP/2</code> که به‌عنوان <em>جریان</em> (stream) مستقل روی یک اتصال واحد حمل می‌شوند. همین ویژگی است که gRPC را به <code>HTTP/2</code> وابسته می‌کند.</figcaption>
+</figure>
 
 <div class="kl-box kl-deep">
 <span class="kl-h">تفاوت مهم با HTTP/1.1</span>
 <p>
-در <code>HTTP/1.1</code> برای هر درخواست یک درخواست در صف (یا حداکثر شش اتصال هم‌زمان در مرورگر) لازم
-است؛ به همین دلیل همان مرورگر محدودیت هم‌زمانی شش درخواست برای یک دامنه دارد. در
-<code>HTTP/2</code> این سقف عملاً حذف می‌شود، چون همه چیز روی یک اتصال جریان دارد. نتیجه: تاخیر
+در <code>HTTP/1.1</code> هر درخواست باید در صفِ یک اتصال باز شود (و مرورگرها برای یک دامنه
+حداکثر حدود شش اتصال هم‌زمان نگه می‌دارند)؛ به همین دلیل همان مرورگر محدودیت هم‌زمانی شش درخواست
+برای یک دامنه دارد. در <code>HTTP/2</code> این سقف عملاً حذف می‌شود، چون همه چیز روی یک اتصال جریان دارد. نتیجه: تاخیر
 کمتر در صف، مصرف کمتر پورت، و رفتار بهتر زیر بار سنگین — البته به قیمت پیچیدگی کلاینت و دشواری
 عیب‌یابی یک اتصال شلوغ با ده‌ها جریان هم‌زمان.
 </p>
@@ -963,10 +1144,10 @@ gRPC روی <code>HTTP/1.1</code> کار نمی‌کند، نه به‌خاطر 
 <div class="kl-box kl-warn">
 <span class="kl-h">نکته‌های عملی</span>
 <ul>
-<li><strong> مرورگر مستقیماً HTTP/2 خام را حرف نمی‌زند.</strong> برای کلاینت مرورگری باید از
-<code>grpc-web</code> استفاده کنید که معمولاً از طریق یک پراکسی به gRPC تبدیل می‌شود.</li>
-<li><strong>بیشتر load balancer ها و پراکسی های قدیمی</strong> مسیر را درست نمی‌فهمند. قبل از
-مهاجرت، مسیر دقیق را با تست end-to-end بسنجید، نه با فرض.</li>
+<li><strong>مرورگرها HTTP/2 خام را در اختیار نمی‌گذارند.</strong> برای کلاینت مرورگری باید از
+<code>gRPC-Web</code> استفاده کنید که معمولاً با یک پراکسی به gRPC واقعی تبدیل می‌شود.</li>
+<li><strong>متعادل‌سازهای بار و پراکسی‌های قدیمی</strong> مسیر را درست نمی‌فهمند. قبل از مهاجرت،
+مسیر دقیق را با یک تست انتها به انتها بسنجید، نه با فرض.</li>
 <li><strong>مهلت idle keep-alive</strong> را تنظیم کنید؛ اگر اتصال بی‌کار بماند، پراکسی‌ها آن را
 می‌بندند و کلاینت باید بتواند دوباره وصل شود.</li>
 <li><strong>TCP_NODELAY</strong> را روشن نگه دارید تا Nagle کوچک‌ترین بسته‌ها را بی‌جهت معطل
@@ -982,9 +1163,9 @@ gRPC روی <code>HTTP/1.1</code> کار نمی‌کند، نه به‌خاطر 
 <h2><span class="kl-num">بخش ۹</span>gRPC روی HTTP: متد، هدر و Trailers</h2>
 
 <p>
-جالب است که gRPC با اینکه روی HTTP/2 است، از HTTP استفاده‌ی «غیرعادی» می‌کند. در واقع gRPC یکی از
-رایج‌ترین کاربردهای <strong>POST روی همه‌ی متدها</strong> است و هر وضعیت در trailer می‌آید، نه در
-سرآیند. اگر این را نفهمید، عیب‌یابی از طریق پراکسی و لاگ سخت می‌شود.
+نکته‌ی عجیب gRPC این است که با وجود حمله بر بستر <code>HTTP/2</code>، خودِ HTTP را غیرعادی مصرف
+می‌کند: عملاً <strong>همه‌ی متدها POST هستند</strong> و وضعیت نهایی در trailer می‌آید، نه در سرآیند.
+اگر این را نفهمید، عیب‌یابی از طریق پراکسی و لاگ سخت می‌شود.
 </p>
 
 <div class="kl-scroll">
@@ -1045,8 +1226,8 @@ grpc-message: product not found
 شاید دوست داشته باشید مسیر دلخواه مثل <code dir="ltr">/product/find?id=5</code> بنویسید. gRPC این را
 عمداً اجازه نمی‌دهد: کلاینت متد را از روی فایل <code>proto</code> می‌شناسد و نام متد خودش کافی
 است. نتیجه‌ی عملی و مهم: <strong>کش کردن HTTP در سطح مسیر تقریباً بی‌معنا می‌شود</strong>، چون همه
-چیز POST است و بدنه متفاوت. اگر به کش نیاز دارید، باید کش را در لایه‌ی اپلیکیشن بسازید — بخش ۱۰
-به همین و Metadata مربوط است.
+چیز POST است و بدنه متفاوت. اگر به کش نیاز دارید، باید آن را در لایه‌ی اپلیکیشن بسازید؛ در بخش ۲۴
+یک الگوی عملی برای کلید کش توضیح داده شده است.
 </p>
 </div>
 
@@ -1083,31 +1264,31 @@ gRPC از فشرده‌سازی پیام پشتیبانی می‌کند و آن 
 </section>
 <!-- ==================== 10 ==================== -->
 <section id="s10">
-<h2><span class="kl-num">بخش ۱۰</span>Metadata، Deadline و لغو درخواست</h2>
+<h2><span class="kl-num">بخش ۱۰</span>فراداده، مهلت و لغو درخواست</h2>
 
 <p>
-Metadata همان نقشی را دارد که هدرهای HTTP در REST دارند: کلید و مقدار متنی، بدون ساختار، بدون
-تیپ. و Deadline ساعت‌فراخوانی است: به‌جای اینکه سرور تا ابد منتظر بماند، کلاینت می‌گوید «تا فلان
-زمان جواب داری».
+فراداده (metadata) همان نقشی را دارد که سرآیندهای HTTP در REST دارند: مجموعه‌ای از کلید و مقدار
+متنی، بدون ساختار و بدون تیپ. مهلت (deadline) هم یعنی «تا چه زمانی فرصت داری»؛ به‌جای اینکه سرور تا
+ابد منتظر بماند، کلاینت از همان ابتدا اعلام می‌کند چقدر وقت دارد.
 </p>
 
-<h3>انواع Metadata</h3>
+<h3>انواع فراداده</h3>
 
 <div class="ax-versus">
   <div class="ax-versus-side">
-    <h4>Metadata پایه (Incoming)</h4>
+    <h4>فراداده‌ی پایه (Incoming)</h4>
     <ul>
-      <li><strong>اجباری و بزرگ‌مینا</strong> — بیشتر کلیدها با حروف کوچک شروع می‌شوند و
-      مقدارشان باینری است، مثل <code>grpc-timeout</code></li>
+      <li><strong>کلید کوچک، مقدار باینری</strong> — فراداده‌هایی که خود کتابخانه می‌سازد (مثل
+      <code>grpc-timeout</code>) فقط خواندنی‌اند و مقدارشان باینری است</li>
       <li>در هر فراخوانی حاضر است و شما آن را فقط می‌خوانید</li>
       <li>نمونه: <code>user-agent</code> و <code>grpc-accept-encoding</code></li>
     </ul>
   </div>
   <div class="ax-versus-mid">VS</div>
   <div class="ax-versus-side">
-    <h4>Metadata سفارشی (Custom)</h4>
+    <h4>فراداده‌ی سفارشی (Custom)</h4>
     <ul>
-      <li><strong>اختیاری و متنی</strong> — کلید باید با حروف کوچک شروع شود، مقدار هم UTF-8</li>
+      <li><strong>اختیاری و متنی</strong> — کلید باید با حروف کوچک شروع شود و مقدار هم UTF-8 باشد</li>
       <li>می‌توانید بفرستید، ولی اگر سرور تعریف نکرده باشد، معمولاً نادیده گرفته می‌شود</li>
       <li>معمولاً شامل توکن، شناسه‌ی درخواست و نسخه‌ی API</li>
     </ul>
@@ -1143,22 +1324,22 @@ public class AuthInterceptor implements ServerInterceptor {
 </div>
 
 <div class="kl-box kl-bad">
-<span class="kl-h">اشتباه کلاسیک: متادیتا در آرگومان متد</span>
+<span class="kl-h">اشتباه کلاسیک: گذاشتن توکن در آرگومان متد</span>
 <p>
 بسیاری از تازه‌کارها می‌خواهند متد RPC سرباره داشته باشد و می‌نویسند
 <code dir="ltr">rpc GetProduct(GetRequest, Token token)</code>. این کار <strong>غلط</strong> است:
-<code>token</code> یک فیلد پیام می‌شود، نه متادیتا. نتیجه: توکن در بدنه‌ی پیام سریال می‌شود، در لاگ
-می‌افتد، در کش ذخیره می‌شود و اگر روزی روی HTTP رد شود، رمزنگاری‌اش بی‌معنا می‌شود. متادیتا
+<code>token</code> یک فیلد پیام می‌شود، نه فراداده. نتیجه: توکن در بدنه‌ی پیام کدگذاری می‌شود، در لاگ
+می‌افتد، در کش ذخیره می‌شود و اگر روزی روی HTTP رد شود، رمزنگاری‌اش بی‌معنا می‌شود. فراداده
 همیشه در لایه‌ی انتقال می‌ماند.
 </p>
 </div>
 
-<h3>Deadline و لغو</h3>
+<h3>مهلت و لغو</h3>
 
 <p>
 سرآیند <code dir="ltr">grpc-timeout</code> زمان باقی‌مانده را به سرور می‌گوید. سرور آن را به
-<code>Context</code> تبدیل می‌کند و پس از آن، هر جا منطق طولانی دارد باید آن را چک کند. اگر
-کلاینت کانکتش را ببندد یا deadline تمام شود، سرور از طریق <code>ctx.Done()</code> باخبر می‌شود.
+<code>Context</code> تبدیل می‌کند و پس از آن، هر جا منطق طولانی دارد باید آن را بررسی کند. اگر
+کلاینت اتصالش را ببندد یا مهلت تمام شود، سرور از طریق <code>ctx.Done()</code> باخبر می‌شود.
 </p>
 
 <div class="kl-scroll">
@@ -1188,26 +1369,26 @@ func (s *server) GetProduct(ctx context.Context, req *pb.GetProductRequest) (*pb
 </div>
 
 <div class="kl-box kl-hd">
-<span class="kl-h">قاعده‌های Deadline</span>
+<span class="kl-h">قاعده‌های مهلت</span>
 <ol class="kl-check">
-<li><strong>در کلاینت همیشه deadline بگذارید</strong> — بدون آن، درخواست معلق بی‌نهایت می‌ماند و
+<li><strong>در کلاینت همیشه مهلت بگذارید</strong> — بدون آن، درخواست معلق بی‌نهایت می‌ماند و
 منابع را می‌بلعد.</li>
 <li><strong>مهلت کلاینت بزرگ‌تر از مهلت سرور باشد</strong> تا سرور فرصت پاسخ دادن داشته باشد؛
 برعکسش باعث خطای مبهم و بی‌فایده می‌شود.</li>
-<li><strong>مهلت را بر اساس کندترین وابستگی انتخاب کنید</strong> نه بر اساس سریع‌ترین حالت.</li>
+<li><strong>مهلت را بر اساس کندترین وابستگی انتخاب کنید</strong> نه بر اساس سریع‌ترین حالت ممکن.</li>
 <li><strong>در کد پرهزینه، <code>ctx</code> را به لایه‌ی پایین هم پاس بدهید</strong> تا لغو واقعاً
 به دیتابیس برسد و نه فقط تا حلقه‌ی فعلی.</li>
-<li><strong>خطای timeout را با <code>DEADLINE_EXCEEDED</code> برگردانید</strong> تا کلاینت بتواند
+<li><strong>خطای مهلت را با <code>DEADLINE_EXCEEDED</code> برگردانید</strong> تا کلاینت بتواند
 تشخیص دهد مشکل کجاست — بخش ۱۱.</li>
 </ol>
 </div>
 
 <div class="kl-box kl-deep">
-<span class="kl-h">تفاوت لغو و timeout</span>
+<span class="kl-h">تفاوت لغو و اتمام مهلت</span>
 <p>
 این دو را قاطی نکنید: <code>CANCELLED</code> یعنی «کلاینت رفته یا خودش لغو کرد» و کسی منتظر جواب
 نیست؛ <code>DEADLINE_EXCEEDED</code> یعنی «مهلت تمام شد ولی ممکن است بعداً جواب برسد». در لاگ
-و پایش این دو را جدا بشمارید: نرخ بالای <code>CANCELLED</code> معمولاً یعنی کلاینت‌ها timeout کوتاه
+و پایش این دو را جدا بشمارید: نرخ بالای <code>CANCELLED</code> معمولاً یعنی کلاینت‌ها مهلت کوتاه
 دارند یا کاربر صفحه را بسته، و نرخ بالای <code>DEADLINE_EXCEEDED</code> یعنی مهلت‌ها را بد
 تنظیم کرده‌اید.
 </p>
@@ -1327,15 +1508,15 @@ grpcurl -plaintext -d '{"id":"p-999"}' localhost:9090 shop.v1.ProductService/Get
 
 <!-- ==================== 12 ==================== -->
 <section id="s12">
-<h2><span class="kl-num">بخش ۱۲</span>Interceptor ها و میان‌افزار</h2>
+<h2><span class="kl-num">بخش ۱۲</span>بین‌افزارها (Interceptor)</h2>
 
 <p>
-<code>Interceptor</code> معادل میان‌افزار در وب فریم‌ورک‌هاست: کدی که <strong>قبل و بعد</strong> از اجرای
-هر متد RPC بدون دست‌زدن به خود متد اجرا می‌شود. این مهم‌ترین ابزار gRPC برای حل مسئله‌ی
+بین‌افزار (interceptor) معادل میان‌افزار در وب فریم‌ورک‌هاست: کدی که <strong>قبل و بعد</strong> از
+اجرای هر متد RPC، بدون دست‌زدن به خود متد، اجرا می‌شود. این مهم‌ترین ابزار gRPC برای حل مسئله‌ی
 «کد تکراری در همه‌ی متدها» است.
 </p>
 
-<h3>دو نوع Interceptor</h3>
+<h3>دو نوع بین‌افزار</h3>
 
 <div class="ax-versus">
   <div class="ax-versus-side">
@@ -1357,7 +1538,7 @@ grpcurl -plaintext -d '{"id":"p-999"}' localhost:9090 shop.v1.ProductService/Get
   </div>
 </div>
 
-<h3>Interceptor لاگ و ردیابی</h3>
+<h3>بین‌افزار لاگ و ردیابی</h3>
 
 <div class="kl-scroll">
 <pre class="kl-code" data-lang="java"><code>public class LoggingInterceptor implements ServerInterceptor {
@@ -1402,13 +1583,13 @@ server.awaitTermination();</code></pre>
 </div>
 
 <div class="kl-box kl-hd">
-<span class="kl-h">الگوی استاندارد: لایه‌بندی Interceptor ها</span>
+<span class="kl-h">الگوی استاندارد: لایه‌بندی بین‌افزارها</span>
 <ul>
 <li><strong>احراز هویت</strong> باید قبل از همه باشد تا هیچ متدی بدون احراز هویت اجرا نشود.</li>
 <li><strong>ردیابی توزیع‌شده</strong> باید بلافاصله بعد از آن بیاید تا شناسه‌ی ردیابی برای لاگ و
 متریک موجود باشد.</li>
 <li><strong>لاگ و متریک</strong> در انتها، چون هر دو به زمان کل و وضعیت نهایی نیاز دارند.</li>
-<li><strong>Interceptor نباید منطق دامنه داشته باشد</strong>؛ اگر مجبورید شرط کسب‌وکار بنویسید،
+<li><strong>بین‌افزار نباید منطق دامنه داشته باشد</strong>؛ اگر مجبورید شرط کسب‌وکار بنویسید،
 آن را در متد RPC بگذارید نه اینجا.</li>
 </ul>
 </div>
@@ -1416,7 +1597,7 @@ server.awaitTermination();</code></pre>
 <div class="kl-box kl-warn">
 <span class="kl-h">خطای رایج: فراموش کردن Context</span>
 <p>
-اگر در <code>Interceptor</code> مقداری به <code>Context</code> اضافه می‌کنید، باید فراخوانی بعدی
+اگر در بین‌افزار مقداری به <code>Context</code> اضافه می‌کنید، باید فراخوانی بعدی
 را با <code>Contexts.interceptCall(ctx, call, headers, next)</code> اجرا کنید. فراموش کردن این
 نکته باعث می‌شود متد سرویس‌دهنده مقدار را نبیند و همیشه خطای «احراز هویت نشده» بگیرد — و علتش
 از دور اصلاً پیدا نیست.
@@ -1469,10 +1650,10 @@ func (s *server) WatchInventory(req *pb.WatchRequest,
 </div>
 
 <div class="kl-box kl-bad">
-<span class="kl-h">خطر: goroutine بدون پایان</span>
+<span class="kl-h">خطر: گوروتین (goroutine) بدون پایان</span>
 <p>
-اگر در حلقه‌ی ارسال، مسیر خروج را برای لغو پیاده نکنید، goroutine شما تا ابد ادامه پیدا می‌کند و
-به‌تدریج حافظه‌ی سرور را می‌بلعد. قانون: هر goroutineی که به فراخوانی RPC ربط دارد باید
+اگر در حلقه‌ی ارسال، مسیر خروج برای لغو را پیاده نکنید، گوروتین شما تا ابد ادامه پیدا می‌کند و
+به‌تدریج حافظه‌ی سرور را می‌بلعد. قانون: هر گوروتینی که به فراخوانی RPC ربط دارد باید
 <code>ctx.Done()</code> را بپرسد و با آن تمام شود. اگر نمی‌توانید، از یک کانال با
 <code>select</code> استفاده کنید و آن را از همان <code>ctx</code> ببندید.
 </p>
@@ -1494,7 +1675,7 @@ func (s *server) WatchInventory(req *pb.WatchRequest,
 <li><strong>پیام‌ها را کوچک نگه دارید</strong> — یک پیام ۱۰۰ مگابایتی در استریم، هم بافر
 می‌خواهد هم تأخیر اضافه می‌سازد. بهتر است قطعه‌قطعه بفرستید.</li>
 <li><strong>روی سرعت کنترل داشته باشید</strong> — اگر تولیدکننده خیلی سریع‌تر از مصرف‌کننده
-است، بین ارسال‌هاوقفه بگذارید.</li>
+است، بین ارسال‌ها وقفه بگذارید.</li>
 <li><strong>خطای <code>Send</code> را جدی بگیرید</strong> و همان‌جا خارج شوید؛ نادیده گرفتنش
 یعنی نشت منابع.</li>
 <li><strong>برای استریم طولانی، heartbeat بفرستید</strong> تا پراکسی‌ها اتصال را نبندند و شما از
@@ -1650,7 +1831,7 @@ public class ProductGrpcService extends ProductServiceGrpc.ProductServiceImplBas
 <p>
 <code dir="ltr">enable-reflection</code> و هر ابزار دیباگ متناظر را فقط در محیط توسعه نگه دارید.
 در production، کتابخانه‌ی gRPC با TLS پیکربندی کنید تا همه چیز رمزنگاری شود؛ در غیر این صورت
-متادیتا و پیام‌ها روی شبکه به‌صورت خوانا جابه‌جا می‌شوند.
+فراداده و پیام‌ها روی شبکه به‌صورت خوانا جابه‌جا می‌شوند.
 </p>
 </div>
 </section>
@@ -1753,7 +1934,7 @@ fmt.Println(resp.GetProduct().GetName())</code></pre>
 <p>
 پیاده‌سازی‌های رسمی برای <code>C++</code>، <code>C#</code>، <code>Python</code>،
 <code>Ruby</code>، <code>PHP</code> و <code>Objective-C</code> هم وجود دارند. نکته‌ی مشترک همه:
-<code>protobuf</code> و <code>grpc-java</code> مفهوم مشترک دارند، پس منطق سرویس خیلی راحت بین
+مفهوم قرارداد و کتابخانه‌های تولید کد یکی است، پس منطق سرویس خیلی راحت بین
 زبان‌ها جابه‌جا می‌شود — فقط امضای متد و نحوه‌ی مدیریت خطا فرق می‌کند.
 </p>
 
@@ -1765,7 +1946,7 @@ fmt.Println(resp.GetProduct().GetName())</code></pre>
       <li><strong>Java / Kotlin</strong> — سیستم‌های سازمانی و Spring</li>
       <li><strong>C++</strong> — مسیرهای حساس به کارایی</li>
       <li><strong>Python</strong> — مدل‌های یادگیری ماشین و اسکریپت‌ها</li>
-      <li><strong>TypeScript</strong> — با <code>grpc-web</code> از مرورگر</li>
+      <li><strong>TypeScript</strong> — با <code>gRPC-Web</code> از مرورگر</li>
     </ul>
   </div>
   <div class="ax-versus-mid">VS</div>
@@ -1889,8 +2070,8 @@ class ProductGrpcIntegrationTest {
 <div class="kl-box kl-warn">
 <span class="kl-h">چرا تست روی پورت واقعی را کم‌کم کنار بگذارید</span>
 <p>
-تست با پورت واقعی کند است، به‌شدت موازی می‌شود (خطای «پورت اشغال است») و در محیط CI دردسر
-می‌سازد. کانال حافظه‌ای (<code dir="ltr">bufconn</code>) سریع‌تر است و کاملاً ایزوله. تنها جایی که
+تست با پورت واقعی کند است، در اجرای موازی به تداخل پورت می‌خورد (خطای «پورت اشغال است») و در
+محیط CI دردسر می‌سازد. کانال حافظه‌ای (<code dir="ltr">bufconn</code>) سریع‌تر است و کاملاً ایزوله. تنها جایی که
 تست واقعی شبکه لازم دارید، یک تست انتها به انتها در محیط یکپارچه برای اطمینان از عبور از پراکسی
 و TLS است.
 </p>
@@ -1901,9 +2082,11 @@ class ProductGrpcIntegrationTest {
 <h2><span class="kl-num">بخش ۱۷</span>کارایی و اندازه‌گیری</h2>
 
 <p>
-جمله‌ی «gRPC سریع‌تر است» بی‌شرط نیست. سریع‌تر است چون سه هزینه را حذف می‌کند: سریال‌سازی متن،
-سایز بزرگ‌تر پیام، و سربار اتصال. اما این سه برد به قیمت پیچیدگی و مشاهده‌پذیری تمام می‌شود.
-در این بخش عددها را دقیق می‌کنیم.
+جمله‌ی «gRPC سریع‌تر است» بی‌شرط درست نیست. gRPC سه هزینه را کم می‌کند: حجم پیام، هزینه‌ی
+سریال‌سازی، و سربار اتصال. ولی نتیجه‌ی نهایی به پنج عامل بستگی دارد: اندازه‌ی پیام، تعداد رفت‌وبرگشت
+شبکه، هزینه‌ی سریال‌سازی در زبان انتخابی، چندگانه‌سازی روی <code>HTTP/2</code>، و استفاده‌ی درست
+از اتصال. اگر بخش بزرگی از زمان پاسخ صرف کار پردازشی شود، پروتکل اصلاً گلوگاه نیست. در این بخش
+یاد می‌گیرید چطور خودتان اندازه بگیرید.
 </p>
 
 <h3>سه منبع صرفه‌جویی</h3>
@@ -1913,10 +2096,10 @@ class ProductGrpcIntegrationTest {
     <h4>چه چیزی بهتر می‌شود</h4>
     <ul>
       <li><strong>سریال‌سازی باینری به جای JSON</strong> — هم کوچک‌تر روی سیم، هم سریع‌تر در حافظه</li>
-      <li><strong>Multiplexing</strong> — حذف سربار دست‌دادن TCP برای هر درخواست</li>
-      <li><strong>فشرده‌سازی HPACK</strong> — هدر کمتر و کوچک‌تر در هر فریم</li>
+      <li><strong>چندگانه‌سازی (multiplexing)</strong> — حذف سربار دست‌دادن TCP برای هر درخواست</li>
+      <li><strong>فشرده‌سازی HPACK</strong> — سرآیند کمتر و کوچک‌تر در هر فریم</li>
       <li><strong>استریم بومی</strong> — بدون پروتکل جانبی و بدون polling</li>
-      <li><strong>مدیریت اتصال در کلاینت</strong> — reuse و استخر کانال</li>
+      <li><strong>مدیریت اتصال در کلاینت</strong> — استفاده‌ی مجدد از اتصال و استخر کانال</li>
     </ul>
   </div>
   <div class="ax-versus-mid">VS</div>
@@ -1953,25 +2136,26 @@ class ProductGrpcIntegrationTest {
 <div class="ax-tablewrap">
 <table>
 <thead>
-<tr><th>سناریو</th><th>REST + JSON</th><th>gRPC + Protobuf</th><th>فرض</th></tr>
+<tr><th>سناریو</th><th>REST + JSON</th><th>gRPC + Protobuf</th><th>این نتیجه چه فرضی دارد</th></tr>
 </thead>
 <tbody>
 <tr><td>پیام کوچک داخلی</td><td>تاخیر کمی بیشتر</td><td>تاخیر کمی کمتر</td><td>پردازش سرور یکسان است</td></tr>
-<tr><td>حجم بالای درخواست</td><td>مصرف CPU بیشتر</td><td>مصرف CPU کمتر</td><td>بیشتر رفت‌وبرگشت</td></tr>
+<tr><td>حجم بالای درخواست</td><td>مصرف CPU بیشتر</td><td>مصرف CPU کمتر</td><td>تعداد رفت‌وبرگشت زیاد است</td></tr>
 <tr><td>پیام بزرگ</td><td>بایت بیشتر</td><td>بایت کمتر</td><td>پهنای باند گران است</td></tr>
 <tr><td>بار محاسباتی سنگین</td><td>تقریباً یکسان</td><td>تقریباً یکسان</td><td>پروتکل گلوگاه نیست</td></tr>
-<tr><td>دیباگ و لاگ</td><td>خوانا و ساده</td><td>نیازمند ابزار</td><td>برای پروداکشن مهم است</td></tr>
+<tr><td>دیباگ و لاگ</td><td>خوانا و ساده</td><td>نیازمند ابزار</td><td>برای محیط عملیاتی مهم است</td></tr>
 </tbody>
 </table>
 </div>
 
 <div class="kl-box kl-deep">
-<span class="kl-h">صادقانه: چه زمانی gRPC آن‌قدر کوتاه می‌آورد</span>
+<span class="kl-h">صادقانه: چه زمانی مهاجرت واقعاً می‌ارزد</span>
 <p>
-اگر ۸۰ درصد زمان پاسخ صرف کوئری دیتابیس می‌شود، تعویض REST با gRPC شاید ۵ درصد بهبود بدهد و
-شما دو هفته وقت صرف ابزار و آموزش کرده‌اید. در مقابل، اگر سرویس در مرز شبکه‌ی شلوغ کار می‌کند و
-پهنای باند گران است، همان چند درصد می‌تواند تفاوت بین «اقتصادی» و «غیراقتصادی» باشد. پس قبل از
-مهاجرت، <strong>اول پروفایل کنید، بعد تصمیم بگیرید</strong>.
+اگر بخش بزرگی از زمان پاسخ صرف کوئری دیتابیس یا منطق کسب‌وکار می‌شود، پروتکل گلوگاه نیست و
+تعویض REST با gRPC بازده چندانی ندارد؛ در عوض هزینه‌ی ابزار، آموزش و نگهداری را می‌پردازید.
+در مقابل، اگر سرویس در مرز شبکه‌ی شلوغ کار می‌کند، پیام‌ها بزرگ‌اند یا تعداد فراخوانی بسیار زیاد
+است، همان صرفه‌جویی‌های کوچک انباشته می‌شوند و می‌توانند تفاوت واقعی بسازند. پس قبل از مهاجرت،
+<strong>اول پروفایل کنید، بعد تصمیم بگیرید</strong>.
 </p>
 </div>
 
@@ -2039,10 +2223,10 @@ class ProductGrpcIntegrationTest {
 <li><strong>تغییر شماره‌ی فیلد موجود</strong> — داده‌ی ذخیره‌شده و ذخیره‌سازی‌های قدیمی بی‌صدا
 خراب می‌شوند.</li>
 <li><strong>ساختن کانال در هر فراخوانی</strong> — نشت اتصال و thread.</li>
-<li><strong>نادیده گرفتن <code>ctx.Done()</code> در استریم</strong> — نشت goroutine و حافظه.</li>
+<li><strong>نادیده گرفتن <code>ctx.Done()</code> در استریم</strong> — نشت گوروتین و حافظه.</li>
 <li><strong>برگرداندن پیام خطای فارسی به‌جای کد وضعیت</strong> — کلاینت نمی‌تواند تصمیم بگیرد.</li>
 <li><strong>ندادن deadline در کلاینت</strong> — درخواست‌های معلق بی‌نهایت.</li>
-<li><strong>گذاشتن توکن در فیلد پیام به‌جای Metadata</strong> — نشت توکن در لاگ و کش.</li>
+<li><strong>گذاشتن توکن در فیلد پیام به‌جای فراداده</strong> — نشت توکن در لاگ و کش.</li>
 <li><strong>استفاده از gRPC برای API عمومی</strong> — بی‌فایده، چون مرورگر و ابزارهای
 آشنا با آن کنار نمی‌آیند.</li>
 <li><strong>غیرفعال نکردن reflection در پروداکشن</strong> — نقشه‌ی کامل سرویس را لو می‌دهد.</li>
@@ -2065,7 +2249,7 @@ class ProductGrpcIntegrationTest {
 
 <p>
 امنیت در gRPC برخلاف ظاهرش خاص نیست: TLS استاندارد HTTP/2 روی همان اتصال، و احراز هویت در
-لایه‌ی <code>Metadata</code>. ولی چند دام جدی وجود دارد که باید بدانید.
+لایه‌ی <strong>فراداده</strong>. ولی چند دام جدی وجود دارد که باید بدانید.
 </p>
 
 <h3>TLS روی gRPC</h3>
@@ -2114,7 +2298,7 @@ s := grpc.NewServer(
 <tr><td>متن ساده در توسعه</td><td>فقط لوکال</td><td>هرگز به شبکه‌ی واقعی</td></tr>
 <tr><td>TLS یک‌طرفه</td><td>کانال رمزنگاری‌شده، فقط سرور احراز می‌شود</td><td>پایه‌ی پیشنهادی برای اکثر سرویس‌ها</td></tr>
 <tr><td>mTLS</td><td>دو طرف گواهی دارند</td><td>عالی در شبکه‌ی داخلی با کنترل دسترسی</td></tr>
-<tr><td>توکن در Metadata</td><td>احراز هویت کاربر</td><td>همیشه با TLS ترکیب شود</td></tr>
+<tr><td>توکن در فراداده</td><td>احراز هویت کاربر</td><td>همیشه با TLS ترکیب شود</td></tr>
 </tbody>
 </table>
 </div>
@@ -2124,7 +2308,7 @@ s := grpc.NewServer(
 <div class="kl-box kl-hd">
 <span class="kl-h">اصل تفکیک</span>
 <ul>
-<li><strong>احراز هویت</strong> یعنی «تو کی هستی؟» — یک‌بار در <code>Interceptor</code> انجام
+<li><strong>احراز هویت</strong> یعنی «تو کی هستی؟» — یک‌بار در بین‌افزار انجام
 می‌شود و نتیجه‌اش در <code>Context</code> قرار می‌گیرد.</li>
 <li><strong>مجوز</strong> یعنی «اجازه داری؟» — داخل خود متد RPC بررسی می‌شود، چون به منبع و
 عملیات مشخص مربوط است.</li>
@@ -2172,13 +2356,13 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <li><strong>اجرای <code>enableReflection</code> در پروداکشن</strong> — نقشه‌ی کامل سرویس و
 نام همه‌ی متدها را لو می‌دهد.</li>
 <li><strong>توکن در متد بدون بررسی</strong> — اگر متد جدیدی اضافه کنید و فراموش کنید
-<code>Interceptor</code> را اجرا کنید، آن متد بدون احراز هویت باز می‌ماند.</li>
+بین‌افزار احراز هویت را اجرا کنید، آن متد بدون احراز هویت باز می‌ماند.</li>
 <li><strong>اتصال بدون TLS در شبکه‌ی داخلی</strong> — «شبکه‌ی داخلی امن است» یک فرض نادرست
 است؛ در محیط ابری و کانتینر تضمین نیست.</li>
 <li><strong>پیام خطای داخلی به کلاینت</strong> — جزئیات استثنا و مسیر فایل اطلاعات می‌دهد.</li>
 <li><strong>نبود محدودیت نرخ</strong> — gRPC سطح حمله را کوچک‌تر می‌کند ولی یک استریم باز با
 ده‌ها اتصال می‌تواند منابع را ببلعد.</li>
-<li><strong>نبود ممیزی فراخوانی</strong> — با <code>Interceptor</code> ثبت کنید چه کسی چه متدی
+<li><strong>نبود ممیزی فراخوانی</strong> — با بین‌افزار ثبت کنید چه کسی چه متدی
 را در چه زمانی صدا زد.</li>
 </ol>
 </div>
@@ -2209,12 +2393,12 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
     <h4>❌ استفاده نکنید وقتی</h4>
     <ul>
       <li><strong>API عمومی و باز</strong> با مصرف‌کننده‌های ناشناس و ابزارهای عمومی</li>
-      <li><strong>کلاینت مرورگر</strong> بدون لایه‌ی <code dir="ltr">grpc-web</code></li>
+      <li><strong>کلاینت مرورگر</strong> بدون لایه‌ی <code dir="ltr">gRPC-Web</code></li>
       <li><strong>تیم کوچک و تازه‌کار</strong> که هم‌زمان درس‌های دیگری دارد</li>
       <li><strong>زیرساخت قدیمی</strong> — پراکسی یا فایروالی که مسیر را نمی‌فهمد</li>
       <li><strong>نیاز به کش CDN</strong> — gRPC در کش لایه‌ی HTTP تقریباً بی‌فایده است</li>
       <li><strong>محصولی با عمر کوتاه</strong> و بازده نامطمئن</li>
-      <li><strong>مسئله اصلی سرعت نیست</strong> — بهبود ۵ درصدی ارزش بازآرایی ندارد</li>
+      <li><strong>مسئله‌ی اصلی سرعت نیست</strong> — اگر پروفایل نشان دهد پروتکل گلوگاه نیست، مهاجرت توجیه ندارد</li>
       <li><strong>می‌خواهید رابط کاربری عمومی باشد</strong> — ابزارها و کنسول‌ها با آن آشنا نیستند</li>
     </ul>
   </div>
@@ -2224,7 +2408,7 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <span class="kl-h">الگوی ورود کم‌ریسک</span>
 <p>
 یک سرویس <strong>غیرحیاتی و داخلی</strong> را انتخاب کنید — مثلاً سرویس اعلان یا سرویس تنظیمات —
-و فقط آن را به gRPC ببرید. مسیر بازگشت ساده است: <code>grpc-web</code> یا برگرداندن به REST.
+و فقط آن را به gRPC ببرید. مسیر بازگشت ساده است: <code>gRPC-Web</code> یا برگرداندن به REST.
 اگر ارزش واقعی داشت، سرویس‌های بعدی را هم مهاجرت دهید. هیچ‌وقت با سرویس اصلی و پرترافیک شروع
 نکنید.
 </p>
@@ -2282,7 +2466,7 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <p>
 بدترین حالت این است که gRPC را فقط برای «مدرن‌تر شدن» راه بیندازید، بدون مسئله‌ی مشخصی پشتش.
 نتیجه: یک پروسه‌ی بیلد پیچیده‌تر، ابزار متفاوت، منحنی یادگیری تازه، و هیچ بهبود قابل اندازه‌گیری.
-قبل از شروع، یک معیار عددی بنویسید: مثلاً «میانگین تاخیر از ۸۰ به ۵۰ میلی‌ثانیه برسد». اگر
+قبل از شروع، یک معیار عددی بنویسید: مثلاً «میانه‌ی تاخیر مسیر اصلی چقدر باید کم شود». اگر
 نتوانستید چنین معیاری بنویسید، احتمالاً پروژه به gRPC نیاز ندارد.
 </p>
 </div>
@@ -2298,10 +2482,11 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <tr><th>معیار</th><th>REST</th><th>gRPC</th><th>SOAP</th></tr>
 </thead>
 <tbody>
-<tr><td>قرارداد</td><td>مستندات (OpenAPI)</td><td>فایل proto تولید کننده‌ی کد</td><td>WSDL یا XSD</td></tr>
-<tr><td>قالب داده</td><td>JSON (متنی)</td><td>Protobuf (باینری)</td><td>XML (متنی)</td></tr>
-<tr><td>پشتیبانی مرورگر</td><td>عالی و بومی</td><td>نیازمند grpc-web</td><td>عالی</td></tr>
-<tr><td>سرعت و حجم</td><td>متوسط</td><td>بالا</td><td>کم (XML حجیم)</td></tr>
+<tr><td>جایگاه</td><td>سبک معماری (سبک API)</td><td>فریم‌ورک و اکوسیستم RPC</td><td>پروتکل پیام</td></tr>
+<tr><td>قرارداد</td><td>مستندات (OpenAPI)</td><td>فایل تعریف قرارداد <code>.proto</code> با تولید کد</td><td>WSDL یا XSD</td></tr>
+<tr><td>قالب داده</td><td>JSON (متنی)</td><td>بافر پروتکل (باینری)</td><td>XML (متنی)</td></tr>
+<tr><td>پشتیبانی مرورگر</td><td>عالی و بومی</td><td>نیازمند <code>gRPC-Web</code></td><td>عالی</td></tr>
+<tr><td>سرعت و حجم</td><td>وابسته به کاربرد</td><td>معمولاً سبک‌تر، ولی وابسته به کاربرد</td><td>معمولاً سنگین‌تر (XML حجیم)</td></tr>
 <tr><td>استریم</td><td>با SSE یا WebSocket</td><td>بومی در هر چهار نوع RPC</td><td>محدود</td></tr>
 <tr><td>قابلیت دیباگ</td><td>ساده</td><td>نیازمند ابزار اختصاصی</td><td>متوسط</td></tr>
 <tr><td>امنیت</td><td>TLS و هدر</td><td>TLS روی HTTP/2</td><td>WS-Security پیچیده</td></tr>
@@ -2314,6 +2499,94 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 </table>
 </div>
 
+<figure class="kl-fig">
+<svg viewBox="0 0 770 604" role="img" aria-label="مقایسه‌ی REST و JSON با gRPC و بافر پروتکل: شکل و حجم پیام روی سیم، خوانایی برای انسان، امکان فراخوانی مستقیم از مرورگر و استریم دوطرفه">
+  <!-- فراخوانی واحد، دو قالب -->
+  <g class="s-node" style="--kl-i:0">
+    <rect class="s-chip" x="248" y="16" width="274" height="52" rx="10"/>
+    <text class="s-t" x="385" y="40" text-anchor="middle">یک فراخوانی منطقی</text>
+    <text class="s-t2" x="385" y="58" text-anchor="middle">دریافت محصول با شناسه‌ی u-1024</text>
+  </g>
+  <path class="s-arr s-flow" d="M 460 68 L 460 88 L 577 88 L 577 100"/>
+  <path class="s-head" d="M 577 100 L 565 88 L 589 88 Z"/>
+  <path class="s-arr s-flow" d="M 310 68 L 310 88 L 193 88 L 193 100"/>
+  <path class="s-head" d="M 193 100 L 181 88 L 205 88 Z"/>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 460 68 L 460 88 L 577 88 L 577 100"/>
+  </circle>
+  <circle class="s-runner" r="5">
+    <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite" path="M 310 68 L 310 88 L 193 88 L 193 100"/>
+  </circle>
+
+  <!-- سرستون‌ها -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-warn" x="398" y="100" width="358" height="56" rx="10"/>
+    <text class="s-t" x="577" y="126" text-anchor="middle">REST + JSON</text>
+    <text class="s-t2" x="577" y="146" text-anchor="middle">سبک معماری مبتنی بر متن و مسیر</text>
+  </g>
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="14" y="100" width="358" height="56" rx="10"/>
+    <text class="s-t" x="193" y="126" text-anchor="middle">gRPC + بافر پروتکل</text>
+    <text class="s-t2" x="193" y="146" text-anchor="middle">قرارداد باینری با شماره‌ی فیلد</text>
+  </g>
+
+  <!-- شکل پیام روی سیم -->
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-chip" x="398" y="172" width="358" height="124" rx="10"/>
+    <text class="s-tc" x="577" y="196" text-anchor="middle">{</text>
+    <text class="s-tc" x="577" y="218" text-anchor="middle">  "id": "u-1024",</text>
+    <text class="s-tc" x="577" y="240" text-anchor="middle">  "name": "حیدر",</text>
+    <text class="s-tc" x="577" y="262" text-anchor="middle">  "email": "haedar@example.com"</text>
+    <text class="s-tc" x="577" y="284" text-anchor="middle">}</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-chip" x="14" y="172" width="358" height="124" rx="10"/>
+    <text class="s-tc" x="193" y="196" text-anchor="middle">field 1 &#8594; id</text>
+    <text class="s-tc" x="193" y="218" text-anchor="middle">field 2 &#8594; name</text>
+    <text class="s-tc" x="193" y="240" text-anchor="middle">field 3 &#8594; email</text>
+    <text class="s-t2" x="193" y="266" text-anchor="middle">نام فیلدها روی سیم نمی‌رود</text>
+    <text class="s-t2" x="193" y="288" text-anchor="middle">فقط شماره‌ی فیلد و نوع داده کدگذاری می‌شود</text>
+  </g>
+
+  <!-- یادداشت صادقانه درباره‌ی کارایی -->
+  <text class="s-t2 s-lbl" x="385" y="326" text-anchor="middle" style="--kl-i:3">نتیجه به پیاده‌سازی و نوع بار وابسته است: اندازه‌ی پیام، تعداد رفت‌وبرگشت،</text>
+  <text class="s-t2 s-lbl" x="385" y="346" text-anchor="middle" style="--kl-i:3">هزینه‌ی سریال‌سازی و استفاده از چندگانه‌سازی تعیین‌کننده‌اند.</text>
+
+  <!-- معیار ۱ -->
+  <text class="s-t2 s-lbl" x="385" y="386" text-anchor="middle" style="--kl-i:4">خوانایی برای انسان</text>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-ok" x="430" y="396" width="326" height="36" rx="9"/>
+    <text class="s-t" x="593" y="420" text-anchor="middle">بله، بدون ابزار</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-warn" x="14" y="396" width="326" height="36" rx="9"/>
+    <text class="s-t" x="177" y="420" text-anchor="middle">کم، نیازمند ابزار</text>
+  </g>
+
+  <!-- معیار ۲ -->
+  <text class="s-t2 s-lbl" x="385" y="462" text-anchor="middle" style="--kl-i:5">فراخوانی مستقیم از مرورگر</text>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-ok" x="430" y="472" width="326" height="36" rx="9"/>
+    <text class="s-t" x="593" y="496" text-anchor="middle">بله، بومی و ساده</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-bad" x="14" y="472" width="326" height="36" rx="9"/>
+    <text class="s-t" x="177" y="496" text-anchor="middle">نه؛ gRPC-Web یا پراکسی لازم است</text>
+  </g>
+
+  <!-- معیار ۳ -->
+  <text class="s-t2 s-lbl" x="385" y="538" text-anchor="middle" style="--kl-i:6">استریم دوطرفه</text>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-bad" x="430" y="548" width="326" height="36" rx="9"/>
+    <text class="s-t" x="593" y="572" text-anchor="middle">ندارد؛ SSE یا WebSocket</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-ok" x="14" y="548" width="326" height="36" rx="9"/>
+    <text class="s-t" x="177" y="572" text-anchor="middle">بومی، در هر چهار نوع RPC</text>
+  </g>
+</svg>
+<figcaption><b>هزینه و راحتی، در دو ستون:</b> هر دو فناوری همان فراخوانی منطقی را انجام می‌دهند؛ تفاوت در <em>قالب روی سیم</em>، خوانایی برای انسان، امکان فراخوانی مستقیم از مرورگر (gRPC را باید با <code>gRPC-Web</code> یا یک پراکسی سرو کرد) و پشتیبانی از استریم دوطرفه است.</figcaption>
+</figure>
 <h3>سه فناوری، سه مسئله‌ی متفاوت</h3>
 
 <div class="ax-versus">
@@ -2355,7 +2628,7 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <h3>سطح پایه (Junior)</h3>
 
 <p><strong>سؤال ۱ — gRPC چیست و چه مشکلی را حل می‌کند؟</strong></p>
-<p>یک فریم‌ورک RPC است که قرارداد فراخوانی را در یک فایل <code>proto</code> تعریف می‌کند و از روی همان فایل، کد تایپ‌دار برای سرور و کلاینت تولید می‌شود. مشکل اصلی‌ای که حل می‌کند، <strong>ناهماهنگی قرارداد</strong> در ارتباط سرویس‌به‌سرویس است: در REST مستندات از کد عقب می‌مانند و کلاینت و سرور می‌توانند بی‌خبر از هم جدا شوند.</p>
+<p>یک فریم‌ورک RPC (فراخوانی از راه دور) است که قرارداد را در فایل تعریف قرارداد <code>.proto</code> می‌نویسد و از روی همان فایل، کد تایپ‌دار برای سرور و کلاینت تولید می‌کند. مشکل اصلی‌ای که حل می‌کند، <strong>ناهماهنگی قرارداد</strong> در ارتباط سرویس‌به‌سرویس است: در REST مستندات از کد عقب می‌مانند و کلاینت و سرور می‌توانند بی‌خبر از هم جدا شوند.</p>
 
 <p><strong>سؤال ۲ — تفاوت اصلی gRPC با REST چیست؟</strong></p>
 <p>در REST سرور مسیر و شکل JSON را طراحی می‌کند و کلاینت باید تشریح داده را کنار بیاورد؛ در gRPC سرور متدهای نام‌دار را تعریف می‌کند و کلاینت دقیقاً همان متد را صدا می‌زند. نتیجه: در REST متن و مسیر متنوع و قابل کش است؛ در gRPC قرارداد باینری، اجباری و کارا، ولی کش HTTP بی‌اثر و دیباگ نیازمند ابزار اختصاصی.</p>
@@ -2364,10 +2637,10 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <p>یک قالب سریال‌سازی باینری و هم‌زمان یک زبان تعریف قرارداد است. برخلاف JSON، روی سیم فقط شماره‌ی فیلد و مقدار می‌رود، نه نام فیلد؛ بنابراین پیام کوچک‌تر و سریع‌تر است و نام‌ها فقط داخل فایل <code>proto</code> می‌مانند و در بازسازی به کد تبدیل می‌شوند.</p>
 
 <p><strong>سؤال ۴ — چهار نوع RPC چیست؟</strong></p>
-<p><code>Unary</code> (یک درخواست، یک پاسخ)، <code>Server Streaming</code> (یک درخواست، جریان پاسخ)، <code>Client Streaming</code> (جریان درخواست، یک پاسخ) و <code>Bidirectional Streaming</code> (جریان در هر دو جهت). انتخاب شکل باید بر اساس ماهیت داده باشد، نه بر اساس سلیقه.</p>
+<p>تک‌طرفه (Unary: یک درخواست، یک پاسخ)، استریم سرور (Server Streaming: یک درخواست، جریان پاسخ)، استریم کلاینت (Client Streaming: جریان درخواست، یک پاسخ) و دوطرفه (Bidirectional Streaming: جریان در هر دو جهت). انتخاب شکل باید بر اساس ماهیت داده باشد، نه بر اساس سلیقه.</p>
 
 <p><strong>سؤال ۵ — چرا gRPC روی HTTP/2 ساخته شده است؟</strong></p>
-<p>چون به سه قابلیت نیاز دارد که HTTP/1.1 ندارد: <strong>multiplexing</strong> (چند فراخوانی روی یک اتصال)، <strong>جریان دوسویه</strong> (پایه‌ی استریم) و <strong>trailer</strong> (ارسال وضعیت نهایی بعد از بدنه، چون پاسخ ممکن است استریم باشد). به همین دلیل gRPC روی HTTP/1.1 کار نمی‌کند.</p>
+<p>چون به سه قابلیت نیاز دارد که HTTP/1.1 ندارد: <strong>چندگانه‌سازی</strong> (multiplexing: چند فراخوانی روی یک اتصال)، <strong>جریان دوسویه</strong> (پایه‌ی استریم) و <strong>trailer</strong> (ارسال وضعیت نهایی بعد از بدنه، چون پاسخ ممکن است استریم باشد). به همین دلیل gRPC روی HTTP/1.1 کار نمی‌کند.</p>
 
 <p><strong>سؤال ۶ — چرا در gRPC از POST استفاده می‌شود حتی برای خواندن؟</strong></p>
 <p>چون قرارداد باید بایت‌به‌بایت یکسان روی سیم باشد و URL encoding آن را خراب نکند. ضمناً مسیر همیشه یک شکل ثابت دارد (<code dir="ltr">/package.Service/Method</code>) و متد HTTP نوع عملیات را تعیین نمی‌کند؛ خود متد نام‌دار این کار را می‌کند.</p>
@@ -2375,10 +2648,10 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <p><strong>سؤال ۷ — وضعیت پاسخ در gRPC کجا می‌آید؟</strong></p>
 <p>در <strong>trailer</strong> با سرآیند <code dir="ltr">grpc-status</code> و <code dir="ltr">grpc-message</code>، نه در سرآیند اصلی. سرآیند HTTP معمولاً <code dir="ltr">200</code> است، حتی برای خطا. این اولین چیزی است که در مهاجرت می‌شکند، چون پراکسی‌ها و لاگ‌هایی که فقط سرآیند را می‌خوانند خطا را نمی‌بینند.</p>
 
-<p><strong>سؤال ۸ — Metadata چیست و برای چه استفاده می‌شود؟</strong></p>
-<p>معادل هدرهای HTTP در REST: مجموعه‌ای از کلید و مقدار متنی که در لایه‌ی انتقال می‌ماند و وارد بدنه‌ی پیام نمی‌شود. برای توکن، شناسه‌ی درخواست و نسخه‌ی API استفاده می‌شود. قاعده‌ی طلایی: توکن را در فیلد پیام نگذارید، چون آنجا سریال و لاگ می‌شود.</p>
+<p><strong>سؤال ۸ — فراداده (metadata) چیست و برای چه استفاده می‌شود؟</strong></p>
+<p>معادل سرآیندهای HTTP در REST: مجموعه‌ای از کلید و مقدار متنی که در لایه‌ی انتقال می‌ماند و وارد بدنه‌ی پیام نمی‌شود. برای توکن، شناسه‌ی درخواست و نسخه‌ی API استفاده می‌شود. قاعده‌ی طلایی: توکن را در فیلد پیام نگذارید، چون آنجا کدگذاری و لاگ می‌شود.</p>
 
-<p><strong>سؤال ۹ — Deadline چیست و چرا مهم است؟</strong></p>
+<p><strong>سؤال ۹ — مهلت (deadline) چیست و چرا مهم است؟</strong></p>
 <p>مهلتی است که کلاینت در سرآیند <code dir="ltr">grpc-timeout</code> می‌فرستد و سرور آن را در <code>context</code> می‌گذارد. مهم است چون بدون آن درخواست معلق بی‌نهایت می‌ماند و منابع را می‌بلعد. در سرور باید در حلقه‌ها و پیش از کار پرهزینه بررسی شود و به لایه‌های پایین‌دست هم پاس داده شود.</p>
 
 <p><strong>سؤال ۱۰ — تفاوت <code>CANCELLED</code> و <code>DEADLINE_EXCEEDED</code> چیست؟</strong></p>
@@ -2389,7 +2662,7 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <p><strong>سؤال ۱۱ — چرا نباید شماره‌ی فیلد موجود در proto را عوض کرد؟</strong></p>
 <p>چون روی سیم فقط شماره‌ی فیلد و نوع varint می‌رود و نام‌ها اصلاً منتقل نمی‌شوند. اگر شماره‌ی ۲ را به فیلد دیگری بدهید، خواننده‌ی قدیمی داده‌ی کاملاً اشتباه می‌خواند بدون اینکه خطایی بگیرد. شماره را <code>reserved</code> کنید و برای تغییر ناسازگار، پیام تازه با نسخه‌ی تازه بسازید.</p>
 
-<p><strong>سؤال ۱۲ — Interceptor چیست و چه چیزی را نباید در آن گذاشت؟</strong></p>
+<p><strong>سؤال ۱۲ — بین‌افزار (interceptor) چیست و چه چیزی را نباید در آن گذاشت؟</strong></p>
 <p>میان‌افزاری است که قبل و بعد از اجرای هر متد RPC بدون دست‌زدن به آن اجرا می‌شود؛ مثل لاگ، احراز هویت، ردیابی و retry. نباید منطق دامنه در آن باشد: اگر مجبورید شرط کسب‌وکار بنویسید، آن را داخل متد RPC بگذارید. در سرور، ترتیب ثبت مهم است: احراز هویت اول، ردیابی بعد، لاگ آخر.</p>
 
 <p><strong>سؤال ۱۳ — کدهای وضعیت gRPC را چطور انتخاب می‌کنید؟</strong></p>
@@ -2413,7 +2686,7 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <h3>سطح پیشرفته (Senior)</h3>
 
 <p><strong>سؤال ۱۹ — در یک سازمان بزرگ، چگونه gRPC را معرفی و نگهداری می‌کنید؟</strong></p>
-<p>هرگز با مهاجرت اجباری شروع نمی‌کنم. <strong>۱)</strong> یک سرویس داخلی و غیرحیاتی را انتخاب می‌کنم و معیار عددی می‌نویسم (مثلاً صدک ۹۹ تاخیر از ۸۰ به ۵۰ میلی‌ثانیه). <strong>۲)</strong> فایل‌های <code>proto</code> را مثل کد review می‌کنم، چون همان‌جا سازگاری رو به جلو تعیین می‌شود. <strong>۳)</strong> استانداردها را از روز اول می‌گذارم: <code>package</code> نسخه‌دار، واحد پول در نام فیلد، قاعده‌ی نام‌گذاری متد، و استفاده از <code>reserved</code>. <strong>۴)</strong> لایه‌های استاندارد را با <code>Interceptor</code> می‌سازم (احراز هویت، ردیابی، retry، متریک) تا هر سرویس مجبور نباشد خودش تکرارشان کند. <strong>۵)</strong> مهاجرت را در دو مسیر موازی انجام می‌دهم و فقط با داده تصمیم می‌گیرم. <strong>۶)</strong> مسیر مهاجرت برگشت‌پذیر نگه داشته می‌شود تا اگر مشکلی پیش آمد، بدون نوشتن دوباره بتوان برگشت.</p>
+<p>هرگز با مهاجرت اجباری شروع نمی‌کنم. <strong>۱)</strong> یک سرویس داخلی و غیرحیاتی را انتخاب می‌کنم و معیار عددی می‌نویسم (مثلاً کاهش چشمگیر میانه‌ی تاخیر در مسیر اصلی). <strong>۲)</strong> فایل‌های <code>proto</code> را مثل کد review می‌کنم، چون همان‌جا سازگاری رو به جلو تعیین می‌شود. <strong>۳)</strong> استانداردها را از روز اول می‌گذارم: <code>package</code> نسخه‌دار، واحد پول در نام فیلد، قاعده‌ی نام‌گذاری متد، و استفاده از <code>reserved</code>. <strong>۴)</strong> لایه‌های استاندارد را با بین‌افزار می‌سازم (احراز هویت، ردیابی، retry، متریک) تا هر سرویس مجبور نباشد خودش تکرارشان کند. <strong>۵)</strong> مهاجرت را در دو مسیر موازی انجام می‌دهم و فقط با داده تصمیم می‌گیرم. <strong>۶)</strong> مسیر مهاجرت برگشت‌پذیر نگه داشته می‌شود تا اگر مشکلی پیش آمد، بدون نوشتن دوباره بتوان برگشت.</p>
 
 <p><strong>سؤال ۲۰ — اگر gRPC برای کلاینت‌های عمومی مناسب نیست، چه معماری‌ای پیشنهاد می‌کنید؟</strong></p>
 <p>معماری چندلایه: <strong>gRPC</strong> برای ارتباط داخلی بین سرویس‌ها، <strong>REST</strong> برای API عمومی و وب‌هوک، و در صورت نیاز یک <strong>BFF</strong> که کلاینت‌های محصول را تغذیه کند. اگر زبان یا پلتفرمی پشتیبانی رسمی ندارد، یک لایه‌ی تبدیل می‌سازم که gRPC را می‌شنود و به پروتکل بومی تبدیل می‌کند — همان الگوی <em>anti-corruption layer</em>. اصل مهم: هیچ‌کدام را مجبور نمی‌کنیم جایگزین دیگری شود؛ هرکدام مسئله‌ی متفاوتی را حل می‌کنند.</p>
@@ -2426,29 +2699,29 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 
 <div class="kl-box kl-hd"><span class="kl-h">آیا gRPC جایگزین REST می‌شود؟</span><p>معمولاً نه. در معماری‌های بالغ هر دو با هم هستند: gRPC برای ارتباط داخلی بین سرویس‌ها، REST برای API عمومی و وب‌هوک، و گاهی GraphQL برای لایه‌ی تجمیع کلاینت‌های محصول. انتخاب هرکدام بر اساس مصرف‌کننده و محدودیت‌های عملیاتی انجام می‌شود، نه با یک قاعده‌ی کلی.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">آیا مرورگر می‌تواند مستقیم با gRPC حرف بزند؟</span><p>نه، مرورگرها HTTP/2 خام را در اختیار نمی‌گذارند. برای کلاینت مرورگری باید از <code dir="ltr">grpc-web</code> استفاده کنید که معمولاً از طریق یک پراکسی (Envoy یا nginx) به gRPC واقعی تبدیل می‌شود. اگر نمی‌خواهید پراکسی اضافه کنید، REST یا GraphQL انتخاب منطقی‌تری برای سمت مرورگر است.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">آیا مرورگر می‌تواند مستقیم با gRPC حرف بزند؟</span><p>نه، مرورگرها HTTP/2 خام را در اختیار برنامه نمی‌گذارند، پس کلاینت مرورگری نمی‌تواند مستقیم فراخوانی gRPC بفرستد. راه‌حل عملی <code dir="ltr">gRPC-Web</code> است که معمولاً با یک پراکسی (Envoy یا nginx) به gRPC واقعی تبدیل می‌شود؛ همین لایه‌ی اضافه، یک هزینه‌ی واقعی معماری است. اگر نمی‌خواهید پراکسی اضافه کنید، REST یا GraphQL انتخاب منطقی‌تری برای سمت مرورگر است.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">gRPC چقدر از REST سریع‌تر است؟</span><p>بستگی به کاربرد دارد و اغلب اعداد اغراق‌آمیز اینترنت گمراه‌کننده‌اند. اگر ۸۰ درصد زمان پاسخ صرف کوئری دیتابیس شود، بهبود پروتکل شاید چند درصد باشد. صرفه‌جویی واقعی از سه جا می‌آید: سریال‌سازی باینری، حذف سربار اتصال با multiplexing، و استریم بومی. حتماً قبل از مهاجرت پروفایل کنید و معیار عددی بنویسید.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">gRPC چقدر از REST سریع‌تر است؟</span><p>عدد ثابتی وجود ندارد و اعداد اغراق‌آمیز اینترنت گمراه‌کننده‌اند. اگر بخش بزرگی از زمان پاسخ صرف کوئری دیتابیس یا منطق کسب‌وکار شود، پروتکل گلوگاه نیست و بهبود ناچیز خواهد بود. صرفه‌جویی واقعی از سه جا می‌آید: کدگذاری باینری به‌جای متن، حذف سربار اتصال با چندگانه‌سازی در <code>HTTP/2</code>، و استریم بومی. نتیجه‌ی نهایی به اندازه‌ی پیام، تعداد رفت‌وبرگشت، هزینه‌ی سریال‌سازی در زبان انتخابی و کیفیت پیاده‌سازی بستگی دارد. حتماً قبل از مهاجرت پروفایل کنید و معیار عددی بنویسید.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">آیا می‌توانم یک سرویس را به‌صورت تدریجی به gRPC مهاجرت دهم؟</span><p>بله، و همین روش توصیه می‌شود. در دوران مهاجرت سرویس هم‌زمان REST و gRPC ارائه می‌دهد و هر دو به یک لایه‌ی منطق مشترک می‌رسند. کلاینت‌ها را موج‌به‌موج منتقل کنید و بعد از هر موج متریک‌ها را مقایسه کنید. در پایان endpoint قدیمی را حذف کنید. مسیر باید برگشت‌پذیر بماند.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">چطور نسخه‌ی جدید API را معرفی کنم؟</span><p>با نسخه‌بندی در نام بسته: <code dir="ltr">shop.v1</code> و سپس <code dir="ltr">shop.v2</code>. این کار اجازه می‌دهد هر دو نسخه هم‌زمان زندگی کنند و مهاجرت کنترل‌شده باشد. درون یک نسخه، افزودن فیلد سازگار است ولی حذف فیلد و تغییر نوع نیست؛ برای این‌ها پیام تازه با نام نسخه‌دار بسازید.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">چطور در gRPC لاگ و متریک ببینم؟</span><p>بهترین راه <code>ServerInterceptor</code> است که زمان شروع و کد وضعیت نهایی را ثبت کند. برای متریک، کتابخانه‌های جاوا و گو متریک داخلی دارند که به <code>Prometheus</code> می‌رود. برای ردیابی توزیع‌شده هم از <code>OpenTelemetry</code> استفاده کنید. نکته‌ی مهم: شناسه‌ی ردیابی را در <code>Interceptor</code> بسازید تا در همه‌ی لایه‌ها در دسترس باشد.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">چطور در gRPC لاگ و متریک ببینم؟</span><p>بهترین راه <code>ServerInterceptor</code> است که زمان شروع و کد وضعیت نهایی را ثبت کند. برای متریک، کتابخانه‌های جاوا و گو متریک داخلی دارند که به <code>Prometheus</code> می‌روند. برای ردیابی توزیع‌شده هم از <code>OpenTelemetry</code> استفاده کنید. نکته‌ی مهم: شناسه‌ی ردیابی را در بین‌افزار بسازید تا در همه‌ی لایه‌ها در دسترس باشد.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">آیا gRPC دیباگ سختی دارد؟</span><p>بله، چون داده باینری است. ابزارها این مشکل را حل می‌کنند: <code dir="ltr">grpcurl</code> برای فراخوانی از خط فرمان، <code dir="ltr">grpcurl -plaintext</code> با reflection برای دیدن متدها، و <code dir="ltr">protoc --decode</code> برای خواندن فریم خام. در محیط توسعه حتماً reflection را روشن نگه دارید.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">رمزنگاری در gRPC چطور انجام می‌شود؟</span><p>با TLS استاندارد روی همان اتصال HTTP/2، نه با مکانیزم خاص gRPC. برای احراز هویت دوطرفه، <code>mTLS</code> یعنی سرور گواهی کلاینت را هم بررسی می‌کند. توکن کاربر را در <code>Metadata</code> بفرستید و آن را با TLS ترکیب کنید؛ توکن بدون TLS روی شبکه به‌صورت خوانا جابه‌جا می‌شود.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">رمزنگاری در gRPC چطور انجام می‌شود؟</span><p>با TLS استاندارد روی همان اتصال HTTP/2، نه با مکانیزم خاص gRPC. برای احراز هویت دوطرفه، <code>mTLS</code> یعنی سرور گواهی کلاینت را هم بررسی می‌کند. توکن کاربر را در فراداده بفرستید و آن را با TLS ترکیب کنید؛ توکن بدون TLS روی شبکه به‌صورت خوانا جابه‌جا می‌شود.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">آیا می‌توانم gRPC را کش کنم؟</span><p>در لایه‌ی HTTP تقریباً نه، چون همه چیز POST است و بدنه‌ها متفاوت‌اند. اگر کش لازم دارید باید آن را در لایه‌ی اپلیکیشن بسازید: کش با کلید شامل نام متد و شناسه‌ی درخواست. این یکی از دلایل اصلی است که برای API عمومی REST انتخاب می‌شود.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">یک متد gRPC باید همیشه timeout داشته باشد؟</span><p>از سمت کلاینت، بله همیشه. از سمت سرور، سرور نباید مهلت کمتری از کلاینت بگذارد، وگرنه سرور قبل از اینکه فرصت پاسخ دادن داشته باشد خطا می‌دهد. مهلت را بر اساس کندترین وابستگی انتخاب کنید، نه بر اساس سریع‌ترین حالت ممکن.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">یک متد gRPC باید همیشه مهلت داشته باشد؟</span><p>از سمت کلاینت، بله همیشه. از سمت سرور، سرور نباید مهلت کمتری از کلاینت بگذارد، وگرنه سرور قبل از اینکه فرصت پاسخ دادن داشته باشد خطا می‌دهد. مهلت را بر اساس کندترین وابستگی انتخاب کنید، نه بر اساس سریع‌ترین حالت ممکن.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">متد idempotent یعنی چه و چه ربطی به retry دارد؟</span><p>یعنی اجرای دوباره‌اش همان نتیجه‌ی اجرای اول را بدهد و اثر جانبی اضافه ایجاد نکند. با retry ارتباط دارد چون اگر کلاینت بخواهد درخواست را دوباره بفرستد، متد غیر idempotent ممکن است دوبار اجرا شود — مثلاً دوبار از موجودی کم کند. راه‌حل عملی، کلید idempotency در <code>Metadata</code> و نگهداری آن در یک ذخیره‌ساز با تاریخ انقضا.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">متد idempotent یعنی چه و چه ربطی به retry دارد؟</span><p>یعنی اجرای دوباره‌اش همان نتیجه‌ی اجرای اول را بدهد و اثر جانبی اضافه ایجاد نکند. با retry ارتباط دارد چون اگر کلاینت بخواهد درخواست را دوباره بفرستد، متد غیر idempotent ممکن است دوبار اجرا شود — مثلاً دوبار از موجودی کم کند. راه‌حل عملی، کلید idempotency در فراداده و نگهداری آن در یک ذخیره‌ساز با تاریخ انقضا.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">gRPC با میکروسرویس چه ربطی دارد؟</span><p>ارتباط مستقیم دارد: در میکروسرویس، ارتباط بین سرویس‌ها بیشترین تکرار را دارد و بیشترین هزینه‌ی پنهان را هم دارد — کوئری‌های N+1، فراخوانی‌های زنجیره‌ای و کد تکراری. چون gRPC قرارداد را تایپ‌دار و اجباری می‌کند، بخشی از این کد تکراری در زمان کامپایل حذف می‌شود. البته خودِ میکروسرویس مشکل رایج دیگری دارد: زنجیره‌ی فراخوانی‌های متوالی که بهتر است با رویداد و صف حل شود.</p></div>
 
-<div class="kl-box kl-hd"><span class="kl-h">آیا gRPC جایگزین SOAP است؟</span><p>در بیشتر پروژه‌های جدید بله، چون هر دو قرارداد سفت و تولید کد دارند ولی gRPC سبک‌تر، سریع‌تر و امروزی‌تر است. با این حال SOAP در سیستم‌های سازمانی قدیمی، بانکی و بیمه‌ای هنوز جای محکمی دارد و پشتیبانی ابزاری آن گسترده است. اگر اکوسیستم موجودتان به WSDL نیاز دارد، تغییر آن معمولاً توجیه اقتصادی ندارد.</p></div>
+<div class="kl-box kl-hd"><span class="kl-h">آیا gRPC جایگزین SOAP است؟</span><p>در بیشتر پروژه‌های جدید بله، چون هر دو قرارداد سفت و تولید کد دارند، ولی gRPC سبک‌تر است، ابزارهای مدرن‌تری دارد و بدون افزونه روی HTTP/2 کار می‌کند. با این حال SOAP در سیستم‌های سازمانی قدیمی، بانکی و بیمه‌ای هنوز جای محکمی دارد و پشتیبانی ابزاری آن گسترده است. اگر اکوسیستم موجودتان به WSDL نیاز دارد، تغییر آن معمولاً توجیه اقتصادی ندارد.</p></div>
 
 <div class="kl-box kl-hd"><span class="kl-h">فشرده‌سازی را باید روشن کنم؟</span><p>به‌صورت سراسری نه. بهتر است برای متدهایی که واقعاً پیام بزرگ دارند فعال باشد و برای متدهای پرکاریبود و کوچک خام بماند. اگر نسبت فشرده‌سازی زیر حدود ۱۰ درصد باشد، فقط دارید CPU می‌سوزانید و سیستم را کند می‌کنید. اول اندازه بگیرید، بعد تصمیم بگیرید.</p></div>
 
@@ -2466,9 +2739,9 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
 <li><strong>شماره‌ی فیلد قرارداد است</strong>؛ هرگز عوض یا دوباره استفاده نشود و برای تغییر ناسازگار پیام تازه ساخته شود.</li>
 <li><strong>چهار نوع RPC</strong> را بشناسید و بر اساس ماهیت داده انتخاب کنید، نه بر اساس سلیقه.</li>
 <li><strong>وضعیت در trailer می‌آید</strong> نه در سرآیند، و سرآیند HTTP حتی برای خطا هم ۲۰۰ است.</li>
-<li><strong>توکن در Metadata، نه در فیلد پیام</strong>؛ و همیشه همراه TLS.</li>
-<li><strong>Deadline را همیشه بگذارید</strong> و در سرور <code>ctx.Done()</code> را در حلقه‌ها بررسی کنید.</li>
-<li><strong>Interceptor ها لایه‌بندی می‌شوند</strong>: احراز هویت، بعد ردیابی، بعد لاگ و متریک.</li>
+<li><strong>توکن در فراداده، نه در فیلد پیام</strong>؛ و همیشه همراه TLS.</li>
+<li><strong>مهلت را همیشه بگذارید</strong> و در سرور <code>ctx.Done()</code> را در حلقه‌ها بررسی کنید.</li>
+<li><strong>بین‌افزارها لایه‌بندی می‌شوند</strong>: احراز هویت، بعد ردیابی، بعد لاگ و متریک.</li>
 <li><strong>کانال را یک‌بار بسازید</strong>، نه در هر فراخوانی.</li>
 <li><strong>مقدار <code>CANCELLED</code> و <code>DEADLINE_EXCEEDED</code> را جدا پایش کنید</strong> — دو مسئله‌ی متفاوت‌اند.</li>
 <li><strong>gRPC را با معیار عددی انتخاب کنید</strong>؛ اگر نمی‌توانید بنویسید، مهاجرت توجیه ندارد.</li>
@@ -2545,7 +2818,7 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
               <span class="ax-pager-dir">مقاله‌ی قبلی</span>
               <span class="ax-pager-title">GraphQL چیست؟</span>
             </a>
-            <a class="ax-pager-link ax-pager-link--next" href="../articles/#api">
+            <a class="ax-pager-link ax-pager-link--next" href="./">
               <span class="ax-pager-dir">مقاله‌ی بعدی</span>
               <span class="ax-pager-title">فهرست کامل مقالات API</span>
             </a>
@@ -2582,13 +2855,13 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
               <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">چرا gRPC؟ مسئله‌ای که حل می‌کند</span></a></li>
               <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">معماری و اجزای gRPC</span></a></li>
               <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">آناتومی فایل proto</span></a></li>
-              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Protobuf و کدنویسی خودکار</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Protobuf و تولید خودکار کد</span></a></li>
               <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">چهار نوع RPC</span></a></li>
               <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">HTTP/2: قلب gRPC</span></a></li>
               <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">gRPC روی HTTP: متد، هدر و Trailers</span></a></li>
-              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Metadata، Deadline و لغو درخواست</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">فراداده، مهلت و لغو درخواست</span></a></li>
               <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">خطا و Status Code</span></a></li>
-              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">Interceptor ها و میان‌افزار</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">بین‌افزارها (Interceptor)</span></a></li>
               <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">Flow Control و بک‌پرسور</span></a></li>
               <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">پیاده‌سازی در Java و Spring Boot</span></a></li>
               <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">پیاده‌سازی در Go و سایر زبان‌ها</span></a></li>
@@ -2647,13 +2920,13 @@ func AuthUnaryInterceptor(ctx context.Context, req any,
         <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">چرا gRPC؟ مسئله‌ای که حل می‌کند</span></a></li>
         <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">معماری و اجزای gRPC</span></a></li>
         <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">آناتومی فایل proto</span></a></li>
-        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Protobuf و کدنویسی خودکار</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Protobuf و تولید خودکار کد</span></a></li>
         <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">چهار نوع RPC</span></a></li>
         <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">HTTP/2: قلب gRPC</span></a></li>
         <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">gRPC روی HTTP: متد، هدر و Trailers</span></a></li>
-        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Metadata، Deadline و لغو درخواست</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">فراداده، مهلت و لغو درخواست</span></a></li>
         <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">خطا و Status Code</span></a></li>
-        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">Interceptor ها و میان‌افزار</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">بین‌افزارها (Interceptor)</span></a></li>
         <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">Flow Control و بک‌پرسور</span></a></li>
         <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">پیاده‌سازی در Java و Spring Boot</span></a></li>
         <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">پیاده‌سازی در Go و سایر زبان‌ها</span></a></li>
