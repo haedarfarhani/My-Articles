@@ -146,8 +146,31 @@
 .form-actions {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
   margin-top: 1.5rem;
 }
+
+/* Honeypot — bots fill it, humans never see it */
+.contact-hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.contact-status {
+  margin: 1rem 0 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.9;
+  min-height: 1.3em;
+  color: var(--text-muted);
+}
+
+.contact-status.is-success { color: var(--color-success); }
+.contact-status.is-error { color: var(--color-danger); }
 
 /* ---------- Social links ---------- */
 .social-links {

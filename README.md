@@ -135,7 +135,9 @@ my-articales/
 - **شمارنده بازدید**: با [Page Views API](https://page-views-api.ratneshc.com/) — بدون کوکی، بدون ذخیره‌ی IP، شمارش یکتا در بازه‌ی ۳۰ دقیقه.
 - **کاملاً واکنش‌گرا و RTL**: موبایل/تبلت/دسکتاپ، منوی همبرگری، کشوی موبایل فهرست مطالب.
 - **بخش نظرات مقاله**: ثبت نظر و نمایش لیست نظرات با Cloud Code روی [Back4App](https://backend.back4app.com/)
-  (اعتبارسنجی سرور، تأیید مدیر، ضداسپم و صفحه‌بندی).
+  (اعتبارسنجی سرور، تأیید مدیر، ضداسپم و صفحه‌بندی) + دکمه‌ی «ثبت نظر» در ابتدای هر مقاله.
+- **فرم تماس متصل به سرور**: پیام‌های صفحه‌ی تماس در Back4App ذخیره می‌شوند
+  (`submitContactMessage`) و دکمه‌ی «کپی متن» به‌عنوان جایگزین آفلاین باقی مانده است.
 
 ## نظرات مقاله (Back4App Cloud Code)
 
@@ -239,6 +241,28 @@ curl -X POST https://parseapi.back4app.com/functions/setCommentStatus \
 شناسه‌ی هر مقاله از نام فایل آن گرفته می‌شود
 (`articles/mvvm-architecture.html` → `mvvm-architecture`). اگر می‌خواهید شناسه
 دلخواه باشد، `<body>` را با `data-article-id="..."` علامت‌گذاری کنید.
+
+دکمه‌ی «ثبت نظر» در ابتدای هر مقاله (زیر هدر مقاله) با `js/comments.js` ساخته
+می‌شود و با اسکرول نرم به فرم می‌رود و فیلد نام را فوکوس می‌کند؛ شمارنده‌ی روی
+دکمه از همان پاسخ `getComments` پر می‌شود.
+
+## فرم تماس (Back4App Cloud Code)
+
+فرم `contact/index.html` مستقیم روی سرور ارسال می‌شود (قبلاً فقط متن را در
+کلیپ‌بورد کپی می‌کرد). کلاس `ContactMessage` با فیلدهای `name`، `email`،
+`subject`، `message` و `status` بسازید و CLP آن را هم روی **نیست** بگذارید.
+
+| Function | دسترسی | کار |
+|----------|--------|-----|
+| `submitContactMessage` | عمومی | ارسال پیام (`name`, `email`, `subject`, `message`) |
+| `listContactMessages` | Master Key | صندوق پیام‌ها با فیلتر `status` |
+| `setMessageStatus` | Master Key | `new` / `read` / `replied` / `archived` |
+
+ورودی فرم `#cf-topic` به فیلد `subject` نگاشت می‌شود و `#cf-website` تله‌ی
+ربات (honeypot) است. علاوه بر اعتبارسنجی، محدودیت نرخ (۵ پیام در ساعت)، تشخیص
+پیام تکراری و حذف تگ‌های HTML اعمال می‌شود. تریگرهای `beforeFind`/`beforeSave`
+روی `ContactMessage` هم خواندن پیام‌ها و تغییر `status` از سمت کلاینت را
+مسدود می‌کنند.
 
 ## انتشار روی GitHub Pages
 

@@ -1,15 +1,20 @@
 /* ============================================================
-   My-Articles — Comments Cloud Code
+   My-Articles — Cloud Code
    Back4App / Parse Server
    ------------------------------------------------------------
-   Functions:
+   Comments:
      createComment        ثبت نظر جدید (بدون نیاز به ورود به سیستم)
      getComments          دریافت نظرات تأییدشده یک مقاله
      listPendingComments  فهرست نظرات در انتظار (فقط Master Key)
      setCommentStatus     تأیید / رد / حذف نظر (فقط Master Key)
+   Contact:
+     submitContactMessage ارسال پیام از فرم تماس
+     listContactMessages   صندوق پیام‌ها (فقط Master Key)
+     setMessageStatus      تغییر وضعیت پیام (فقط Master Key)
    ============================================================ */
 
 const COMMENT_CLASS = 'ArticleComment';
+const CONTACT_CLASS = 'ContactMessage';
 
 const MAX_ARTICLE_ID_LENGTH = 200;
 const MAX_NAME_LENGTH = 100;
@@ -17,8 +22,14 @@ const MAX_EMAIL_LENGTH = 150;
 const MIN_CONTENT_LENGTH = 3;
 const MAX_CONTENT_LENGTH = 3000;
 
+const MAX_SUBJECT_LENGTH = 200;
+const MIN_MESSAGE_LENGTH = 5;
+const MAX_MESSAGE_LENGTH = 5000;
+
 const MAX_PER_WINDOW = 3;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
+const MAX_MESSAGES_PER_HOUR = 5;
+const MESSAGE_WINDOW_MS = 60 * 60 * 1000;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -239,5 +250,144 @@ Parse.Cloud.beforeSave(COMMENT_CLASS, (request) => {
   object.set('approved', false);
   object.set('spam', false);
   object.set('likes', 0);
+  object.setACL(privateAcl());
+});
+
+/* ============================================================
+   Contact Messages
+   ============================================================ */
+
+function optionalText(value, field, maxLength) {
+  const text = cleanText(value);
+  if (text.length > maxLength) {
+    fail(field + ' نباید بیشتر از ' + maxLength + ' کاراکتر باشد.');
+  }
+  return text;
+}
+
+function optionalEmail(value) {
+  const email = cleanText(value).toLowerCase();
+  if (!email) return '';
+  if (email.length > MAX_EMAIL_LENGTH || !EMAIL_PATTERN.test(email)) {
+    fail('ایمیل معتبر نیست.');
+  }
+  return email;
+}
+
+function toPrivateMessage(message) {
+  return {
+    id: message.id,
+    name: message.get('name'),
+    email: message.get('email'),
+    subject: message.get('subject'),
+    message: message.get('message'),
+    status: message.get('status'),
+    createdAt: message.createdAt ? message.createdAt.toISOString() : null
+  };
+}
+
+Parse.Cloud.define('submitContactMessage', async (request) => {
+  const params = request.params || {};
+
+  if (cleanText(params.website)) {
+    return {
+      success: true,
+      message: 'پیام شما با موفقیت ارسال شد.',
+      id: null
+    };
+  }
+
+  const name = requireText(params.name, 'نام', MAX_NAME_LENGTH);
+  const message = requireText(params.message, 'متن پیام', MAX_MESSAGE_LENGTH, MIN_MESSAGE_LENGTH);
+  const email = optionalEmail(params.email);
+  const subject = optionalText(params.subject, 'موضوع', MAX_SUBJECT_LENGTH);
+
+  const hourly = new Parse.Query(CONTACT_CLASS);
+  hourly.greaterThan('createdAt', new Date(Date.now() - MESSAGE_WINDOW_MS));
+
+  if ((await hourly.count({ useMasterKey: true })) >= MAX_MESSAGES_PER_HOUR) {
+    fail('تعداد پیام‌های ارسالی بیش از حد مجاز است؛ کمی بعد دوباره تلاش کنید.', Parse.Error.OPERATION_FORBIDDEN);
+  }
+
+  if (email) {
+    const duplicate = new Parse.Query(CONTACT_CLASS);
+    duplicate.equalTo('email', email);
+    duplicate.equalTo('message', message);
+    duplicate.greaterThan('createdAt', new Date(Date.now() - RATE_WINDOW_MS));
+    duplicate.limit(1);
+
+    const found = await duplicate.find({ useMasterKey: true });
+    if (found.length > 0) fail('همین پیام پیش‌تر ارسال شده است.');
+  }
+
+  const ContactMessage = Parse.Object.extend(CONTACT_CLASS);
+  const contact = new ContactMessage();
+
+  contact.set('name', name);
+  contact.set('email', email);
+  contact.set('subject', subject);
+  contact.set('message', message);
+  contact.set('status', 'new');
+  contact.setACL(privateAcl());
+
+  const saved = await contact.save(null, { useMasterKey: true });
+
+  return {
+    success: true,
+    message: 'پیام شما با موفقیت ارسال شد.',
+    id: saved.id
+  };
+});
+
+Parse.Cloud.define('listContactMessages', async (request) => {
+  requireMaster(request);
+
+  const limit = clampInt(request.params && request.params.limit, 30, 1, 100);
+  const status = cleanText(request.params && request.params.status).toLowerCase();
+
+  const query = new Parse.Query(CONTACT_CLASS);
+  if (status) query.equalTo('status', status);
+  query.descending('createdAt');
+  query.limit(limit);
+
+  const messages = await query.find({ useMasterKey: true });
+
+  return {
+    success: true,
+    data: messages.map(toPrivateMessage)
+  };
+});
+
+Parse.Cloud.define('setMessageStatus', async (request) => {
+  requireMaster(request);
+
+  const params = request.params || {};
+  const messageId = requireText(params.messageId, 'شناسه پیام', 64);
+  const status = requireText(params.status, 'وضعیت', 20).toLowerCase();
+
+  if (['new', 'read', 'replied', 'archived'].indexOf(status) === -1) {
+    fail('وضعیت ناشناخته است.');
+  }
+
+  const query = new Parse.Query(CONTACT_CLASS);
+  const message = await query.get(messageId, { useMasterKey: true });
+
+  message.set('status', status);
+  await message.save(null, { useMasterKey: true });
+
+  return { success: true, message: 'وضعیت پیام به‌روزرسانی شد.', id: messageId, status: status };
+});
+
+Parse.Cloud.beforeFind(CONTACT_CLASS, (request) => {
+  if (request.master !== true) {
+    fail('پیام‌های تماس فقط با Master Key قابل خواندن هستند.', Parse.Error.OPERATION_FORBIDDEN);
+  }
+});
+
+Parse.Cloud.beforeSave(CONTACT_CLASS, (request) => {
+  if (request.master === true) return;
+
+  const object = request.object;
+  object.set('status', 'new');
   object.setACL(privateAcl());
 });

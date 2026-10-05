@@ -89,7 +89,7 @@
       '  </div>',
       '',
       '  <div class="form-actions">',
-      '    <button class="btn btn-primary" type="submit">ارسال نظر</button>',
+      '    <button class="comment-submit" type="submit">ارسال نظر</button>',
       '    <span class="comment-note">نظر پس از بررسی نمایش داده می‌شود.</span>',
       '  </div>',
       '  <p class="comment-status" data-comment-status role="status"></p>',
@@ -104,6 +104,59 @@
 
     root.appendChild(section);
     return section;
+  }
+
+  /* ---------- CTA at the top of the article ---------- */
+  function buildCta() {
+    const wrap = document.createElement('div');
+    wrap.className = 'comment-cta';
+    wrap.id = 'comment-cta';
+
+    wrap.innerHTML = [
+      '<div class="comment-cta-text">',
+      '  <span class="comment-cta-title">نظر یا پرسشی دارید؟</span>',
+      '  <span class="comment-cta-sub" data-cta-sub>تجربه و نقدتان را با من و بقیه‌ی خواننده‌ها در میان بگذارید.</span>',
+      '</div>',
+      '<button class="comment-cta-btn" type="button" data-comment-cta-btn>',
+      '  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"',
+      '       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">',
+      '    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>',
+      '  </svg>',
+      '  <span>ثبت نظر</span>',
+      '  <span class="comment-cta-badge" data-cta-count hidden></span>',
+      '</button>'
+    ].join('\n');
+
+    return wrap;
+  }
+
+  function mountCta(article, section) {
+    const hero = article.querySelector('.article-hero');
+    const cta = buildCta();
+
+    if (hero) hero.insertAdjacentElement('afterend', cta);
+    else article.insertBefore(cta, article.firstChild);
+
+    const btn = cta.querySelector('[data-comment-cta-btn]');
+    btn.addEventListener('click', function () {
+      scrollToComments(section);
+      const nameEl = section.querySelector('#cm-name');
+      if (nameEl) setTimeout(function () { nameEl.focus({ preventScroll: true }); }, 420);
+    });
+
+    return cta;
+  }
+
+  function scrollToComments(section) {
+    const reduce = window.matchMedia
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const top = section.getBoundingClientRect().top + window.pageYOffset - 90;
+
+    if ('scrollBehavior' in document.documentElement.style && !reduce) {
+      window.scrollTo({ top: top, behavior: 'smooth' });
+      return;
+    }
+    window.scrollTo(0, top);
   }
 
   /* ---------- Render ---------- */
@@ -176,6 +229,8 @@
     if (anchor) article.insertBefore(section, anchor);
     else article.appendChild(section);
 
+    const cta = mountCta(article, section);
+
     const list = section.querySelector('[data-comments-list]');
     const countEl = section.querySelector('[data-comments-count]');
     const moreBtn = section.querySelector('[data-comments-more]');
@@ -183,6 +238,8 @@
     const statusEl = section.querySelector('[data-comment-status]');
     const contentEl = section.querySelector('#cm-content');
     const submitBtn = form.querySelector('button[type="submit"]');
+    const ctaCount = cta.querySelector('[data-cta-count]');
+    const ctaSub = cta.querySelector('[data-cta-sub]');
 
     const id = articleId();
     let skip = 0;
@@ -191,6 +248,12 @@
 
     function updateCount() {
       countEl.textContent = total > 0 ? fa(total) + ' نظر' : 'هنوز نظری نیست';
+
+      ctaCount.textContent = fa(total);
+      ctaCount.hidden = total === 0;
+      ctaSub.textContent = total > 0
+        ? 'تا الان ' + fa(total) + ' دیدگاه ثبت شده؛ نظر شما هم اضافه شود.'
+        : 'تجربه و نقدتان را با من و بقیه‌ی خواننده‌ها در میان بگذارید.';
     }
 
     function load(append) {

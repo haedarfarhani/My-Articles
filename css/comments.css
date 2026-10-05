@@ -1,12 +1,97 @@
 /* ============================================================
    Article comments
+   Self-contained: article pages do not load base.css, so the buttons
+   used here carry their own styling instead of reusing .btn.
    Depends on: css/tokens.css (design tokens)
    ============================================================ */
 
+/* ---------- CTA at the top of the article ---------- */
+.comment-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin: 1.75rem 0 0;
+  padding: 1.1rem 1.4rem;
+  background: linear-gradient(135deg, var(--color-primary-soft), var(--bg-surface-alt) 70%);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.comment-cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.comment-cta-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--text-main);
+}
+
+.comment-cta-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.comment-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  padding: 0.7rem 1.35rem;
+  background: var(--color-primary);
+  color: var(--text-on-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px var(--color-primary-glow);
+  transition: background var(--transition-fast), transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.comment-cta-btn:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px var(--color-primary-glow);
+}
+
+.comment-cta-btn:active { transform: translateY(0); }
+
+.comment-cta-btn:focus-visible {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 3px;
+}
+
+.comment-cta-badge {
+  padding: 0.1rem 0.5rem;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+html[data-theme="dark"] .comment-cta-badge {
+  background: rgba(11, 26, 24, 0.28);
+}
+
+.comment-cta-badge[hidden] { display: none; }
+
+/* ---------- Section ---------- */
 .comments-section {
   margin-top: 3rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border-subtle);
+  scroll-margin-top: 90px;
 }
 
 /* ---------- Header ---------- */
@@ -98,6 +183,42 @@
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.comment-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.6rem;
+  background: var(--color-primary);
+  color: var(--text-on-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px var(--color-primary-glow);
+  transition: background var(--transition-fast), transform var(--transition-fast),
+              box-shadow var(--transition-fast), opacity var(--transition-fast);
+}
+
+.comment-submit:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px var(--color-primary-glow);
+}
+
+.comment-submit:active:not(:disabled) { transform: translateY(0); }
+
+.comment-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.comment-submit:focus-visible {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 3px;
 }
 
 .comment-note {
@@ -221,8 +342,11 @@
 
 /* ---------- Responsive ---------- */
 @media (max-width: 640px) {
+  .comment-cta { padding: 1rem; gap: 0.9rem; }
+  .comment-cta-btn { width: 100%; justify-content: center; padding: 0.8rem 1.2rem; }
   .comment-form { padding: 1.1rem; }
   .comment-form .form-row { grid-template-columns: 1fr; }
   .comment-item { padding: 0.9rem 1rem; }
   .comment-avatar { width: 36px; height: 36px; font-size: 0.95rem; }
+  .comment-submit { width: 100%; }
 }

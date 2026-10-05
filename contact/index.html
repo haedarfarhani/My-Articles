@@ -44,6 +44,7 @@
   <link rel="stylesheet" href="../css/responsive.css">
   <script defer src="../js/theme.js"></script>
   <script defer src="../js/main.js"></script>
+  <script defer src="../js/parse-config.js"></script>
   <script defer src="../js/contact.js"></script>
 
   <script type="application/ld+json">
@@ -196,23 +197,23 @@
         </div>
       </aside>
 
-      <!-- Message form (static: copies the message for you) -->
+      <!-- Message form (sends via Back4App Cloud Code) -->
       <section class="contact-form-card">
         <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:0.5rem;">نوشتن پیام</h2>
         <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.9;">
-          این سایت استاتیک است و سروری برای دریافت فرم ندارد؛ با پر کردن فرم، متن پیام آماده و
-          در کلیپ‌بورد شما کپی می‌شود تا از هر کانالی بفرستید.
+          فرم مستقیم روی سرور Back4App ارسال می‌شود؛ ایمیل شما فقط برای پاسخ‌دادن استفاده می‌شود
+          و هرگز منتشر نمی‌شود. اگر ارسال ممکن نبود، متن را کپی کنید و از کانال تماس بفرستید.
         </p>
 
         <form id="contact-form" novalidate>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="cf-name">نام *</label>
-              <input class="form-input" id="cf-name" name="name" type="text" placeholder="نام شما" required>
+              <input class="form-input" id="cf-name" name="name" type="text" placeholder="نام شما" autocomplete="name" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="cf-email">ایمیل (اختیاری)</label>
-              <input class="form-input" id="cf-email" name="email" type="email" placeholder="you@example.com">
+              <input class="form-input" id="cf-email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
             </div>
           </div>
 
@@ -226,10 +227,18 @@
             <textarea class="form-textarea" id="cf-message" name="message" placeholder="پیام خود را بنویسید..." required></textarea>
           </div>
 
+          <div class="contact-hp" aria-hidden="true">
+            <label for="cf-website">این فیلد را خالی بگذارید</label>
+            <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
           <div class="form-actions">
-            <button class="btn btn-primary" type="submit">کپی پیام</button>
+            <button class="btn btn-primary" type="submit" data-contact-send>ارسال پیام</button>
+            <button class="btn btn-secondary" type="button" data-contact-copy>کپی متن پیام</button>
             <button class="btn btn-secondary" type="reset">پاک کردن</button>
           </div>
+
+          <p class="contact-status" data-contact-status role="status"></p>
         </form>
       </section>
     </div>
