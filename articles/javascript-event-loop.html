@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Loop و همزمانی در JavaScript: راهنمای جامع و کامل | حیدر فرحانی</title>
+  <meta name="description" content="راهنمای جامع همزمانی و غیرهمگامی در JavaScript: Call Stack، Event Loop، Task Queue و Microtask Queue، فازهای Node.js، setTimeout و setInterval و setImmediate، queueMicrotask و process.nextTick، Callback و Promise و async/await، Web Worker و Worker Thread، SharedArrayBuffer و Atomics، AbortController و EventEmitter — همراه با نمودارهای متحرک، کدهای مثال و پرسش‌های مهم.">
+  <meta name="keywords" content="JavaScript, Event Loop, Concurrency, Asynchronous, Threading, Call Stack, Microtask, Macrotask, Task Queue, Promise, async await, setTimeout, setInterval, setImmediate, queueMicrotask, process.nextTick, Web Worker, Worker Threads, SharedArrayBuffer, Atomics, AbortController, EventEmitter, Non-blocking I/O, همزمانی, غیرهمگام, جاوااسکریپت">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Event Loop و همزمانی در JavaScript: راهنمای جامع و کامل">
+  <meta property="og:description" content="از Call Stack و Microtask تا Worker Thread و Atomics — مدل اجرای غیرهمگام JavaScript با نمودارهای متحرک و کدهای مثال.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/javascript-event-loop.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/javascript-event-loop.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Event Loop و همزمانی در JavaScript">
+  <meta name="twitter:description" content="Call Stack، Event Loop، Microtask، Promise، async/await و Worker Threads — راهنمای کامل.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "Event Loop و همزمانی در JavaScript: راهنمای جامع و کامل", "description": "از Call Stack و Microtask تا Worker Thread و Atomics — مدل اجرای غیرهمگام JavaScript با نمودارهای متحرک و کدهای مثال.", "url": "https://haedarfarhani.github.io/My-Articles/articles/javascript-event-loop.html", "inLanguage": "fa-IR", "keywords": "JavaScript, Event Loop, Concurrency, Promise, async await, Web Worker, Worker Threads, Microtask, Call Stack", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "Event Loop و همزمانی در JavaScript", "item": "https://haedarfarhani.github.io/My-Articles/articles/javascript-event-loop.html" } ] } }
+  </script>
+</head>
+<body data-article-id="javascript-event-loop">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">جاوااسکریپت و همزمانی</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح پیشرفته</span></div>
+        <h1 class="post-title"><span class="gradient-text">Event Loop و همزمانی</span>؛ مدل اجرای غیرهمگام JavaScript</h1>
+        <p class="hero-lead">
+          JavaScript یک زبان <strong>تک‌رشته‌ای (single-threaded)</strong> با مدل اجرای
+          <strong>غیرهمگام (asynchronous) و مبتنی بر رخداد</strong> است. این مقاله از صفر تا پیشرفته
+          توضیح می‌دهد <code>Call Stack</code> و <code>Event Loop</code> و <code>Microtask</code> چطور
+          کار می‌کنند، همه‌ی متدها و کلاس‌های مهم (<code>setTimeout</code>، <code>Promise</code>،
+          <code>async/await</code>، <code>Web Worker</code>، <code>AbortController</code>،
+          <code>Atomics</code>) را با کد نشان می‌دهد و با نمودارهای متحرک و پرسش‌های مهم، ذهنیت
+          درست برای debugging ترتیب اجرا می‌سازد.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۶۰ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: پیشرفته</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#JavaScript</span><span class="post-tag">#Event_Loop</span><span class="post-tag">#Concurrency</span><span class="post-tag">#Promise</span><span class="post-tag">#async_await</span><span class="post-tag">#Web_Worker</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: همزمانی، موازی‌سازی و مدل اجرای JavaScript</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Call Stack و Run-to-Completion</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Event Loop: قلب اجرای JavaScript</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>فازهای Event Loop در Node.js</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>Task Queue و Microtask Queue</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Host APIها: مرورگر و Node.js</span></a></li>
+            <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>Timerها: setTimeout، setInterval و setImmediate</span></a></li>
+            <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>queueMicrotask و process.nextTick</span></a></li>
+            <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>Callback و Callback Hell</span></a></li>
+            <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>Promise و متدهای ترکیبی</span></a></li>
+            <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>async/await، Generator و async Iterator</span></a></li>
+            <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>Threading: Web Worker و Worker Thread</span></a></li>
+            <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>SharedArrayBuffer، Atomics و MessageChannel</span></a></li>
+            <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>لغو و رخداد: AbortController و EventEmitter</span></a></li>
+            <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>Starvation، Anti-patternها و Best Practices</span></a></li>
+            <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>سوالات مهم و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: همزمانی، موازی‌سازی و مدل اجرای JavaScript</h2>
+<p>
+خطر رایج این است که «غیرهمگام» و «موازی» را یکی بدانیم. JavaScript در یک <code>Thread</code> واحد
+اجرا می‌شود، اما می‌تواند هزاران عملیات را همزمان «در جریان» داشته باشد؛ چون کارهای کند
+(شبکه، فایل، تایمر) را به <strong>Host</strong> می‌سپارد و خودش آزاد می‌ماند. این تفکیک، کلید فهم
+کل این مقاله است.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">دو تعریف دقیق</span>
+<strong>Concurrency (همزمانی)</strong> یعنی چند کارِ <em>در حال پیشرفت</em> که بین آن‌ها جابه‌جا
+می‌شویم — نه لزوماً در یک لحظه اجرا می‌شوند. <strong>Parallelism (موازی‌سازی)</strong> یعنی چند
+کار که <em>واقعاً در همان لحظه</em> روی هسته‌های CPU مختلف اجرا می‌شوند.
+</div>
+<div class="kl-scroll"><table>
+  <tr><th>ویژگی</th><th>Concurrency</th><th>Parallelism</th></tr>
+  <tr><td>تعریف</td><td>مدیریت هم‌زمانِ چند تسک</td><td>اجرای فیزیکی هم‌زمانِ چند تسک</td></tr>
+  <tr><td>سخت‌افزار</td><td>روی یک هسته هم ممکن است</td><td>چند هسته لازم است</td></tr>
+  <tr><td>نمونه در JS</td><td>Event Loop، Promise، async/await</td><td>Web Worker، Worker Threads، child_process</td></tr>
+  <tr><td>هدف</td><td>بهره‌وری و پاسخ‌گویی (پرهیز از انتظار)</td><td>سرعت و توان محاسباتی بیشتر</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="js"><code>// ✗ بد: Blocking — کل Thread (و UI) قفل می‌شود
+function block(ms) {
+  const end = Date.now() + ms;
+  while (Date.now() &lt; end) { /* هیچ‌کاری نمی‌شود کرد */ }
+}
+
+console.log('start');
+block(3000);              // سه ثانیه هیچ کدی اجرا نمی‌شود
+console.log('end');
+
+// ✓ خوب: Non-blocking — کار را می‌سپاریم و آزاد می‌مانیم
+console.log('start');
+setTimeout(() =&gt; console.log('timer'), 3000);
+console.log('end');
+// ترتیب چاپ: start → end → timer</code></pre>
+<div class="kl-box kl-deep"><span class="kl-h">Single-Threaded ولی Non-Blocking</span>
+JavaScript فقط یک <code>Call Stack</code> دارد؛ پس هرگز دو تابع هم‌زمان اجرا نمی‌کند. اما عملیات
+<code>I/O</code> را به Host (مرورگر یا <code>libuv</code> در Node.js) واگذار می‌کند که آن‌ها را در
+پس‌زمینه انجام دهد و نتیجه را به‌صورت Callback به صف برگرداند.
+</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+آشنایی مقدماتی با JavaScript و توابع؛ برای مقایسه‌ی ذهنی با زبان دیگر،
+<a href="concurrency-in-kotlin.html">همزمانی در کاتلین</a> را ببینید.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Call Stack و Run-to-Completion</h2>
+<p>
+وقتی کدی اجرا می‌شود، برای هر فراخوانی یک <strong>Execution Context</strong> روی
+<code>Call Stack</code> گذاشته می‌شود. Stack ساختار <code>LIFO</code> است: آخرین فریم، اولین فریمِ
+خارج‌شده. قانون طلایی این است که <strong>هیچ تابعی نیمه‌کاره قطع نمی‌شود</strong>
+(<code>Run-to-Completion</code>) — تا وقتی Stack خالی نشود، Event Loop نمی‌تواند چیزی اجرا کند.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="نمودار Call Stack با فریم‌های global، first، second و third و توضیح Run-to-Completion و Blocking و Stack Overflow">
+  <rect class="s-group s-group-acc" x="30" y="24" width="270" height="252" rx="14"/>
+  <text class="s-group-t" x="165" y="48" text-anchor="middle">Call Stack (LIFO)</text>
+  <g class="s-node" style="--kl-i:1"><rect class="s-acc" x="48" y="62" width="234" height="42" rx="9"/><text class="s-t" x="165" y="89" text-anchor="middle">global()</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c4" x="48" y="112" width="234" height="42" rx="9"/><text class="s-t2" x="165" y="139" text-anchor="middle">first()</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c5" x="48" y="162" width="234" height="42" rx="9"/><text class="s-t2" x="165" y="189" text-anchor="middle">second()</text></g>
+  <g class="s-pulse"><rect class="s-ok" x="48" y="212" width="234" height="42" rx="9"/><text class="s-t2" x="165" y="239" text-anchor="middle">third()  ← در حال اجرا</text></g>
+  <text class="s-lbl" x="165" y="272" text-anchor="middle">پایان تابع → pop شدن فریم</text>
+
+  <g class="s-node" style="--kl-i:4"><rect class="s-box" x="330" y="46" width="410" height="62" rx="10"/><text class="s-t" x="535" y="72" text-anchor="middle">Run-to-Completion</text><text class="s-lbl" x="535" y="94" text-anchor="middle">هر تابع تا پایان اجرا می‌شود؛ وسطش قطع نمی‌شود</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-warn" x="330" y="122" width="410" height="62" rx="10"/><text class="s-t" x="535" y="148" text-anchor="middle">Blocking</text><text class="s-lbl" x="535" y="170" text-anchor="middle">یک تابع کند = توقف کل برنامه و UI</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-bad" x="330" y="198" width="410" height="62" rx="10"/><text class="s-t" x="535" y="224" text-anchor="middle">Stack Overflow</text><text class="s-lbl" x="535" y="246" text-anchor="middle">RangeError: Maximum call stack size exceeded</text></g>
+  <path class="s-arr s-flow" d="M 300 140 L 324 140"/>
+  <path class="s-head" d="M 330 140 L 318 133 L 318 147 Z"/>
+</svg>
+<figcaption><b>Call Stack:</b> فریم‌ها بالای هم انبار می‌شوند؛ فریمِ فعال فقط بالاترین است. چون همه چیز روی یک Stack اجرا می‌شود، یک تابع Blocking تمام برنامه را متوقف می‌کند.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="js"><code>function third() { throw new Error('boom'); }
+function second() { third(); }
+function first()   { second(); }
+
+first();
+// Uncaught Error: boom
+//     at third
+//     at second
+//     at first
+// این «Stack Trace» دقیقاً همان Call Stack در لحظه‌ی خطاست
+
+// سرریز Stack با بازگشت بی‌پایان:
+function recurse() { return recurse(); }
+recurse();   // RangeError: Maximum call stack size exceeded</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">نکته‌ی عملی</span>
+Stack Trace به‌ترتیب از داخل به بیرون است: بالاترین خط، جایی است که خطا <em>اتفاق افتاده</em> و
+پایین‌ترین خط، جایی است که <em>شروع</em> شده. برای دیباگ، از پایین به بالا بخوانید.
+</div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Event Loop: قلب اجرای JavaScript</h2>
+<p>
+<code>Event Loop</code> یک حلقه‌ی بی‌پایان است که یک کار ساده می‌کند: «آیا Call Stack خالی است؟
+اگر بله، اولین کارِ آماده را از صف بردار و روی Stack اجرا کن.» کل شگفتی غیرهمگامی JavaScript در
+همین حلقه است.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 372" role="img" aria-label="مدل اجرای JavaScript: Call Stack، Host APIها، Task Queue و Microtask Queue و حلقه‌ی رویداد که کارها را به Stack می‌برد">
+  <rect class="s-group" x="20" y="30" width="180" height="250" rx="14"/>
+  <text class="s-group-t" x="110" y="52" text-anchor="middle">Call Stack</text>
+  <g class="s-node" style="--kl-i:1"><rect class="s-acc" x="34" y="64" width="152" height="34" rx="8"/><text class="s-t" x="110" y="86" text-anchor="middle">main()</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c4" x="34" y="104" width="152" height="34" rx="8"/><text class="s-t2" x="110" y="126" text-anchor="middle">fetch()</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c5" x="34" y="144" width="152" height="34" rx="8"/><text class="s-t2" x="110" y="166" text-anchor="middle">onClick()</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-box" x="34" y="184" width="152" height="34" rx="8"/><text class="s-t" x="110" y="206" text-anchor="middle">…</text></g>
+  <text class="s-lbl" x="110" y="262" text-anchor="middle">LIFO — فقط یک فریم فعال</text>
+
+  <rect class="s-group s-group-acc" x="230" y="30" width="180" height="250" rx="14"/>
+  <text class="s-group-t" x="320" y="52" text-anchor="middle">Host / Web APIs</text>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c5" x="244" y="64" width="152" height="30" rx="8"/><text class="s-t2" x="320" y="84" text-anchor="middle">setTimeout</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c5" x="244" y="100" width="152" height="30" rx="8"/><text class="s-t2" x="320" y="120" text-anchor="middle">fetch / XHR</text></g>
+  <g class="s-node" style="--kl-i:7"><rect class="s-c5" x="244" y="136" width="152" height="30" rx="8"/><text class="s-t2" x="320" y="156" text-anchor="middle">DOM Events</text></g>
+  <g class="s-node" style="--kl-i:8"><rect class="s-c5" x="244" y="172" width="152" height="30" rx="8"/><text class="s-t2" x="320" y="192" text-anchor="middle">fs / I-O</text></g>
+  <g class="s-node" style="--kl-i:9"><rect class="s-c5" x="244" y="208" width="152" height="30" rx="8"/><text class="s-t2" x="320" y="228" text-anchor="middle">worker</text></g>
+  <text class="s-lbl" x="320" y="262" text-anchor="middle">کار در پس‌زمینه</text>
+
+  <rect class="s-group" x="440" y="30" width="310" height="250" rx="14"/>
+  <text class="s-group-t" x="595" y="52" text-anchor="middle">صف‌ها (Queues)</text>
+  <g class="s-node" style="--kl-i:10"><rect class="s-ok" x="456" y="64" width="278" height="64" rx="10"/><text class="s-t" x="595" y="90" text-anchor="middle">Microtask Queue</text><text class="s-lbl" x="595" y="112" text-anchor="middle">Promise.then · queueMicrotask</text></g>
+  <g class="s-node" style="--kl-i:11"><rect class="s-warn" x="456" y="146" width="278" height="64" rx="10"/><text class="s-t" x="595" y="172" text-anchor="middle">Task Queue (Macrotask)</text><text class="s-lbl" x="595" y="194" text-anchor="middle">setTimeout · I-O · MessageChannel</text></g>
+  <text class="s-lbl" x="595" y="248" text-anchor="middle">Microtask همیشه مقدم بر Task است</text>
+
+  <g class="s-node" style="--kl-i:12"><rect class="s-acc" x="270" y="308" width="230" height="46" rx="10"/><text class="s-t" x="385" y="337" text-anchor="middle">Event Loop</text></g>
+  <path class="s-arr s-flow" d="M 595 296 L 595 330 L 506 330"/>
+  <path class="s-head" d="M 500 330 L 512 323 L 512 337 Z"/>
+  <path class="s-arr s-flow-ok" d="M 270 330 L 150 330 L 150 288"/>
+  <path class="s-head s-head-ok" d="M 150 282 L 143 294 L 157 294 Z"/>
+  <circle class="s-runner" r="5" cx="0" cy="0"><animateMotion dur="4s" repeatCount="indefinite" path="M 595 296 L 595 330 L 500 330"/></circle>
+</svg>
+<figcaption><b>Event Loop:</b> Call Stack کارها را اجرا می‌کند، Host عملیات کند را در پس‌زمینه انجام می‌دهد و نتیجه را به صف می‌فرستد. حلقه، به‌محض خالی‌شدن Stack، صف را تخلیه می‌کند — ابتدا Microtask و سپس Task.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="js"><code>console.log('۱ script start');
+
+setTimeout(() =&gt; console.log('۵ setTimeout'), 0);
+
+Promise.resolve().then(() =&gt; console.log('۳ promise.then'));
+queueMicrotask(() =&gt; console.log('۴ queueMicrotask'));
+
+console.log('۲ script end');
+
+// ترتیب قطعی:
+// ۱ script start
+// ۲ script end
+// ۳ promise.then      (Microtask)
+// ۴ queueMicrotask    (Microtask)
+// ۵ setTimeout        (Task)</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">قانون طلایی ترتیب</span>
+<code>Sync</code> → <code>Microtask</code> (تا تخلیه‌ی کامل) → <code>Task</code> بعدی → دوباره
+<code>Microtask</code>. یعنی بعد از <em>هر</em> Task، همه‌ی Microtaskهای جدید هم دوباره اجرا می‌شوند.
+</div>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>فازهای Event Loop در Node.js</h2>
+<p>
+در مرورگر Event Loop ساده‌تر است؛ در Node.js حلقه از چند <strong>فاز</strong> تشکیل شده که هر دور
+یکی‌یکی طی می‌شوند. <code>process.nextTick</code> و <code>Microtask</code>ها در فاصله‌ی
+<em>بین هر فاز و بعد از هر Callback</em> اجرا می‌شوند.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 268" role="img" aria-label="فازهای Event Loop در Node.js: timers، pending callbacks، idle/prepare، poll، check و close callbacks به‌همراه صف nextTick و Microtask">
+  <g class="s-node" style="--kl-i:1"><rect class="s-ok" x="150" y="10" width="470" height="38" rx="9"/><text class="s-t" x="385" y="35" text-anchor="middle">process.nextTick · Promise Microtasks — بین هر فاز و هر Callback</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-box" x="20" y="82" width="112" height="60" rx="9"/><text class="s-t" x="76" y="108" text-anchor="middle">timers</text><text class="s-lbl" x="76" y="128" text-anchor="middle">setTimeout</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-box" x="146" y="82" width="112" height="60" rx="9"/><text class="s-t" x="202" y="108" text-anchor="middle">pending</text><text class="s-lbl" x="202" y="128" text-anchor="middle">I/O callbacks</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-box" x="272" y="82" width="112" height="60" rx="9"/><text class="s-t" x="328" y="108" text-anchor="middle">idle</text><text class="s-lbl" x="328" y="128" text-anchor="middle">prepare</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-acc" x="398" y="82" width="112" height="60" rx="9"/><text class="s-t" x="454" y="108" text-anchor="middle">poll</text><text class="s-lbl" x="454" y="128" text-anchor="middle">I/O + events</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-box" x="524" y="82" width="112" height="60" rx="9"/><text class="s-t" x="580" y="108" text-anchor="middle">check</text><text class="s-lbl" x="580" y="128" text-anchor="middle">setImmediate</text></g>
+  <g class="s-node" style="--kl-i:7"><rect class="s-box" x="650" y="82" width="100" height="60" rx="9"/><text class="s-t" x="700" y="108" text-anchor="middle">close</text><text class="s-lbl" x="700" y="128" text-anchor="middle">callbacks</text></g>
+  <path class="s-arr" d="M 132 112 L 142 112"/><path class="s-head" d="M 146 112 L 136 105 L 136 119 Z"/>
+  <path class="s-arr" d="M 258 112 L 268 112"/><path class="s-head" d="M 272 112 L 262 105 L 262 119 Z"/>
+  <path class="s-arr" d="M 384 112 L 394 112"/><path class="s-head" d="M 398 112 L 388 105 L 388 119 Z"/>
+  <path class="s-arr" d="M 510 112 L 520 112"/><path class="s-head" d="M 524 112 L 514 105 L 514 119 Z"/>
+  <path class="s-arr" d="M 636 112 L 646 112"/><path class="s-head" d="M 650 112 L 640 105 L 640 119 Z"/>
+  <path class="s-dash s-flow-soft s-arr" d="M 700 146 C 700 226, 76 226, 76 146"/>
+  <path class="s-head" d="M 76 140 L 69 152 L 83 152 Z"/>
+  <text class="s-lbl" x="388" y="240" text-anchor="middle">هر دور حلقه: فازها به‌ترتیب طی می‌شوند و دوباره از timers شروع می‌شود</text>
+</svg>
+<figcaption><b>فازهای Node.js:</b> ترتیب ثابت timers → pending → idle/prepare → poll → check → close است. <code>setImmediate</code> در فاز <code>check</code> و <code>setTimeout</code> در فاز <code>timers</code> اجرا می‌شود.</figcaption>
+</figure>
+<div class="kl-scroll"><table>
+  <tr><th>فاز</th><th>چه چیزی اجرا می‌شود</th></tr>
+  <tr><td><code>timers</code></td><td>Callbackهای <code>setTimeout</code> و <code>setInterval</code> که موعدشان رسیده</td></tr>
+  <tr><td><code>pending callbacks</code></td><td>تأخیرافتاده‌های I/O از دور قبل سیستم</td></tr>
+  <tr><td><code>idle / prepare</code></td><td>استفاده‌ی داخلی Node.js</td></tr>
+  <tr><td><code>poll</code></td><td>دریافت رخدادهای I/O و اجرای Callbackهای آماده (قلب حلقه)</td></tr>
+  <tr><td><code>check</code></td><td><code>setImmediate</code></td></tr>
+  <tr><td><code>close callbacks</code></td><td>بستن منابع، مثل <code>socket.on('close')</code></td></tr>
+</table></div>
+<pre class="kl-code" data-lang="js"><code>const fs = require('node:fs');
+
+setTimeout(() =&gt; console.log('timers'), 0);
+setImmediate(() =&gt; console.log('check'));
+process.nextTick(() =&gt; console.log('nextTick'));
+Promise.resolve().then(() =&gt; console.log('promise'));
+
+fs.readFile(__filename, () =&gt; {
+  console.log('poll → I/O callback');
+  setTimeout(() =&gt; console.log('timers (دور بعد)'), 0);
+  setImmediate(() =&gt; console.log('check (دور بعد)'));
+});
+
+// خروجی تضمین‌شده:
+// nextTick → promise → (timers/check: ترتیب در سطح ماژول قابل تضمین نیست)
+// داخل Callback، چون در فاز poll هستیم: poll → check → timers</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">تله‌ی معروف</span>
+در سطح ماژول، ترتیب <code>setTimeout(fn, 0)</code> و <code>setImmediate</code> قابل پیش‌بینی
+نیست. اما <em>داخل</em> یک Callback مربوط به I/O، همیشه <code>setImmediate</code> (فاز check) قبل
+از <code>setTimeout</code> (فاز timers دور بعد) اجرا می‌شود.
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>Task Queue و Microtask Queue</h2>
+<p>
+دو صف داریم و تفاوتشان حیاتی است: <strong>Microtask Queue</strong> تا زمانی که چیزی در آن باشد
+کامل تخلیه می‌شود، ولی از <strong>Task Queue</strong> بعد از هر Task فقط یک مورد برداشته می‌شود.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="ترتیب اجرای Microtask و Macrotask: ابتدا script سپس Microtaskها و رندر و بعد Task و دوباره Microtask">
+  <g class="s-node" style="--kl-i:1"><rect class="s-acc" x="26" y="60" width="130" height="82" rx="10"/><text class="s-t" x="91" y="90" text-anchor="middle">۱) script</text><text class="s-lbl" x="91" y="114" text-anchor="middle">Call Stack</text></g>
+  <path class="s-arr s-flow" d="M 156 100 L 176 100"/><path class="s-head" d="M 182 100 L 170 93 L 170 107 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-ok" x="168" y="60" width="130" height="82" rx="10"/><text class="s-t" x="233" y="90" text-anchor="middle">۲) Microtask</text><text class="s-lbl" x="233" y="114" text-anchor="middle">B، C</text></g>
+  <path class="s-arr s-flow" d="M 298 100 L 318 100"/><path class="s-head" d="M 324 100 L 312 93 L 312 107 Z"/>
+  <g class="s-node" style="--kl-i:3"><rect class="s-box" x="310" y="60" width="130" height="82" rx="10"/><text class="s-t" x="375" y="90" text-anchor="middle">۳) render</text><text class="s-lbl" x="375" y="114" text-anchor="middle">رندر صفحه</text></g>
+  <path class="s-arr s-flow" d="M 440 100 L 460 100"/><path class="s-head" d="M 466 100 L 454 93 L 454 107 Z"/>
+  <g class="s-node" style="--kl-i:4"><rect class="s-warn" x="452" y="60" width="130" height="82" rx="10"/><text class="s-t" x="517" y="90" text-anchor="middle">۴) Task</text><text class="s-lbl" x="517" y="114" text-anchor="middle">E</text></g>
+  <path class="s-arr s-flow" d="M 582 100 L 602 100"/><path class="s-head" d="M 608 100 L 596 93 L 596 107 Z"/>
+  <g class="s-node" style="--kl-i:5"><rect class="s-ok" x="594" y="60" width="150" height="82" rx="10"/><text class="s-t" x="669" y="90" text-anchor="middle">۵) Microtask</text><text class="s-lbl" x="669" y="114" text-anchor="middle">G (بعد از هر Task)</text></g>
+
+  <rect class="s-group" x="26" y="176" width="340" height="90" rx="12"/>
+  <text class="s-group-t" x="196" y="198" text-anchor="middle">Microtask Queue</text>
+  <text class="s-lbl" x="196" y="222" text-anchor="middle">Promise.then · catch · finally</text>
+  <text class="s-lbl" x="196" y="244" text-anchor="middle">queueMicrotask · MutationObserver · await</text>
+  <rect class="s-group s-group-acc" x="404" y="176" width="340" height="90" rx="12"/>
+  <text class="s-group-t" x="574" y="198" text-anchor="middle">Task Queue (Macrotask)</text>
+  <text class="s-lbl" x="574" y="222" text-anchor="middle">setTimeout · setInterval · setImmediate</text>
+  <text class="s-lbl" x="574" y="244" text-anchor="middle">I/O · UI Events · postMessage</text>
+</svg>
+<figcaption><b>ترتیب اجرا:</b> بعد از پایان اسکریپت، تمام Microtaskها خالی می‌شوند، سپس (در مرورگر) رندر انجام می‌شود و بعد یک Task و بلافاصله Microtaskهای بعدی اجرا می‌شوند.</figcaption>
+</figure>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>Microtask Queue</th><th>Task Queue (Macrotask)</th></tr>
+  <tr><td>اولویت</td><td>بالاتر — تا ته خالی می‌شود</td><td>پایین‌تر — یکی‌یکی</td></tr>
+  <tr><td>منابع</td><td><code>Promise.then</code>، <code>queueMicrotask</code>، <code>await</code></td><td><code>setTimeout</code>، <code>I/O</code>، رخدادهای UI</td></tr>
+  <tr><td>خطر</td><td>Microtask Starvation (قفل رندر)</td><td>تأخیر و جیتِر (jitter) زمانی</td></tr>
+  <tr><td>رندر مرورگر</td><td>می‌تواند رندر را عقب بیندازد</td><td>بین دو Task فرصت رندر است</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="js"><code>console.log('A');
+
+setTimeout(() =&gt; {
+  console.log('E');
+  Promise.resolve().then(() =&gt; console.log('G'));
+}, 0);
+
+Promise.resolve()
+  .then(() =&gt; console.log('B'))
+  .then(() =&gt; console.log('C'));
+
+console.log('D');
+
+// A → D → B → C → E → G
+// چرا؟ A و D همگام‌اند؛ B و C زنجیره‌ی Microtask تا تخلیه؛
+// سپس Task (E) و Microtask بعدی‌اش (G).</code></pre>
+<div class="kl-box kl-bad"><span class="kl-h">Microtask Starvation</span>
+اگر داخل یک Microtask، Microtask جدید بسازید (مثلاً <code>Promise.resolve().then(...)</code> در حلقه)،
+صف هرگز خالی نمی‌شود و مرورگر <strong>هیچ‌وقت رندر نمی‌کند</strong> — صفحه یخ می‌زند. برای کارهای
+تکراری از <code>setTimeout</code> استفاده کنید تا فرصت رندر بماند.
+</div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>Host APIها: مرورگر و Node.js</h2>
+<p>
+JavaScript خودش فقط زبان است؛ تایمر و شبکه و فایل را <strong>Host</strong> فراهم می‌کند. مرورگر
+<code>Web API</code> دارد و Node.js از <code>libuv</code> و ماژول‌های <code>node:*</code> استفاده
+می‌کند. هر دو، نتیجه را به‌صورت Callback به Event Loop برمی‌گردانند.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>کار</th><th>مرورگر</th><th>Node.js</th></tr>
+  <tr><td>تایمر</td><td><code>setTimeout</code> / <code>setInterval</code></td><td>همان‌ها + <code>setImmediate</code></td></tr>
+  <tr><td>شبکه</td><td><code>fetch</code>, <code>XMLHttpRequest</code>, <code>WebSocket</code></td><td><code>http</code>, <code>https</code>, <code>fetch</code>, <code>net</code></td></tr>
+  <tr><td>فایل</td><td>File API, <code>FileReader</code>, Origin Private FS</td><td><code>fs</code>, <code>fs/promises</code></td></tr>
+  <tr><td>رخداد UI</td><td><code>addEventListener</code>, <code>requestAnimationFrame</code></td><td>—</td></tr>
+  <tr><td>موازی‌سازی</td><td><code>Web Worker</code></td><td><code>worker_threads</code>, <code>child_process</code></td></tr>
+</table></div>
+<pre class="kl-code" data-lang="js"><code>// مرورگر: Web API → Task/Microtask
+const xhr = new XMLHttpRequest();
+xhr.open('GET', '/api/user');
+xhr.onload = () =&gt; console.log(xhr.status);
+xhr.send();
+
+fetch('/api/user')
+  .then((r) =&gt; r.json())
+  .then((u) =&gt; console.log(u.name));
+
+requestAnimationFrame(() =&gt; paint());   // هماهنگ با نرخ رندر
+
+// Node.js: libuv Thread Pool + Event Loop
+import { readFile } from 'node:fs/promises';
+const text = await readFile('./data.txt', 'utf8');   // Non-blocking
+
+// ✗ نسخه‌ی Blocking — کل Event Loop را می‌خواباند
+import { readFileSync } from 'node:fs';
+const bad = readFileSync('./data.txt', 'utf8');</code></pre>
+<div class="kl-box kl-deep"><span class="kl-h">libuv و Thread Pool</span>
+Node.js هرچند تک‌رشته‌ای است، برای بعضی عملیات (فایل، DNS، رمزنگاری) یک
+<code>Thread Pool</code> پنهان از <code>libuv</code> دارد (پیش‌فرض ۴ Thread با متغیر
+<code>UV_THREADPOOL_SIZE</code>). شبکه به‌صورت <code>epoll</code>/<code>kqueue</code> و بدون Thread
+انجام می‌شود.
+</div>
+</section>
+
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>Timerها: setTimeout، setInterval و setImmediate</h2>
+<p>
+مهم‌ترین سوءتفاهم درباره‌ی <code>setTimeout(fn, 0)</code> این است که «فوراً» اجرا شود. هرگز این‌طور
+نیست: فقط یعنی «حداقل ۰ میلی‌ثانیه بعد، در اولین فرصتِ صف Task». تأخیر واقعی به‌اندازه‌ی زمانِ اشغال
+بودن Stack است.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>تابع</th><th>مکان</th><th>معنی</th></tr>
+  <tr><td><code>setTimeout(fn, ms)</code></td><td>مرورگر + Node</td><td>اجرای یک‌باره پس از حداقل <code>ms</code>؛ برمی‌گرداند <code>Timeout</code></td></tr>
+  <tr><td><code>setInterval(fn, ms)</code></td><td>مرورگر + Node</td><td>اجرای تکرارشونده با فاصله‌ی <code>ms</code></td></tr>
+  <tr><td><code>setImmediate(fn)</code></td><td>فقط Node.js</td><td>اجرا در فاز <code>check</code>، بعد از I/O همین دور</td></tr>
+  <tr><td><code>clearTimeout(id)</code></td><td>مرورگر + Node</td><td>لغو تایمر</td></tr>
+  <tr><td><code>clearInterval(id)</code></td><td>مرورگر + Node</td><td>لغو بازه‌ی تکرار</td></tr>
+  <tr><td><code>clearImmediate(id)</code></td><td>فقط Node.js</td><td>لغو <code>setImmediate</code></td></tr>
+  <tr><td><code>timer.ref()</code> / <code>timer.unref()</code></td><td>فقط Node.js</td><td>نگه‌داشتن/رهاکردن پروسه تا اتمام تایمر</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="js"><code>// یک‌باره
+const id = setTimeout(() =&gt; console.log('once'), 1000);
+clearTimeout(id);
+
+// تکرارشونده با توقف
+const tick = setInterval(() =&gt; console.log('tick'), 1000);
+setTimeout(() =&gt; clearInterval(tick), 5000);
+
+// setImmediate (Node.js) — داخل کار I/O برنده‌ی timers است
+setImmediate(() =&gt; console.log('immediate'));
+
+// unref: اگر این تنها دلیل زنده‌ماندن پروسه باشد، بگذار بسته شود
+const keepAlive = setTimeout(() =&gt; {}, 60_000);
+keepAlive.unref();
+
+// تایمر در تایمر: تودرتویی بالای ۵ سطح، حداقل ۴ms می‌شود
+function nested(n) {
+  if (n &lt;= 0) return;
+  setTimeout(() =&gt; nested(n - 1), 0);
+}
+nested(10);</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">دقت (Precision)</span>
+تایمرها دقیق نیستند: حداقل تأخیر ۰ است، اما تخلیه‌ی Microtaskها، رندر و Load سیستم می‌تواند
+اجرا را ثانیه‌ها عقب بیندازد. برای اندازه‌گیری زمان واقعی، نه شمارش تکرار، از
+<code>performance.now()</code> استفاده کنید.
+</div>
+<div class="kl-box kl-ok"><span class="kl-h">جایگزین مدرن برای setInterval</span>
+<code>setInterval</code> اگر Callback کند باشد، اجراها روی هم می‌افتند. الگوی درست،
+<code>setTimeout</code> بازگشتی است که فقط <em>بعد از پایان کار</em> تایمر بعدی را می‌گذارد.
+</div>
+</section>
+
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>queueMicrotask و process.nextTick</h2>
+<p>
+برای فرستادن کار به صف Microtask سه راه داریم: <code>Promise.resolve().then()</code>،
+<code>queueMicrotask()</code> و در Node.js <code>process.nextTick()</code>. اما
+<code>process.nextTick</code> حتی از Microtask هم جلوتر است و <em>قبل از</em> تخلیه‌ی Microtaskها
+اجرا می‌شود.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>متد</th><th>مکان</th><th>اولویت</th></tr>
+  <tr><td><code>process.nextTick(fn)</code></td><td>فقط Node.js</td><td>۱ — بالاترین (قبل از Microtask)</td></tr>
+  <tr><td><code>queueMicrotask(fn)</code></td><td>مرورگر + Node</td><td>۲ — Microtask</td></tr>
+  <tr><td><code>Promise.resolve().then(fn)</code></td><td>مرورگر + Node</td><td>۲ — Microtask</td></tr>
+  <tr><td><code>setImmediate(fn)</code></td><td>فقط Node.js</td><td>۳ — فاز check</td></tr>
+  <tr><td><code>setTimeout(fn, 0)</code></td><td>مرورگر + Node</td><td>۴ — Task</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="js"><code>process.nextTick(() =&gt; console.log('nextTick ۱'));
+queueMicrotask(() =&gt; console.log('microtask ۱'));
+process.nextTick(() =&gt; console.log('nextTick ۲'));
+Promise.resolve().then(() =&gt; console.log('promise ۱'));
+setTimeout(() =&gt; console.log('timer ۱'), 0);
+
+console.log('sync');
+
+// sync → nextTick ۱ → nextTick ۲ → microtask ۱ → promise ۱ → timer ۱</code></pre>
+<div class="kl-box kl-bad"><span class="kl-h">process.nextTick هرگز نه</span>
+<code>process.nextTick</code> صف Microtask را دور نمی‌زند: اگر داخلش دوباره
+<code>nextTick</code> بسازید، I/O و تایمرها <strong>هرگز</strong> اجرا نمی‌شوند. در کد جدید از
+<code>queueMicrotask</code> یا <code>setImmediate</code> استفاده کنید؛ <code>nextTick</code> را
+برای سازگاری قدیمی نگه دارید.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">queueMicrotask چرا؟</span>
+وقتی فقط می‌خواهید «بعد از پایان این اسکریپت ولی قبل از Task بعدی» کاری کنید،
+<code>queueMicrotask</code> صریح‌تر و سبک‌تر از ساختن یک Promise دور است.
+</div>
+</section>
+
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>Callback و Callback Hell</h2>
+<p>
+Callback نخستین راهِ غیرهمگام‌سازی در JavaScript بود: تابعی که «بعداً» صدا زده می‌شود. مشکل وقتی
+پیدا می‌شود که چند مرحله پشت‌سرهم لازم باشد و تودرتویی، کد را به «هرمِ عذاب» تبدیل کند.
+</p>
+<pre class="kl-code" data-lang="js"><code>// Error-first Callback (Convention استاندارد Node.js)
+function readConfig(path, callback) {
+  fs.readFile(path, 'utf8', (err, data) =&gt; {
+    if (err) return callback(err);      // خطا همیشه آرگومان اول
+    try {
+      callback(null, JSON.parse(data));
+    } catch (e) {
+      callback(e);
+    }
+  });
+}
+
+// ✗ Callback Hell: تودرتویی و مدیریت خطای تکراری
+getUser(1, (err, user) =&gt; {
+  if (err) return done(err);
+  getOrders(user.id, (err, orders) =&gt; {
+    if (err) return done(err);
+    getInvoice(orders[0].id, (err, invoice) =&gt; {
+      if (err) return done(err);
+      done(null, invoice);
+    });
+  });
+});</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>مشکل Callback</th><th>راه‌حل مدرن</th></tr>
+  <tr><td>تودرتویی عمیق</td><td><code>Promise</code> و <code>async/await</code></td></tr>
+  <tr><td>مدیریت خطای تکراری</td><td>یک <code>try/catch</code> یا <code>.catch()</code></td></tr>
+  <tr><td>ترتیب کنترل‌نشده</td><td><code>Promise.all</code> / <code>for await</code></td></tr>
+  <tr><td>عدم توانایی برگشت نتیجه</td><td><code>return</code> یک <code>Promise</code></td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">وقتی Callback درست است</span>
+رخدادهای تکرارشونده (Event) و APIهای سطح پایین مثل <code>EventEmitter</code>,
+<code>fs.readFile</code> و <code>addEventListener</code> ذاتاً Callback هستند. Callback بد نیست؛
+<em>تودرتویی</em> بد است.
+</div>
+</section>
+
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>Promise و متدهای ترکیبی</h2>
+<p>
+<code>Promise</code> یک شیء با سه حالت است: <code>pending</code>، <code>fulfilled</code> و
+<code>rejected</code>. وقتی به حالت <code>settled</code> برسد، دیگر تغییر نمی‌کند. هر
+<code>then/catch/finally</code> یک Microtask می‌سازد.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 312" role="img" aria-label="چرخه‌ی حالت Promise از pending به fulfilled و rejected و شاخه‌های then، catch و finally">
+  <g class="s-node" style="--kl-i:1"><rect class="s-c6" x="300" y="20" width="170" height="50" rx="10"/><text class="s-t" x="385" y="51" text-anchor="middle">pending</text></g>
+  <path class="s-arr s-flow-ok" d="M 330 70 L 200 138"/><path class="s-head s-head-ok" d="M 196 143 L 209 140 L 202 152 Z"/>
+  <path class="s-arr s-flow-bad" d="M 440 70 L 570 138"/><path class="s-head s-head-bad" d="M 574 143 L 568 152 L 561 140 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-ok" x="80" y="146" width="200" height="56" rx="10"/><text class="s-t" x="180" y="172" text-anchor="middle">fulfilled</text><text class="s-lbl" x="180" y="192" text-anchor="middle">resolve(value)</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-bad" x="490" y="146" width="200" height="56" rx="10"/><text class="s-t" x="590" y="172" text-anchor="middle">rejected</text><text class="s-lbl" x="590" y="192" text-anchor="middle">reject(reason)</text></g>
+  <path class="s-arr s-flow" d="M 180 202 L 180 236"/><path class="s-head" d="M 180 242 L 173 230 L 187 230 Z"/>
+  <path class="s-arr s-flow" d="M 590 202 L 590 236"/><path class="s-head" d="M 590 242 L 583 230 L 597 230 Z"/>
+  <g class="s-node" style="--kl-i:4"><rect class="s-acc" x="50" y="248" width="260" height="48" rx="10"/><text class="s-t" x="180" y="278" text-anchor="middle">.then() · .finally()</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-warn" x="460" y="248" width="260" height="48" rx="10"/><text class="s-t" x="590" y="278" text-anchor="middle">.catch() · .finally()</text></g>
+  <path class="s-dash s-flow-soft s-arr" d="M 310 272 L 455 272"/>
+  <text class="s-lbl" x="385" y="296" text-anchor="middle">catch روی زنجیره</text>
+</svg>
+<figcaption><b>وضعیت‌های Promise:</b> از <code>pending</code> فقط یک بار و برای همیشه به
+<code>fulfilled</code> یا <code>rejected</code> می‌رسد. مقصد <code>rejected</code> را
+<code>.catch()</code> می‌گیرد و <code>.finally()</code> در هر دو مسیر اجرا می‌شود.</figcaption>
+</figure>
+<div class="kl-scroll"><table>
+  <tr><th>متد</th><th>نوع</th><th>رفتار</th></tr>
+  <tr><td><code>Promise.resolve(v)</code></td><td>Static</td><td>Promise حل‌شده با <code>v</code></td></tr>
+  <tr><td><code>Promise.reject(e)</code></td><td>Static</td><td>Promise رد‌شده با <code>e</code></td></tr>
+  <tr><td><code>Promise.all(iter)</code></td><td>Static</td><td>همه موفق → آرایه؛ اولین رد → رد فوری</td></tr>
+  <tr><td><code>Promise.allSettled(iter)</code></td><td>Static</td><td>همه تمام شوند؛ هرگز رد نمی‌شود</td></tr>
+  <tr><td><code>Promise.race(iter)</code></td><td>Static</td><td>اولین نتیجه (موفق یا ناموفق)</td></tr>
+  <tr><td><code>Promise.any(iter)</code></td><td>Static</td><td>اولین موفق؛ اگر همه رد شوند <code>AggregateError</code></td></tr>
+  <tr><td><code>Promise.withResolvers()</code></td><td>Static</td><td>دسترسی بیرونی به <code>resolve/reject</code></td></tr>
+  <tr><td><code>.then(onF, onR)</code></td><td>Instance</td><td>زنجیره‌سازی نتیجه یا خطا</td></tr>
+  <tr><td><code>.catch(onR)</code></td><td>Instance</td><td>گرفتن خطای زنجیره</td></tr>
+  <tr><td><code>.finally(onF)</code></td><td>Instance</td><td>پاک‌سازی؛ بدون تغییر نتیجه</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="js"><code>// ساخت و مصرف
+const p = new Promise((resolve, reject) =&gt; {
+  setTimeout(() =&gt; resolve(42), 1000);
+});
+
+p.then((v) =&gt; v * 2)
+ .then((v) =&gt; console.log(v))          // 84
+ .catch((err) =&gt; console.error(err))
+ .finally(() =&gt; console.log('done'));
+
+// ترکیب‌کننده‌ها
+await Promise.all([a, b, c]);          // همه موفق لازم است
+await Promise.allSettled([a, b]);      // [{status,value|reason}, ...]
+await Promise.race([a, b]);            // اولین نتیجه
+await Promise.any([a, b]);             // اولین موفق
+
+// Promise.withResolvers (ES2024) — الگوی Deferred بدون پیچیدگی
+const { promise, resolve, reject } = Promise.withResolvers();
+someApi((err, data) =&gt; (err ? reject(err) : resolve(data)));
+await promise;
+
+// جلوگیری از Unhandled Rejection در سطح جهانی (Node.js)
+process.on('unhandledRejection', (reason) =&gt; console.error('Unhandled:', reason));
+// در مرورگر:
+window.addEventListener('unhandledrejection', (e) =&gt; console.error(e.reason));</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">هر .then یک Microtask</span>
+<code>p.then(f)</code> بلافاصله اجرا نمی‌شود؛ <code>f</code> به‌عنوان Microtask در صف گذاشته
+می‌شود. همین دلیل می‌شود که <code>then</code>ها همیشه بعد از کدِ همگامِ ادامه‌ی اسکریپت اجرا شوند.
+</div>
+</section>
+
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>async/await، Generator و async Iterator</h2>
+<p>
+<code>async/await</code> «شکرِ نحویِ» Promise است: کدِ غیرهمگام را همگام‌خوان می‌کند.
+<code>await</code> اجرای همان تابع را متوقف (suspend) می‌کند، اما Thread را آزاد می‌گذارد تا Event
+Loop کارهای دیگر را انجام دهد.
+</p>
+<pre class="kl-code" data-lang="js"><code>async function loadUser(id) {
+  try {
+    const res = await fetch(`/api/users/${id}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error('خطا:', err.message);
+    throw err;                          // پرتاب دوباره برای فراخوان
+  } finally {
+    console.log('پایان درخواست');
+  }
+}
+
+// ✗ ترتیبی: کند
+const a = await loadUser(1);
+const b = await loadUser(2);
+
+// ✓ موازی: سریع
+const [user1, user2] = await Promise.all([loadUser(1), loadUser(2)]);
+
+// async generator + for await...of (صفحه‌بندی)
+async function* paginate(url) {
+  let next = url;
+  while (next) {
+    const res = await fetch(next);
+    const page = await res.json();
+    yield page.items;
+    next = page.next;
+  }
+}
+
+for await (const items of paginate('/api/items')) {
+  console.log(items.length);
+}
+
+// Generator معمولی: توقف/ادامه‌ی دستی
+function* range(n) {
+  for (let i = 0; i &lt; n; i++) yield i;
+}
+[...range(3)];   // [0, 1, 2]
+
+// Top-level await فقط در ES Module
+const cfg = await fetch('/config.json').then((r) =&gt; r.json());</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>مفهوم</th><th>کلاس/ساختار</th><th>کاربرد</th></tr>
+  <tr><td><code>async</code></td><td><code>AsyncFunction</code></td><td>همیشه <code>Promise</code> برمی‌گرداند</td></tr>
+  <tr><td><code>await</code></td><td>اپراتور</td><td>انتظار بدون قفل‌کردن Thread</td></tr>
+  <tr><td><code>function*</code></td><td><code>Generator</code></td><td>تولید مقادیر به‌صورت تنبل (lazy)</td></tr>
+  <tr><td><code>async function*</code></td><td><code>AsyncGenerator</code></td><td>جریان غیرهمگام مقادیر</td></tr>
+  <tr><td><code>for await...of</code></td><td><code>AsyncIterator</code></td><td>پیمایش جریان غیرهمگام</td></tr>
+</table></div>
+<div class="kl-box kl-warn"><span class="kl-h">await و حلقه</span>
+داخل <code>for</code> معمولی، <code>await</code> هر تکرار را <em>ترتیبی</em> می‌کند. برای موازی‌سازی
+از <code>Promise.all(map(...))</code> یا <code>for await</code> روی ژنراتور استفاده کنید. همچنین
+ترکیب <code>await</code> در <code>forEach</code> کار نمی‌کند (چون Callback جدا است) —
+<code>for...of</code> بگذارید.
+</div>
+</section>
+
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>Threading: Web Worker و Worker Thread</h2>
+<p>
+برای <strong>Parallelism</strong> واقعی در JavaScript باید Thread جدید بسازیم. مرورگر
+<code>Web Worker</code> و Node.js <code>Worker Threads</code> را دارد. Worker حافظه‌ی مستقل دارد و
+ارتباط فقط با پیام انجام می‌شود؛ پس هرگز <code>DOM</code> را مستقیماً لمس نمی‌کند.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 320" role="img" aria-label="مدل Threading: Main Thread با Event Loop و دو Worker Thread مستقل و SharedArrayBuffer مشترک با Atomics">
+  <rect class="s-group s-group-acc" x="20" y="30" width="250" height="250" rx="14"/>
+  <text class="s-group-t" x="145" y="52" text-anchor="middle">Main Thread</text>
+  <g class="s-node" style="--kl-i:1"><rect class="s-acc" x="36" y="64" width="218" height="40" rx="8"/><text class="s-t" x="145" y="90" text-anchor="middle">Event Loop</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c5" x="36" y="114" width="218" height="40" rx="8"/><text class="s-t2" x="145" y="140" text-anchor="middle">DOM / UI</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c4" x="36" y="164" width="218" height="40" rx="8"/><text class="s-t2" x="145" y="190" text-anchor="middle">postMessage</text></g>
+  <text class="s-lbl" x="145" y="256" text-anchor="middle">تک‌رشته‌ای · هرگز مسدود نکن</text>
+
+  <rect class="s-group" x="290" y="30" width="460" height="250" rx="14"/>
+  <text class="s-group-t" x="520" y="52" text-anchor="middle">Worker Threads — موازی‌سازی واقعی</text>
+  <g class="s-node" style="--kl-i:4"><rect class="s-ok" x="310" y="74" width="192" height="64" rx="9"/><text class="s-t" x="406" y="103" text-anchor="middle">Worker A</text><text class="s-lbl" x="406" y="123" text-anchor="middle">حافظه‌ی مستقل</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c4" x="520" y="74" width="212" height="64" rx="9"/><text class="s-t" x="626" y="103" text-anchor="middle">Worker B</text><text class="s-lbl" x="626" y="123" text-anchor="middle">حافظه‌ی مستقل</text></g>
+  <g class="s-node s-pulse" style="--kl-i:6"><rect class="s-c6" x="310" y="176" width="422" height="56" rx="10"/><text class="s-t" x="521" y="203" text-anchor="middle">SharedArrayBuffer + Atomics</text><text class="s-lbl" x="521" y="222" text-anchor="middle">تنها حافظه‌ی مشترک بین Threadها</text></g>
+  <path class="s-arr s-flow" d="M 270 130 L 300 106"/><path class="s-head" d="M 306 103 L 293 101 L 299 114 Z"/>
+  <path class="s-arr s-flow" d="M 300 150 L 270 184"/><path class="s-head" d="M 266 187 L 279 186 L 272 176 Z"/>
+  <path class="s-dash s-arr" d="M 406 138 L 406 172"/><path class="s-arr s-flow" d="M 626 138 L 626 172"/>
+</svg>
+<figcaption><b>Threading:</b> هر Worker حافظه‌ی جدا دارد و فقط با <code>postMessage</code> حرف می‌زند؛ تنها راه اشتراک حافظه، <code>SharedArrayBuffer</code> با هماهنگی <code>Atomics</code> است. Main Thread آزاد می‌ماند و UI نمی‌خوابد.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="js"><code>// ── Web Worker (مرورگر) ──
+// main.js
+const worker = new Worker('worker.js', { type: 'module' });
+worker.postMessage({ n: 45 });
+worker.onmessage = (e) =&gt; console.log('نتیجه:', e.data);
+worker.onerror = (e) =&gt; console.error(e.message);
+// worker.terminate();
+
+// worker.js
+self.onmessage = (e) =&gt; {
+  self.postMessage(fib(e.data.n));   // محاسبه‌ی سنگین، بدون قفل UI
+};
+
+// ── Worker Threads (Node.js) ──
+import { Worker, isMainThread, parentPort } from 'node:worker_threads';
+
+if (isMainThread) {
+  const w = new Worker(new URL(import.meta.url));
+  w.on('message', (r) =&gt; console.log(r));
+  w.postMessage({ n: 45 });
+} else {
+  parentPort.on('message', (msg) =&gt; parentPort.postMessage(fib(msg.n)));
+}</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>Main Thread</th><th>Web Worker</th><th>Worker Threads</th></tr>
+  <tr><td>محیط</td><td>مرورگر / Node</td><td>مرورگر</td><td>Node.js</td></tr>
+  <tr><td>دسترسی DOM</td><td>✅</td><td>✗</td><td>✗</td></tr>
+  <tr><td>حافظه</td><td>مشترک با UI</td><td>جدا (پیام‌محور)</td><td>جدا (پیام‌محور)</td></tr>
+  <tr><td>موازی‌سازی</td><td>✗</td><td>✅</td><td>✅</td></tr>
+</table></div>
+<div class="kl-box kl-deep"><span class="kl-h">هزینه‌ی Worker</span>
+ساخت Worker گران است (چند مگابایت حافظه و زمان راه‌اندازی). برای کارهای کوچک، Worker بسازید و
+بکشید؛ برای بار زیاد، از <code>Worker Pool</code> استفاده کنید. داده با <code>Structured
+Clone</code> کپی می‌شود، مگر <code>Transferable</code> بفرستید.
+</div>
+</section>
+
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>SharedArrayBuffer، Atomics و MessageChannel</h2>
+<p>
+وقتی چند Thread باید روی داده‌ی مشترک کار کنند، <code>SharedArrayBuffer</code> حافظه‌ی مشترک
+می‌سازد و <code>Atomics</code> دسترسی اتمیک و ایمن را تضمین می‌کند. بدون <code>Atomics</code>،
+شرایط رقابتی (Race Condition) اجتناب‌ناپذیر است.
+</p>
+<pre class="kl-code" data-lang="js"><code>// حافظه‌ی مشترک بین Workerها
+const sab = new SharedArrayBuffer(4);          // ۴ بایت
+const view = new Int32Array(sab);
+
+Atomics.store(view, 0, 0);                     // نوشتن اتمیک
+Atomics.add(view, 0, 1);                       // ++ اتمیک
+Atomics.load(view, 0);                         // خواندن اتمیک
+
+// هماهنگی بدون Busy-Wait
+Atomics.wait(view, 0, 0);                      // منتظر بمان تا مقدار از ۰ عوض شود
+Atomics.notify(view, 0, 1);                    // یک Thread منتظر را بیدار کن
+
+// MessageChannel / MessagePort — کانال مستقیم دوطرفه
+const { port1, port2 } = new MessageChannel();
+port1.onmessage = (e) =&gt; console.log('از port2:', e.data);
+port2.postMessage('hello');
+
+// BroadcastChannel — انتشار بین Contextهای هم‌مبدأ
+const bc = new BroadcastChannel('notify');
+bc.onmessage = (e) =&gt; console.log(e.data);
+bc.postMessage({ type: 'refresh' });
+
+// Transferable: انتقال مالکیت بدون کپی حافظه
+const buffer = new ArrayBuffer(1024 * 1024);
+worker.postMessage({ buffer }, [buffer]);      // buffer اکنون بی‌استفاده است</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>API</th><th>کاربرد</th></tr>
+  <tr><td><code>SharedArrayBuffer</code></td><td>حافظه‌ی مشترک بین Threadها (نیازمند COOP/COEP در مرورگر)</td></tr>
+  <tr><td><code>Atomics</code></td><td>عملیات اتمیک روی <code>Int32Array</code> برای پرهیز از Race</td></tr>
+  <tr><td><code>Atomics.wait/notify</code></td><td>هماهنگی بلاک‌کننده به‌جای چرخش CPU</td></tr>
+  <tr><td><code>MessageChannel</code></td><td>کانال ارتباطی دوطرفه بین Contextها</td></tr>
+  <tr><td><code>BroadcastChannel</code></td><td>انتشار پیام بین تب‌ها/Workerهای هم‌مبدأ</td></tr>
+</table></div>
+<div class="kl-box kl-bad"><span class="kl-h">هشدار امنیتی</span>
+<code>SharedArrayBuffer</code> در مرورگر فقط با هدرهای <code>Cross-Origin-Opener-Policy: same-origin</code>
+و <code>Cross-Origin-Embedder-Policy: require-corp</code> در دسترس است، چون خطر حمله‌ی
+<code>Spectre</code> دارد.
+</div>
+</section>
+
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>لغو و رخداد: AbortController و EventEmitter</h2>
+<p>
+کارهای غیرهمگام باید قابل <strong>لغو</strong> باشند؛ وگرنه نتیجه‌ی دیرهنگام، وضعیت را خراب
+می‌کند. <code>AbortController</code> و <code>AbortSignal</code> استاندارد لغو هستند و
+<code>EventEmitter</code> الگوی رخداد-محور در Node.js.
+</p>
+<pre class="kl-code" data-lang="js"><code>// لغو fetch با AbortController
+const ac = new AbortController();
+const timer = setTimeout(() =&gt; ac.abort(), 5000);
+
+try {
+  const res = await fetch('/api/slow', { signal: ac.signal });
+  console.log(await res.json());
+} catch (err) {
+  if (err.name === 'AbortError') console.log('درخواست لغو شد');
+} finally {
+  clearTimeout(timer);                 // همیشه پاک‌سازی کن
+}
+
+// AbortSignal.timeout (مدرن و کوتاه)
+await fetch('/api/slow', { signal: AbortSignal.timeout(5000) });
+
+// ترکیب چند سیگنال
+const sig = AbortSignal.any([ac.signal, AbortSignal.timeout(3000)]);
+
+// EventEmitter (Node.js)
+import { EventEmitter } from 'node:events';
+
+class Store extends EventEmitter {}
+const store = new Store();
+
+const onChange = (v) =&gt; console.log('changed →', v);
+store.on('change', onChange);          // ثبت
+store.once('load', () =&gt; console.log('loaded'));
+store.emit('change', 1);               // انتشار
+store.off('change', onChange);         // حذف</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>عضو</th><th>کارکرد</th></tr>
+  <tr><td><code>AbortController.abort()</code></td><td>لغو کارهای متصل به <code>signal</code></td></tr>
+  <tr><td><code>AbortSignal.timeout(ms)</code></td><td>سیگنال خودکار پس از مهلت</td></tr>
+  <tr><td><code>AbortSignal.any([...])</code></td><td>ترکیب چند سیگنال</td></tr>
+  <tr><td><code>emitter.on/off/once</code></td><td>ثبت و حذف شنونده</td></tr>
+  <tr><td><code>emitter.emit(event, ...args)</code></td><td>انتشار رخداد به‌صورت همگام</td></tr>
+</table></div>
+<div class="kl-box kl-warn"><span class="kl-h">emit همگام است</span>
+<code>emitter.emit</code> شنونده‌ها را <em>همگام</em> صدا می‌زند — نه در صف. اگر شنونده سنگین باشد،
+همان جا Event Loop را می‌بندد. برای جداکردن، از <code>setImmediate</code> یا
+<code>queueMicrotask</code> استفاده کنید.
+</div>
+</section>
+
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>Starvation، Anti-patternها و Best Practices</h2>
+<p>
+بیشتر باگ‌های «کندی» و «فریز» در JavaScript از یک ریشه‌اند: کاری که نباید روی Main Thread باشد.
+اینجا خطاهای رایج و درمانشان را می‌بینیم.
+</p>
+<pre class="kl-code" data-lang="js"><code>// ✗ Anti-pattern: کار سنگین روی Main Thread
+app.get('/report', (req, res) =&gt; {
+  const data = heavyCpuReport();      // Event Loop قفل؛ همه‌ی درخواست‌ها منتظر
+  res.json(data);
+});
+
+// ✓ درمان ۱: آفلود به Worker Thread
+app.get('/report', (req, res) =&gt; {
+  const worker = new Worker('./report-worker.js');
+  worker.once('message', (data) =&gt; res.json(data));
+  worker.once('error', (err) =&gt; res.status(500).send(err.message));
+  worker.postMessage(req.query);
+});
+
+// ✓ درمان ۲: I/O غیرمسدودکننده به‌جای نسخه‌ی Sync
+import { readFile } from 'node:fs/promises';
+const data = await readFile(path, 'utf8');     // نه readFileSync
+
+// ✗ Anti-pattern: await در حلقه برای کارهای مستقل
+for (const id of ids) await fetchItem(id);     // ترتیبی و کند
+
+// ✓ موازی
+await Promise.all(ids.map((id) =&gt; fetchItem(id)));
+
+// ✗ Anti-pattern: Microtask بی‌پایان → Starvation
+function spin() {
+  Promise.resolve().then(spin);                // رندر هرگز نمی‌رسد
+}
+
+// ✗ Anti-pattern: نادیده‌گرفتن خطا
+fetch('/api').then((r) =&gt; r.json());           // بدون catch → Unhandled Rejection</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Best Practices — چک‌لیست</span>
+<ul>
+  <li>هرگز کار CPU-سنگین روی Main Thread انجام ندهید؛ به Worker بسپارید.</li>
+  <li>در Node.js همیشه نسخه‌ی <code>Promise</code> ماژول‌ها را ترجیح دهید (<code>fs/promises</code>).</li>
+  <li>کارهای مستقل را با <code>Promise.all</code> موازی کنید، نه <code>await</code> ترتیبی.</li>
+  <li>هر عملیات غیرهمگام باید <code>catch</code> یا <code>try/catch</code> داشته باشد.</li>
+  <li>برای لغو، <code>AbortController</code> و پاک‌سازی منابع را جدی بگیرید.</li>
+  <li>در حلقه‌های تکراری، از <code>setTimeout</code> برای نفس‌کشیدن Event Loop استفاده کنید.</li>
+  <li>مصرف حافظه‌ی Workerهای زیاد را مدیریت کنید؛ از Pool استفاده کنید.</li>
+</ul>
+</div>
+<div class="kl-box kl-bad"><span class="kl-h">Starvation چیست؟</span>
+وقتی صف Microtask هرگز خالی نمی‌شود یا یک Task بی‌پایان اجرا می‌شود، رندر و Taskهای بعدی
+<strong>هرگز</strong> فرصت اجرا پیدا نمی‌کنند. صفحه یخ می‌زند و تایمرها عقب می‌افتند.
+</div>
+</section>
+
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>سوالات مهم و جمع‌بندی</h2>
+<p>
+در ادامه چند پرسش پرتکرار که در مصاحبه و debug واقعی زیاد پیش می‌آید.
+</p>
+<div class="kl-box kl-deep"><span class="kl-h">Q1: JavaScript تک‌رشته‌ای است؟</span>
+بله؛ یک Call Stack و یک Thread اجرا. اما می‌تواند چندین کار را همزمان «در جریان» نگه دارد
+(Concurrency) و با Worker موازی‌سازی واقعی (Parallelism) انجام دهد.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Q2: تفاوت Microtask و Macrotask؟</span>
+Microtaskها (Promise، queueMicrotask) تا ته تخلیه می‌شوند و اولویت بالاتری دارند؛ Macrotaskها
+(setTimeout، I/O) یکی‌یکی و بین‌شان فرصت رندر است.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Q3: چرا setTimeout(fn, 0) فوراً اجرا نمی‌شود؟</span>
+چون فقط در صف Task اینسرت می‌شود و فقط وقتی Stack و Microtaskها خالی شدند اجرا می‌شود؛ تأخیر
+واقعی به بار سیستم هم بستگی دارد.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Q4: callStack خالی چه می‌شود؟</span>
+Event Loop یک کار از Microtask و سپس از Task برداشته و اجرا می‌کند؛ همین چرخه بی‌پایان است.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Q5: process.nextTick بهتر از setImmediate است؟</span>
+نه؛ <code>nextTick</code> بالاترین اولویت را دارد و می‌تواند I/O را گرسنه کند.
+<code>setImmediate</code> ایمن‌تر است و در فاز check اجرا می‌شود.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Q6: برای کار CPU-سنگین چه کنم؟</span>
+به <code>Web Worker</code> (مرورگر) یا <code>Worker Threads</code> (Node.js) بسپارید تا Main Thread
+آزاد بماند؛ در غیر این صورت UI فریز و سرور کند می‌شود.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Q7: تفاوت Concurrency و Parallelism؟</span>
+Concurrency = مدیریت هم‌زمانِ چند کار (روی یک Thread هم ممکن است)؛ Parallelism = اجرای فیزیکی
+هم‌زمان روی چند هسته.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Q8: async/await جایگزین Promise است؟</span>
+نه؛ روی Promise ساخته شده. هر <code>await</code> یک Microtask می‌سازد و رفتار زنجیره همان است — فقط
+خوانایی بهتر می‌شود.
+</div>
+<p>
+مدل اجرای JavaScript با یک ایده‌ی ساده بنا شده: <strong>یک Thread، یک Call Stack، و یک Event
+Loop</strong> که کارها را از صف برمی‌دارد. اگر مرز بین همگام و Microtask و Task را بفهمید، و برای
+کارهای سنگین از Worker و برای لغو از AbortController استفاده کنید، کدِ غیرهمگام دیگر جادو نیست؛
+یک الگوی قابل پیش‌بینی است.
+</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="concurrency-in-kotlin.html">همزمانی در کاتلین: از Thread تا Flow</a></li>
+  <li><a href="nodejs-http-server.html">Node.js HTTP Server</a></li>
+  <li><a href="rxjava-rxandroid.html">RxJava و RxAndroid</a></li>
+  <li><a href="event-driven-architecture.html">Event Driven Architecture</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: همزمانی، موازی‌سازی و مدل اجرای JavaScript</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Call Stack و Run-to-Completion</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Event Loop: قلب اجرای JavaScript</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">فازهای Event Loop در Node.js</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Task Queue و Microtask Queue</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Host APIها: مرورگر و Node.js</span></a></li>
+            <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Timerها: setTimeout، setInterval و setImmediate</span></a></li>
+            <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">queueMicrotask و process.nextTick</span></a></li>
+            <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Callback و Callback Hell</span></a></li>
+            <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Promise و متدهای ترکیبی</span></a></li>
+            <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">async/await، Generator و async Iterator</span></a></li>
+            <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">Threading: Web Worker و Worker Thread</span></a></li>
+            <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">SharedArrayBuffer، Atomics و MessageChannel</span></a></li>
+            <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">لغو و رخداد: AbortController و EventEmitter</span></a></li>
+            <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">Starvation، Anti-patternها و Best Practices</span></a></li>
+            <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">سوالات مهم و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="concurrency-in-kotlin.html" class="btn-action-block" style="text-align:center;"><span>همزمانی در کاتلین ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از سری همزمانی و اجرای JavaScript.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: همزمانی، موازی‌سازی و مدل اجرای JavaScript</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Call Stack و Run-to-Completion</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Event Loop: قلب اجرای JavaScript</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">فازهای Event Loop در Node.js</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Task Queue و Microtask Queue</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Host APIها: مرورگر و Node.js</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Timerها: setTimeout، setInterval و setImmediate</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">queueMicrotask و process.nextTick</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Callback و Callback Hell</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Promise و متدهای ترکیبی</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">async/await، Generator و async Iterator</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">Threading: Web Worker و Worker Thread</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">SharedArrayBuffer، Atomics و MessageChannel</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">لغو و رخداد: AbortController و EventEmitter</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">Starvation، Anti-patternها و Best Practices</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">سوالات مهم و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

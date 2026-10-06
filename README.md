@@ -33,6 +33,7 @@
 | ۲۱ | Event Driven Architecture چیست؟ آموزش کامل Event-Driven با مثال و ساختار پروژه | [`articles/event-driven-architecture.html`](articles/event-driven-architecture.html) | ~۶۰ دقیقه |
 | ۲۲ | CQRS چیست؟ آموزش کامل Command Query Responsibility Segregation با مثال و ساختار پروژه | [`articles/cqrs-architecture.html`](articles/cqrs-architecture.html) | ~۶۰ دقیقه |
 | ۲۳ | Microservices چیست؟ آموزش کامل معماری سرویس‌محور با مثال و ساختار پروژه | [`articles/microservices-architecture.html`](articles/microservices-architecture.html) | ~۶۵ دقیقه |
+| ۲۴ | Event Loop و همزمانی در JavaScript: راهنمای جامع و کامل | [`articles/javascript-event-loop.html`](articles/javascript-event-loop.html) | ~۶۰ دقیقه |
 
 ## آکادمی معماری سرور (سری جدید)
 

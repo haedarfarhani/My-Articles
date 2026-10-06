@@ -174,7 +174,7 @@
     </div>
 
     <div class="tags-filter" id="articles-filters" role="group" aria-label="فیلتر بر اساس موضوع">
-      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۶۱</span></button>
+      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۶۲</span></button>
       <button type="button" class="tag-btn" data-filter="kotlin" data-label="کاتلین و هم‌زمانی" aria-pressed="false">کاتلین و هم‌زمانی <span class="chip-count" data-count="kotlin">۴</span></button>
       <button type="button" class="tag-btn" data-filter="android" data-label="اندروید و کامپوز" aria-pressed="false">اندروید و کامپوز <span class="chip-count" data-count="android">۴</span></button>
       <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۱۸</span></button>
@@ -182,18 +182,29 @@
       <button type="button" class="tag-btn" data-filter="performance" data-label="پرفورمنس و حافظه" aria-pressed="false">پرفورمنس و حافظه <span class="chip-count" data-count="performance">۲</span></button>
       <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۵</span></button>
       <button type="button" class="tag-btn" data-filter="server" data-label="سرور و استقرار بک‌اند" aria-pressed="false">سرور و استقرار بک‌اند <span class="chip-count" data-count="server">۲۸</span></button>
+      <button type="button" class="tag-btn" data-filter="javascript" data-label="جاوااسکریپت و همزمانی" aria-pressed="false">جاوااسکریپت و همزمانی <span class="chip-count" data-count="javascript">۱</span></button>
     </div>
   </div>
 
   <!-- ================= Results bar ================= -->
   <div class="posts-results">
     <h2 class="section-title">مقالات منتشرشده</h2>
-    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۶۱ مقاله</p>
+    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۶۲ مقاله</p>
   </div>
 
   <!-- ================= Articles grid ================= -->
   <main class="posts-container">
     <div class="posts-grid" id="articles-grid">
+
+      <article class="post-card" data-category="javascript" data-tags="javascript async concurrency eventloop promise threading" data-order="62" data-minutes="60">
+        <a class="post-card-link" href="javascript-event-loop.html">
+          <div class="post-card-head"><span class="post-cat">جاوااسکریپت و همزمانی</span></div>
+          <h3 class="post-title">Event Loop و همزمانی در JavaScript: راهنمای جامع</h3>
+          <p class="post-excerpt">Call Stack، Event Loop، Microtask و Macrotask، فازهای Node.js، Promise و async/await، Web Worker و Worker Thread، Atomics و AbortController.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۶۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/javascript-event-loop.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#JavaScript</li><li class="post-tag">#Event_Loop</li><li class="post-tag">#Concurrency</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
 
       <article class="post-card" data-category="server" data-tags="server troubleshooting nginx journalctl debugging 502 504" data-order="61" data-minutes="45">
         <a class="post-card-link" href="server-troubleshooting.html">
