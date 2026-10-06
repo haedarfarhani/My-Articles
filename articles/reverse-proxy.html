@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reverse Proxy چیست؟ آموزش کامل با دیاگرام و مثال | حیدر فرحانی</title>
+  <meta name="description" content="Reverse Proxy چیست و چرا لازم است؟ TLS Termination، Routing، Caching، Compression، Rate Limiting، پنهان‌کردن زیرساخت و تفاوت آن با Forward Proxy — با پیکربندی NGINX و Caddy.">
+  <meta name="keywords" content="Reverse Proxy, Forward Proxy, پراکسی معکوس, TLS Termination, Routing, Caching, Rate Limiting, NGINX, Caddy, HAProxy, معماری سرور">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Reverse Proxy چیست؟ آموزش کامل با دیاگرام و مثال">
+  <meta property="og:description" content="TLS Termination، Routing، Caching، Compression و تفاوت آن با Forward Proxy.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/reverse-proxy.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/reverse-proxy.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Reverse Proxy چیست؟">
+  <meta name="twitter:description" content="TLS Termination، Routing، Caching و تفاوت با Forward Proxy.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/net-guard.js"></script>
+  <script defer src="../js/comments.js"></script>
+  <script defer src="../js/diagrams.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
+  <link rel="stylesheet" href="../css/net-guard.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Reverse Proxy چیست؟ آموزش کامل با دیاگرام و مثال",
+    "description": "Reverse Proxy چیست و چرا لازم است؟ TLS Termination، Routing، Caching، Compression، Rate Limiting، پنهان‌کردن زیرساخت و تفاوت آن با Forward Proxy — با پیکربندی NGINX و Caddy.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/reverse-proxy.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/reverse-proxy.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Reverse Proxy, Forward Proxy, TLS Termination, Routing, Caching, NGINX, Caddy",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Reverse Proxy", "item": "https://haedarfarhani.github.io/My-Articles/articles/reverse-proxy.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body data-article-id="reverse-proxy">
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">سرور و استقرار بک‌اند</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">مقاله ۰۳ — سطح مبتدی</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Reverse Proxy</span>؛ چرا هر معماری Production یک لایه‌ی میانی دارد؟
+          </h1>
+
+          <p class="hero-lead">
+            <strong>Reverse Proxy</strong> واسطه‌ای است که به‌جای کلاینت، از سمت سرور درخواست‌ها را
+            می‌پذیرد و به Backend می‌رساند. همین یک تصمیم ساده، ده‌ها مسئولیت را از دوش برنامه
+            برمی‌دارد: <code>TLS Termination</code>، <code>Routing</code>، <code>Caching</code>،
+            <code>Compression</code>، <code>Rate Limiting</code>، <code>Authentication</code>،
+            <code>Centralized Logging</code> و پنهان‌کردن زیرساخت.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۳۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مبتدی</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Reverse_Proxy</span>
+            <span class="post-tag">#Forward_Proxy</span>
+            <span class="post-tag">#TLS_Termination</span>
+            <span class="post-tag">#Routing</span>
+            <span class="post-tag">#NGINX</span>
+            <span class="post-tag">#Caddy</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه: مسئله‌ای که حل می‌کند</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Reverse Proxy چیست؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Reverse Proxy در برابر Forward Proxy</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>معماری و جریان درخواست</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>مسئولیت‌ها: TLS و امنیت</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>مسئولیت‌ها: Routing و Caching</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>پیکربندی NGINX</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>پیکربندی Caddy</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>اشتباهات رایج و Troubleshooting</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>مزایا، معایب و چه زمانی استفاده کنیم</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه: مسئله‌ای که حل می‌کند</h2>
+
+<p>
+فرض کنید یک Backend دارید که روی پورت ۳۰۰۰ گوش می‌دهد و باید عمومی باشد. اگر آن را مستقیم
+در معرض اینترنت بگذارید، مجبورید درون برنامهٔ خود این‌ها را پیاده کنید:
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نیاز</th><th>هزینه‌ی پیاده‌سازی درون برنامه</th></tr>
+  <tr><td>TLS و تمدید Certificate</td><td>مدیریت کلید، Handshake و Restart برای تمدید</td></tr>
+  <tr><td>Rate Limiting</td><td>شمارش در حافظه یا Redis و پیچیدگی توزیع‌شده</td></tr>
+  <tr><td>Static Files</td><td>کدگذاری سرو فایل و کش</td></tr>
+  <tr><td>Routing چند سرویس</td><td>بازنویسی مجدد مسیرها در هر سرویس</td></tr>
+  <tr><td>Logging یکپارچه</td><td>هر سرویس لاگ خودش را دارد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">راه‌حل</span>
+یک لایه‌ی میانی این کارها را <strong>یک‌بار</strong> انجام می‌دهد و Backend فقط روی منطق
+کسب‌وکار تمرکز می‌کند. این لایه همان <strong>Reverse Proxy</strong> است.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Reverse Proxy چیست؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>Reverse Proxy</strong> سروری است که درخواست‌های ورودی از اینترنت را می‌پذیرد، بخشی از
+پردازش لبه را انجام می‌دهد و درخواست را به یک یا چند سرور داخلی می‌فرستد؛ پاسخ نیز از همان
+مسیر برمی‌گردد. از دید کلاینت، تنها Reverse Proxy وجود دارد و ساختار داخلی ناشناخته است.
+</div>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="نمودار Reverse Proxy: کلاینت‌ها به Reverse Proxy وصل می‌شوند و Reverse Proxy به چند Backend داخلی">
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="40" y="40" width="150" height="46" rx="9"/>
+    <text class="s-t" x="115" y="68" text-anchor="middle">Client</text>
+  </g>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="40" y="120" width="150" height="46" rx="9"/>
+    <text class="s-t" x="115" y="148" text-anchor="middle">Mobile</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-box" x="40" y="200" width="150" height="46" rx="9"/>
+    <text class="s-t" x="115" y="228" text-anchor="middle">Partner API</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 190 63 L 285 135"/>
+  <path class="s-arr s-flow" d="M 190 143 L 285 143"/>
+  <path class="s-arr s-flow" d="M 190 223 L 285 151"/>
+  <path class="s-head" d="M 291 132 L 279 130 L 282 143 Z"/>
+  <path class="s-head" d="M 291 143 L 279 137 L 279 148 Z"/>
+  <path class="s-head" d="M 291 154 L 279 156 L 282 143 Z"/>
+
+  <g class="s-node s-pulse" style="--kl-i:4">
+    <rect class="s-acc" x="295" y="98" width="185" height="90" rx="11"/>
+    <text class="s-t" x="387" y="126" text-anchor="middle">Reverse Proxy</text>
+    <text class="s-t2" x="387" y="146" text-anchor="middle">TLS · Routing · Cache</text>
+    <text class="s-t2" x="387" y="164" text-anchor="middle">Rate Limit · Logging</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 480 118 L 565 70"/>
+  <path class="s-arr s-flow" d="M 480 143 L 565 143"/>
+  <path class="s-arr s-flow" d="M 480 168 L 565 216"/>
+  <path class="s-head" d="M 571 67 L 559 70 L 565 81 Z"/>
+  <path class="s-head" d="M 571 143 L 559 137 L 559 148 Z"/>
+  <path class="s-head" d="M 571 219 L 559 216 L 565 205 Z"/>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c4" x="575" y="40" width="155" height="46" rx="9"/>
+    <text class="s-t" x="652" y="68" text-anchor="middle">Backend 1</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-c4" x="575" y="120" width="155" height="46" rx="9"/>
+    <text class="s-t" x="652" y="148" text-anchor="middle">Backend 2</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-c6" x="575" y="200" width="155" height="46" rx="9"/>
+    <text class="s-t" x="652" y="228" text-anchor="middle">Static / CDN</text>
+  </g>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 115 143 L 387 143 L 652 143"/>
+  </circle>
+</svg>
+<figcaption><b>جریان درخواست:</b> کلاینت فقط Reverse Proxy را می‌بیند. این لایه بر اساس مسیر، هدر و دامنه تصمیم می‌گیرد کدام سرور داخلی پاسخ دهد و در مسیر بازگشت، پاسخ را بهینه (فشرده و کش‌شده) برمی‌گرداند.</figcaption>
+</figure>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Reverse Proxy در برابر Forward Proxy</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>Forward Proxy</th><th>Reverse Proxy</th></tr>
+  <tr><td>سمت</td><td>کنار کلاینت</td><td>کنار سرور</td></tr>
+  <tr><td>می‌داند چه کسی</td><td>کلاینت‌ها را</td><td>سرورها را</td></tr>
+  <tr><td>هدف اصلی</td><td>کنترل خروجی و ناشناسی کلاینت</td><td>ورودی، امنیت، مقیاس و بهینه‌سازی</td></tr>
+  <tr><td>نمونه</td><td>پروکسی سازمانی، VPN اخلاقی</td><td>NGINX، Caddy، HAProxy، ALB</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">اشتباه رایج</span>
+گاهی گفته می‌شود «Reverse Proxy برای پنهان‌شدن کلاینت است». نه — این کار
+<strong>Forward Proxy</strong> است. Reverse Proxy پشت سرور می‌نشیند و <strong>زیرساخت را
+پنهان می‌کند</strong>.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>معماری و جریان درخواست</h2>
+
+<pre class="kl-code" data-lang="text"><code>Browser / Mobile Client
+        │  HTTPS (443)
+        ▼
+  Reverse Proxy  ← TLS Termination
+        │  HTTP (internal)
+        ▼
+  Application Server
+        │
+        ▼
+  PostgreSQL / Redis
+
+نکته: کلاینت هرگز نمی‌داند چند Backend وجود دارد.</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مرحله</th><th>اتفاق</th></tr>
+  <tr><td>۱. اتصال</td><td>کلاینت با Reverse Proxy Handshake می‌کند</td></tr>
+  <tr><td>۲. تصمیم</td><td>Proxy بر اساس Host/Path/Header مقصد را انتخاب می‌کند</td></tr>
+  <tr><td>۳. ارسال</td><td>درخواست با هدرهای <code>X-Forwarded-*</code> به Backend می‌رود</td></tr>
+  <tr><td>۴. پاسخ</td><td>Proxy پاسخ را (با Cache/Compression) به کلاینت برمی‌گرداند</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>مسئولیت‌ها: TLS و امنیت</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئولیت</th><th>چرا در لبه؟</th></tr>
+  <tr><td><strong>TLS Termination</strong></td><td>Certificate و کلید در یک نقطه مدیریت می‌شود؛ Backendها ساده می‌مانند</td></tr>
+  <tr><td><strong>Rate Limiting</strong></td><td>محافظت یکپارچه از همه‌ی سرویس‌ها</td></tr>
+  <tr><td><strong>Authentication / Authorization</strong></td><td>توکن در لبه بررسی و هدر داخلی ساخته می‌شود</td></tr>
+  <tr><td><strong>IP Allowlist / Denylist</strong></td><td>مسدودسازی قبل از رسیدن به برنامه</td></tr>
+  <tr><td><strong>Security Headers</strong></td><td>HSTS، CSP و … یک‌بار اعمال می‌شوند</td></tr>
+  <tr><td><strong>Hiding Infrastructure</strong></td><td>پورت، نسخه و ساختار داخلی لو نمی‌رود</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">مرز اعتماد</span>
+هدرهای <code>X-Forwarded-For</code> و <code>X-Real-IP</code> فقط باید از Reverse Proxy مورد
+اعتماد پذیرفته شوند. در Backend با یک Middleware، منبع آن‌ها را محدود کنید.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>مسئولیت‌ها: Routing و Caching</h2>
+
+<pre class="kl-code" data-lang="text"><code>Path-based Routing
+
+  /api/*        → http://backend-api:8080
+  /auth/*       → http://auth-service:9000
+  /static/*     → /var/www/static  (فایل ثابت)
+  /ws           → WebSocket upgrade
+
+Caching
+
+  GET /products (public)  → Cache 10m
+  GET /me     (private)   → بدون Cache</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>قابلیت</th><th>اثر</th><th>ملاحظه</th></tr>
+  <tr><td>Routing</td><td>یک ورودی، چند سرویس</td><td>مسیرها را ثابت و مستند نگه دارید</td></tr>
+  <tr><td>Caching</td><td>کاهش Latency و بار Backend</td><td>محتوای خصوصی را کش نکنید</td></tr>
+  <tr><td>Compression</td><td>کاهش حجم متن</td><td>روی محتوای نامتناسب اثر منفی دارد</td></tr>
+  <tr><td>Buffering</td><td>آزادکردن سریع Backend</td><td>برای Streaming باید خاموش شود</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>پیکربندی NGINX</h2>
+
+<pre class="kl-code" data-lang="nginx"><code>upstream api {
+    server 127.0.0.1:8080;
+    server 127.0.0.1:8081;
+    keepalive 32;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name app.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/app.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/app.example.com/privkey.pem;
+
+    # فایل‌های ثابت مستقیم از دیسک
+    location /static/ {
+        root /var/www/app;
+        expires 30d;
+    }
+
+    # API به Backend
+    location /api/ {
+        proxy_pass http://api;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">Expected Behavior</span>
+یک درخواست به <code>/api/orders</code> باید با مسیر کامل به Backend برسد، در حالی که
+<code>/static/app.js</code> بدون دخالت Backend از دیسک سرو می‌شود.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>پیکربندی Caddy</h2>
+
+<pre class="kl-code" data-lang="text"><code>app.example.com {
+    encode gzip zstd
+
+    handle /static/* {
+        root * /var/www/app
+        file_server
+    }
+
+    handle /api/* {
+        reverse_proxy 127.0.0.1:8080 127.0.0.1:8081 {
+            lb_policy least_conn
+            health_uri /health
+            health_interval 10s
+        }
+    }
+
+    # TLS خودکار و تمدید خودکار Certificate
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>موضوع</th><th>NGINX</th><th>Caddy</th></tr>
+  <tr><td>TLS خودکار</td><td>نیاز به Certbot/مدیریت دستی</td><td>پیش‌فرض و خودکار</td></tr>
+  <tr><td>Active Health Check</td><td>در نسخه‌ی Plus</td><td>در نسخه‌ی اصلی</td></tr>
+  <tr><td>منحنی یادگیری</td><td>بیشتر</td><td>کمتر</td></tr>
+  <tr><td>انعطاف‌پذیری</td><td>بالاتر</td><td>کافی برای اکثر پروژه‌ها</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>اشتباهات رایج و Troubleshooting</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>خطا</th><th>علت</th><th>تشخیص</th><th>راه‌حل</th></tr>
+  <tr><td>502</td><td>Backend unavailable</td><td><code>curl 127.0.0.1:8080/health</code></td><td>سرویس را بالا بیاورید</td></tr>
+  <tr><td>X-Forwarded-For اشتباه</td><td>نبود یا چندلایه‌بودن هدر</td><td>بازرسی Header در Backend</td><td>تنظیم درست و محدودسازی منبع</td></tr>
+  <tr><td>Rate Limit همه را می‌بندد</td><td>پشت CDN بودن و IP مشترک</td><td>لاگ <code>limit_req</code></td><td>استفاده از <code>X-Forwarded-For</code> واقعی</td></tr>
+  <tr><td>Client IP جعلی</td><td>اعتماد بی‌قید به هدر</td><td>مقایسه با اتصال مستقیم</td><td>فقط IP پروکسی مطمئن را بپذیرید</td></tr>
+  <tr><td>Timeout روی Streaming</td><td>Buffering فعال</td><td>—</td><td><code>proxy_buffering off</code></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>مزایا، معایب و چه زمانی استفاده کنیم</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>تمرکز TLS و امنیت در یک نقطه</td><td>یک جزء جدید که باید مانیتور و به‌روز شود</td></tr>
+  <tr><td>پنهان‌کردن زیرساخت و کاهش سطح حمله</td><td>پیکربندی اشتباه آن کل سرویس را قطع می‌کند</td></tr>
+  <tr><td>بهینه‌سازی متمرکز: Cache، Compression، Keep-Alive</td><td>نقطه‌ی شکست تک در نبود Redundancy</td></tr>
+  <tr><td>امکان Scaling و Routing بدون تغییر برنامه</td><td>افزایش Latency کوچک به‌ازای یک Hop اضافه</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">When to Use</span>
+هر سرویس وب عمومی که TLS، چند سرویس، فایل ثابت یا نیاز به Rate Limiting دارد.
+</div>
+<div class="kl-box kl-bad">
+<span class="kl-h">When NOT to Use</span>
+برای یک سرویس داخلی با یک Backend و بدون TLS، افزودن لایه فقط پیچیدگی است. همچنین اگر
+Latency داخلی بسیار حساس است، Hop اضافه را با معیار واقعی بسنجید.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>جمع‌بندی و مقالات مرتبط</h2>
+
+<p>
+<strong>Reverse Proxy</strong> یک انتخاب معماری است، نه فقط یک ابزار. با آن، ده‌ها مسئولیت
+مشترک از برنامه‌ها بیرون می‌آید و در یک لایه‌ی قابل کنترل متمرکز می‌شود.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">گام بعدی</span>
+<a href="nginx.html"><strong>NGINX</strong></a> — پیاده‌سازی عملی Reverse Proxy، TLS و Load Balancing.
+</div>
+
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+  <li><a href="web-server.html">Web Server چیست؟</a></li>
+  <li><a href="nginx.html">NGINX — راهنمای عمیق</a></li>
+  <li><a href="complete-production-architecture.html">Complete Production Architecture</a></li>
+</ul>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۱۱ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: مسئله‌ای که حل می‌کند</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Reverse Proxy چیست؟</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Reverse Proxy در برابر Forward Proxy</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">معماری و جریان درخواست</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مسئولیت‌ها: TLS و امنیت</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مسئولیت‌ها: Routing و Caching</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">پیکربندی NGINX</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">پیکربندی Caddy</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">اشتباهات رایج و Troubleshooting</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مزایا، معایب و چه زمانی استفاده کنیم</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="server-architecture.html" class="btn-action-block" style="text-align:center;">
+              <span>نقشه‌ی راه آکادمی ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>بخشی از آکادمی معماری سرور: از یک درخواست ساده تا یک معماری Production کامل.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه: مسئله‌ای که حل می‌کند</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Reverse Proxy چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Reverse Proxy در برابر Forward Proxy</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">معماری و جریان درخواست</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مسئولیت‌ها: TLS و امنیت</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مسئولیت‌ها: Routing و Caching</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">پیکربندی NGINX</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">پیکربندی Caddy</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">اشتباهات رایج و Troubleshooting</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">مزایا، معایب و چه زمانی استفاده کنیم</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

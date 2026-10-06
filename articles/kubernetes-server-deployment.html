@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استقرار سرور با Kubernetes: Pod تا Ingress | حیدر فرحانی</title>
+  <meta name="description" content="استقرار با Kubernetes: Control Plane و Node، Pod، Deployment، Service، ConfigMap و Secret، Probes، Ingress، HPA و Rollout/Rollback.">
+  <meta name="keywords" content="Kubernetes, k8s, Pod, Deployment, Service, ConfigMap, Secret, Ingress, HPA, probes, rollout">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="استقرار سرور با Kubernetes: Pod تا Ingress">
+  <meta property="og:description" content="Pod، Deployment، Service، Ingress، HPA و Rollout.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/kubernetes-server-deployment.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/kubernetes-server-deployment.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="استقرار با Kubernetes">
+  <meta name="twitter:description" content="Pod، Service، Ingress، HPA و Rollout.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "استقرار سرور با Kubernetes: Pod تا Ingress", "description": "Kubernetes: Pod، Deployment، Service، ConfigMap، Secret، Probes، Ingress، HPA و Rollback.", "url": "https://haedarfarhani.github.io/My-Articles/articles/kubernetes-server-deployment.html", "inLanguage": "fa-IR", "keywords": "Kubernetes, Pod, Deployment, Service, Ingress, HPA, rollout", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "استقرار با Kubernetes", "item": "https://haedarfarhani.github.io/My-Articles/articles/kubernetes-server-deployment.html" } ] } }
+  </script>
+</head>
+<body data-article-id="kubernetes-server-deployment">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">سرور و استقرار بک‌اند</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح پیشرفته</span></div>
+        <h1 class="post-title"><span class="gradient-text">استقرار سرور با Kubernetes</span>؛ از Pod تا Ingress</h1>
+        <p class="hero-lead">
+          Kubernetes پیچیده است، اما دلیلش ساده است: مدیریت خودکار استقرار، مقیاس و بازیابی در مقیاس
+          بزرگ. در این مقاله از مفاهیم پایه — <code>Pod</code>، <code>Deployment</code> و
+          <code>Service</code> — تا <code>Ingress</code>، <code>HPA</code> و <code>Rollout</code>
+          را مرور می‌کنیم.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۴۵ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: پیشرفته</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#Kubernetes</span><span class="post-tag">#Pod</span><span class="post-tag">#Deployment</span><span class="post-tag">#Service</span><span class="post-tag">#Ingress</span><span class="post-tag">#HPA</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>معماری Kubernetes</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>Pod، Deployment و Service</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>ConfigMap، Secret و Probes</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>Ingress و HPA</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Rollout/Rollback و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه</h2>
+<p>
+Kubernetes یک <strong>Orchestrator</strong> است: به‌جای دستی‌کردن سرورها، فقط «چه می‌خواهیم» را
+می‌گوییم و Kubernetes تلاش می‌کند واقعیت را با آن هم‌راستا کند (<code>Desired State</code>).
+این مقاله مفاهیم کلیدی و مسیر استقرار را روشن می‌کند.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">در این مقاله</span>
+معماری Cluster، Pod و Deployment، Service، ConfigMap و Secret، Probes، Ingress و HPA.</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+<a href="docker-server-deployment.html">استقرار با Docker</a> و <a href="high-availability.html">High Availability</a>.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>معماری Kubernetes</h2>
+<div class="kl-scroll"><table>
+  <tr><th>جزء</th><th>نقش</th></tr>
+  <tr><td><code>Control Plane</code></td><td>API Server، Scheduler، Controller Manager، etcd</td></tr>
+  <tr><td><code>Node</code></td><td>ماشینی که Podها را اجرا می‌کند (kubelet + kube-proxy)</td></tr>
+  <tr><td><code>etcd</code></td><td>پایگاه کلید-مقدار وضعیت Cluster</td></tr>
+  <tr><td><code>CNI</code></td><td>شبکه‌ی Podها</td></tr>
+</table></div>
+<div class="kl-box kl-deep"><span class="kl-h">Desired State</span>
+در Kubernetes شما وضعیت مطلوب را توصیف می‌کنید و Controllerها دائماً آن را با وضعیت واقعی مقایسه
+و اصلاح می‌کنند؛ این «خودترمیمی» قلب این سیستم است.
+</div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>Pod، Deployment و Service</h2>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 320" role="img" aria-label="معماری Kubernetes: Ingress به Service و از آن به چند Pod در Nodeها متصل می‌شود">
+  <g class="s-node" style="--kl-i:1"><rect class="s-box" x="285" y="6" width="200" height="40" rx="9"/><text class="s-t" x="385" y="31" text-anchor="middle">Client</text></g>
+  <path class="s-arr s-flow" d="M 385 46 L 385 66"/><path class="s-head" d="M 385 72 L 378 60 L 392 60 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-acc" x="265" y="74" width="240" height="42" rx="9"/><text class="s-t" x="385" y="100" text-anchor="middle">Ingress</text></g>
+  <path class="s-arr s-flow" d="M 385 116 L 385 138"/><path class="s-head" d="M 385 144 L 378 132 L 392 132 Z"/>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c4" x="265" y="146" width="240" height="42" rx="9"/><text class="s-t2" x="385" y="172" text-anchor="middle">Service (ClusterIP)</text></g>
+  <path class="s-arr s-flow" d="M 300 188 L 200 224"/><path class="s-arr s-flow" d="M 385 188 L 385 224"/><path class="s-arr s-flow" d="M 470 188 L 570 224"/>
+  <path class="s-head" d="M 193 230 L 200 218 L 210 226 Z"/><path class="s-head" d="M 385 230 L 378 218 L 392 218 Z"/><path class="s-head" d="M 562 226 L 570 231 L 559 231 Z"/>
+  <rect class="s-group s-group-acc" x="40" y="232" width="690" height="76" rx="14"/>
+  <text class="s-group-t" x="385" y="254" text-anchor="middle">Nodes</text>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c5" x="70" y="262" width="180" height="36" rx="8"/><text class="s-t2" x="160" y="285" text-anchor="middle">Pod A</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c5" x="295" y="262" width="180" height="36" rx="8"/><text class="s-t2" x="385" y="285" text-anchor="middle">Pod B</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c5" x="520" y="262" width="180" height="36" rx="8"/><text class="s-t2" x="610" y="285" text-anchor="middle">Pod C</text></g>
+</svg>
+<figcaption><b>از بیرون به داخل:</b> Ingress ترافیک را می‌گیرد، Service آن را به Podهای سالم هدایت می‌کند و Deployment تعداد و سلامت Podها را تضمین می‌کند.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="yaml"><code>apiVersion: apps/v1
+kind: Deployment
+metadata: { name: api }
+spec:
+  replicas: 3
+  selector: { matchLabels: { app: api } }
+  template:
+    metadata: { labels: { app: api } }
+    spec:
+      containers:
+        - name: api
+          image: registry.example.com/app:1.4.2
+          ports: [{ containerPort: 8080 }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: api }
+spec:
+  selector: { app: api }
+  ports: [{ port: 80, targetPort: 8080 }]</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+Deployment همیشه سه Pod سالم نگه می‌دارد؛ اگر یکی بمیرد، Pod جدید ساخته می‌شود. Service یک آدرس
+پایدار (<code>api</code>) می‌دهد که پشت آن Podهای گذرا قرار دارند.
+</div>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>ConfigMap، Secret و Probes</h2>
+<pre class="kl-code" data-lang="yaml"><code>apiVersion: v1
+kind: ConfigMap
+metadata: { name: api-config }
+data:
+  APP_MODE: "production"
+  LOG_LEVEL: "info"
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: api-secret }
+type: Opaque
+stringData:
+  DB_PASSWORD: "change-me"
+---
+# بخشی از Pod spec — Probes
+livenessProbe:
+  httpGet: { path: /health/live, port: 8080 }
+  initialDelaySeconds: 15
+  periodSeconds: 10
+readinessProbe:
+  httpGet: { path: /health/ready, port: 8080 }
+  initialDelaySeconds: 5
+resources:
+  requests: { cpu: "250m", memory: "256Mi" }
+  limits:   { cpu: "1",    memory: "512Mi" }</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>Probe</th><th>کارکرد</th></tr>
+  <tr><td><code>liveness</code></td><td>اگر شکست بخورد، Pod دوباره راه‌اندازی می‌شود</td></tr>
+  <tr><td><code>readiness</code></td><td>اگر شکست بخورد، ترافیک به Pod نمی‌رود</td></tr>
+  <tr><td><code>startup</code></td><td>برای اپ‌های کند در شروع</td></tr>
+</table></div>
+<div class="kl-box kl-warn"><span class="kl-h">Resource Limits</span>
+بدون <code>requests/limits</code>، یک Pod می‌تواند منابع بقیه را بخورد و کل Node را بی‌ثبات کند.
+این تنظیمات اجباری است، نه اختیاری.
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>Ingress و HPA</h2>
+<pre class="kl-code" data-lang="yaml"><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+    - hosts: [api.example.com]
+      secretName: api-tls
+  rules:
+    - host: api.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: api, port: { number: 80 } }</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>مؤلفه</th><th>نقش</th></tr>
+  <tr><td><code>Ingress</code></td><td>مسیریابی HTTP و TLS در لبه‌ی Cluster</td></tr>
+  <tr><td><code>cert-manager</code></td><td>گرفتن و تمدید خودکار گواهی</td></tr>
+  <tr><td><code>HPA</code></td><td>افزایش/کاهش خودکار تعداد Pod بر پایه‌ی متریک</td></tr>
+</table></div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>Rollout/Rollback و جمع‌بندی</h2>
+<pre class="kl-code" data-lang="bash"><code># استقرار نسخه‌ی جدید (Rolling Update پیش‌فرض)
+kubectl set image deployment/api api=registry.example.com/app:1.4.3
+kubectl rollout status deployment/api
+
+# بازگشت سریع
+kubectl rollout undo deployment/api
+
+# تاریخچه‌ی نسخه‌ها
+kubectl rollout history deployment/api</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+Kubernetes Podها را تدریجی جایگزین می‌کند و تا آماده‌شدن Pod جدید، ترافیک را به قدیمی‌ها می‌فرستد؛
+در صورت خطا، یک دستور Rollback کافی است.
+</div>
+<div class="kl-scroll"><table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>مقیاس، بازیابی و استقرار خودکار</td><td>منحنی یادگیری بالا</td></tr>
+  <tr><td>Zero-Downtime و Rollback آسان</td><td>هزینه و پیچیدگی عملیاتی</td></tr>
+  <tr><td>مستقل از محیط زیرساخت</td><td>برای پروژه‌های کوچک، Overkill</td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">When to Use</span>سازمان‌هایی با Microservice، نیاز به مقیاس خودکار و تیم DevOps.</div>
+<div class="kl-box kl-bad"><span class="kl-h">When NOT to Use</span>پروژه‌های کوچک تک‌سرویسی؛ Docker Compose یا یک سرور ساده کافی است.</div>
+<p>Kubernetes ابزار قدرتمندی برای مدیریت استقرار در مقیاس است. اگر مفاهیم Pod، Service و Deployment
+را بفهمید، بقیه‌ی اکوسیستم بر پایه‌ی همین‌ها ساخته می‌شود.</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="docker-server-deployment.html">استقرار با Docker</a></li>
+  <li><a href="rolling-deployment.html">Rolling Deployment</a></li>
+  <li><a href="horizontal-vs-vertical-scaling.html">Horizontal vs Vertical Scaling</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">معماری Kubernetes</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Pod، Deployment و Service</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">ConfigMap، Secret و Probes</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Ingress و HPA</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Rollout/Rollback و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">معماری Kubernetes</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">Pod، Deployment و Service</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">ConfigMap، Secret و Probes</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Ingress و HPA</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Rollout/Rollback و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

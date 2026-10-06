@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP/1.1 در برابر HTTP/2 در برابر HTTP/3 | حیدر فرحانی</title>
+  <meta name="description" content="مقایسه HTTP/1.1، HTTP/2 و HTTP/3: Multiplexing، HPACK، Stream Priority، Server Push، QUIC و UDP، و پیکربندی فعال‌سازی در NGINX.">
+  <meta name="keywords" content="HTTP/1.1, HTTP/2, HTTP/3, QUIC, Multiplexing, HPACK, Server Push, TLS, NGINX">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="HTTP/1.1 در برابر HTTP/2 در برابر HTTP/3">
+  <meta property="og:description" content="Multiplexing، HPACK، QUIC و فعال‌سازی در NGINX.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/http1-http2-http3.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/http1-http2-http3.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HTTP/1.1 vs HTTP/2 vs HTTP/3">
+  <meta name="twitter:description" content="Multiplexing، HPACK و QUIC.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "HTTP/1.1 در برابر HTTP/2 در برابر HTTP/3", "description": "مقایسه HTTP/1.1، HTTP/2 و HTTP/3: Multiplexing، HPACK، QUIC و پیکربندی NGINX.", "url": "https://haedarfarhani.github.io/My-Articles/articles/http1-http2-http3.html", "inLanguage": "fa-IR", "keywords": "HTTP/2, HTTP/3, QUIC, Multiplexing, HPACK, NGINX", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "HTTP/1.1 vs HTTP/2 vs HTTP/3", "item": "https://haedarfarhani.github.io/My-Articles/articles/http1-http2-http3.html" } ] } }
+  </script>
+</head>
+<body data-article-id="http1-http2-http3">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">سرور و استقرار بک‌اند</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح متوسط</span></div>
+        <h1 class="post-title"><span class="gradient-text">HTTP/1.1</span> در برابر <span class="gradient-text">HTTP/2</span> در برابر <span class="gradient-text">HTTP/3</span></h1>
+        <p class="hero-lead">
+          سه نسل پروتکل HTTP، سه رویکرد متفاوت به کارایی: از <code>Head-of-Line Blocking</code> در
+          نسخه‌ی ۱ تا <code>Multiplexing</code> در نسخه‌ی ۲ و پرش به <code>QUIC</code> روی UDP در
+          نسخه‌ی ۳. این مقاله می‌گوید هرکدام چه می‌دهند و چگونه فعالشان کنیم.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۳۵ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: متوسط</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#HTTP_1_1</span><span class="post-tag">#HTTP_2</span><span class="post-tag">#HTTP_3</span><span class="post-tag">#QUIC</span><span class="post-tag">#Multiplexing</span><span class="post-tag">#HPACK</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>HTTP/1.1 و محدودیت‌ها</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>HTTP/2 و Multiplexing</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>HTTP/3 و QUIC</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>معماری و مقایسه</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>پیکربندی و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه</h2>
+<p>
+پروتکل HTTP ستون ارتباط وب است و در سه نسل تکامل یافته. دانستن تفاوت‌ها نه یک کنجکاوی فنی است و نه
+تنها یک تنظیم سرور؛ بلکه مستقیماً بر سرعت تجربه‌ی کاربر اثر می‌گذارد. در این مقاله هر سه نسل را
+مقایسه می‌کنیم.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">در این مقاله</span>
+محدودیت‌های HTTP/1.1، قابلیت‌های HTTP/2، ساختار QUIC در HTTP/3 و پیکربندی در NGINX.</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+<a href="tls-https.html">TLS و HTTPS</a> و <a href="nginx.html">NGINX</a>.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>HTTP/1.1 و محدودیت‌ها</h2>
+<div class="kl-scroll"><table>
+  <tr><th>ویژگی</th><th>توضیح</th></tr>
+  <tr><td><code>Keep-Alive</code></td><td>استفاده‌ی مجدد از اتصال برای چند درخواست</td></tr>
+  <tr><td>محدودیت اتصال</td><td>مرورگر حدود ۶ اتصال موازی به هر دامنه باز می‌کند</td></tr>
+  <tr><td><code>Head-of-Line Blocking</code></td><td>یک پاسخ کند، بقیه را روی همان اتصال متوقف می‌کند</td></tr>
+</table></div>
+<div class="kl-box kl-warn"><span class="kl-h">توصیه‌ی منسوخ</span>
+در عصر HTTP/1.1 توصیه می‌شد فایل‌ها را ادغام (Concatenate) و Sprites بسازند. با HTTP/2 این
+توصیه معکوس شد؛ Multiplexing ادغام را کم‌فایده می‌کند.
+</div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>HTTP/2 و Multiplexing</h2>
+<p>
+<strong>HTTP/2</strong> لایه‌ی باینری و <code>Stream</code>ها را معرفی کرد: چند درخواست و پاسخ
+می‌توانند همزمان روی یک اتصال TCP منتقل شوند. هدرها با <code>HPACK</code> فشرده می‌شوند.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>ویژگی</th><th>فایده</th></tr>
+  <tr><td><code>Multiplexing</code></td><td>حذف صف در سطح اپلیکیشن</td></tr>
+  <tr><td><code>HPACK</code></td><td>کاهش حجم هدرهای تکراری</td></tr>
+  <tr><td><code>Stream Priority</code></td><td>اولویت‌دهی به منابع حیاتی</td></tr>
+  <tr><td><code>Server Push</code></td><td>ارسال منابع پیش از درخواست (امروز کم‌کاربرد)</td></tr>
+</table></div>
+<div class="kl-box kl-deep"><span class="kl-h">توجه</span>
+HTTP/2 همچنان روی <code>TCP</code> است؛ لذا اگر یک Packet گم شود، همه‌ی Streamها معطل می‌مانند
+(<code>TCP Head-of-Line Blocking</code>). HTTP/3 دقیقاً همین را حل می‌کند.
+</div>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>HTTP/3 و QUIC</h2>
+<p>
+<strong>HTTP/3</strong> روی <code>QUIC</code> ساخته شده که بر پایه‌ی <code>UDP</code> است و
+Streamها را در سطح پروتکل جدا نگه می‌دارد؛ گم‌شدن یک Packet فقط همان Stream را متأثر می‌کند.
+Handshake سریع‌تر (0-RTT/1-RTT) و مقاومت بهتر در شبکه‌های بی‌کیفیت از مزایای آن است.
+</p>
+<div class="kl-box kl-warn"><span class="kl-h">نیازمندی</span>
+HTTP/3 همیشه رمزنگاری‌شده است و به پورت <code>UDP 443</code> نیاز دارد؛ در فایروال‌ها و
+Load Balancerها باید باز باشد.
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>معماری و مقایسه</h2>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 320" role="img" aria-label="مقایسه انتقال داده در HTTP/1.1، HTTP/2 و HTTP/3 روی یک اتصال">
+  <g class="s-node" style="--kl-i:1"><rect class="s-acc" x="60" y="20" width="200" height="40" rx="9"/><text class="s-t" x="160" y="45" text-anchor="middle">HTTP/1.1 (TCP)</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-acc" x="285" y="20" width="200" height="40" rx="9"/><text class="s-t" x="385" y="45" text-anchor="middle">HTTP/2 (TCP)</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-acc" x="510" y="20" width="200" height="40" rx="9"/><text class="s-t" x="610" y="45" text-anchor="middle">HTTP/3 (QUIC/UDP)</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c4" x="90" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="115" y="115" text-anchor="middle">R1</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c4" x="150" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="175" y="115" text-anchor="middle">R2</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c4" x="210" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="235" y="115" text-anchor="middle">R3</text></g>
+  <text class="s-lbl" x="160" y="155" text-anchor="middle" style="--kl-i:7">پشت سر هم روی اتصال‌ها</text>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c5" x="300" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="325" y="115" text-anchor="middle">S1</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c5" x="360" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="385" y="115" text-anchor="middle">S2</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c5" x="420" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="445" y="115" text-anchor="middle">S3</text></g>
+  <text class="s-lbl" x="385" y="155" text-anchor="middle" style="--kl-i:7">موازی روی یک اتصال</text>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c6" x="525" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="550" y="115" text-anchor="middle">Q1</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c6" x="585" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="610" y="115" text-anchor="middle">Q2</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c6" x="645" y="90" width="50" height="40" rx="6"/><text class="s-t2" x="670" y="115" text-anchor="middle">Q3</text></g>
+  <text class="s-lbl" x="610" y="155" text-anchor="middle" style="--kl-i:7">موازی و مستقل در UDP</text>
+  <rect class="s-group s-ok" x="60" y="180" width="650" height="60" rx="14"/>
+  <text class="s-group-t" x="385" y="204" text-anchor="middle">همه با TLS امن می‌شوند</text>
+  <text class="s-t2" x="385" y="228" text-anchor="middle">HTTP/3 = TLS 1.3 درون QUIC</text>
+  <path class="s-arr s-flow" d="M 385 240 L 385 272"/><path class="s-head" d="M 385 278 L 378 266 L 392 266 Z"/>
+  <g class="s-node" style="--kl-i:8"><rect class="s-box" x="250" y="280" width="270" height="34" rx="8"/><text class="s-t" x="385" y="302" text-anchor="middle">Browser / Client</text></g>
+</svg>
+<figcaption><b>تکامل انتقال:</b> از درخواست‌های پشت‌سرهم روی اتصال‌های محدود، به Multiplexing روی یک اتصال TCP، و سپس Streamهای مستقل روی QUIC.</figcaption>
+</figure>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>HTTP/1.1</th><th>HTTP/2</th><th>HTTP/3</th></tr>
+  <tr><td>لایه انتقال</td><td>TCP</td><td>TCP</td><td>QUIC (UDP)</td></tr>
+  <tr><td>Multiplexing</td><td>✖</td><td>✅</td><td>✅</td></tr>
+  <tr><td>HOL Blocking سطح TCP</td><td>✅ دارد</td><td>✅ دارد</td><td>✖ ندارد</td></tr>
+  <tr><td>Handshake</td><td>کند</td><td>متوسط</td><td>سریع (0/1-RTT)</td></tr>
+</table></div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>پیکربندی و جمع‌بندی</h2>
+<pre class="kl-code" data-lang="nginx"><code>server {
+    listen 443 ssl;            # HTTP/1.1 + HTTP/2 (ALPN)
+    http2 on;
+    listen 443 quic reuseport; # HTTP/3
+    server_name example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_protocols TLSv1.3;     # QUIC نیازمند TLS 1.3
+
+    add_header Alt-Svc 'h3=":443"; ma=86400' always;  # تبلیغ HTTP/3
+}</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+مرورگر ابتدا با HTTP/2 وصل می‌شود، با دیدن هدر <code>Alt-Svc</code> دفعه‌ی بعد HTTP/3 را امتحان
+می‌کند و در صورت پشتیبانی، مسیر سریع‌تر را انتخاب می‌کند.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Fallback</span>
+همیشه HTTP/1.1 و ۲ فعال بمانند؛ کلاینت‌های قدیمی‌تر یا شبکه‌هایی که UDP را مسدود می‌کنند باید
+بتوانند وصل شوند.
+</div>
+<div class="kl-scroll"><table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>سرعت بارگذاری بیشتر</td><td>پیچیدگی پیکربندی و پایش بیشتر</td></tr>
+  <tr><td>مصرف پهنای‌باند کمتر (فشرده‌سازی هدر)</td><td>HTTP/3 گاهی از طریق فایروال‌ها مسدود است</td></tr>
+  <tr><td>تجربه‌ی بهتر کاربر موبایل</td><td>نیاز به TLS 1.3 و ابزار به‌روز</td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">When to Use</span>هر سایت یا API عمومی امروز باید حداقل HTTP/2 و در صورت امکان HTTP/3 را فعال کند.</div>
+<p>سه نسل HTTP، سه داستان کارایی‌اند. با فعال‌کردن HTTP/2 و HTTP/3 می‌توانید بدون تغییر کد،
+سرعت و تاب‌آوری سرویس‌تان را به‌طور محسوس بهبود دهید.</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="tls-https.html">TLS و HTTPS</a></li>
+  <li><a href="server-performance.html">بهینه‌سازی کارایی سرور</a></li>
+  <li><a href="nginx.html">NGINX</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">HTTP/1.1 و محدودیت‌ها</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">HTTP/2 و Multiplexing</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">HTTP/3 و QUIC</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">معماری و مقایسه</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">پیکربندی و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">HTTP/1.1 و محدودیت‌ها</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">HTTP/2 و Multiplexing</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">HTTP/3 و QUIC</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">معماری و مقایسه</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">پیکربندی و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

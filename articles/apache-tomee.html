@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apache TomEE: Tomcat + Jakarta EE برای Production | حیدر فرحانی</title>
+  <meta name="description" content="Apache TomEE چیست؟ Tomcat به‌همراه Jakarta EE: CDI، EJB، JPA، JAX-RS، JMS، JNDI، Transaction، Clustering و مقایسه‌ی Tomcat با TomEE و WildFly.">
+  <meta name="keywords" content="Apache TomEE, Jakarta EE, CDI, EJB, JPA, JAX-RS, JMS, JNDI, Transaction, WildFly, Tomcat, Application Server">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Apache TomEE: Tomcat + Jakarta EE برای Production">
+  <meta property="og:description" content="CDI، EJB، JPA، JAX-RS، JMS، JNDI و Transaction — و مقایسه با Tomcat و WildFly.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/apache-tomee.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/apache-tomee.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Apache TomEE">
+  <meta name="twitter:description" content="Tomcat + Jakarta EE برای Production.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "Apache TomEE: Tomcat + Jakarta EE برای Production", "description": "Apache TomEE چیست؟ Tomcat به‌همراه Jakarta EE: CDI، EJB، JPA، JAX-RS، JMS، JNDI، Transaction و Clustering.", "url": "https://haedarfarhani.github.io/My-Articles/articles/apache-tomee.html", "inLanguage": "fa-IR", "keywords": "Apache TomEE, Jakarta EE, CDI, EJB, JPA, JAX-RS, JMS, JNDI", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "Apache TomEE", "item": "https://haedarfarhani.github.io/My-Articles/articles/apache-tomee.html" } ] } }
+  </script>
+</head>
+<body data-article-id="apache-tomee">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">سرور و استقرار بک‌اند</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح پیشرفته</span></div>
+        <h1 class="post-title"><span class="gradient-text">Apache TomEE</span>؛ Tomcat با قدرت کامل Jakarta EE</h1>
+        <p class="hero-lead">
+          TomEE همان Tomcat است که با پشته‌ی <strong>Jakarta EE</strong> گسترش یافته: <code>CDI</code>،
+          <code>EJB</code>، <code>JPA</code>، <code>JAX-RS</code>، <code>JMS</code>، <code>JNDI</code> و
+          <code>Transaction</code>. این مقاله نشان می‌دهد چه زمانی TomEE انتخاب درستی است و چه زمانی
+          Tomcat یا WildFly مناسب‌تر است.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۴۰ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: پیشرفته</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#TomEE</span><span class="post-tag">#Jakarta_EE</span><span class="post-tag">#CDI</span><span class="post-tag">#EJB</span><span class="post-tag">#JPA</span><span class="post-tag">#JAX_RS</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>TomEE چیست؟</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>معماری TomEE</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>پیکربندی و مثال (JNDI/JPA/JAX-RS)</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>Production و Security</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>مقایسه و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه</h2>
+<p>
+Tomcat یک Servlet Container عالی است، اما اگر به قابلیت‌های Enterprise نیاز دارید —
+Transaction مدیریت‌شده، EJB، JMS، CDI و JPA آماده — یا باید کتابخانه‌ها را دستی اضافه کنید یا از
+یک Application Server کامل استفاده کنید. <strong>TomEE</strong> دقیقاً همین میانه را پر می‌کند:
+هسته‌ی آشنای Tomcat به‌همراه پروفایل‌های Jakarta EE.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">در این مقاله</span>
+تفاوت Tomcat و TomEE، اجزای Jakarta EE، پیکربندی Transaction و DataSource، و مقایسه‌ی TomEE با WildFly.</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+<a href="apache-tomcat.html">Apache Tomcat</a>.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>TomEE چیست؟</h2>
+<div class="kl-box kl-ok"><span class="kl-h">تعریف</span>
+<strong>Apache TomEE</strong> نسخه‌ای از Tomcat است که با پشته‌ی Jakarta EE (Web Profile یا Full Profile)
+غنی شده و امکاناتی مثل CDI، EJB Lite، JPA، JAX-RS، JMS و Transaction مدیریت‌شده را در همان
+فرآیند در اختیار برنامه می‌گذارد.
+</div>
+<div class="kl-scroll"><table>
+  <tr><th>پروفایل</th><th>محتوای اصلی</th></tr>
+  <tr><td><code>tomee-webprofile</code></td><td>Servlet، JSP، CDI، JPA، EJB Lite، JAX-RS، JMS سبک</td></tr>
+  <tr><td><code>tomee-plus</code></td><td>WebProfile + JAX-WS و قابلیت‌های بیشتر</td></tr>
+  <tr><td><code>tomee-plume</code></td><td>کامل‌تر با JMS و ابزارهای اضافه</td></tr>
+</table></div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>معماری TomEE</h2>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="معماری TomEE: NGINX در لبه، TomEE با REST، CDI، EJB، JPA، JMS، JNDI و اتصال به دیتابیس و Message Broker">
+  <g class="s-node" style="--kl-i:1"><rect class="s-box" x="285" y="6" width="200" height="40" rx="9"/><text class="s-t" x="385" y="31" text-anchor="middle">Client</text></g>
+  <path class="s-arr s-flow" d="M 385 46 L 385 66"/><path class="s-head" d="M 385 72 L 378 60 L 392 60 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-acc" x="255" y="74" width="260" height="40" rx="9"/><text class="s-t" x="385" y="99" text-anchor="middle">NGINX (Reverse Proxy)</text></g>
+  <path class="s-arr s-flow" d="M 385 114 L 385 132"/><path class="s-head" d="M 385 138 L 378 126 L 392 126 Z"/>
+  <rect class="s-group s-group-acc" x="60" y="146" width="650" height="94" rx="14"/>
+  <text class="s-group-t" x="385" y="168" text-anchor="middle">TomEE — Jakarta EE Runtime</text>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c4" x="80" y="178" width="140" height="48" rx="8"/><text class="s-t2" x="150" y="206" text-anchor="middle">JAX-RS REST</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c4" x="232" y="178" width="140" height="48" rx="8"/><text class="s-t2" x="302" y="206" text-anchor="middle">CDI / EJB</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c4" x="384" y="178" width="140" height="48" rx="8"/><text class="s-t2" x="454" y="206" text-anchor="middle">JPA</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c4" x="536" y="178" width="156" height="48" rx="8"/><text class="s-t2" x="614" y="206" text-anchor="middle">JMS / JNDI</text></g>
+  <path class="s-arr" d="M 300 240 L 300 262"/><path class="s-arr" d="M 470 240 L 470 262"/>
+  <path class="s-head" d="M 300 268 L 293 256 L 307 256 Z"/><path class="s-head" d="M 470 268 L 463 256 L 477 256 Z"/>
+  <g class="s-node" style="--kl-i:7"><rect class="s-c5" x="180" y="270" width="240" height="28" rx="8"/><text class="s-t2" x="300" y="289" text-anchor="middle">PostgreSQL</text></g>
+  <g class="s-node" style="--kl-i:8"><rect class="s-c6" x="440" y="270" width="240" height="28" rx="8"/><text class="s-t2" x="560" y="289" text-anchor="middle">Message Broker</text></g>
+</svg>
+<figcaption><b>معماری TomEE:</b> REST در لبه‌ی برنامه، منطق در CDI/EJB، دسترسی داده با JPA و ارتباط غیرهمگام با JMS — همه درون یک JVM و پشت NGINX.</figcaption>
+</figure>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>پیکربندی و مثال</h2>
+<pre class="kl-code" data-lang="xml"><code>&lt;!-- conf/tomee.xml : DataSource با JNDI --&gt;
+&lt;Resource id="appdb" type="DataSource"&gt;
+  JdbcDriver   org.postgresql.Driver
+  JdbcUrl      jdbc:postgresql://db.internal:5432/app
+  UserName     ${DB_USER}
+  Password     ${DB_PASSWORD}
+  JtaManaged   true
+&lt;/Resource&gt;</code></pre>
+<pre class="kl-code" data-lang="java"><code>@Path("/orders")
+@RequestScoped
+public class OrderResource {
+
+    @Inject
+    OrderService service;          // CDI
+
+    @GET
+    @Path("/{id}")
+    public OrderDto get(@PathParam("id") long id) {
+        return service.find(id);
+    }
+}
+
+@Stateless                          // EJB
+public class OrderService {
+    @PersistenceContext EntityManager em;   // JPA + Transaction مدیریت‌شده
+
+    @Transactional
+    public OrderDto find(long id) {
+        return OrderDto.from(em.find(Order.class, id));
+    }
+}</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+یک درخواست <code>GET /orders/42</code> از NGINX به TomEE می‌رسد، CDI وابستگی را تزریق می‌کند،
+EJB تراکنش را باز می‌کند و JPA داده را از دیتابیس می‌خواند.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Annotation-driven</span>
+بخش بزرگی از TomEE مبتنی بر Annotation است؛ همین موضوع پیکربندی XML را کم و کد را خواناتر می‌کند.
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>Production و Security</h2>
+<div class="kl-scroll"><table>
+  <tr><th>موضوع</th><th>تصمیم Production</th></tr>
+  <tr><td>JVM Heap</td><td><code>-Xms</code>=<code>-Xmx</code> و G1GC</td></tr>
+  <tr><td>Transaction Log</td><td>روی دیسک پایدار، نه حافظه‌ی موقت</td></tr>
+  <tr><td>Connection Pool</td><td>هماهنگ با <code>maxThreads</code> و ظرفیت دیتابیس</td></tr>
+  <tr><td>Secrets</td><td>از Environment Variable یا JNDI سطح سرور، نه داخل WAR</td></tr>
+  <tr><td>ورودی</td><td>فقط از شبکه‌ی خصوصی؛ NGINX تنها نقطه‌ی عمومی</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code># اجرا با systemd و تنظیمات Production
+JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC" \
+  $TOMEE_HOME/bin/catalina.sh run
+
+# Docker
+docker run -d --name tomee -p 127.0.0.1:8080:8080 \
+  tomee:webprofile10-jdk21</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">Production Note</span>
+برای Jakarta EE 10 از TomEE 9/10 و فضای‌نام <code>jakarta.*</code> استفاده کنید. برنامه‌های قدیمی‌تر
+با <code>javax.*</code> نیازمند نسخه‌ی سازگار TomEE هستند.
+</div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>مقایسه و جمع‌بندی</h2>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>Tomcat</th><th>TomEE</th><th>WildFly</th></tr>
+  <tr><td>Servlet Container</td><td>✅</td><td>✅</td><td>✅</td></tr>
+  <tr><td>CDI / EJB / JPA</td><td>نیازمند افزودن</td><td>✅ آماده</td><td>✅ کامل</td></tr>
+  <tr><td>JMS و Transaction مدیریت‌شده</td><td>محدود</td><td>✅</td><td>✅</td></tr>
+  <tr><td>حجم و راه‌اندازی</td><td>سبک</td><td>متوسط</td><td>سنگین‌تر</td></tr>
+  <tr><td>Clustering</td><td>محدود</td><td>پایه</td><td>پیشرفته</td></tr>
+</table></div>
+<div class="kl-scroll"><table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>Jakarta EE بدون تغییر هسته‌ی Tomcat</td><td>حجم و مصرف منابع بیشتر از Tomcat خالص</td></tr>
+  <tr><td>Transaction و EJB آماده</td><td>برای اپ‌های Spring Baggage اضافه است</td></tr>
+  <tr><td>سازگاری با ابزارهای Tomcat</td><td>Clustering ضعیف‌تر از WildFly</td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">When to Use</span>برنامه‌های Jakarta EE که به Transaction، EJB و JMS نیاز دارند و می‌خواهند از سبکی Tomcat سود ببرند.</div>
+<div class="kl-box kl-bad"><span class="kl-h">When NOT to Use</span>اگر با Spring Boot کار می‌کنید، سرور تعبیه‌شده کافی است. برای Clustering و Jakarta EE کامل، WildFly گزینه‌ی دقیق‌تری است.</div>
+<p>TomEE پل بین سبکی Tomcat و کامل‌بودن Application Serverهای Enterprise است. اگر مرزهایش را بفهمید، انتخاب درستی برای سرویس‌های Java سازمانی خواهد بود.</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="apache-tomcat.html">Apache Tomcat</a></li>
+  <li><a href="nginx-tomcat.html">NGINX + Tomcat</a></li>
+  <li><a href="web-server-vs-application-server.html">Web Server vs Application Server</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">TomEE چیست؟</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">معماری TomEE</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">پیکربندی و مثال</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Production و Security</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مقایسه و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">TomEE چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">معماری TomEE</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">پیکربندی و مثال</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Production و Security</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مقایسه و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

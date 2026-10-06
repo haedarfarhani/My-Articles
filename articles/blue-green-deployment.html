@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blue-Green Deployment: انتشار بدون ریسک | حیدر فرحانی</title>
+  <meta name="description" content="Blue-Green Deployment: دو محیط هم‌ارز، سوییچ ترافیک، Rollback لحظه‌ای، چالش Migration دیتابیس و مقایسه با Rolling.">
+  <meta name="keywords" content="Blue-Green Deployment, zero downtime, rollback, switch, database migration, release, deployment strategy">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Blue-Green Deployment: انتشار بدون ریسک">
+  <meta property="og:description" content="دو محیط هم‌ارز، سوییچ ترافیک و Rollback لحظه‌ای.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/blue-green-deployment.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/blue-green-deployment.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Blue-Green Deployment">
+  <meta name="twitter:description" content="سوییچ ترافیک، Rollback و Migration.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "Blue-Green Deployment: انتشار بدون ریسک", "description": "Blue-Green Deployment: دو محیط هم‌ارز، سوییچ ترافیک، Rollback لحظه‌ای و چالش Migration دیتابیس.", "url": "https://haedarfarhani.github.io/My-Articles/articles/blue-green-deployment.html", "inLanguage": "fa-IR", "keywords": "Blue-Green Deployment, zero downtime, rollback, database migration", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "Blue-Green Deployment", "item": "https://haedarfarhani.github.io/My-Articles/articles/blue-green-deployment.html" } ] } }
+  </script>
+</head>
+<body data-article-id="blue-green-deployment">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">سرور و استقرار بک‌اند</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح متوسط</span></div>
+        <h1 class="post-title"><span class="gradient-text">Blue-Green Deployment</span>؛ انتشار بدون ریسک</h1>
+        <p class="hero-lead">
+          در استراتژی <strong>Blue-Green</strong> دو محیط هم‌ارز داریم: یکی فعال (<code>Blue</code>) و
+          یکی آماده (<code>Green</code>). نسخه‌ی جدید روی Green تست می‌شود و سپس ترافیک در یک لحظه
+          جابه‌جا می‌شود؛ اگر مشکلی بود، بازگشت تقریباً فوری است.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۳۲ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: متوسط</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#Blue_Green</span><span class="post-tag">#Deployment</span><span class="post-tag">#Rollback</span><span class="post-tag">#Zero_Downtime</span><span class="post-tag">#Release</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Blue-Green چیست؟</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>معماری و سوییچ</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>دیتابیس و Migration</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>مقایسه با Rolling</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه</h2>
+<p>
+هر Deploy یک ریسک است. استراتژی‌های انتشار (Release Strategies) برای کاهش این ریسک طراحی شده‌اند.
+<strong>Blue-Green</strong> یکی از ساده‌ترین و در عین حال قدرتمندترین راه‌هاست: دو محیط کامل
+داشته باشید و ترافیک را بین آن‌ها جابه‌جا کنید.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">در این مقاله</span>
+مفهوم Blue-Green، سوییچ ترافیک، چالش دیتابیس و مقایسه با Rolling Deployment.</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+<a href="zero-downtime-deployment.html">Zero-Downtime Deployment</a> و <a href="load-balancing.html">Load Balancing</a>.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Blue-Green چیست؟</h2>
+<div class="kl-box kl-ok"><span class="kl-h">تعریف</span>
+در <strong>Blue-Green Deployment</strong> دو محیط Production هم‌ارز وجود دارد. فقط یکی از آن‌ها
+ترافیک واقعی می‌گیرد. نسخه‌ی جدید در محیط بی‌کار مستقر و آزمایش می‌شود، سپس ترافیک در سطح
+Load Balancer یا DNS به آن سوییچ می‌شود.
+</div>
+<div class="kl-scroll"><table>
+  <tr><th>ویژگی</th><th>فایده</th></tr>
+  <tr><td>دو محیط هم‌ارز</td><td>آزمایش کامل پیش از انتشار عمومی</td></tr>
+  <tr><td>سوییچ اتمیک</td><td>انتشار در یک لحظه</td></tr>
+  <tr><td>Rollback سریع</td><td>برگشت به محیط قبلی با یک تغییر</td></tr>
+</table></div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>معماری و سوییچ</h2>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="Blue-Green Deployment: ترافیک از Load Balancer به محیط Blue می‌رود و پس از تأیید به Green سوییچ می‌شود">
+  <g class="s-node" style="--kl-i:1"><rect class="s-box" x="285" y="6" width="200" height="40" rx="9"/><text class="s-t" x="385" y="31" text-anchor="middle">Users</text></g>
+  <path class="s-arr s-flow" d="M 385 46 L 385 68"/><path class="s-head" d="M 385 74 L 378 62 L 392 62 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-acc" x="235" y="76" width="300" height="44" rx="9"/><text class="s-t" x="385" y="103" text-anchor="middle">Load Balancer / DNS</text></g>
+  <path class="s-arr s-flow" d="M 320 120 L 200 158"/><path class="s-head" d="M 193 162 L 199 150 L 210 158 Z"/>
+  <path class="s-dash s-arr-bad" d="M 450 120 L 570 158"/>
+  <g class="s-node" style="--kl-i:3"><rect class="s-ok" x="70" y="164" width="260" height="80" rx="10"/><text class="s-t" x="200" y="196" text-anchor="middle">Blue (v1.4) ✅</text><text class="s-t2" x="200" y="222" text-anchor="middle">ترافیک فعلی</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-warn" x="440" y="164" width="260" height="80" rx="10"/><text class="s-t" x="570" y="196" text-anchor="middle">Green (v1.5)</text><text class="s-t2" x="570" y="222" text-anchor="middle">آماده و تست‌شده</text></g>
+  <path class="s-arr" d="M 200 244 L 200 268"/><path class="s-arr" d="M 570 244 L 570 268"/>
+  <path class="s-head" d="M 200 274 L 193 262 L 207 262 Z"/><path class="s-head" d="M 570 274 L 563 262 L 577 262 Z"/>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c6" x="60" y="270" width="640" height="26" rx="7"/><text class="s-t2" x="380" y="288" text-anchor="middle">Shared Database (Schema سازگار با هر دو نسخه)</text></g>
+</svg>
+<figcaption><b>سوییچ ترافیک:</b> پس از تأیید Green، فقط جهت ترافیک در Load Balancer عوض می‌شود؛ Blue به‌عنوان نسخه‌ی پشتیبان باقی می‌ماند.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="nginx"><code>upstream active {
+    server 10.0.0.11:8080;   # Blue
+    # server 10.0.0.21:8080; # Green — بعد از سوییچ فعال شود
+}
+
+# سوییچ = تغییر upstream و reload بدون قطعی
+# sudo nginx -s reload</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+پس از تغییر <code>upstream</code> و Reload، همه‌ی درخواست‌های جدید به Green می‌روند و Blue
+دست‌نخورده برای Rollback باقی می‌ماند.
+</div>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>دیتابیس و Migration</h2>
+<p>
+سخت‌ترین بخش Blue-Green، دیتابیس مشترک است. هر دو نسخه با همان دیتابیس کار می‌کنند؛ پس تغییرات
+Schema باید <strong>Backward Compatible</strong> باشند تا در لحظه‌ی سوییچ اختلالی رخ ندهد.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>الگوی امن</th><th>ترتیب</th></tr>
+  <tr><td>Expand</td><td>افزودن ستون/جدول جدید (سازگار با هر دو)</td></tr>
+  <tr><td>Deploy</td><td>انتشار کدی که هر دو ساختار را می‌فهمد</td></tr>
+  <tr><td>Migrate</td><td>انتقال داده در پس‌زمینه</td></tr>
+  <tr><td>Contract</td><td>حذف ساختار قدیمی در نسخه‌ی بعدی</td></tr>
+</table></div>
+<div class="kl-box kl-warn"><span class="kl-h">هرگز</span>
+در همان Deploy، ستون قدیمی را حذف نکنید. اگر به Rollback نیاز شود، نسخه‌ی قبلی به آن ستون
+نیاز دارد و سرویس می‌شکند.
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>مقایسه با Rolling</h2>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>Blue-Green</th><th>Rolling</th></tr>
+  <tr><td>منابع لازم</td><td>دو برابر (موقت)</td><td>کمی بیشتر از معمول</td></tr>
+  <tr><td>سرعت Rollback</td><td>لحظه‌ای</td><td>نیازمند Rollout معکوس</td></tr>
+  <tr><td>انتشار تدریجی</td><td>✖ (همه یا هیچ)</td><td>✅</td></tr>
+  <tr><td>پیچیدگی</td><td>متوسط</td><td>کمتر</td></tr>
+</table></div>
+<div class="kl-box kl-deep"><span class="kl-h">ترکیب</span>
+می‌توان Blue-Green را برای سوییچ نهایی و Canary را برای آزمایش درصدی ترافیک به‌کار برد؛ ولی
+ترکیب آن‌ها مدیریت بیشتری می‌طلبد.
+</div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>جمع‌بندی</h2>
+<div class="kl-scroll"><table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>Rollback فوری</td><td>نیاز به منابع دوبرابر</td></tr>
+  <tr><td>آزمایش کامل پیش از انتشار</td><td>چالش Migration دیتابیس</td></tr>
+  <tr><td>انفصال کامل انتشار از کاربر</td><td>مدیریت دو محیط و پیکربندی</td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">When to Use</span>سرویس‌های حساس که نیاز به Rollback سریع و انتشار امن دارند.</div>
+<div class="kl-box kl-bad"><span class="kl-h">When NOT to Use</span>وقتی منابع محدودند یا Migration دیتابیس سنگین است و نمی‌توان آن را سازگار نگه داشت.</div>
+<p>Blue-Green یک بیمه‌نامه‌ی ساده برای انتشار است: نسخه‌ی جدید را کامل بساز، تدریجاً آزمایش کن،
+و در یک لحظه سوییچ یا بازگرد. هزینه‌اش منابع بیشتر است، اما ارزش آن در لحظه‌ی بحران مشخص می‌شود.</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="rolling-deployment.html">Rolling Deployment</a></li>
+  <li><a href="zero-downtime-deployment.html">Zero-Downtime Deployment</a></li>
+  <li><a href="load-balancing.html">Load Balancing</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Blue-Green چیست؟</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">معماری و سوییچ</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">دیتابیس و Migration</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مقایسه با Rolling</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Blue-Green چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">معماری و سوییچ</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">دیتابیس و Migration</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مقایسه با Rolling</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node.js HTTP Server: از http خالص تا PM2 در Production | حیدر فرحانی</title>
+  <meta name="description" content="سرور HTTP در Node.js: Event Loop، ماژول http، Express و Fastify، Keep-Alive، Clustering، PM2 و هر آنچه برای اجرای یک Application Server در Production لازم است.">
+  <meta name="keywords" content="Node.js, HTTP Server, Event Loop, Express, Fastify, PM2, Cluster, Keep-Alive, Application Server, Production">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Node.js HTTP Server: از http خالص تا PM2 در Production">
+  <meta property="og:description" content="Event Loop، ماژول http، Express و Fastify، Clustering، PM2 و اجرای Node.js به‌عنوان Application Server.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/nodejs-http-server.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/nodejs-http-server.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Node.js HTTP Server">
+  <meta name="twitter:description" content="Event Loop، http، Express و Fastify، Clustering و PM2.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "Node.js HTTP Server: از http خالص تا PM2 در Production", "description": "سرور HTTP در Node.js: Event Loop، ماژول http، Express و Fastify، Clustering، PM2 و اجرای Node.js به‌عنوان Application Server.", "url": "https://haedarfarhani.github.io/My-Articles/articles/nodejs-http-server.html", "inLanguage": "fa-IR", "keywords": "Node.js, HTTP Server, Event Loop, Express, Fastify, PM2, Cluster", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "Node.js HTTP Server", "item": "https://haedarfarhani.github.io/My-Articles/articles/nodejs-http-server.html" } ] } }
+  </script>
+</head>
+<body data-article-id="nodejs-http-server">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">سرور و استقرار بک‌اند</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح متوسط</span></div>
+        <h1 class="post-title"><span class="gradient-text">Node.js HTTP Server</span>؛ از http خالص تا PM2 در Production</h1>
+        <p class="hero-lead">
+          Node.js می‌تواند خودش یک <strong>Application Server</strong> کامل باشد. مدل
+          <code>Event Loop</code>، ماژول <code>http</code>، فریمورک‌هایی مثل <code>Express</code> و
+          <code>Fastify</code>، و ابزارهایی مثل <code>Cluster</code> و <code>PM2</code> تعیین می‌کنند این
+          سرور در Production چه رفتار و چه ظرفیتی داشته باشد. در این مقاله از پایه تا استقرار واقعی را
+          مرور می‌کنیم.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۳۵ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: متوسط</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#Node_js</span><span class="post-tag">#HTTP</span><span class="post-tag">#Express</span><span class="post-tag">#Fastify</span><span class="post-tag">#PM2</span><span class="post-tag">#Cluster</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Event Loop و مدل اجرا</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>معماری Node.js در Production</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>از http خالص تا Express</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>Clustering و PM2</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Performance و نکات Production</span></a></li>
+            <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>مقایسه و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه</h2>
+<p>
+Node.js یک Runtime برای اجرای JavaScript در سمت سرور است. برخلاف Java یا .NET که معمولاً یک
+Application Server جداگانه لازم دارند، در Node.js خودِ برنامه سرور HTTP را می‌سازد و بالا می‌آورد.
+همین ویژگی هم سادگی می‌آورد و هم مسئولیت: باید بدانید <code>Event Loop</code> چگونه کار می‌کند،
+داخل کانتینر چند Process لازم است، و چرا معمولاً NGINX را جلوی Node.js می‌گذاریم.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">در این مقاله</span>
+مدل اجرای Node.js، ساخت سرور با <code>http</code> و <code>Express</code>/<code>Fastify</code>،
+Clustering با <code>pm2</code> و <code>cluster</code>، و تنظیمات Production.</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+<a href="web-server-vs-application-server.html">Web Server vs Application Server</a> و
+<a href="nginx-nodejs.html">NGINX + Node.js</a>.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Event Loop و مدل اجرا</h2>
+<p>
+Node.js بر پایه‌ی <strong>Single-threaded Event Loop</strong> است. همه‌ی درخواست‌های I/O (شبکه، فایل،
+دیتابیس) به‌صورت غیرهمگام (Asynchronous) و توسط سیستم‌عامل مدیریت می‌شوند و Callback آن‌ها روی همان
+یک Thread اجرا می‌شود. یعنی Node برای بارهای <em>I/O-bound</em> بسیار سبک و کارآمد است.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>نوع بار</th><th>رفتار Node.js</th></tr>
+  <tr><td><code>I/O-bound</code> (شبکه، دیتابیس)</td><td>عالی — هزاران Connection همزمان با یک Thread</td></tr>
+  <tr><td><code>CPU-bound</code> (پردازش سنگین، رمزنگاری)</td><td>ضعیف — Event Loop را قفل می‌کند</td></tr>
+</table></div>
+<div class="kl-box kl-warn"><span class="kl-h">Golden Rule</span>
+هرچیز CPU-bound (Hash سنگین، پردازش تصویر، JSON بزرگ) باید به <code>Worker Threads</code>،
+<code>worker_threads</code> یا یک سرویس جدا منتقل شود؛ وگرنه کل سرور برای بقیه‌ی درخواست‌ها کند می‌شود.
+</div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>معماری Node.js در Production</h2>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 330" role="img" aria-label="معماری Node.js در Production: NGINX در لبه، چند Process Node.js روی یک ماشین، Cache و دیتابیس">
+  <g class="s-node" style="--kl-i:1"><rect class="s-box" x="285" y="6" width="200" height="40" rx="9"/><text class="s-t" x="385" y="31" text-anchor="middle">Client</text></g>
+  <path class="s-arr s-flow" d="M 385 46 L 385 66"/><path class="s-head" d="M 385 72 L 378 60 L 392 60 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-acc" x="255" y="74" width="260" height="42" rx="9"/><text class="s-t" x="385" y="100" text-anchor="middle">NGINX (Reverse Proxy / TLS)</text></g>
+  <path class="s-arr s-flow" d="M 385 116 L 385 138"/><path class="s-head" d="M 385 144 L 378 132 L 392 132 Z"/>
+  <rect class="s-group s-group-acc" x="50" y="152" width="670" height="96" rx="14"/>
+  <text class="s-group-t" x="385" y="174" text-anchor="middle">PM2 / Cluster — چند Process Node.js</text>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c4" x="72" y="186" width="140" height="48" rx="8"/><text class="s-t2" x="142" y="214" text-anchor="middle">Worker 1</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c4" x="224" y="186" width="140" height="48" rx="8"/><text class="s-t2" x="294" y="214" text-anchor="middle">Worker 2</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c4" x="376" y="186" width="140" height="48" rx="8"/><text class="s-t2" x="446" y="214" text-anchor="middle">Worker 3</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c4" x="528" y="186" width="168" height="48" rx="8"/><text class="s-t2" x="612" y="214" text-anchor="middle">Worker N</text></g>
+  <path class="s-arr" d="M 260 248 L 260 272"/><path class="s-arr" d="M 500 248 L 500 272"/>
+  <path class="s-head" d="M 260 278 L 253 266 L 267 266 Z"/><path class="s-head" d="M 500 278 L 493 266 L 507 266 Z"/>
+  <g class="s-node" style="--kl-i:7"><rect class="s-c5" x="150" y="280" width="220" height="34" rx="8"/><text class="s-t2" x="260" y="302" text-anchor="middle">Redis / Cache</text></g>
+  <g class="s-node" style="--kl-i:8"><rect class="s-c6" x="390" y="280" width="230" height="34" rx="8"/><text class="s-t2" x="505" y="302" text-anchor="middle">Database</text></g>
+</svg>
+<figcaption><b>معماری Production:</b> NGINX TLS و Static را مدیریت می‌کند، PM2 چند Worker روی هسته‌های CPU می‌سازد و Bufferها در Cache و دیتابیس نگه‌داری می‌شوند.</figcaption>
+</figure>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>از http خالص تا Express</h2>
+<pre class="kl-code" data-lang="javascript"><code>// 1) سرور خالص با ماژول http
+import http from "node:http";
+
+const server = http.createServer((req, res) =&gt; {
+  if (req.url === "/health") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ status: "ok" }));
+    return;
+  }
+  res.writeHead(404);
+  res.end("Not Found");
+});
+
+server.keepAliveTimeout = 65_000;   // بیشتر از Keep-Alive پروکسی
+server.headersTimeout   = 66_000;
+server.listen(3000, "0.0.0.0");</code></pre>
+<pre class="kl-code" data-lang="javascript"><code>// 2) همان سرویس با Express
+import express from "express";
+
+const app = express();
+app.set("trust proxy", 1);          // احترام به X-Forwarded-*
+app.use(express.json({ limit: "1mb" }));
+
+app.get("/health", (_req, res) =&gt; res.json({ status: "ok" }));
+app.get("/users/:id", async (req, res, next) =&gt; {
+  try {
+    res.json(await db.findUser(req.params.id));
+  } catch (err) { next(err); }
+});
+
+app.listen(3000, "0.0.0.0");</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+هر دو مثال یک Endpoint سلامت (<code>/health</code>) دارند که برای Load Balancer و Kubernetes Probe
+حیاتی است، و روی <code>0.0.0.0</code> Bind می‌شوند تا از بیرون کانتینر قابل دسترس باشند.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Express یا Fastify؟</span>
+<code>Express</code> بالغ و پرکاربرد است؛ <code>Fastify</code> سبک‌تر، سریع‌تر و دارای Schema Validation
+داخلی است. برای پروژه‌های جدید با تمرکز بر Throughput، Fastify انتخاب خوبی است.
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>Clustering و PM2</h2>
+<p>
+یک Process Node.js فقط از یک هسته‌ی CPU استفاده می‌کند. برای بهره‌گیری از چند هسته، از ماژول
+<code>cluster</code> یا مدیر فرآیندی مثل <code>PM2</code> استفاده می‌کنیم که چند Worker می‌سازد و
+ترافیک را بین آن‌ها پخش می‌کند.
+</p>
+<pre class="kl-code" data-lang="javascript"><code>// cluster: یک Master و N Worker
+import cluster from "node:cluster";
+import { cpus } from "node:os";
+
+if (cluster.isPrimary) {
+  for (let i = 0; i &lt; cpus().length; i++) cluster.fork();
+  cluster.on("exit", (w) =&gt; setTimeout(() =&gt; cluster.fork(), 1000));
+} else {
+  startServer();     // همان سرور http/Express
+}</code></pre>
+<pre class="kl-code" data-lang="bash"><code># PM2 — مدیریت و راه‌اندازی مجدد خودکار
+pm2 start app.js -i max --name api \
+    --max-memory-restart 512M
+
+pm2 save        # ثبت برای اجرا پس از ری‌استارت
+pm2 startup     # ساخت سرویس systemd
+pm2 logs        # مشاهده‌ی لاگ‌ها
+pm2 monit       # پایش زنده</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">State را به حافظه نسپارید</span>
+با چند Worker، هر Process حافظه‌ی جدا دارد. Session، Rate Limit و Queue را در
+<code>Redis</code> مشترک نگه دارید، نه در متغیر داخل Process.
+</div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>Performance و نکات Production</h2>
+<div class="kl-scroll"><table>
+  <tr><th>موضوع</th><th>تصمیم Production</th></tr>
+  <tr><td>تعداد Worker</td><td>برابر تعداد هسته‌های CPU (یا <code>max</code> در PM2)</td></tr>
+  <tr><td>Keep-Alive</td><td>روشن، با Timeout کمی بیشتر از پروکسی</td></tr>
+  <tr><td>Heap</td><td><code>--max-old-space-size</code> متناسب با RAM کانتینر</td></tr>
+  <tr><td>Restart خودکار</td><td><code>--max-memory-restart</code> و Health Check</td></tr>
+  <tr><td>Secrets</td><td>Environment Variable، نه داخل کد</td></tr>
+  <tr><td>Static Files</td><td>سرو توسط NGINX، نه Node</td></tr>
+</table></div>
+<div class="kl-box kl-warn"><span class="kl-h">Production Note</span>
+اگر حافظه‌ی کانتینر ۵۱۲MB است، <code>--max-old-space-size=380</code> بگذارید تا Garbage Collector
+قبل از OOM-Kill شدن کانتینر فضای لازم را داشته باشد.
+</div>
+</section>
+
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>مقایسه و جمع‌بندی</h2>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>Node.js (http)</th><th>Express</th><th>Fastify</th></tr>
+  <tr><td>سادگی و کنترل</td><td>حداکثر</td><td>بالا</td><td>بالا</td></tr>
+  <tr><td>Throughput</td><td>پایه</td><td>خوب</td><td>عالی</td></tr>
+  <tr><td>Validation داخلی</td><td>ندارد</td><td>با Middleware</td><td>✅ Schema</td></tr>
+  <tr><td>اکوسیستم</td><td>—</td><td>بزرگ‌ترین</td><td>در حال رشد</td></tr>
+</table></div>
+<div class="kl-scroll"><table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>زبان واحد در Front و Back</td><td>ضعف در بارهای CPU-bound</td></tr>
+  <tr><td>سبک و سریع برای I/O</td><td>نیاز به سرویس‌های جانبی برای Scale</td></tr>
+  <tr><td>اکوسیستم npm بسیار بزرگ</td><td>وابستگی زیاد و مدیریت نسخه‌ها</td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">When to Use</span>APIهای Real-time، BFF، سرویس‌های I/O-heavy و تیم‌هایی که می‌خواهند یک زبان در کل Stack داشته باشند.</div>
+<div class="kl-box kl-bad"><span class="kl-h">When NOT to Use</span>پردازش‌های سنگین CPU-bound یا محاسبات علمی؛ اینجا Go، Java یا Rust انتخاب بهتری هستند.</div>
+<p>Node.js زمانی عالی است که Event Loop را آزاد نگه دارید، چند Worker بسازید و NGINX را جلوی آن بگذارید. با رعایت این اصول، یک Application Server سبک و مقیاس‌پذیر خواهید داشت.</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="nginx-nodejs.html">NGINX + Node.js</a></li>
+  <li><a href="reverse-proxy.html">Reverse Proxy</a></li>
+  <li><a href="web-server-vs-application-server.html">Web Server vs Application Server</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Event Loop و مدل اجرا</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">معماری Node.js در Production</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">از http خالص تا Express</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Clustering و PM2</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Performance و نکات Production</span></a></li>
+            <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">مقایسه و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Event Loop و مدل اجرا</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">معماری Node.js در Production</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">از http خالص تا Express</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Clustering و PM2</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Performance و نکات Production</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">مقایسه و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

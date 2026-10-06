@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rolling Deployment: استقرار بدون توقف با به‌روزرسانی تدریجی | حیدر فرحانی</title>
+  <meta name="description" content="Rolling Deployment چیست؟ به‌روزرسانی تدریجی Instanceها، maxSurge و maxUnavailable، Readiness Probe به‌عنوان Health Gate، Rollback و مقایسه با Blue-Green و Canary Deployment.">
+  <meta name="keywords" content="Rolling Deployment, maxSurge, maxUnavailable, Readiness Probe, Kubernetes Deployment, Zero Downtime, Rollback, Blue-Green, Canary">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Rolling Deployment: استقرار بدون توقف با به‌روزرسانی تدریجی">
+  <meta property="og:description" content="maxSurge و maxUnavailable، Health Gate با Readiness Probe و مقایسه با Blue-Green و Canary.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/rolling-deployment.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/rolling-deployment.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rolling Deployment">
+  <meta name="twitter:description" content="استقرار بدون توقف با به‌روزرسانی تدریجی Instanceها.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "Rolling Deployment: استقرار بدون توقف با به‌روزرسانی تدریجی", "description": "Rolling Deployment چیست؟ maxSurge و maxUnavailable، Health Gate با Readiness Probe، Rollback و مقایسه با Blue-Green و Canary.", "url": "https://haedarfarhani.github.io/My-Articles/articles/rolling-deployment.html", "inLanguage": "fa-IR", "keywords": "Rolling Deployment, maxSurge, maxUnavailable, Readiness Probe, Zero Downtime", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "Rolling Deployment", "item": "https://haedarfarhani.github.io/My-Articles/articles/rolling-deployment.html" } ] } }
+  </script>
+</head>
+<body data-article-id="rolling-deployment">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">سرور و استقرار بک‌اند</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح پیشرفته</span></div>
+        <h1 class="post-title"><span class="gradient-text">Rolling Deployment</span>؛ به‌روزرسانی تدریجی، بدون قطعی سرویس</h1>
+        <p class="hero-lead">
+          در Rolling Deployment به‌جای خاموش‌کردن همه‌چیز و روشن‌کردن دوباره، نسخه‌ی جدید
+          <strong>Instance به Instance</strong> جایگزین نسخه‌ی قبلی می‌شود. کلید ماجرا دو پارامتر
+          <code>maxSurge</code> و <code>maxUnavailable</code> و یک Health Gate با
+          <code>Readiness Probe</code> است.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۳۵ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: پیشرفته</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#Rolling_Deployment</span><span class="post-tag">#maxSurge</span><span class="post-tag">#maxUnavailable</span><span class="post-tag">#Readiness_Probe</span><span class="post-tag">#Kubernetes</span><span class="post-tag">#Zero_Downtime</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Rolling چگونه کار می‌کند؟</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>maxSurge و maxUnavailable</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>Health Gate و Rollback</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>مقایسه با Blue-Green و Canary</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>چک‌لیست و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه</h2>
+<p>
+تا وقتی یک Instance دارید، هر Deploy یعنی یک <strong>Downtime</strong>. اما به‌محض اینکه چند Instance
+پشت یک Load Balancer دارید، راه‌حل ساده است: هیچ‌وقت همه را با هم عوض نکنید. اول یکی، بعد دومی،
+بعد سومی — تا آخر. این دقیقاً همان <strong>Rolling Deployment</strong> است و ابزارهایی مثل Kubernetes،
+AWS CodeDeploy، Ansible و حتی اسکریپت‌های دستی systemd همه پیاده‌سازی‌هایی از همین ایده‌اند.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">در این مقاله</span>
+مکانیک Rolling Update، پارامترهای <code>maxSurge</code>/<code>maxUnavailable</code>، Health Gate،
+Rollback و اینکه چه زمانی Rolling انتخاب اشتباهی است.</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+<a href="production-server-deployment.html">استقرار سرور در Production</a> و
+<a href="blue-green-deployment.html">Blue-Green Deployment</a>.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Rolling چگونه کار می‌کند؟</h2>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 330" role="img" aria-label="مراحل Rolling Deployment: از چهار نسخه v1 تا چهار نسخه v2، یکی‌درمیان با maxSurge پنج و maxUnavailable صفر">
+  <g class="s-node" style="--kl-i:1"><rect class="s-acc" x="255" y="6" width="260" height="38" rx="9"/><text class="s-t" x="385" y="30" text-anchor="middle">Load Balancer</text></g>
+  <path class="s-arr s-flow" d="M 385 44 L 385 58"/><path class="s-head" d="M 385 64 L 378 52 L 392 52 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-ok" x="40" y="66" width="160" height="40" rx="8"/><text class="s-t2" x="120" y="91" text-anchor="middle">v1 ✔</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-ok" x="220" y="66" width="160" height="40" rx="8"/><text class="s-t2" x="300" y="91" text-anchor="middle">v2 (surge) ✔</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-ok" x="400" y="66" width="160" height="40" rx="8"/><text class="s-t2" x="480" y="91" text-anchor="middle">v1 ✔</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-ok" x="580" y="66" width="160" height="40" rx="8"/><text class="s-t2" x="660" y="91" text-anchor="middle">v1 ✔</text></g>
+  <text class="s-lbl" x="385" y="128" text-anchor="middle">گام ۱: یک Instance v2 اضافه می‌شود (maxSurge)</text>
+  <g class="s-node" style="--kl-i:6"><rect class="s-ok" x="40" y="140" width="160" height="40" rx="8"/><text class="s-t2" x="120" y="165" text-anchor="middle">v1 ✔</text></g>
+  <g class="s-node" style="--kl-i:7"><rect class="s-ok" x="220" y="140" width="160" height="40" rx="8"/><text class="s-t2" x="300" y="165" text-anchor="middle">v2 ✔</text></g>
+  <g class="s-node" style="--kl-i:8"><rect class="s-warn" x="400" y="140" width="160" height="40" rx="8"/><text class="s-t2" x="480" y="165" text-anchor="middle">v1 ⏳ draining</text></g>
+  <g class="s-node" style="--kl-i:9"><rect class="s-ok" x="580" y="140" width="160" height="40" rx="8"/><text class="s-t2" x="660" y="165" text-anchor="middle">v1 ✔</text></g>
+  <text class="s-lbl" x="385" y="202" text-anchor="middle">گام ۲: v2 آماده شد؛ v1 قدیمی از چرخه خارج می‌شود</text>
+  <g class="s-node" style="--kl-i:10"><rect class="s-ok" x="40" y="214" width="160" height="40" rx="8"/><text class="s-t2" x="120" y="239" text-anchor="middle">v2 ✔</text></g>
+  <g class="s-node" style="--kl-i:11"><rect class="s-ok" x="220" y="214" width="160" height="40" rx="8"/><text class="s-t2" x="300" y="239" text-anchor="middle">v2 ✔</text></g>
+  <g class="s-node" style="--kl-i:12"><rect class="s-ok" x="400" y="214" width="160" height="40" rx="8"/><text class="s-t2" x="480" y="239" text-anchor="middle">v2 ✔</text></g>
+  <g class="s-node" style="--kl-i:13"><rect class="s-bad" x="580" y="214" width="160" height="40" rx="8"/><text class="s-t2" x="660" y="239" text-anchor="middle">v1 ✖ terminated</text></g>
+  <text class="s-lbl" x="385" y="276" text-anchor="middle">گام ۳: آخرین v1 حذف و ظرفیت به حالت عادی برمی‌گردد</text>
+  <g class="s-node" style="--kl-i:14"><rect class="s-ok" x="285" y="286" width="200" height="36" rx="8"/><text class="s-t2" x="385" y="309" text-anchor="middle">۴ × v2 ✔ — بدون Downtime</text></g>
+</svg>
+<figcaption><b>چرخه‌ی Rolling:</b> در هر گام ظرفیت اضافه اضافه می‌شود، Readiness چک می‌شود، نسخه‌ی قدیمی Drain و حذف می‌شود — و در تمام لحظات حداقل ۳ Instance سالم پشت Load Balancer هستند.</figcaption>
+</figure>
+<p>
+دو شرط اساسی: (۱) برنامه باید <strong>Stateless</strong> باشد یا Session خود را بیرون نگه دارد، و
+(۲) دو نسخه باید بتوانند <strong>هم‌زمان</strong> با دیتابیس و داده‌ی مشترک کار کنند — یعنی
+Schema Migration باید سازگار به عقب باشد.
+</p>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>maxSurge و maxUnavailable</h2>
+<div class="kl-scroll"><table>
+  <tr><th>پارامتر</th><th>معنی</th><th>اثر</th></tr>
+  <tr><td><code>maxSurge</code></td><td>حداکثر Instance اضافه‌ای که بالای ظرفیت مطلوب مجاز است</td><td>سرعت Deploy ↑ و نیاز به ظرفیت اضافه</td></tr>
+  <tr><td><code>maxUnavailable</code></td><td>حداکثر Instanceی که می‌تواند در همان لحظه غیرقابل‌سرویس باشد</td><td>ظرفیت ↓ حین Deploy؛ صفر یعنی هیچ ظرفیتی نباید کم شود</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="yaml"><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1          # یک Pod اضافه بیار
+      maxUnavailable: 0    # ولی هیچ ظرفیتی کم نشود
+  template:
+    spec:
+      containers:
+        - name: api
+          image: registry.example.com/api:1.7.0
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "10"]   # فرصت برای خارج‌شدن از LB</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">Trade-off</span>
+<code>maxSurge: 1, maxUnavailable: 0</code> امن‌ترین حالت است ولی به منابع اضافه و
+Readiness درست نیاز دارد. <code>maxUnavailable: 1</code> سریع‌تر است اما حین Deploy
+ظرفیت واقعی کم می‌شود — در ترافیک اوج خطرناک است.
+</div>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>Health Gate و Rollback</h2>
+<p>
+Rolling بدون Health Check، فقط خاموش‌وروشن‌کردن آرام است. اگر Instance جدید هرگز «آماده» نشود،
+Deploy باید <strong>متوقف و برگردانده</strong> شود — نه اینکه همه‌ی Instanceها خراب شوند.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>گیت</th><th>چی را چک می‌کند؟</th><th>اگر شکست بخورد</th></tr>
+  <tr><td><code>Readiness Probe</code></td><td>آمادگی ترافیک (وابستگی‌ها، Migration، Cache)</td><td>Pod به LB وصل نمی‌شود؛ Deploy متوقف می‌شود</td></tr>
+  <tr><td><code>Liveness Probe</code></td><td>زنده‌بودن فرآیند (Deadlock)</td><td>Restart خودکار Pod</td></tr>
+  <tr><td><code>startupProbe</code></td><td>شروع سنگین (JVM، Migration طولانی)</td><td>مهلت بیشتری قبل از Readiness</td></tr>
+  <tr><td><code>progressDeadlineSeconds</code></td><td>کل مدت Deploy</td><td>Deployment وضعیت Failed می‌گیرد</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code># مانیتورینگ وضعیت Rollout
+kubectl rollout status deployment/api --timeout=300s
+
+# اگر خراب شد: برگشت فوری به Revision قبلی
+kubectl rollout undo deployment/api
+
+# یا برگشت به یک Revision مشخص
+kubectl rollout undo deployment/api --to-revision=2
+
+# تاریخچه و آخرین وضعیت
+kubectl rollout history deployment/api
+kubectl get events --sort-by='.lastTimestamp' | tail</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+با image خراب: Pod جدید Ready نمی‌شود، <code>rollout status</code> با Timeout شکست می‌خورد،
+Deployment جلوی ادامه‌ی کار را می‌گیرد و <strong>ظرفیت سالم قبلی حفظ می‌ماند</strong> — کاربر چیزی نمی‌بیند.
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>مقایسه با Blue-Green و Canary</h2>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>Rolling</th><th>Blue-Green</th><th>Canary</th></tr>
+  <tr><td>منابع حین Deploy</td><td>کم (surge کوچک)</td><td>دو برابر</td><td>کم + زیرساخت توزیع ترافیک</td></tr>
+  <tr><td>سرعت</td><td>متوسط</td><td>سریع (Switch لحظه‌ای)</td><td>آهسته (گام‌به‌گام)</td></tr>
+  <tr><td>آزمودن با ترافیک واقعی</td><td>خیر</td><td>پس از Switch، یک‌جا</td><td>بله، درصدی</td></tr>
+  <tr><td>Rollback</td><td>Rollout معکوس (کندتر)</td><td>Switch به عقب (فوری)</td><td>حذف Canary (فوری)</td></tr>
+  <tr><td>مدیریت State/Schema</td><td>نیازمند سازگاری دو نسخه</td><td>ساده‌تر (یک لحظه‌ی Switch)</td><td>نیازمند سازگاری</td></tr>
+  <tr><td>پیچیدگی زیرساخت</td><td>کم</td><td>متوسط</td><td>زیاد</td></tr>
+</table></div>
+<div class="kl-box kl-deep"><span class="kl-h">قانون انتخاب</span>
+سرویس Stateless معمولی → Rolling. نیاز به تست کامل با ترافیک ۱۰۰٪ قبل از اعتماد → Blue-Green.
+ریسک رفتاری نسخه‌ی جدید نامشخص است و متریک تجاری/فنی باید تماشا شود → Canary.
+</div>
+<div class="kl-box kl-bad"><span class="kl-h">When NOT to Use Rolling</span>
+Schemaهای ناسازگار (حذف/تغییر ستون مصرف‌شده در نسخه‌ی قدیمی)، Session حافظه‌ای بدون Replica،
+یا Jobهای طولانی که دو نسخه را غیرممکن می‌کنند — اینجا Blue-Green یا
+<a href="zero-downtime-deployment.html">الگوهای Zero-Downtime</a> را ببینید.
+</div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>چک‌لیست و جمع‌بندی</h2>
+<div class="kl-box kl-ok"><span class="kl-h">چک‌لیست Rolling</span>
+<ul>
+  <li>برنامه Stateless است و Session/Cache بیرونی دارد (Redis، JWT).</li>
+  <li><code>Readiness Probe</code> واقعی است: وابستگی‌ها و Migration را چک می‌کند.</li>
+  <li><code>maxSurge</code> و <code>maxUnavailable</code> با ظرفیت واقعی هماهنگ‌اند.</li>
+  <li><code>preStop</code> + Grace Period قبل از قطع کانکشن‌ها وجود دارد.</li>
+  <li>Schema Migration سازگار به عقب است (Expand/Contract).</li>
+  <li><code>progressDeadlineSeconds</code> و Rollback خودکار/سریع تنظیم شده.</li>
+</ul></div>
+<p>
+Rolling Deployment پیش‌فرض دنیای Kubernetes است چون ساده، کم‌هزینه و ایمن است — به شرطی که
+Health Gateها را جدی بگیرید. برای الگوهای پیشرفته‌تر،
+<a href="zero-downtime-deployment.html">Zero-Downtime Deployment</a> و
+<a href="production-backend-architecture.html">معماری Production</a> را دنبال کنید.
+</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="blue-green-deployment.html">Blue-Green Deployment</a></li>
+  <li><a href="zero-downtime-deployment.html">Zero-Downtime Deployment</a></li>
+  <li><a href="kubernetes-server-deployment.html">استقرار سرور با Kubernetes</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Rolling چگونه کار می‌کند؟</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">maxSurge و maxUnavailable</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Health Gate و Rollback</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مقایسه با Blue-Green و Canary</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">چک‌لیست و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Rolling چگونه کار می‌کند؟</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">maxSurge و maxUnavailable</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Health Gate و Rollback</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مقایسه با Blue-Green و Canary</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">چک‌لیست و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

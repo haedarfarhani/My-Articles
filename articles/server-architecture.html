@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>آکادمی معماری سرور: از Web Server تا Production | حیدر فرحانی</title>
+  <meta name="description" content="مسیر یادگیری کامل معماری سرور و استقرار بک‌اند: Web Server، Application Server، Reverse Proxy، Load Balancer، NGINX، Tomcat، TLS، Scalability، High Availability و Zero-Downtime Deployment — با دیاگرام‌های SVG و مثال‌های واقعی.">
+  <meta name="keywords" content="Web Server, Application Server, Reverse Proxy, Load Balancer, NGINX, Apache Tomcat, TomEE, HAProxy, Caddy, IIS, TLS, HTTPS, HTTP/2, HTTP/3, Docker, Kubernetes, Production Deployment, Server Architecture, معماری سرور, استقرار بک اند, DevOps">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="آکادمی معماری سرور: از Web Server تا Production">
+  <meta property="og:description" content="مسیر یادگیری کامل معماری سرور و استقرار بک‌اند؛ از Web Server و Application Server تا Reverse Proxy، Load Balancing، TLS، Scalability و Zero-Downtime Deployment.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/server-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/server-architecture.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="آکادمی معماری سرور: از Web Server تا Production">
+  <meta name="twitter:description" content="مسیر یادگیری کامل Backend Deployment: Web Server، Application Server، Reverse Proxy، Load Balancer، TLS، Scaling و Zero-Downtime.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/net-guard.js"></script>
+  <script defer src="../js/comments.js"></script>
+  <script defer src="../js/diagrams.js"></script>
+  <script defer src="../js/views.js"></script>
+  <script defer src="../js/server-sim.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
+  <link rel="stylesheet" href="../css/net-guard.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
+  <link rel="stylesheet" href="../css/server-sim.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "آکادمی معماری سرور: از Web Server تا Production",
+    "description": "مسیر یادگیری کامل معماری سرور و استقرار بک‌اند: Web Server، Application Server، Reverse Proxy، Load Balancer، NGINX، Tomcat، TLS، Scaling، High Availability و Zero-Downtime Deployment.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/server-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/server-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Web Server, Application Server, Reverse Proxy, Load Balancer, NGINX, Tomcat, TLS, Production, Server Architecture",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "آکادمی معماری سرور", "item": "https://haedarfarhani.github.io/My-Articles/articles/server-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body data-article-id="server-architecture">
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">سرور و استقرار بک‌اند</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">آکادمی معماری Production</span>
+          </div>
+
+          <h1 class="post-title">
+            آکادمی <span class="gradient-text">معماری سرور</span>؛ از Web Server تا Production
+          </h1>
+
+          <p class="hero-lead">
+            یک درخواست واقعی چطور از مرورگر به دیتابیس می‌رسد و دوباره برمی‌گردد؟
+            این مسیر یادگیری، هر لایه را جداگانه توضیح می‌دهد:
+            <strong>DNS</strong>، <strong>Firewall</strong>، <strong>Web Server</strong>،
+            <strong>Reverse Proxy</strong>، <strong>Load Balancer</strong>،
+            <strong>Application Server</strong>، <strong>Backend</strong>،
+            <strong>Redis</strong> و <strong>PostgreSQL</strong> — و سپس نشان می‌دهد این لایه‌ها
+            در <strong>Production</strong> چطور با <code>TLS</code>، <code>Health Check</code>،
+            <code>Monitoring</code> و <code>Zero-Downtime Deployment</code> به هم می‌بندند.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ مسیر ~۹ ساعت مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مبتدی تا پیشرفته</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Server_Architecture</span>
+            <span class="post-tag">#Web_Server</span>
+            <span class="post-tag">#Reverse_Proxy</span>
+            <span class="post-tag">#Load_Balancer</span>
+            <span class="post-tag">#NGINX</span>
+            <span class="post-tag">#Tomcat</span>
+            <span class="post-tag">#TLS</span>
+            <span class="post-tag">#Production</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>یک درخواست چطور به Production می‌رسد؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>نقشه یادگیری (Learning Roadmap)</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>فهرست مقالات و مسیر مطالعه</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>جدول مقایسه جامع تکنولوژی‌ها</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>Production Architecture Simulator</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>شبیه‌سازی خرابی و Failover</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>چک‌لیست استقرار Production</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>واژه‌نامه (Glossary)</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>جمع‌بندی و مسیر بعدی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>یک درخواست چطور به Production می‌رسد؟</h2>
+
+<p>
+وقتی کاربری در مرورگر خود <code>https://shop.example.com/orders</code> را باز می‌کند، یک زنجیره‌ی
+دقیق و چندلایه اجرا می‌شود. هر لایه یک مسئولیت دارد و همین تفکیک مسئولیت است که یک سیستم را
+<strong>قابل نگهداری، امن، مقیاس‌پذیر و قابل اشکال‌زدایی</strong> می‌کند. اگر این لایه‌ها را قاطی کنیم —
+مثلاً بک‌اند را مستقیم روی پورت ۳۰۰۰ در معرض اینترنت بگذاریم — همه‌ی این ویژگی‌ها را از دست می‌دهیم.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">هدف این مسیر یادگیری</span>
+در پایان این مجموعه می‌توانید از صفر یک سرور Linux را آماده کنید، یک <strong>Reverse Proxy</strong> با
+<code>TLS</code> بالا بیاورید، چند <strong>Backend</strong> را با <strong>Load Balancing</strong> و
+<code>Health Check</code> پشت آن بچینید، دیتابیس و Redis را ایزوله نگه دارید، برای
+<code>Logging</code> و <code>Monitoring</code> برنامه داشته باشید و با <strong>Zero-Downtime Deployment</strong>
+نسخه‌ی جدید را بدون قطعی منتشر کنید.
+</div>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 560" role="img" aria-label="نمودار کامل مسیر یک درخواست از مرورگر تا دیتابیس و بازگشت پاسخ، شامل DNS، Firewall، Reverse Proxy، Load Balancer، Backend و لایه‌های داده">
+  <!-- ستون مسیر اصلی: از بالا به پایین -->
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="235" y="6" width="300" height="46" rx="10"/>
+    <text class="s-t" x="385" y="27" text-anchor="middle">Browser / Mobile Client</text>
+    <text class="s-t2" x="385" y="44" text-anchor="middle">HTTPS Request</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 54 L 385 74"/>
+  <path class="s-head" d="M 385 80 L 378 68 L 392 68 Z"/>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="255" y="82" width="260" height="40" rx="9"/>
+    <text class="s-t" x="385" y="107" text-anchor="middle">DNS Resolution (A / AAAA)</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 124 L 385 144"/>
+  <path class="s-head" d="M 385 150 L 378 138 L 392 138 Z"/>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="255" y="152" width="260" height="40" rx="9"/>
+    <text class="s-t" x="385" y="177" text-anchor="middle">Firewall — فقط 80 / 443</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 194 L 385 214"/>
+  <path class="s-head" d="M 385 220 L 378 208 L 392 208 Z"/>
+
+  <!-- لایه Reverse Proxy / Load Balancer -->
+  <g class="s-node s-pulse" style="--kl-i:4">
+    <rect class="s-acc" x="175" y="222" width="420" height="58" rx="11"/>
+    <text class="s-t" x="385" y="245" text-anchor="middle">NGINX — Reverse Proxy</text>
+    <text class="s-t2" x="385" y="265" text-anchor="middle">TLS Termination · Load Balancer · Caching · Rate Limiting</text>
+  </g>
+
+  <!-- سه backend -->
+  <path class="s-arr" d="M 385 282 L 385 296"/>
+  <path class="s-line" d="M 200 296 L 570 296"/>
+  <path class="s-arr" d="M 200 296 L 200 314"/>
+  <path class="s-arr" d="M 385 296 L 385 314"/>
+  <path class="s-arr" d="M 570 296 L 570 314"/>
+  <path class="s-head" d="M 200 320 L 193 308 L 207 308 Z"/>
+  <path class="s-head" d="M 385 320 L 378 308 L 392 308 Z"/>
+  <path class="s-head" d="M 570 320 L 563 308 L 577 308 Z"/>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-box" x="120" y="322" width="160" height="52" rx="9"/>
+    <text class="s-t" x="200" y="344" text-anchor="middle">Backend 1</text>
+    <text class="s-t2" x="200" y="362" text-anchor="middle">:8080</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-box" x="305" y="322" width="160" height="52" rx="9"/>
+    <text class="s-t" x="385" y="344" text-anchor="middle">Backend 2</text>
+    <text class="s-t2" x="385" y="362" text-anchor="middle">:8081</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-box" x="490" y="322" width="160" height="52" rx="9"/>
+    <text class="s-t" x="570" y="344" text-anchor="middle">Backend 3</text>
+    <text class="s-t2" x="570" y="362" text-anchor="middle">:8082</text>
+  </g>
+
+  <!-- اتصال به لایه داده -->
+  <path class="s-arr" d="M 200 378 L 200 404 L 330 404"/>
+  <path class="s-arr" d="M 385 378 L 385 404"/>
+  <path class="s-arr" d="M 570 378 L 570 404 L 440 404"/>
+  <path class="s-line" d="M 330 404 L 440 404"/>
+  <path class="s-arr" d="M 385 404 L 385 424"/>
+  <path class="s-head" d="M 385 430 L 378 418 L 392 418 Z"/>
+  <text class="s-t2 s-lbl" x="470" y="399" text-anchor="middle" style="--kl-i:8">Connection Pool</text>
+
+  <!-- کانتینر داده -->
+  <rect class="s-group" x="150" y="432" width="470" height="120" rx="14"/>
+  <text class="s-group-t" x="385" y="454" text-anchor="middle">Data Layer — ایزوله، بدون دسترسی عمومی</text>
+
+  <g class="s-node" style="--kl-i:9">
+    <rect class="s-c5" x="180" y="468" width="180" height="58" rx="9"/>
+    <text class="s-t" x="270" y="492" text-anchor="middle">Redis</text>
+    <text class="s-t2" x="270" y="512" text-anchor="middle">Cache · Session · Queue</text>
+  </g>
+  <g class="s-node" style="--kl-i:10">
+    <rect class="s-c4" x="410" y="468" width="180" height="58" rx="9"/>
+    <text class="s-t" x="500" y="492" text-anchor="middle">PostgreSQL</text>
+    <text class="s-t2" x="500" y="512" text-anchor="middle">Primary Data Store</text>
+  </g>
+
+  <text class="s-t2 s-lbl" x="130" y="300" text-anchor="middle" style="--kl-i:11">Health Check</text>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="4.2s" repeatCount="indefinite" path="M 385 54 L 385 500"/>
+  </circle>
+  <circle class="s-runner s-runner-dim" r="4">
+    <animateMotion dur="4.2s" begin="2.1s" repeatCount="indefinite" path="M 500 497 L 500 404 L 385 222"/>
+  </circle>
+</svg>
+<figcaption><b>مسیر کامل یک درخواست:</b> کلاینت → DNS → Firewall → NGINX (Reverse Proxy و Load Balancer) → Backend → Redis/PostgreSQL و سپس بازگشت پاسخ در همان مسیر. هر لایه فقط با لایه‌ی مجاور خود حرف می‌زند.</figcaption>
+</figure>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>لایه</th><th>مسئولیت اصلی</th><th>مثال</th></tr>
+  <tr><td><strong>DNS</strong></td><td>تبدیل نام دامنه به IP</td><td>Cloudflare DNS، Route 53</td></tr>
+  <tr><td><strong>Firewall</strong></td><td>محدود کردن پورت‌های در دسترس</td><td>ufw، nftables، Security Group</td></tr>
+  <tr><td><strong>Reverse Proxy</strong></td><td>TLS، Routing، Caching، Rate Limiting</td><td>NGINX، Caddy، HAProxy</td></tr>
+  <tr><td><strong>Application Server</strong></td><td>اجرای منطق برنامه و Runtime</td><td>Tomcat، Kestrel، Node.js</td></tr>
+  <tr><td><strong>Data Layer</strong></td><td>ذخیره‌سازی و Cache</td><td>PostgreSQL، Redis</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>نقشه یادگیری (Learning Roadmap)</h2>
+
+<p>
+این مجموعه به‌صورت پیشرونده چیده شده است. هر سطح پیش‌نیاز سطح بعدی است. اگر تجربه‌ی وب دارید،
+می‌توانید از سطح متوسط شروع کنید؛ اما توصیه می‌کنم مقاله‌ی «Web Server چیست؟» و
+«Web Server vs Application Server» را حتی سریع هم که باشد بخوانید، چون بیشتر سوءتفاهم‌های
+Production از قاطی‌شدن همین دو مفهوم می‌آید.
+</p>
+
+<div class="sa-roadmap">
+  <div class="sa-road">
+    <div class="sa-road-head sa-road-beginner">
+      <span class="sa-road-badge">Beginner</span>
+      <span class="sa-road-title">پایه‌ها</span>
+    </div>
+    <ul class="sa-road-list">
+      <li>Web Server چیست؟</li>
+      <li>Web Server vs Application Server</li>
+      <li>Reverse Proxy چیست؟</li>
+      <li>HTTP/1.1 · HTTP/2 · HTTP/3</li>
+      <li>Static و Dynamic Content</li>
+    </ul>
+    <p class="sa-road-goal">هدف: بفهمید هر لایه چه کاری می‌کند و چرا جدا شده است.</p>
+  </div>
+
+  <div class="sa-road">
+    <div class="sa-road-head sa-road-intermediate">
+      <span class="sa-road-badge">Intermediate</span>
+      <span class="sa-road-title">روی عملیات</span>
+    </div>
+    <ul class="sa-road-list">
+      <li>NGINX: پیکربندی و Reverse Proxy</li>
+      <li>Apache HTTP Server</li>
+      <li>Apache Tomcat و TomEE</li>
+      <li>Node.js، Caddy، IIS</li>
+      <li>HAProxy و Load Balancing</li>
+    </ul>
+    <p class="sa-road-goal">هدف: بتوانید یک سرویس واقعی را پشت یک Reverse Proxy بالا بیاورید.</p>
+  </div>
+
+  <div class="sa-road">
+    <div class="sa-road-head sa-road-advanced">
+      <span class="sa-road-badge">Advanced</span>
+      <span class="sa-road-title">Production</span>
+    </div>
+    <ul class="sa-road-list">
+      <li>TLS / HTTPS و Certificate</li>
+      <li>Performance Optimization</li>
+      <li>Security Hardening</li>
+      <li>Logging و Monitoring</li>
+      <li>High Availability و Scaling</li>
+    </ul>
+    <p class="sa-road-goal">هدف: سیستم را امن، قابل مشاهده و مقیاس‌پذیر کنید.</p>
+  </div>
+
+  <div class="sa-road">
+    <div class="sa-road-head sa-road-expert">
+      <span class="sa-road-badge">Expert</span>
+      <span class="sa-road-title">معماری و انتشار</span>
+    </div>
+    <ul class="sa-road-list">
+      <li>Production Deployment</li>
+      <li>Docker و Kubernetes</li>
+      <li>Blue-Green · Rolling · Zero-Downtime</li>
+      <li>Troubleshooting سرور</li>
+      <li>Complete Production Architecture</li>
+    </ul>
+    <p class="sa-road-goal">هدف: نشر بدون قطعی، تشخیص سریع خطا و طراحی معماری کامل.</p>
+  </div>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">قانون این مجموعه</span>
+هیچ اصطلاح فنی‌ای ترجمه نشده است. به‌جای «پراکسی معکوس» می‌نویسیم <strong>Reverse Proxy</strong> و
+مفهوم را در فارسی توضیح می‌دهیم. دلیلش ساده است: در محیط کار واقعی، همین واژه‌های انگلیسی
+زبان مشترک تیم‌ها و مستندات رسمی هستند.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>فهرست مقالات و مسیر مطالعه</h2>
+
+<p>
+این سری یک مسیر کامل است و حالا <strong>هر ۳۲ مقاله‌ی آن منتشر شده</strong>؛ همه‌ی کارت‌ها با لینک
+فعال آمده‌اند و می‌توانید از هر نقطه‌ی نقشه‌ی راه شروع کنید.
+</p>
+
+<h3 class="sa-sub">منتشرشده — همین حالا بخوانید</h3>
+<div class="sa-cards">
+  <a class="sa-card" href="web-server.html" data-tech="nginx apache caddy">
+    <span class="sa-card-num">۰۱</span>
+    <span class="sa-card-title">Web Server چیست؟</span>
+    <span class="sa-card-desc">چرخه‌ی Request/Response، Static و Dynamic، MIME، Header، Compression و مرز Web Server با Reverse Proxy.</span>
+  </a>
+  <a class="sa-card" href="web-server-vs-application-server.html" data-tech="tomcat nodejs">
+    <span class="sa-card-num">۰۲</span>
+    <span class="sa-card-title">Web Server vs Application Server</span>
+    <span class="sa-card-desc">مقایسه‌ی دقیق مسئولیت‌ها: از فایل ثابت و TLS تا Business Logic و Runtime.</span>
+  </a>
+  <a class="sa-card" href="reverse-proxy.html" data-tech="nginx haproxy caddy">
+    <span class="sa-card-num">۰۳</span>
+    <span class="sa-card-title">Reverse Proxy</span>
+    <span class="sa-card-desc">چرا لایه‌ی میانی؟ TLS Termination، Routing، Caching و پنهان‌کردن زیرساخت.</span>
+  </a>
+  <a class="sa-card" href="nginx.html" data-tech="nginx">
+    <span class="sa-card-num">۰۵</span>
+    <span class="sa-card-title">NGINX</span>
+    <span class="sa-card-desc">Architecture، nginx.conf، server/location/upstream، Reverse Proxy، Load Balancing، Caching و Rate Limiting.</span>
+  </a>
+  <a class="sa-card" href="apache-http-server.html" data-tech="apache httpd">
+    <span class="sa-card-num">۰۶</span>
+    <span class="sa-card-title">Apache HTTP Server</span>
+    <span class="sa-card-desc">Virtual Host، mod_proxy، mod_ssl، mod_rewrite و مقایسه با NGINX.</span>
+  </a>
+  <a class="sa-card" href="apache-tomcat.html" data-tech="tomcat java">
+    <span class="sa-card-num">۰۷</span>
+    <span class="sa-card-title">Apache Tomcat</span>
+    <span class="sa-card-desc">Catalina، Coyote، Jasper، Connector، Thread Pool، WAR و استقرار Production.</span>
+  </a>
+  <a class="sa-card" href="apache-tomee.html" data-tech="tomee java">
+    <span class="sa-card-num">۰۸</span>
+    <span class="sa-card-title">Apache TomEE</span>
+    <span class="sa-card-desc">Tomcat + Jakarta EE: CDI، EJB، JPA، JAX-RS، JMS، JNDI و Transaction.</span>
+  </a>
+  <a class="sa-card" href="nginx-tomcat.html" data-tech="nginx tomcat">
+    <span class="sa-card-num">۱۳</span>
+    <span class="sa-card-title">NGINX + Tomcat</span>
+    <span class="sa-card-desc">TLS Termination، Forwarded Headers، Timeout، Buffering و Connection Pool.</span>
+  </a>
+  <a class="sa-card sa-card-cap" href="production-backend-architecture.html" data-tech="architecture production">
+    <span class="sa-card-num">۳۲</span>
+    <span class="sa-card-title">Production Backend Architecture</span>
+    <span class="sa-card-desc">معماری نهایی و کامل: از اینترنت تا Cache/Queue، با Zero-Downtime.</span>
+  </a>
+  <a class="sa-card sa-card-cap" href="complete-production-architecture.html" data-tech="architecture production">
+    <span class="sa-card-num">۱۹</span>
+    <span class="sa-card-title">Complete Production Architecture</span>
+    <span class="sa-card-desc">معماری نهایی و کامل: از اینترنت تا Cache/Queue، با توضیح هر لایه.</span>
+  </a>
+</div>
+
+<h3 class="sa-sub">همه‌ی مقالات سری — با لینک فعال</h3>
+<div class="sa-cards">
+  <a class="sa-card" href="load-balancing.html" data-tech="haproxy nginx">
+    <span class="sa-card-num">۰۴</span>
+    <span class="sa-card-title">Load Balancing</span>
+    <span class="sa-card-desc">Layer 4 و Layer 7، الگوریتم‌ها، Health Check، Sticky Session و Failover.</span>
+  </a>
+  <a class="sa-card" href="nodejs-http-server.html" data-tech="nodejs">
+    <span class="sa-card-num">۰۹</span>
+    <span class="sa-card-title">Node.js HTTP Server</span>
+    <span class="sa-card-desc">Event Loop، Non-blocking I/O، Express/Fastify، Worker Threads و Cluster.</span>
+  </a>
+  <a class="sa-card" href="caddy.html" data-tech="caddy">
+    <span class="sa-card-num">۱۰</span>
+    <span class="sa-card-title">Caddy</span>
+    <span class="sa-card-desc">Automatic HTTPS، Caddyfile، HTTP/2 و HTTP/3 — و مقایسه با NGINX.</span>
+  </a>
+  <a class="sa-card" href="microsoft-iis.html" data-tech="iis aspnet">
+    <span class="sa-card-num">۱۱</span>
+    <span class="sa-card-title">Microsoft IIS</span>
+    <span class="sa-card-desc">Application Pool، Worker Process، ARR، ASP.NET Core و استقرار روی Windows Server.</span>
+  </a>
+  <a class="sa-card" href="haproxy.html" data-tech="haproxy">
+    <span class="sa-card-num">۱۲</span>
+    <span class="sa-card-title">HAProxy</span>
+    <span class="sa-card-desc">frontend، backend، ACL، TCP/HTTP Proxy و Health Check حرفه‌ای.</span>
+  </a>
+  <a class="sa-card" href="tls-https.html" data-tech="tls nginx">
+    <span class="sa-card-num">۱۴</span>
+    <span class="sa-card-title">TLS / HTTPS</span>
+    <span class="sa-card-desc">Certificate، Private Key، CA Chain، TLS Handshake و TLS Termination.</span>
+  </a>
+  <a class="sa-card" href="server-performance.html" data-tech="performance">
+    <span class="sa-card-num">۱۵</span>
+    <span class="sa-card-title">Server Performance</span>
+    <span class="sa-card-desc">Latency، Throughput، Concurrency، Thread/Connection Pool و گلوگاه‌های رایج.</span>
+  </a>
+  <a class="sa-card" href="server-security.html" data-tech="security">
+    <span class="sa-card-num">۱۶</span>
+    <span class="sa-card-title">Server Security</span>
+    <span class="sa-card-desc">Firewall، WAF، Security Header، Rate Limiting، Secret و Least Privilege.</span>
+  </a>
+  <a class="sa-card" href="logging-monitoring-observability.html" data-tech="monitoring">
+    <span class="sa-card-num">۱۷</span>
+    <span class="sa-card-title">Logging &amp; Monitoring</span>
+    <span class="sa-card-desc">Access Log، Metrics، Tracing و پشته‌ی Prometheus + Grafana + Loki.</span>
+  </a>
+  <a class="sa-card" href="production-server-deployment.html" data-tech="deployment">
+    <span class="sa-card-num">۱۸</span>
+    <span class="sa-card-title">Production Server Deployment</span>
+    <span class="sa-card-desc">از Provision سرور و SSH تا systemd، TLS، DNS، Backup و Go-live.</span>
+  </a>
+  <a class="sa-card" href="http1-http2-http3.html" data-tech="http nginx">
+    <span class="sa-card-num">۲۰</span>
+    <span class="sa-card-title">HTTP/1, HTTP/2 و HTTP/3</span>
+    <span class="sa-card-desc">تکامل پروتکل، Multiplexing، Header Compression و QUIC.</span>
+  </a>
+  <a class="sa-card" href="nginx-spring-boot.html" data-tech="nginx spring">
+    <span class="sa-card-num">۲۱</span>
+    <span class="sa-card-title">NGINX + Spring Boot</span>
+    <span class="sa-card-desc">upstream، Forwarded Headers، WebSocket و timeout برای جاوا.</span>
+  </a>
+  <a class="sa-card" href="nginx-aspnet-core.html" data-tech="nginx aspnet">
+    <span class="sa-card-num">۲۲</span>
+    <span class="sa-card-title">NGINX + ASP.NET Core</span>
+    <span class="sa-card-desc">Kestrel، systemd، Reverse Proxy و Deployment روی Linux.</span>
+  </a>
+  <a class="sa-card" href="nginx-nodejs.html" data-tech="nginx nodejs">
+    <span class="sa-card-num">۲۳</span>
+    <span class="sa-card-title">NGINX + Node.js</span>
+    <span class="sa-card-desc">Cluster، PM2، Graceful Shutdown و پیکربندی Proxy.</span>
+  </a>
+  <a class="sa-card" href="high-availability.html" data-tech="ha deployment">
+    <span class="sa-card-num">۲۴</span>
+    <span class="sa-card-title">High Availability</span>
+    <span class="sa-card-desc">Redundancy، Failover، Quorum و حذف Single Point of Failure.</span>
+  </a>
+  <a class="sa-card" href="horizontal-vs-vertical-scaling.html" data-tech="scaling">
+    <span class="sa-card-num">۲۵</span>
+    <span class="sa-card-title">Horizontal vs Vertical Scaling</span>
+    <span class="sa-card-desc">مقایسه‌ی Scale-Out و Scale-Up، Shared-Nothing و قانون انتخاب.</span>
+  </a>
+  <a class="sa-card" href="docker-server-deployment.html" data-tech="docker deployment">
+    <span class="sa-card-num">۲۶</span>
+    <span class="sa-card-title">Docker Server Deployment</span>
+    <span class="sa-card-desc">Image، Container، Compose، Network و استقرار Production.</span>
+  </a>
+  <a class="sa-card" href="kubernetes-server-deployment.html" data-tech="kubernetes deployment">
+    <span class="sa-card-num">۲۷</span>
+    <span class="sa-card-title">Kubernetes Server Deployment</span>
+    <span class="sa-card-desc">Pod، Deployment، Service، Ingress و Rolling Update.</span>
+  </a>
+  <a class="sa-card" href="blue-green-deployment.html" data-tech="deployment">
+    <span class="sa-card-num">۲۸</span>
+    <span class="sa-card-title">Blue-Green Deployment</span>
+    <span class="sa-card-desc">دو محیط موازی، Switch لحظه‌ای، Rollback فوری و مدیریت Schema.</span>
+  </a>
+  <a class="sa-card" href="rolling-deployment.html" data-tech="deployment">
+    <span class="sa-card-num">۲۹</span>
+    <span class="sa-card-title">Rolling Deployment</span>
+    <span class="sa-card-desc">maxSurge و maxUnavailable، Readiness Probe و Rollback تدریجی.</span>
+  </a>
+  <a class="sa-card" href="zero-downtime-deployment.html" data-tech="deployment">
+    <span class="sa-card-num">۳۰</span>
+    <span class="sa-card-title">Zero-Downtime Deployment</span>
+    <span class="sa-card-desc">Graceful Shutdown، Connection Draining، Symlink Switch و Expand/Contract.</span>
+  </a>
+  <a class="sa-card" href="server-troubleshooting.html" data-tech="debugging">
+    <span class="sa-card-num">۳۱</span>
+    <span class="sa-card-title">Server Troubleshooting</span>
+    <span class="sa-card-desc">خطاهای 502/504/413، CPU/RAM/Disk، ss، journalctl و چک‌لیست NGINX.</span>
+  </a>
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>جدول مقایسه جامع تکنولوژی‌ها</h2>
+
+<p>
+پیش از ورود به جزئیات، این جدول نقشه‌ی کلی است. یک نکته‌ی کلیدی: «Web Server» و
+«Application Server» دو نقش متفاوت‌اند و بسیاری از محصولات هر دو نقش را با هم انجام می‌دهند.
+پس ستون «Primary Role» نقش غالب است، نه تنها توانایی.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr>
+    <th>Technology</th><th>Primary Role</th><th>Runtime</th><th>Reverse Proxy</th>
+    <th>Load Balancer</th><th>TLS</th><th>Static Files</th><th>Application Runtime</th>
+  </tr>
+  <tr><td><strong>NGINX</strong></td><td>Web Server / Proxy</td><td>Native (C)</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td></tr>
+  <tr><td><strong>Apache HTTP Server</strong></td><td>Web Server</td><td>Native (C)</td><td>✅</td><td>✅ (mod_proxy_balancer)</td><td>✅</td><td>✅</td><td>—</td></tr>
+  <tr><td><strong>Tomcat</strong></td><td>Application Server / Servlet Container</td><td>JVM</td><td>محدود</td><td>محدود</td><td>✅ (Connector)</td><td>✅</td><td>Java / Servlet</td></tr>
+  <tr><td><strong>TomEE</strong></td><td>Application Server</td><td>JVM</td><td>محدود</td><td>محدود</td><td>✅</td><td>✅</td><td>Jakarta EE</td></tr>
+  <tr><td><strong>Node.js</strong></td><td>Application Runtime</td><td>V8</td><td>در سطح Application</td><td>Cluster</td><td>✅</td><td>✅</td><td>JavaScript</td></tr>
+  <tr><td><strong>Caddy</strong></td><td>Web Server / Proxy</td><td>Native (Go)</td><td>✅</td><td>✅</td><td>✅ (خودکار)</td><td>✅</td><td>—</td></tr>
+  <tr><td><strong>IIS</strong></td><td>Web Server</td><td>.NET / Windows</td><td>✅ (ARR)</td><td>✅ (ARR)</td><td>✅</td><td>✅</td><td>ASP.NET</td></tr>
+  <tr><td><strong>HAProxy</strong></td><td>Proxy / Load Balancer</td><td>Native (C)</td><td>✅</td><td>✅ (تخصص اصلی)</td><td>✅</td><td>محدود</td><td>—</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">هشدار دربارهٔ مقایسه‌ها</span>
+هیچ‌کدام از این ابزارها «همیشه سریع‌تر» نیستند. کارایی به <strong>Workload</strong>،
+<strong>Configuration</strong>، سخت‌افزار، شبکه، برنامه، دیتابیس، Concurrency، TLS و حجم Payload
+بستگی دارد. هر ادعای کارایی باید با <strong>Benchmark</strong> روی سناریوی خودتان سنجیده شود.
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>Production Architecture Simulator</h2>
+
+<p>
+روی هر گره کلیک کنید تا نقش، پورت، پروتکل و مسئولیت‌های آن را ببینید. این شبیه‌ساز همان معماری واقعی
+این مجموعه است و برای درک سریع مرزهای شبکه طراحی شده است.
+</p>
+
+<div class="sa-sim" data-sim>
+  <figure class="kl-fig sa-sim-stage">
+    <svg class="sa-sim-svg" viewBox="0 0 770 430" role="group" aria-label="شبیه‌ساز معماری Production؛ گره‌ها قابل انتخاب هستند">
+      <path class="s-line" d="M 385 62 L 385 92"/>
+      <path class="s-arr s-flow" d="M 385 92 L 385 112"/>
+      <path class="s-line" d="M 385 170 L 385 196"/>
+      <path class="s-arr s-flow" d="M 385 196 L 385 214"/>
+      <path class="s-line" d="M 120 272 L 120 300 L 330 300"/>
+      <path class="s-line" d="M 650 272 L 650 300 L 440 300"/>
+      <path class="s-line" d="M 385 272 L 385 300"/>
+      <path class="s-line" d="M 330 300 L 440 300"/>
+      <path class="s-arr s-flow" d="M 385 300 L 385 318"/>
+      <path class="s-arr s-flow" d="M 120 352 L 120 372"/>
+      <path class="s-arr s-flow" d="M 650 352 L 650 372"/>
+
+      <rect class="s-group" x="40" y="4" width="690" height="66" rx="14"/>
+      <text class="s-group-t" x="385" y="24" text-anchor="middle">Public Network — اینترنت</text>
+
+      <g class="sa-node" data-node="client" tabindex="0" role="button" aria-label="Client">
+        <rect class="s-box" x="255" y="30" width="260" height="36" rx="9"/>
+        <text class="s-t" x="385" y="53" text-anchor="middle">Client (Browser / Mobile)</text>
+      </g>
+
+      <g class="sa-node s-pulse" data-node="nginx" tabindex="0" role="button" aria-label="NGINX">
+        <rect class="s-acc" x="175" y="112" width="420" height="58" rx="11"/>
+        <text class="s-t" x="385" y="136" text-anchor="middle">NGINX — Reverse Proxy / TLS</text>
+        <text class="s-t2" x="385" y="155" text-anchor="middle">:80 / :443</text>
+      </g>
+
+      <g class="sa-node" data-node="lb" tabindex="0" role="button" aria-label="Load Balancer">
+        <rect class="s-c6" x="300" y="214" width="170" height="58" rx="10"/>
+        <text class="s-t" x="385" y="238" text-anchor="middle">Load Balancer</text>
+        <text class="s-t2" x="385" y="257" text-anchor="middle">Round Robin</text>
+      </g>
+
+      <g class="sa-node" data-node="backend1" tabindex="0" role="button" aria-label="Backend 1">
+        <rect class="s-box" x="30" y="300" width="180" height="52" rx="9"/>
+        <text class="s-t" x="120" y="322" text-anchor="middle">Backend 1</text>
+        <text class="s-t2" x="120" y="340" text-anchor="middle">:8080</text>
+      </g>
+      <g class="sa-node" data-node="backend2" tabindex="0" role="button" aria-label="Backend 2">
+        <rect class="s-box" x="295" y="300" width="180" height="52" rx="9"/>
+        <text class="s-t" x="385" y="322" text-anchor="middle">Backend 2</text>
+        <text class="s-t2" x="385" y="340" text-anchor="middle">:8081</text>
+      </g>
+      <g class="sa-node" data-node="backend3" tabindex="0" role="button" aria-label="Backend 3">
+        <rect class="s-box" x="560" y="300" width="180" height="52" rx="9"/>
+        <text class="s-t" x="650" y="322" text-anchor="middle">Backend 3</text>
+        <text class="s-t2" x="650" y="340" text-anchor="middle">:8082</text>
+      </g>
+
+      <g class="sa-node" data-node="redis" tabindex="0" role="button" aria-label="Redis">
+        <rect class="s-c5" x="60" y="372" width="220" height="52" rx="9"/>
+        <text class="s-t" x="170" y="394" text-anchor="middle">Redis</text>
+        <text class="s-t2" x="170" y="412" text-anchor="middle">:6379 — Cache / Session</text>
+      </g>
+      <g class="sa-node" data-node="postgres" tabindex="0" role="button" aria-label="PostgreSQL">
+        <rect class="s-c4" x="490" y="372" width="220" height="52" rx="9"/>
+        <text class="s-t" x="600" y="394" text-anchor="middle">PostgreSQL</text>
+        <text class="s-t2" x="600" y="412" text-anchor="middle">:5432 — Primary Store</text>
+      </g>
+
+      <text class="s-t2 s-lbl" x="700" y="232" text-anchor="middle">Private Network</text>
+    </svg>
+    <figcaption><b>Production Architecture Simulator:</b> روی هر گره کلیک کنید تا نقش، پورت، پروتکل و مسئولیت‌های آن را ببینید.</figcaption>
+  </figure>
+
+  <aside class="sa-sim-panel" aria-live="polite">
+    <div class="sa-sim-empty" data-sim-empty>
+      <span class="sa-sim-empty-icon">🖱️</span>
+      روی یکی از گره‌ها کلیک کنید
+    </div>
+    <div class="sa-sim-detail" data-sim-detail hidden>
+      <div class="sa-sim-head">
+        <span class="sa-sim-name" data-sim-name>—</span>
+        <span class="sa-sim-role" data-sim-role>—</span>
+      </div>
+      <dl class="sa-sim-kv">
+        <div><dt>Port</dt><dd data-sim-port>—</dd></div>
+        <div><dt>Protocol</dt><dd data-sim-protocol>—</dd></div>
+        <div><dt>Network</dt><dd data-sim-network>—</dd></div>
+      </dl>
+      <div class="sa-sim-resp">
+        <span class="sa-sim-resp-title">Responsibilities</span>
+        <ul class="sa-sim-list" data-sim-resp></ul>
+      </div>
+      <div class="sa-sim-fail">
+        <span class="sa-sim-fail-title">Failure scenarios</span>
+        <ul class="sa-sim-list" data-sim-fail></ul>
+      </div>
+    </div>
+  </aside>
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>شبیه‌سازی خرابی و Failover</h2>
+
+<p>
+یک سیستم Production خوب، «بدون خرابی» نیست؛ «در برابر خرابی تاب‌آور» است. روی دکمه‌های زیر بزنید و
+ببینید معماری چطور با از دست دادن یک گره رفتار می‌کند.
+</p>
+
+<div class="sa-fail" data-fail>
+  <div class="sa-fail-actions">
+    <button type="button" class="sa-fail-btn" data-fail-toggle="backend1">Backend 1 ❌</button>
+    <button type="button" class="sa-fail-btn" data-fail-toggle="postgres">PostgreSQL ❌</button>
+    <button type="button" class="sa-fail-btn sa-fail-reset" data-fail-reset>بازنشانی ✅</button>
+  </div>
+
+  <div class="sa-fail-stage">
+    <div class="sa-fail-row">
+      <span class="sa-fail-box sa-fail-nginx">NGINX</span>
+      <span class="sa-fail-arrow" aria-hidden="true">↓</span>
+      <span class="sa-fail-box" data-fail-node="backend1">Backend 1</span>
+      <span class="sa-fail-box" data-fail-node="backend2">Backend 2</span>
+      <span class="sa-fail-box" data-fail-node="backend3">Backend 3</span>
+      <span class="sa-fail-arrow" aria-hidden="true">↓</span>
+      <span class="sa-fail-box" data-fail-node="postgres">PostgreSQL</span>
+    </div>
+  </div>
+
+  <div class="sa-fail-log" data-fail-log>
+    <p class="sa-fail-line sa-fail-line-ok">وضعیت: همه‌ی گره‌ها سالم هستند. Load Balancer ترافیک را بین سه Backend پخش می‌کند.</p>
+  </div>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>سناریو</th><th>واکنش معماری</th><th>مفهوم کلیدی</th></tr>
+  <tr><td>Backend 1 از دست می‌رود</td><td>Health Check آن را از چرخه حذف می‌کند؛ ترافیک بین Backend 2 و 3 پخش می‌شود.</td><td>Health Check · Failover · Horizontal Scaling</td></tr>
+  <tr><td>PostgreSQL از دست می‌رود</td><td>Connection Timeout، خطای ۵۰۳، Retry با Backoff و در نهایت Circuit Breaker.</td><td>Fault Tolerance · Graceful Degradation</td></tr>
+  <tr><td>NGINX از دست می‌رود</td><td>DNS Failover یا Floating IP به نسخه‌ی دوم؛ نیازمند Redundancy در لایه‌ی ورودی.</td><td>High Availability</td></tr>
+  <tr><td>Redis از دست می‌رود</td><td>Cache Miss و فشار به دیتابیس؛ برنامه باید Cache را «اختیاری» ببیند.</td><td>Graceful Degradation</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>چک‌لیست استقرار Production</h2>
+
+<p>
+این چک‌لیست را قبل از هر Go-live مرور کنید. هر مورد که تیک نمی‌خورد، یک ریسک واقعی در Production است.
+</p>
+
+<ul class="sa-checklist">
+  <li>Domain configured</li>
+  <li>DNS configured (A / AAAA / CNAME)</li>
+  <li>Firewall configured — فقط پورت‌های لازم</li>
+  <li>SSH hardened — کلید به‌جای رمز</li>
+  <li>TLS configured</li>
+  <li>Certificate معتبر و در حال تمدید خودکار</li>
+  <li>Reverse Proxy configured</li>
+  <li>Backend deployed</li>
+  <li>Health Check configured</li>
+  <li>Logging configured</li>
+  <li>Monitoring configured</li>
+  <li>Backup configured و تست بازیابی انجام شده</li>
+  <li>Secrets protected (خارج از کد)</li>
+  <li>Database protected — بدون دسترسی عمومی</li>
+  <li>Redis protected — بدون دسترسی عمومی</li>
+  <li>Rate Limiting configured</li>
+  <li>Error handling tested</li>
+  <li>Load testing performed</li>
+  <li>Rollback strategy available</li>
+  <li>Zero-downtime strategy available</li>
+</ul>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>واژه‌نامه (Glossary)</h2>
+
+<p>
+هر واژه‌ی کلیدی این مجموعه، با تعریف، دلیل اهمیت و یک مثال واقعی. این واژه‌نامه در طول همه‌ی
+مقالات مرجع مشترک است.
+</p>
+
+<div class="sa-glossary">
+  <div class="sa-glossary-item">
+    <dt>Web Server</dt>
+    <dd>سروری که درخواست‌های HTTP را می‌پذیرد و پاسخ می‌دهد؛ مسئول فایل‌های ثابت، TLS و پایه‌ی Routing است. <b>مثال:</b> NGINX.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Application Server</dt>
+    <dd>محیط اجرای منطق برنامه (Business Logic) با Runtime و چرخه‌ی حیات مشخص. <b>مثال:</b> Apache Tomcat.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Reverse Proxy</dt>
+    <dd>واسطه‌ای که به‌جای کلاینت، از سمت سرور درخواست‌ها را می‌پذیرد و به Backend می‌فرستد. <b>چرا مهم است:</b> TLS Termination و پنهان‌کردن زیرساخت.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Forward Proxy</dt>
+    <dd>واسطه‌ای که به‌جای کلاینت به اینترنت وصل می‌شود. <b>مثال:</b> پروکسی سازمانی.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Load Balancer</dt>
+    <dd>توزیع‌کننده‌ی ترافیک بین چند Instance. <b>مثال:</b> HAProxy، upstream در NGINX.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>API Gateway</dt>
+    <dd>لایه‌ی ورودی برای APIها با Authentication، Rate Limiting و Routing پیشرفته. <b>مثال:</b> Kong، Spring Cloud Gateway.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Health Check</dt>
+    <dd>آزمون دوره‌ای سلامت یک گره تا ترافیک فقط به گره‌های سالم برود. <b>مثال:</b> <code>GET /health</code>.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Failover</dt>
+    <dd>جابه‌جایی خودکار ترافیک از گره‌ی خراب به گره‌ی سالم.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>High Availability</dt>
+    <dd>طراحی‌ای که با حذف یک جزء، سرویس از دست نرود. <b>مثال:</b> دو NGINX با Floating IP.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Fault Tolerance</dt>
+    <dd>تحمل خطا و ادامه‌ی کار با کیفیت پایین‌تر به‌جای ازکارافتادن کامل.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Horizontal Scaling</dt>
+    <dd>افزودن Instance بیشتر (Scale Out) به‌جای بزرگ‌ترکردن یک سرور.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Vertical Scaling</dt>
+    <dd>افزودن CPU/RAM به همان سرور (Scale Up). سقف دارد و معمولاً گران‌تر است.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Stateless</dt>
+    <dd>Instance که وضعیت کاربر را در خود نگه نمی‌دارد؛ پیش‌نیاز Scaling افقی.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Sticky Session</dt>
+    <dd>چسبیدن یک کاربر به یک Backend مشخص. راه‌حل ساده اما مانع توزیع متوازن.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Connection Pool</dt>
+    <dd>مجموعه‌ای از Connectionهای آماده‌ی دیتابیس برای حذف هزینه‌ی ساخت مکرر اتصال.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Thread Pool</dt>
+    <dd>مجموعه‌ی Thread آماده در Application Server برای پردازش درخواست‌ها. <b>مثال:</b> <code>maxThreads</code> در Tomcat.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Buffer / Buffering</dt>
+    <dd>نگه‌داشتن موقت داده پیش از ارسال یا پردازش. <b>مثال:</b> <code>proxy_buffering</code>.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>TLS Termination</dt>
+    <dd>رمزگشایی HTTPS در لبه و ارسال ترافیک رمزگشایی‌شده به Backend داخلی.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Caching</dt>
+    <dd>نگه‌داشتن نتیجه‌ی پرهزینه برای پاسخ سریع‌تر. <b>مثال:</b> پاسخ در Redis.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Latency</dt>
+    <dd>زمان لازم برای یک رفت‌وبرگشت. <b>چرا مهم است:</b> تجربه‌ی کاربر را مستقیم تغییر می‌دهد.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Throughput</dt>
+    <dd>تعداد درخواست در واحد زمان که سیستم پردازش می‌کند.</dd>
+  </div>
+  <div class="sa-glossary-item">
+    <dt>Observability</dt>
+    <dd>توانایی فهم وضعیت داخلی سیستم از بیرون با Logs، Metrics و Traces.</dd>
+  </div>
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>جمع‌بندی و مسیر بعدی</h2>
+
+<p>
+این صفحه نقشه‌ی راه است؛ خود مقالات هر لایه را عمیق توضیح می‌دهند. اگر تازه شروع کرده‌اید،
+از مقاله‌ی اول آغاز کنید و به‌ترتیب پیش بروید. اگر تجربه دارید، از
+<strong>Reverse Proxy</strong> و <strong>NGINX</strong> شروع کنید و سپس سراغ
+<strong>TLS</strong>، <strong>Performance</strong> و <strong>Security</strong> بروید.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">گام بعدی</span>
+<a href="web-server.html"><strong>Web Server چیست؟</strong></a> — نقطه‌ی شروع رسمی این آکادمی.
+</div>
+
+<h3>مقالات مرتبط</h3>
+<div class="sa-cards sa-cards-related">
+  <a class="sa-card" href="web-server.html"><span class="sa-card-title">Web Server چیست؟</span></a>
+  <a class="sa-card" href="web-server-vs-application-server.html"><span class="sa-card-title">Web Server vs Application Server</span></a>
+  <a class="sa-card" href="reverse-proxy.html"><span class="sa-card-title">Reverse Proxy</span></a>
+  <a class="sa-card" href="nginx.html"><span class="sa-card-title">NGINX</span></a>
+  <a class="sa-card" href="complete-production-architecture.html"><span class="sa-card-title">Complete Production Architecture</span></a>
+</div>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۹ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">یک درخواست چطور به Production می‌رسد؟</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">نقشه یادگیری (Learning Roadmap)</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">فهرست مقالات و مسیر مطالعه</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">جدول مقایسه جامع تکنولوژی‌ها</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Production Architecture Simulator</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">شبیه‌سازی خرابی و Failover</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">چک‌لیست استقرار Production</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">واژه‌نامه (Glossary)</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">جمع‌بندی و مسیر بعدی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="#s5" class="btn-action-block" style="text-align:center;">
+              <span>شبیه‌ساز معماری ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>این آکادمی برای توسعه‌دهندگان و مهندسان DevOps نوشته شده است تا از «یک درخواست ساده» به «یک معماری Production کامل» برسند.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">یک درخواست چطور به Production می‌رسد؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">نقشه یادگیری (Learning Roadmap)</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">فهرست مقالات و مسیر مطالعه</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">جدول مقایسه جامع تکنولوژی‌ها</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">Production Architecture Simulator</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">شبیه‌سازی خرابی و Failover</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">چک‌لیست استقرار Production</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">واژه‌نامه (Glossary)</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">جمع‌بندی و مسیر بعدی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

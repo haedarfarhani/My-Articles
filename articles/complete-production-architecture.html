@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>معماری کامل Production: از اینترنت تا Database و Cache | حیدر فرحانی</title>
+  <meta name="description" content="معماری کامل Production سرور: Internet، DNS، Firewall، NGINX با TLS Termination و Load Balancing، چند Backend، Redis و PostgreSQL — با توضیح هر لایه، مدیریت Secret و Zero-Downtime Deployment.">
+  <meta name="keywords" content="Production Architecture, معماری پروداکشن, NGINX, Load Balancer, TLS Termination, Redis, PostgreSQL, High Availability, Zero Downtime Deployment, Server Architecture">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="معماری کامل Production: از اینترنت تا Database و Cache">
+  <meta property="og:description" content="هر لایه از Internet و DNS تا Firewall، NGINX، Backend، Redis و PostgreSQL — با تصمیم‌های Production و چک‌لیست انتشار.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/complete-production-architecture.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/complete-production-architecture.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="معماری کامل Production">
+  <meta name="twitter:description" content="از اینترنت و DNS تا NGINX، Backend، Redis و PostgreSQL — با Zero-Downtime Deployment.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/net-guard.js"></script>
+  <script defer src="../js/comments.js"></script>
+  <script defer src="../js/diagrams.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
+  <link rel="stylesheet" href="../css/net-guard.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "معماری کامل Production: از اینترنت تا Database و Cache",
+    "description": "معماری کامل Production سرور: Internet، DNS، Firewall، NGINX با TLS Termination و Load Balancing، چند Backend، Redis و PostgreSQL — با توضیح هر لایه، مدیریت Secret و Zero-Downtime Deployment.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/complete-production-architecture.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/complete-production-architecture.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Production Architecture, NGINX, Load Balancer, TLS, Redis, PostgreSQL, High Availability",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Complete Production Architecture", "item": "https://haedarfarhani.github.io/My-Articles/articles/complete-production-architecture.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body data-article-id="complete-production-architecture">
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">سرور و استقرار بک‌اند</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">مقاله پایانی — سطح پیشرفته</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">معماری کامل Production</span>؛ از اینترنت تا Database
+          </h1>
+
+          <p class="hero-lead">
+            این مقاله‌ی پایانی، همه‌ی لایه‌هایی که در این آکادمی دیدیم را در یک معماری کامل کنار هم
+            می‌چیند: <strong>Internet → DNS → Firewall → NGINX (TLS و Load Balancing) →
+            چند Backend → Redis و PostgreSQL</strong>. برای هر لایه توضیح می‌دهیم چه می‌کند،
+            چرا آنجاست، چه چیزی می‌تواند خراب شود و کدام تصمیم Production را باید بگیریم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۴۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: پیشرفته</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Production</span>
+            <span class="post-tag">#Architecture</span>
+            <span class="post-tag">#High_Availability</span>
+            <span class="post-tag">#Zero_Downtime</span>
+            <span class="post-tag">#Redis</span>
+            <span class="post-tag">#PostgreSQL</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>معماری کامل در یک نگاه</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>لایه‌ی ورودی: DNS و Firewall</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>لایه‌ی لبه: NGINX</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>لایه‌ی اپلیکیشن: Backendها</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>لایه‌ی داده: Redis و PostgreSQL</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>مرزهای شبکه و پورت‌ها</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>Config و Secret</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>Observability و Health Check</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>High Availability و Scaling</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>Zero-Downtime Deployment</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>چک‌لیست نهایی و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>معماری کامل در یک نگاه</h2>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 620" role="img" aria-label="نمودار کامل معماری Production از اینترنت و DNS تا Firewall، NGINX، سه Backend، Redis و PostgreSQL">
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="285" y="4" width="200" height="38" rx="9"/>
+    <text class="s-t" x="385" y="28" text-anchor="middle">INTERNET</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 42 L 385 58"/>
+  <path class="s-head" d="M 385 64 L 378 52 L 392 52 Z"/>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="300" y="66" width="170" height="38" rx="9"/>
+    <text class="s-t" x="385" y="90" text-anchor="middle">DNS</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 104 L 385 120"/>
+  <path class="s-head" d="M 385 126 L 378 114 L 392 114 Z"/>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-warn" x="300" y="128" width="170" height="38" rx="9"/>
+    <text class="s-t" x="385" y="152" text-anchor="middle">Firewall</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 166 L 385 182"/>
+  <path class="s-head" d="M 385 188 L 378 176 L 392 176 Z"/>
+
+  <g class="s-node s-pulse" style="--kl-i:4">
+    <rect class="s-acc" x="200" y="190" width="370" height="76" rx="12"/>
+    <text class="s-t" x="385" y="214" text-anchor="middle">NGINX</text>
+    <text class="s-t2" x="385" y="234" text-anchor="middle">Reverse Proxy · TLS Termination</text>
+    <text class="s-t2" x="385" y="252" text-anchor="middle">Load Balancer · Rate Limiting · Caching</text>
+  </g>
+
+  <path class="s-line" d="M 385 266 L 385 286"/>
+  <path class="s-line" d="M 130 286 L 640 286"/>
+  <path class="s-arr" d="M 130 286 L 130 306"/>
+  <path class="s-arr" d="M 385 286 L 385 306"/>
+  <path class="s-arr" d="M 640 286 L 640 306"/>
+  <path class="s-head" d="M 130 312 L 123 300 L 137 300 Z"/>
+  <path class="s-head" d="M 385 312 L 378 300 L 392 300 Z"/>
+  <path class="s-head" d="M 640 312 L 633 300 L 647 300 Z"/>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c4" x="45" y="314" width="170" height="60" rx="9"/>
+    <text class="s-t" x="130" y="338" text-anchor="middle">Backend 1</text>
+    <text class="s-t2" x="130" y="358" text-anchor="middle">:8080</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-c4" x="300" y="314" width="170" height="60" rx="9"/>
+    <text class="s-t" x="385" y="338" text-anchor="middle">Backend 2</text>
+    <text class="s-t2" x="385" y="358" text-anchor="middle">:8081</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-c4" x="555" y="314" width="170" height="60" rx="9"/>
+    <text class="s-t" x="640" y="338" text-anchor="middle">Backend 3</text>
+    <text class="s-t2" x="640" y="358" text-anchor="middle">:8082</text>
+  </g>
+
+  <path class="s-arr" d="M 130 374 L 130 402 L 330 402"/>
+  <path class="s-arr" d="M 385 374 L 385 402"/>
+  <path class="s-arr" d="M 640 374 L 640 402 L 440 402"/>
+  <path class="s-line" d="M 330 402 L 440 402"/>
+  <path class="s-arr" d="M 385 402 L 385 424"/>
+  <path class="s-head" d="M 385 430 L 378 418 L 392 418 Z"/>
+
+  <rect class="s-group" x="80" y="436" width="610" height="176" rx="16"/>
+  <text class="s-group-t" x="385" y="458" text-anchor="middle">Data Layer — Private Network</text>
+
+  <g class="s-node" style="--kl-i:8">
+    <rect class="s-c5" x="110" y="472" width="250" height="56" rx="9"/>
+    <text class="s-t" x="235" y="495" text-anchor="middle">Redis</text>
+    <text class="s-t2" x="235" y="515" text-anchor="middle">:6379 — Cache / Session / Queue</text>
+  </g>
+  <g class="s-node" style="--kl-i:9">
+    <rect class="s-c4" x="410" y="472" width="250" height="56" rx="9"/>
+    <text class="s-t" x="535" y="495" text-anchor="middle">PostgreSQL</text>
+    <text class="s-t2" x="535" y="515" text-anchor="middle">:5432 — Primary / Replica</text>
+  </g>
+
+  <g class="s-node" style="--kl-i:10">
+    <rect class="s-c6" x="110" y="546" width="550" height="50" rx="9"/>
+    <text class="s-t" x="385" y="568" text-anchor="middle">Monitoring · Logging · Tracing</text>
+    <text class="s-t2" x="385" y="586" text-anchor="middle">Prometheus · Grafana · Loki · OpenTelemetry</text>
+  </g>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="4.6s" repeatCount="indefinite" path="M 385 42 L 385 220 L 385 560"/>
+  </circle>
+  <circle class="s-runner s-runner-dim" r="4">
+    <animateMotion dur="4.6s" begin="2.3s" repeatCount="indefinite" path="M 535 500 L 535 402 L 385 220"/>
+  </circle>
+</svg>
+<figcaption><b>معماری کامل:</b> ورودی در چند لایه محدود می‌شود، لبه مسئول TLS و توزیع است، Backendها Stateless می‌مانند و لایه‌ی داده در شبکه‌ی خصوصی ایزوله است. لایه‌ی Observability همه را می‌پاید.</figcaption>
+</figure>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">اصل حاکم بر کل معماری</span>
+هر لایه فقط با لایه‌ی مجاور خود حرف می‌زند، هر لایه یک مسئولیت دارد، و هر جزء حساس در
+شبکه‌ی خصوصی است. اگر این سه قاعده رعایت شود، سیستم قابل نگهداری و مقیاس‌پذیر می‌ماند.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>لایه‌ی ورودی: DNS و Firewall</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>رکورد DNS</th><th>کاربرد</th><th>مثال</th></tr>
+  <tr><td><strong>A</strong></td><td>نام به IPv4</td><td><code>app.example.com → 203.0.113.10</code></td></tr>
+  <tr><td><strong>AAAA</strong></td><td>نام به IPv6</td><td><code>app.example.com → 2001:db8::1</code></td></tr>
+  <tr><td><strong>CNAME</strong></td><td>نام به نام (Alias)</td><td><code>www → app.example.com</code></td></tr>
+  <tr><td><strong>TXT</strong></td><td>متادیتا و تأیید مالکیت</td><td>SPF، DKIM، تأیید SSL</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="bash"><code># فقط پورت‌های لازم را باز کنید (نمونه با ufw)
+sudo ufw default deny incoming
+sudo ufw allow 22/tcp     # SSH
+sudo ufw allow 80/tcp     # HTTP (ریدایرکت به HTTPS)
+sudo ufw allow 443/tcp    # HTTPS
+sudo ufw enable
+sudo ufw status verbose</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Production Note</span>
+پورت‌های Backend (8080/8081)، Redis (6379) و PostgreSQL (5432) <strong>هرگز</strong> نباید
+عمومی باشند. دسترسی دیتابیس را به شبکه‌ی خصوصی یا VPN محدود کنید.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>لایه‌ی لبه: NGINX</h2>
+
+<pre class="kl-code" data-lang="nginx"><code>upstream app {
+    least_conn;
+    keepalive 32;
+    server 10.0.0.11:8080 max_fails=3 fail_timeout=15s;
+    server 10.0.0.12:8080 max_fails=3 fail_timeout=15s;
+    server 10.0.0.13:8080 backup;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name app.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/app.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/app.example.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    location = /health { access_log off; return 200 "ok"; }
+
+    location /static/ { root /var/www/app; expires 30d; }
+
+    location / {
+        proxy_pass http://app;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">High Availability در لبه</span>
+یک NGINX تنها نقطه‌ی شکست تک است. برای HA واقعی، یا دو NGINX پشت یک Floating IP/Keepalived
+بگذارید، یا از یک Load Balancer ابری در جلوی آن‌ها استفاده کنید.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>لایه‌ی اپلیکیشن: Backendها</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>تصمیم</th><th>توصیه‌ی Production</th><th>دلیل</th></tr>
+  <tr><td>Bind Address</td><td><code>0.0.0.0:8080</code> در شبکه‌ی خصوصی</td><td>فقط NGINX و شبکه‌ی داخلی دسترسی دارند</td></tr>
+  <tr><td>Stateless</td><td>وضعیت در Redis یا Token</td><td>امکان Scaling افقی</td></tr>
+  <tr><td>Config</td><td>فقط از Environment Variable</td><td>تصویر و کد قابل انتقال می‌ماند</td></tr>
+  <tr><td>Health Endpoint</td><td><code>/health</code> و <code>/ready</code></td><td>پایه‌ی Load Balancing و Deployment</td></tr>
+  <tr><td>Graceful Shutdown</td><td>اتمام درخواست‌های در جریان</td><td>پیش‌نیاز Zero-Downtime</td></tr>
+  <tr><td>Connection Pool</td><td>اندازه‌ی متناسب با دیتابیس</td><td>جلوگیری از Timeout و اشباع</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="text"><code>GET /health   → زنده بودن فرآیند (Liveness)
+GET /ready    → آماده‌بودن برای دریافت ترافیک (Readiness)
+GET /metrics  → معیارهای Prometheus</code></pre>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>لایه‌ی داده: Redis و PostgreSQL</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>جزء</th><th>نقش</th><th>خطای رایج</th></tr>
+  <tr><td><strong>Redis</strong></td><td>Cache، Session، Rate Limit، Queue</td><td>استفاده به‌عنوان منبع اصلی داده</td></tr>
+  <tr><td><strong>PostgreSQL</strong></td><td>منبع اصلی داده و تراکنش</td><td>عدم تنظیم Connection Pool و Index</td></tr>
+  <tr><td><strong>Replica</strong></td><td>خواندن و Failover</td><td>فرض تکرارسازی فوری (Replication Lag)</td></tr>
+  <tr><td><strong>Backup</strong></td><td>بازیابی در حادثه</td><td>پشتیبانی بدون تست بازیابی</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">هرگز این کار را نکنید</span>
+باز کردن پورت ۵۴۳۲ یا ۶۳۷۹ روی اینترنت. Redis بدون احراز هویت و PostgreSQL با رمز ضعیف،
+از رایج‌ترین علل نفوذ و از دست‌رفتن داده هستند.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>مرزهای شبکه و پورت‌ها</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>پورت</th><th>سرویس</th><th>در دسترس از</th></tr>
+  <tr><td>22</td><td>SSH</td><td>فقط IPهای مدیر یا Bastion (ترجیحاً)</td></tr>
+  <tr><td>80</td><td>HTTP</td><td>عمومی — فقط برای ریدایرکت به HTTPS</td></tr>
+  <tr><td>443</td><td>HTTPS</td><td>عمومی</td></tr>
+  <tr><td>8080 / 8081 / 8082</td><td>Backend</td><td>فقط لبه و شبکه‌ی داخلی</td></tr>
+  <tr><td>3000 / 5000</td><td>Node.js / ASP.NET در حال توسعه</td><td>در Production پشت Proxy</td></tr>
+  <tr><td>6379</td><td>Redis</td><td>فقط شبکه‌ی خصوصی</td></tr>
+  <tr><td>5432</td><td>PostgreSQL</td><td>فقط شبکه‌ی خصوصی</td></tr>
+</table>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>آدرس</th><th>معنا</th></tr>
+  <tr><td><code>127.0.0.1</code></td><td>فقط همان میزبان (Loopback) — امن‌ترین حالت</td></tr>
+  <tr><td><code>0.0.0.0</code></td><td>همه‌ی رابط‌ها — فقط وقتی لازم است</td></tr>
+  <tr><td>Private IP</td><td>فقط شبکه‌ی خصوصی VPC</td></tr>
+  <tr><td>Public IP</td><td>قابل دسترس از اینترنت</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">قاعده‌ی Bind</span>
+اگر فقط NGINX روی همان سرور به Backend وصل می‌شود، Backend را روی
+<code>127.0.0.1</code> ببندید. اما اگر Backendها روی سرورهای جدا هستند،
+<code>0.0.0.0</code> روی رابط خصوصی لازم است — با Firewall محدود.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>Config و Secret</h2>
+
+<pre class="kl-code" data-lang="text"><code>درست:  Config از Environment Variable
+
+  DATABASE_URL=postgres://user:***@db.internal:5432/app
+  REDIS_URL=redis://cache.internal:6379
+  JWT_SECRET=***
+
+اشتباه:  مقدار داخل کد یا تصویر Docker
+
+  # هرگز:
+  SPRING_DATASOURCE_PASSWORD=hardcoded-in-repo</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نوع</th><th>مثال</th><th>محل نگه‌داری</th></tr>
+  <tr><td>پیکربندی غیرحساس</td><td>پورت، نام سرویس، سطح لاگ</td><td>فایل Config یا Env</td></tr>
+  <tr><td>Secret</td><td>رمز دیتابیس، کلید JWT</td><td>Secret Manager یا Env رمزگذاری‌شده</td></tr>
+  <tr><td>Certificate</td><td>کلید خصوصی TLS</td><td>مدیریت‌شده با مجوز محدود</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">Common Mistake</span>
+کامیت‌کردن فایل <code>.env</code>. حتی پس از حذف، تاریخچه‌ی Git آن را نگه می‌دارد؛
+در صورت لو رفتن، کلید را باطل و جایگزین کنید.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>Observability و Health Check</h2>
+
+<pre class="kl-code" data-lang="text"><code>Client
+  │
+  ▼
+NGINX ── Access Log ──────────► Loki
+  │
+  ▼
+Backend ── Metrics ──────────► Prometheus ──► Grafana
+  │
+  ▼
+Database ── Slow Query Log ──► Loki
+  │
+  └──── Traces (OpenTelemetry) ──► Collector</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>سؤال</th><th>ابزار</th><th>چه چیزی را نشان می‌دهد</th></tr>
+  <tr><td>چه اتفاقی افتاد؟</td><td>Logs</td><td>جزئیات رخداد و خطا</td></tr>
+  <tr><td>وضعیت چطور است؟</td><td>Metrics</td><td>نرخ خطا، Latency، اشباع منابع</td></tr>
+  <tr><td>کجا کند شد؟</td><td>Traces</td><td>مسیر یک درخواست در چند سرویس</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">تفکیک Liveness و Readiness</span>
+<strong>Liveness</strong> می‌گوید فرآیند زنده است (اگر نه، Restart کن).
+<strong>Readiness</strong> می‌گوید آماده‌ی ترافیک است (اگر نه، از Load Balancer حذف کن).
+این تفکیک، پایه‌ی Zero-Downtime Deployment است.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>High Availability و Scaling</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>سطح</th><th>راهکار</th><th>هزینه / پیچیدگی</th></tr>
+  <tr><td>تک سرور</td><td>همه‌چیز روی یک ماشین</td><td>ساده اما بدون HA</td></tr>
+  <tr><td>چند Backend</td><td>Load Balancer + دو Instance</td><td>افزایش تحمل خطای متوسط</td></tr>
+  <tr><td>HA در لبه</td><td>دو NGINX با Floating IP</td><td>پیچیدگی بیشتر، آگاهی از Split-Brain</td></tr>
+  <tr><td>لایه‌ی داده</td><td>Primary/Replica و Backup منظم</td><td>پیچیدگی در Failover و سازگاری</td></tr>
+</table>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Vertical Scaling</th><th>Horizontal Scaling</th></tr>
+  <tr><td>افزودن CPU و RAM به همان سرور</td><td>افزودن Instance بیشتر</td></tr>
+  <tr><td>سقف سخت‌افزاری و هزینه‌ی غیرخطی</td><td>نیازمند Stateless بودن و Session مشترک</td></tr>
+  <tr><td>سریع و بدون تغییر معماری</td><td>مقاوم به خرابی و قابل بزرگ‌شدن</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>Zero-Downtime Deployment</h2>
+
+<pre class="kl-code" data-lang="text"><code>Rolling Deployment
+
+  v1  v1  v1
+  v2  v1  v1   ← یک نمونه از گردش خارج، به‌روزرسانی، بازگشت
+  v2  v2  v1
+  v2  v2  v2
+
+الزامات:
+  ۱) Health Check و Readiness
+  ۲) Graceful Shutdown (Connection Draining)
+  ۳) سازگاری نسخه‌ها در دیتابیس (Expand/Contract)
+  ۴) امکان Rollback</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>روش</th><th>مزیت</th><th>ملاحظه</th></tr>
+  <tr><td>Rolling</td><td>بدون منابع اضافه</td><td>دو نسخه هم‌زمان فعال‌اند</td></tr>
+  <tr><td>Blue-Green</td><td>Rollback فوری</td><td>دو برابر منابع</td></tr>
+  <tr><td>Canary</td><td>ریسک کنترل‌شده</td><td>نیازمند مسیریابی درصدی</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">خطاهای رایج انتشار</span>
+۵۰۲ به‌دلیل نبود Healthy Instance، ۵۰۳ به‌دلیل اشباع Backend، و Connection Reset به‌دلیل
+Shutdown ناگهانی. هر سه با Health Check، Graceful Shutdown و ظرفیت کافی قابل پیشگیری‌اند.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>چک‌لیست نهایی و جمع‌بندی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>حوزه</th><th>مورد</th></tr>
+  <tr><td>ورودی</td><td>DNS، Firewall، فقط پورت‌های لازم</td></tr>
+  <tr><td>لبه</td><td>TLS، Security Header، Rate Limiting، Health</td></tr>
+  <tr><td>اپلیکیشن</td><td>Stateless، Config از Env، Graceful Shutdown</td></tr>
+  <tr><td>داده</td><td>Backup و تست بازیابی، ایزوله در شبکه‌ی خصوصی</td></tr>
+  <tr><td>مشاهده‌پذیری</td><td>Logs، Metrics، Traces، Alert</td></tr>
+  <tr><td>انتشار</td><td>Zero-Downtime و Rollback</td></tr>
+</table>
+</div>
+
+<p>
+معماری Production خوب، ساده‌ترین معماری‌ای است که مسئولیت‌ها را جدا می‌کند، هر جزء حساس را
+ایزوله می‌کند و در برابر خرابی تاب‌آور است. هیچ‌کدام از این لایه‌ها آداب نیستند؛ هرکدام یک
+محدودیت واقعی را حل می‌کنند.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">بازگشت به ابتدای آکادمی</span>
+<a href="server-architecture.html"><strong>نقشه‌ی راه معماری سرور</strong></a> — اگر این مقاله را
+خواندید، حالا می‌توانید از ابتدا مسیر را با درک کامل مرور کنید.
+</div>
+
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="server-architecture.html">آکادمی معماری سرور — نقشه‌ی راه</a></li>
+  <li><a href="nginx.html">NGINX</a></li>
+  <li><a href="reverse-proxy.html">Reverse Proxy</a></li>
+  <li><a href="web-server.html">Web Server چیست؟</a></li>
+  <li><a href="web-server-vs-application-server.html">Web Server vs Application Server</a></li>
+</ul>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۱۱ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">معماری کامل در یک نگاه</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">لایه‌ی ورودی: DNS و Firewall</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">لایه‌ی لبه: NGINX</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">لایه‌ی اپلیکیشن: Backendها</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">لایه‌ی داده: Redis و PostgreSQL</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مرزهای شبکه و پورت‌ها</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Config و Secret</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Observability و Health Check</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">High Availability و Scaling</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Zero-Downtime Deployment</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">چک‌لیست نهایی و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="server-architecture.html" class="btn-action-block" style="text-align:center;">
+              <span>نقشه‌ی راه آکادمی ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>بخشی از آکادمی معماری سرور: از یک درخواست ساده تا یک معماری Production کامل.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">معماری کامل در یک نگاه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">لایه‌ی ورودی: DNS و Firewall</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">لایه‌ی لبه: NGINX</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">لایه‌ی اپلیکیشن: Backendها</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">لایه‌ی داده: Redis و PostgreSQL</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مرزهای شبکه و پورت‌ها</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Config و Secret</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Observability و Health Check</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">High Availability و Scaling</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Zero-Downtime Deployment</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">چک‌لیست نهایی و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Server چیست؟ آموزش کامل چرخه‌ی Request و Response | حیدر فرحانی</title>
+  <meta name="description" content="Web Server چیست و چه کاری انجام می‌دهد؟ چرخه‌ی Request و Response، Static و Dynamic Content، MIME Type، Header، Cookie، Compression، TLS و تفاوت آن با Application Server و Reverse Proxy.">
+  <meta name="keywords" content="Web Server, وب سرور, HTTP Server, Request, Response, Static Content, Dynamic Content, MIME Type, Reverse Proxy, Application Server, NGINX, Apache, معماری سرور">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Web Server چیست؟ آموزش کامل چرخه‌ی Request و Response">
+  <meta property="og:description" content="چرخه‌ی Request و Response، Static و Dynamic Content، MIME، Header، Cookie، Compression و TLS — و مرز Web Server با Reverse Proxy و Application Server.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/web-server.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/web-server.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Web Server چیست؟">
+  <meta name="twitter:description" content="چرخه‌ی Request و Response، Static و Dynamic، MIME و تفاوت Web Server با Reverse Proxy و Application Server.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/net-guard.js"></script>
+  <script defer src="../js/comments.js"></script>
+  <script defer src="../js/diagrams.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
+  <link rel="stylesheet" href="../css/net-guard.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Web Server چیست؟ آموزش کامل چرخه‌ی Request و Response",
+    "description": "Web Server چیست و چه کاری انجام می‌دهد؟ چرخه‌ی Request و Response، Static و Dynamic Content، MIME Type، Header، Cookie، Compression، TLS و تفاوت آن با Application Server و Reverse Proxy.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/web-server.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/web-server.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Web Server, HTTP, Request, Response, MIME, Reverse Proxy, Application Server, NGINX, Apache",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Web Server", "item": "https://haedarfarhani.github.io/My-Articles/articles/web-server.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body data-article-id="web-server">
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">سرور و استقرار بک‌اند</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">مقاله ۰۱ — سطح مبتدی</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Web Server</span> چیست و دقیقاً چه کاری انجام می‌دهد؟
+          </h1>
+
+          <p class="hero-lead">
+            هر بار که یک صفحه‌ی وب باز می‌شود، یک <strong>Web Server</strong> درخواست را می‌گیرد،
+            تصمیم می‌گیرد چه پاسخی بدهد و آن را برمی‌گرداند. در این مقاله چرخه‌ی
+            <code>Request</code> و <code>Response</code>، تفاوت محتوای <code>Static</code> و
+            <code>Dynamic</code>، نقش <code>MIME Type</code>، <code>Header</code>، <code>Cookie</code>،
+            <code>Compression</code>، <code>TLS</code> و <code>Caching</code> را بررسی می‌کنیم
+            و مرز آن را با <strong>Application Server</strong>، <strong>Reverse Proxy</strong> و
+            <strong>Load Balancer</strong> روشن می‌کنیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۳۵ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مبتدی</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Web_Server</span>
+            <span class="post-tag">#HTTP</span>
+            <span class="post-tag">#Request_Response</span>
+            <span class="post-tag">#MIME_Type</span>
+            <span class="post-tag">#Reverse_Proxy</span>
+            <span class="post-tag">#NGINX</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه و آنچه یاد می‌گیرید</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>تعریف دقیق Web Server</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>چرا Web Server وجود دارد؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>معماری و اجزای داخلی</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>چرخه‌ی HTTP Request</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>چرخه‌ی HTTP Response</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>Static در برابر Dynamic Content</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>Request Routing و MIME Type</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>Headers، Cookies و Compression</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>TLS، Caching و Connection</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>Web Server در برابر بقیه‌ی لایه‌ها</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>پیکربندی نمونه</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>مثال واقعی و Production</span></a></li>
+              <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>اشتباهات رایج و Troubleshooting</span></a></li>
+              <li class="inline-toc-item"><a href="#s15" class="inline-toc-link"><span class="inline-toc-num">۱۵</span><span>مزایا، معایب و چه زمانی استفاده کنیم</span></a></li>
+              <li class="inline-toc-item"><a href="#s16" class="inline-toc-link"><span class="inline-toc-num">۱۶</span><span>جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه و آنچه یاد می‌گیرید</h2>
+
+<p>
+«Web Server» را همه‌جا می‌شنویم، اما تعریفش در ذهن بسیاری مبهم است. بعضی آن را با
+<strong>Application Server</strong> یکی می‌گیرند، بعضی با <strong>Reverse Proxy</strong>.
+این ابهام در Production گران تمام می‌شود: کسی که تفاوت را نمی‌داند، بک‌اند را مستقیم
+روی پورت عمومی می‌گذارد و بعد از دست‌دادن TLS، Rate Limiting و Caching متعجب می‌شود.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">در این مقاله یاد می‌گیرید</span>
+<ul style="margin:0.4rem 0 0;padding-right:1.2rem;line-height:2;">
+  <li>تعریف دقیق Web Server و تفاوت آن با لایه‌های مجاور</li>
+  <li>چرخه‌ی کامل Request و Response</li>
+  <li>Static و Dynamic Content و نقش آن‌ها در طراحی</li>
+  <li>MIME Type، Header، Cookie، Compression و Caching</li>
+  <li>نقش TLS و مدیریت Connection</li>
+  <li>پیکربندی واقعی NGINX و Apache</li>
+  <li>اشتباهات رایج و Troubleshooting</li>
+</ul>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">Prerequisites</span>
+آشنایی مقدماتی با HTTP و مفاهیم Client/Server. اگر می‌خواهید همه‌چیز را در بافت بزرگ‌تر ببینید،
+ابتدا <a href="server-architecture.html">آکادمی معماری سرور</a> را ببینید.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>تعریف دقیق Web Server</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">تعریف رسمی</span>
+<strong>Web Server</strong> نرم‌افزاری است که روی یک سرور اجرا می‌شود، روی یک یا چند
+<strong>Port</strong> به <strong>HTTP</strong> گوش می‌دهد، درخواست را می‌فهمد و پاسخی
+(فایل، محتوای تولیدشده یا ارجاع به سرور دیگر) برمی‌گرداند. مسئولیت اصلی آن
+<strong>تبدیل درخواست HTTP به پاسخ HTTP</strong> است — نه اجرای منطق کسب‌وکار.
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>✅ هست…</th><th>❌ نیست…</th></tr>
+  <tr><td>نقطه‌ی ورود ترافیک HTTP/HTTPS</td><td>محل منطق کسب‌وکار و قوانین دامنه</td></tr>
+  <tr><td>سروکننده‌ی Static Files و تحویل پاسخ</td><td>اجباری برای اجرای JVM یا Runtime برنامه</td></tr>
+  <tr><td>پشتیبان TLS، Compression و Caching</td><td>به‌معنای دیتابیس یا Cache داخلی</td></tr>
+  <tr><td>قابل استفاده به‌عنوان Reverse Proxy</td><td>الزاماً یک محصول مشخص — NGINX، Apache، Caddy، IIS</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">سوءتفاهم رایج</span>
+«اگر NGINX دارم، پس Application Server هم دارم.» خیر. NGINX فایل ثابت را عالی سرو می‌کند و
+می‌تواند ترافیک را Proxy کند، اما خودش برنامه‌ی Java یا Node.js را اجرا نمی‌کند. آن کار
+وظیفه‌ی <strong>Application Server</strong> است.
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>چرا Web Server وجود دارد؟</h2>
+
+<p>
+شاید بپرسید اگر یک برنامه‌ی Backend می‌تواند خودش مستقیم روی پورت گوش بدهد، چرا لایه‌ی
+جدا لازم است؟ پاسخ در سه دلیل عملی است:
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>دلیل</th><th>توضیح</th></tr>
+  <tr><td><strong>کارایی در فایل ثابت</strong></td><td>سروکردن فایل با <code>sendfile()</code> و Cache کرنل بسیار ارزان‌تر از عبور از Runtime برنامه است.</td></tr>
+  <tr><td><strong>امنیت و ایزولاسیون</strong></td><td>Backend در شبکه‌ی خصوصی می‌ماند و فقط لبه‌ی ورودی عمومی است؛ سطح حمله کوچک‌تر می‌شود.</td></tr>
+  <tr><td><strong>قابلیت‌های مشترک</strong></td><td>TLS، Compression، Rate Limiting، Logging و Caching یک‌بار در لبه پیاده می‌شوند، نه در هر سرویس.</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">اصل تفکیک مسئولیت</span>
+هر لایه باید یک کار را خوب انجام دهد. Web Server مسئول «حرف‌زدن HTTP» است؛
+Application Server مسئول «اجرای منطق»؛ Reverse Proxy مسئول «ورودی و توزیع».
+همین جداسازی، ریشه‌ی نگهداری‌پذیری در مقیاس است.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>معماری و اجزای داخلی</h2>
+
+<p>
+درون یک Web Server مدرن مثل NGINX سه جزء اصلی می‌بینیم: <strong>Master Process</strong> که
+مدیریت می‌کند، چند <strong>Worker Process</strong> که درخواست‌ها را پردازش می‌کنند، و یک
+<strong>Event Loop</strong> غیرمسدودکننده که هزاران Connection را با تعداد کم Thread مدیریت می‌کند.
+</p>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 320" role="img" aria-label="معماری داخلی Web Server: Master Process، چند Worker Process با Event Loop و ارتباط با کلاینت‌ها و Backend">
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="290" y="10" width="190" height="48" rx="10"/>
+    <text class="s-t" x="385" y="32" text-anchor="middle">Master Process</text>
+    <text class="s-t2" x="385" y="50" text-anchor="middle">config · reload · workers</text>
+  </g>
+
+  <path class="s-line" d="M 385 58 L 385 86"/>
+  <path class="s-line" d="M 130 86 L 640 86"/>
+  <path class="s-arr" d="M 130 86 L 130 104"/>
+  <path class="s-arr" d="M 385 86 L 385 104"/>
+  <path class="s-arr" d="M 640 86 L 640 104"/>
+  <path class="s-head" d="M 130 110 L 123 98 L 137 98 Z"/>
+  <path class="s-head" d="M 385 110 L 378 98 L 392 98 Z"/>
+  <path class="s-head" d="M 640 110 L 633 98 L 647 98 Z"/>
+
+  <g class="s-node s-pulse" style="--kl-i:2">
+    <rect class="s-box" x="30" y="112" width="200" height="70" rx="10"/>
+    <text class="s-t" x="130" y="136" text-anchor="middle">Worker 1</text>
+    <text class="s-t2" x="130" y="156" text-anchor="middle">Event Loop · Non-blocking</text>
+    <text class="s-t2" x="130" y="173" text-anchor="middle">Epoll / Kqueue</text>
+  </g>
+  <g class="s-node s-pulse" style="--kl-i:3">
+    <rect class="s-box" x="285" y="112" width="200" height="70" rx="10"/>
+    <text class="s-t" x="385" y="136" text-anchor="middle">Worker 2</text>
+    <text class="s-t2" x="385" y="156" text-anchor="middle">Event Loop · Non-blocking</text>
+    <text class="s-t2" x="385" y="173" text-anchor="middle">Epoll / Kqueue</text>
+  </g>
+  <g class="s-node s-pulse" style="--kl-i:4">
+    <rect class="s-box" x="540" y="112" width="200" height="70" rx="10"/>
+    <text class="s-t" x="640" y="136" text-anchor="middle">Worker N</text>
+    <text class="s-t2" x="640" y="156" text-anchor="middle">Event Loop · Non-blocking</text>
+    <text class="s-t2" x="640" y="173" text-anchor="middle">Epoll / Kqueue</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 130 182 L 130 216"/>
+  <path class="s-arr s-flow" d="M 385 182 L 385 216"/>
+  <path class="s-arr s-flow" d="M 640 182 L 640 216"/>
+  <path class="s-head" d="M 130 222 L 123 210 L 137 210 Z"/>
+  <path class="s-head" d="M 385 222 L 378 210 L 392 210 Z"/>
+  <path class="s-head" d="M 640 222 L 633 210 L 647 210 Z"/>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-group" x="40" y="224" width="690" height="82" rx="14"/>
+  </g>
+  <text class="s-group-t" x="385" y="246" text-anchor="middle">Shared Resources</text>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-c5" x="70" y="258" width="180" height="40" rx="8"/>
+    <text class="s-t2" x="160" y="283" text-anchor="middle">Static File Cache</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-c5" x="295" y="258" width="180" height="40" rx="8"/>
+    <text class="s-t2" x="385" y="283" text-anchor="middle">Upstream Pool</text>
+  </g>
+  <g class="s-node" style="--kl-i:8">
+    <rect class="s-c5" x="520" y="258" width="180" height="40" rx="8"/>
+    <text class="s-t2" x="610" y="283" text-anchor="middle">Log Buffer</text>
+  </g>
+
+  <circle class="s-runner" r="4.5">
+    <animateMotion dur="3s" repeatCount="indefinite" path="M 130 112 L 130 182 L 160 258"/>
+  </circle>
+</svg>
+<figcaption><b>معماری داخلی NGINX:</b> یک Master و چند Worker با Event Loop غیرمسدودکننده. هر Worker می‌تواند هزاران Connection را همزمان نگه دارد؛ همین ویژگی، راز مقیاس‌پذیری این مدل است.</figcaption>
+</figure>
+
+<p>
+مدل <strong>Process-per-Connection</strong> سنتی (که Apache در حالت <code>prefork</code> داشت)
+به‌ازای هر اتصال یک Process می‌سازد و حافظه‌بر است. مدل <strong>Event-driven</strong> مدرن
+با تعداد کم Thread، همان بار را با منابع بسیار کمتر جابه‌جا می‌کند. این تفاوت یکی از
+مهم‌ترین دلایل محبوبیت NGINX است — هرچند برای Workloadهای خاص، مدل‌های دیگر هم جای خود را دارند.
+</p>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>چرخه‌ی HTTP Request</h2>
+
+<p>
+یک درخواست HTTP یک پیام متنی ساختارمند است. حداقل چیزی که برای فهم آن لازم است،
+خط درخواست و هدرهاست:
+</p>
+
+<pre class="kl-code" data-lang="http"><code>GET /products/42?ref=home HTTP/1.1
+Host: shop.example.com
+User-Agent: Mozilla/5.0
+Accept: text/html,application/xhtml+xml
+Accept-Encoding: gzip, br
+Cookie: session=abc123; theme=dark
+Connection: keep-alive
+
+(body خالی — در GET معمولاً وجود ندارد)</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>بخش</th><th>معنا</th><th>نکته‌ی Production</th></tr>
+  <tr><td><strong>Method</strong></td><td>GET، POST، PUT، DELETE، …</td><td>Idempotent بودن GET را در طراحی رعایت کنید</td></tr>
+  <tr><td><strong>Path + Query</strong></td><td>منبع درخواستی و پارامترها</td><td>Base URL را در Reverse Proxy یکسان نگه دارید</td></tr>
+  <tr><td><strong>Host</strong></td><td>دامنه‌ی هدف (Virtual Host)</td><td>پایه‌ی انتخاب <code>server_name</code> در NGINX</td></tr>
+  <tr><td><strong>Accept-Encoding</strong></td><td>فرمت‌های فشرده‌سازی مورد پشتیبانی کلاینت</td><td>پایه‌ی فعال‌کردن gzip/brotli</td></tr>
+  <tr><td><strong>Cookie</strong></td><td>وضعیت نشست</td><td>حساس؛ بدون <code>Secure</code>/<code>HttpOnly</code> آسیب‌پذیر است</td></tr>
+  <tr><td><strong>Connection</strong></td><td>باز یا بسته نگه‌داشتن اتصال</td><td>Keep-Alive هزینه‌ی TLS Handshake را حذف می‌کند</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">مرز اعتماد به Header</span>
+هدرهایی مثل <code>X-Forwarded-For</code> و <code>X-Real-IP</code> توسط کلاینت هم قابل جعل‌اند.
+تنها زمانی به آن‌ها اعتماد کنید که فقط Reverse Proxy شما بتواند آن‌ها را بگذارد.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>چرخه‌ی HTTP Response</h2>
+
+<pre class="kl-code" data-lang="http"><code>HTTP/1.1 200 OK
+Date: Mon, 05 Oct 2026 10:00:00 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 18244
+Cache-Control: public, max-age=3600
+Content-Encoding: gzip
+ETag: "a1b2c3d4"
+X-Frame-Options: SAMEORIGIN
+
+&lt;!DOCTYPE html&gt;
+...</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Status</th><th>معنا</th><th>نمونه‌ی رایج در Production</th></tr>
+  <tr><td><strong>2xx</strong></td><td>موفق</td><td>200، 201، 204</td></tr>
+  <tr><td><strong>3xx</strong></td><td>Redirect</td><td>301 (دائمی)، 302 (موقت)</td></tr>
+  <tr><td><strong>4xx</strong></td><td>خطای کلاینت</td><td>401، 403، 404، 429 (Rate Limited)</td></tr>
+  <tr><td><strong>5xx</strong></td><td>خطای سرور</td><td>502 و 504 از Reverse Proxy؛ 503 از Backend</td></tr>
+</table>
+</div>
+
+<p>
+ترتیب مراحل پاسخ مهم است: Web Server ابتدا Status و Header را می‌فرستد و بعد Body را.
+همین ویژگی باعث می‌شود <strong>Streaming</strong> ممکن باشد؛ برنامه می‌تواند Header را همین حالا
+بفرستد و Body را تکه‌تکه تولید کند.
+</p>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>Static در برابر Dynamic Content</h2>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="مقایسه‌ی مسیر Static Content و Dynamic Content از کلاینت تا پاسخ">
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="285" y="6" width="200" height="42" rx="9"/>
+    <text class="s-t" x="385" y="32" text-anchor="middle">Client</text>
+  </g>
+
+  <path class="s-line" d="M 385 48 L 385 74"/>
+  <path class="s-line" d="M 180 74 L 590 74"/>
+  <path class="s-arr" d="M 180 74 L 180 92"/>
+  <path class="s-arr" d="M 590 74 L 590 92"/>
+  <path class="s-head" d="M 180 98 L 173 86 L 187 86 Z"/>
+  <path class="s-head" d="M 590 98 L 583 86 L 597 86 Z"/>
+  <text class="s-t2 s-lbl" x="180" y="68" text-anchor="middle" style="--kl-i:2">/static/*</text>
+  <text class="s-t2 s-lbl" x="590" y="68" text-anchor="middle" style="--kl-i:3">/api/*</text>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-ok" x="60" y="100" width="240" height="62" rx="10"/>
+    <text class="s-t" x="180" y="124" text-anchor="middle">Static Files</text>
+    <text class="s-t2" x="180" y="144" text-anchor="middle">HTML · CSS · JS · Image</text>
+  </g>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-acc" x="470" y="100" width="240" height="62" rx="10"/>
+    <text class="s-t" x="590" y="124" text-anchor="middle">Dynamic Request</text>
+    <text class="s-t2" x="590" y="144" text-anchor="middle">Backend Application</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 180 162 L 180 186"/>
+  <path class="s-arr s-flow" d="M 590 162 L 590 186"/>
+  <path class="s-head" d="M 180 192 L 173 180 L 187 180 Z"/>
+  <path class="s-head" d="M 590 192 L 583 180 L 597 180 Z"/>
+
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-box" x="60" y="194" width="240" height="62" rx="10"/>
+    <text class="s-t" x="180" y="218" text-anchor="middle">پاسخ از Cache / Disk</text>
+    <text class="s-t2" x="180" y="238" text-anchor="middle">بدون منطق برنامه</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-c4" x="470" y="194" width="240" height="62" rx="10"/>
+    <text class="s-t" x="590" y="218" text-anchor="middle">Database / Cache</text>
+    <text class="s-t2" x="590" y="238" text-anchor="middle">پاسخ تولیدشده در لحظه</text>
+  </g>
+
+  <text class="s-t2 s-lbl" x="385" y="290" text-anchor="middle" style="--kl-i:8">Web Server ترافیک را بر اساس مسیر جدا می‌کند</text>
+</svg>
+<figcaption><b>جداسازی ترافیک:</b> درخواست‌های <code>/static/*</code> بدون عبور از Backend پاسخ می‌گیرند؛ فقط <code>/api/*</code> به Application می‌رسد. این جداسازی ساده، بار Backend را چشمگیر کم می‌کند.</figcaption>
+</figure>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>Static Content</th><th>Dynamic Content</th></tr>
+  <tr><td>تولید</td><td>از پیش روی دیسک</td><td>در زمان درخواست</td></tr>
+  <tr><td>هزینه‌ی CPU</td><td>بسیار کم</td><td>متوسط تا زیاد</td></tr>
+  <tr><td>Cache</td><td>کاملاً قابل کش</td><td>بسته به منطق و کاربر</td></tr>
+  <tr><td>مثال</td><td><code>app.js</code>، <code>style.css</code>، تصویر</td><td><code>GET /orders</code>، جستجو</td></tr>
+  <tr><td>لایه‌ی پاسخ‌گو</td><td>Web Server</td><td>Application Server + Backend</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>Request Routing و MIME Type</h2>
+
+<p>
+<strong>MIME Type</strong> به کلاینت می‌گوید محتوا را چطور تفسیر کند. اشتباه در آن باعث
+می‌شود مرورگر فایل JS را به‌عنوان متن نشان دهد یا CSS را اجرا نکند.
+</p>
+
+<pre class="kl-code" data-lang="nginx"><code>server {
+    listen 80;
+    server_name shop.example.com;
+    root /var/www/shop;
+
+    # سرو فایل ثابت با هدرهای درست
+    location /static/ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+        # MIME از فایل mime.types گرفته می‌شود
+        include /etc/nginx/mime.types;
+    }
+
+    # همه‌ی مسیرهای دیگر به Backend می‌روند
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+
+<div class="kl-box">
+<span class="kl-h">Common Mistake</span>
+استفاده از <code>types { }</code> خالی یا نبودن <code>mime.types</code> باعث می‌شود
+<code>Content-Type</code> برای <code>.js</code> بشود <code>text/plain</code> و ماژول‌های ES
+در مرورگر رد شوند.
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>پسوند</th><th>Content-Type</th></tr>
+  <tr><td><code>.html</code></td><td><code>text/html; charset=utf-8</code></td></tr>
+  <tr><td><code>.js</code> / <code>.mjs</code></td><td><code>text/javascript</code></td></tr>
+  <tr><td><code>.css</code></td><td><code>text/css</code></td></tr>
+  <tr><td><code>.json</code></td><td><code>application/json</code></td></tr>
+  <tr><td><code>.woff2</code></td><td><code>font/woff2</code></td></tr>
+  <tr><td><code>.webp</code></td><td><code>image/webp</code></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>Headers، Cookies و Compression</h2>
+
+<p>
+هدرها زبان مشترک Web Server و کلاینت هستند. سه دسته‌ی مهم آن‌ها:
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>دسته</th><th>مثال</th><th>کاربرد</th></tr>
+  <tr><td>Cache</td><td><code>Cache-Control</code>، <code>ETag</code>، <code>Last-Modified</code></td><td>کنترل کش مرورگر و Proxy</td></tr>
+  <tr><td>Security</td><td><code>X-Frame-Options</code>، <code>Content-Security-Policy</code></td><td>دفع Clickjacking و XSS</td></tr>
+  <tr><td>Content</td><td><code>Content-Type</code>، <code>Content-Encoding</code></td><td>تفسیر و رمزگشایی محتوا</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="nginx"><code># Compression — مراقب جفت‌شدن با proxy باشید
+gzip on;
+gzip_types text/plain text/css application/json application/javascript image/svg+xml;
+gzip_min_length 1024;
+
+# Cookie امن
+# Set-Cookie: session=abc123; Path=/; Secure; HttpOnly; SameSite=Lax</code></pre>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Production Note</span>
+فشرده‌سازی روی محتوای از پیش فشرده (مانند <code>.jpg</code> یا <code>.mp4</code>) فقط CPU
+هدر می‌دهد. <code>gzip_types</code> را محدود به متن نگه دارید. برای بارهای سنگین،
+<code>brotli</code> بهتر است اما نیاز به ماژول و سطح CPU بالاتری دارد.
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">Cookie و نشست</span>
+<code>Secure</code> فقط روی HTTPS ارسال می‌شود، <code>HttpOnly</code> دسترسی جاوااسکریپت را می‌بندد
+و <code>SameSite</code> جلوی CSRF را می‌گیرد. این سه ویژگی، حداقل امنیت یک Cookie نشست است.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>TLS، Caching و Connection</h2>
+
+<p>
+<strong>TLS</strong> ترافیک را رمزنگاری می‌کند و سه ویژگی می‌دهد: محرمانگی، یکپارچگی و
+احراز هویت سرور. در عمل امروز، <strong>TLS Termination</strong> در لبه انجام می‌شود و
+ترافیک داخلی به Backend ساده‌تر است.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>معنا</th><th>اثر</th></tr>
+  <tr><td><strong>TLS Handshake</strong></td><td>تبادل کلید و توافق رمزنگاری</td><td>هزینه‌ی اولیه؛ با <code>session resumption</code> کم می‌شود</td></tr>
+  <tr><td><strong>Keep-Alive</strong></td><td>باز نگه‌داشتن اتصال برای درخواست بعدی</td><td>حذف هزینه‌ی Handshake مکرر</td></tr>
+  <tr><td><strong>Caching</strong></td><td>نگه‌داشتن پاسخ در لبه</td><td>کاهش بار Backend و Latency</td></tr>
+  <tr><td><strong>Connection Limit</strong></td><td>سقف اتصال هر کلاینت</td><td>محافظت از منابع در برابر سوءاستفاده</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="nginx"><code># لبه‌ی TLS
+server {
+    listen 443 ssl http2;
+    server_name shop.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/shop.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/shop.example.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+
+    keepalive_timeout 65;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+    }
+}</code></pre>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">Common Mistake</span>
+نوشتن <code>ssl_protocols TLSv1 TLSv1.1</code>. این نسخه‌ها منسوخ و ناامن‌اند؛ همیشه
+فقط <code>TLSv1.2</code> و <code>TLSv1.3</code> را فعال کنید.
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>Web Server در برابر بقیه‌ی لایه‌ها</h2>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 360" role="img" aria-label="مقایسه‌ی نقش Web Server، Reverse Proxy، API Gateway، Load Balancer و Application Server در یک زنجیره">
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="285" y="6" width="200" height="40" rx="9"/>
+    <text class="s-t" x="385" y="31" text-anchor="middle">Internet Client</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 46 L 385 66"/>
+  <path class="s-head" d="M 385 72 L 378 60 L 392 60 Z"/>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="215" y="74" width="340" height="52" rx="10"/>
+    <text class="s-t" x="385" y="96" text-anchor="middle">Web Server + Reverse Proxy</text>
+    <text class="s-t2" x="385" y="115" text-anchor="middle">TLS · Static · Routing · Caching</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 126 L 385 146"/>
+  <path class="s-head" d="M 385 152 L 378 140 L 392 140 Z"/>
+
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-c6" x="215" y="154" width="340" height="52" rx="10"/>
+    <text class="s-t" x="385" y="176" text-anchor="middle">Load Balancer / API Gateway</text>
+    <text class="s-t2" x="385" y="195" text-anchor="middle">Distribution · Auth · Rate Limiting</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 206 L 385 226"/>
+  <path class="s-head" d="M 385 232 L 378 220 L 392 220 Z"/>
+
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-c4" x="215" y="234" width="340" height="52" rx="10"/>
+    <text class="s-t" x="385" y="256" text-anchor="middle">Application Server</text>
+    <text class="s-t2" x="385" y="275" text-anchor="middle">Runtime · Business Logic · Session</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 286 L 385 306"/>
+  <path class="s-head" d="M 385 312 L 378 300 L 392 300 Z"/>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-box" x="215" y="314" width="340" height="42" rx="9"/>
+    <text class="s-t" x="385" y="340" text-anchor="middle">Database / Cache</text>
+  </g>
+</svg>
+<figcaption><b>پنج نقش متفاوت:</b> این‌ها می‌توانند در یک محصول جمع شوند، اما مسئولیت‌هایشان متفاوت است و در Production بهتر است حداقل Web Server/Proxy از Application جدا باشد.</figcaption>
+</figure>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نقش</th><th>پرسشی که پاسخ می‌دهد</th><th>نمونه</th></tr>
+  <tr><td><strong>Web Server</strong></td><td>این درخواست HTTP چه پاسخی می‌گیرد؟</td><td>NGINX، Apache، Caddy، IIS</td></tr>
+  <tr><td><strong>Application Server</strong></td><td>منطق برنامه کجاست و چطور اجرا می‌شود؟</td><td>Tomcat، TomEE، Kestrel، Node.js</td></tr>
+  <tr><td><strong>Reverse Proxy</strong></td><td>ترافیک را چطور به سرویس درست برسانم؟</td><td>NGINX، Caddy، HAProxy</td></tr>
+  <tr><td><strong>API Gateway</strong></td><td>احراز هویت، نرخ و مسیریابی APIها چطور؟</td><td>Kong، Spring Cloud Gateway</td></tr>
+  <tr><td><strong>Load Balancer</strong></td><td>چطور بار را بین نمونه‌ها پخش کنم؟</td><td>HAProxy، AWS ALB، upstream</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>پیکربندی نمونه</h2>
+
+<h3>نمونه‌ی NGINX</h3>
+<pre class="kl-code" data-lang="nginx"><code>server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    # ریدایرکت دائمی به HTTPS
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    ssl_certificate     /etc/nginx/ssl/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/privkey.pem;
+
+    root /var/www/app;
+    index index.html;
+
+    location /assets/ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location /api/ {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+
+<h3>نمونه‌ی Apache HTTP Server</h3>
+<pre class="kl-code" data-lang="apache"><code>&lt;VirtualHost *:80&gt;
+    ServerName example.com
+
+    # ریدایرکت به HTTPS
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName example.com
+    SSLEngine on
+    SSLCertificateFile      /etc/ssl/fullchain.pem
+    SSLCertificateKeyFile   /etc/ssl/privkey.pem
+
+    DocumentRoot /var/www/app
+&lt;/VirtualHost&gt;</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">Expected Behavior</span>
+با این پیکربندی، ترافیک HTTP به HTTPS هدایت می‌شود، فایل‌های <code>/assets/</code> یک ماه
+کش می‌شوند و درخواست‌های <code>/api/</code> به Backend می‌رسند. تست:
+<code>curl -I https://example.com/assets/app.js</code> باید <code>Cache-Control</code> را نشان دهد.
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>مثال واقعی و Production</h2>
+
+<p>
+یک فروشگاه اینترنتی متوسط را در نظر بگیرید. معماری واقعی آن معمولاً این‌گونه است:
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Internet
+   ↓
+Firewall (443 فقط)
+   ↓
+NGINX (TLS + Static + Reverse Proxy)
+   ├── /static/*      → دیسک (باتر)
+   ├── /api/*         → Backend :8080
+   └── /health        → پاسخ مستقیم 200
+   ↓
+Application (Spring Boot / Node.js)
+   ↓
+PostgreSQL + Redis</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>موضوع</th><th>تصمیم Production</th></tr>
+  <tr><td>نسخه‌ی TLS</td><td>فقط <code>TLSv1.2</code> و <code>TLSv1.3</code></td></tr>
+  <tr><td>Static</td><td>با <code>Cache-Control: immutable</code> و نام‌گذاری hash در فایل</td></tr>
+  <tr><td>API</td><td>بدون Cache عمومی، با <code>proxy_read_timeout</code> تنظیم‌شده</td></tr>
+  <tr><td>Logging</td><td>Access Log با <code>X-Forwarded-For</code> و زمان پاسخ</td></tr>
+  <tr><td>Backend bind</td><td><code>127.0.0.1:8080</code> — بدون دسترسی عمومی</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Production Note</span>
+هرگز Backend را روی <code>0.0.0.0</code> و پورت عمومی نگذارید مگر NGINX روی همان میزبان باشد
+یا در شبکه‌ی خصوصی با Firewall محافظت شود.
+</div>
+</section>
+
+<!-- ==================== 14 ==================== -->
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>اشتباهات رایج و Troubleshooting</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>نشانه</th><th>علت احتمالی</th><th>تشخیص</th><th>راه‌حل</th></tr>
+  <tr><td><code>502 Bad Gateway</code></td><td>Backend بالا نیست یا پورت اشتباه است</td><td><code>ss -lntp</code> و <code>curl 127.0.0.1:8080</code></td><td>سرویس را بالا بیاورید و <code>proxy_pass</code> را چک کنید</td></tr>
+  <tr><td><code>504 Gateway Timeout</code></td><td>پاسخ Backend کندتر از Timeout</td><td>لاگ زمان پاسخ</td><td><code>proxy_read_timeout</code> و بهینه‌سازی Query</td></tr>
+  <tr><td>CSS/JS بار نمی‌شود</td><td>MIME Type اشتباه</td><td>تب <code>Network</code> مرورگر</td><td><code>mime.types</code> را include کنید</td></tr>
+  <tr><td>IP واقعی کاربر گم است</td><td>نبود <code>X-Forwarded-For</code></td><td>لاگ Backend</td><td>هدر را در Proxy ست کنید</td></tr>
+  <tr><td>صفحه‌ی قدیمی نشان داده می‌شود</td><td>Cache-Control تهاجمی</td><td><code>curl -I</code></td><td>Cache را برای HTML غیرفعال کنید</td></tr>
+</table>
+</div>
+
+<p>سه دستور پایه‌ای که هر مهندس Backend باید بلد باشد:</p>
+
+<pre class="kl-code" data-lang="bash"><code># چه سرویسی روی چه پورتی گوش می‌دهد؟
+ss -lntp
+
+# تست مستقیم سلامت Backend (بدون دخالت Proxy)
+curl -v http://127.0.0.1:8080/health
+
+# تست پیکربندی NGINX پیش از reload
+sudo nginx -t</code></pre>
+</section>
+
+<!-- ==================== 15 ==================== -->
+<section id="s15">
+<h2><span class="kl-num">بخش ۱۵</span>مزایا، معایب و چه زمانی استفاده کنیم</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>سرو سریع و کم‌هزینه‌ی فایل ثابت</td><td>اجرای منطق کسب‌وکار را انجام نمی‌دهد</td></tr>
+  <tr><td>متمرکزکردن TLS، Compression و Security</td><td>یک لایه‌ی اضافه که باید پیکربندی و نگه‌داری شود</td></tr>
+  <tr><td>ایزوله‌کردن Backend در شبکه‌ی خصوصی</td><td>پیکربندی اشتباه آن می‌تواند منبع خطاهای مبهم (502/504) شود</td></tr>
+  <tr><td>ابزار غنی Logging و Monitoring</td><td>برای مسیرهای ساده، ممکن است Over-engineering باشد</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">When to Use</span>
+تقریباً همه‌ی سرویس‌های وب عمومی: هر زمان که فایل ثابت، TLS، Reverse Proxy یا چند Instance داری.
+</div>
+<div class="kl-box kl-bad">
+<span class="kl-h">When NOT to Use (کورکورانه)</span>
+برای یک ابزار داخلی کوچک با یک سرویس، افزودن NGINX بدون نیاز به TLS/Static/Proxy اضافات است.
+تصمیم را بر اساس محدودیت واقعی بگیرید، نه مد.
+</div>
+</section>
+
+<!-- ==================== 16 ==================== -->
+<section id="s16">
+<h2><span class="kl-num">بخش ۱۶</span>جمع‌بندی و مقالات مرتبط</h2>
+
+<p>
+<strong>Web Server</strong> نقطه‌ی ورود ترافیک HTTP است: درخواست را می‌فهمد، پاسخ مناسب را
+می‌سازد یا به لایه‌ی بعدی می‌رساند و کارهای مشترک (TLS، Compression، Caching، Logging) را
+یک‌بار و درست انجام می‌دهد. تفاوت آن با Application Server، Reverse Proxy و Load Balancer
+یک تفاوت <strong>مسئولیت</strong> است، نه برتری.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">گام بعدی</span>
+<a href="web-server-vs-application-server.html"><strong>Web Server vs Application Server</strong></a> —
+دقیقاً همین مرز مسئولیت را با مثال و دیاگرام باز می‌کند.
+</div>
+
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="server-architecture.html">آکادمی معماری سرور — نقشه‌ی راه کامل</a></li>
+  <li><a href="web-server-vs-application-server.html">Web Server vs Application Server</a></li>
+  <li><a href="reverse-proxy.html">Reverse Proxy چیست؟</a></li>
+  <li><a href="nginx.html">NGINX — راهنمای عمیق</a></li>
+  <li><a href="complete-production-architecture.html">Complete Production Architecture</a></li>
+</ul>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۱۶ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه و آنچه یاد می‌گیرید</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تعریف دقیق Web Server</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">چرا Web Server وجود دارد؟</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">معماری و اجزای داخلی</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">چرخه‌ی HTTP Request</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">چرخه‌ی HTTP Response</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Static در برابر Dynamic Content</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Request Routing و MIME Type</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Headers، Cookies و Compression</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">TLS، Caching و Connection</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Web Server در برابر بقیه‌ی لایه‌ها</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">پیکربندی نمونه</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مثال واقعی و Production</span></a></li>
+              <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">اشتباهات رایج و Troubleshooting</span></a></li>
+              <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">مزایا، معایب و چه زمانی استفاده کنیم</span></a></li>
+              <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="server-architecture.html" class="btn-action-block" style="text-align:center;">
+              <span>نقشه‌ی راه آکادمی ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>بخشی از آکادمی معماری سرور: از یک درخواست ساده تا یک معماری Production کامل.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه و آنچه یاد می‌گیرید</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">تعریف دقیق Web Server</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">چرا Web Server وجود دارد؟</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">معماری و اجزای داخلی</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">چرخه‌ی HTTP Request</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">چرخه‌ی HTTP Response</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">Static در برابر Dynamic Content</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Request Routing و MIME Type</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Headers، Cookies و Compression</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">TLS، Caching و Connection</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Web Server در برابر بقیه‌ی لایه‌ها</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">پیکربندی نمونه</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مثال واقعی و Production</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">اشتباهات رایج و Troubleshooting</span></a></li>
+        <li class="toc-item"><a href="#s15" class="toc-link" data-target="s15"><span class="toc-num">۱۵</span><span class="toc-text">مزایا، معایب و چه زمانی استفاده کنیم</span></a></li>
+        <li class="toc-item"><a href="#s16" class="toc-link" data-target="s16"><span class="toc-num">۱۶</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

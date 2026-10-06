@@ -1,0 +1,582 @@
+/* ==========================================================================
+   server-sim.css — اجزای اختصاصی «آکادمی معماری سرور»
+   --------------------------------------------------------------------------
+   این فایل فقط برای صفحه‌ی articles/server-architecture.html است و از همان
+   توکن‌های طراحی سایت (tokens.css) استفاده می‌کند؛ هیچ تم یا پالت جدیدی
+   تعریف نمی‌کند. شامل: نقشه‌ی راه، کارت‌های مقالات، شبیه‌ساز معماری،
+   شبیه‌سازی خرابی، چک‌لیست و واژه‌نامه.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   ۱) نقشه‌ی راه یادگیری
+   -------------------------------------------------------------------------- */
+.sa-roadmap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.sa-road {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1rem 1rem;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.sa-road:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-primary);
+}
+
+.sa-road-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding-bottom: 0.7rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.sa-road-badge {
+  font-family: var(--font-mono), Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--color-primary);
+  white-space: nowrap;
+}
+.sa-road-beginner .sa-road-badge { background: #0F766E; }
+.sa-road-intermediate .sa-road-badge { background: #0891B2; }
+.sa-road-advanced .sa-road-badge { background: #7C3AED; }
+.sa-road-expert .sa-road-badge { background: #B45309; }
+
+.sa-road-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.sa-road-list {
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.sa-road-list li {
+  position: relative;
+  padding-right: 1.1rem;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.sa-road-list li::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+}
+
+.sa-road-goal {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   ۲) کارت‌های فهرست مقالات
+   -------------------------------------------------------------------------- */
+.sa-sub {
+  margin: 2rem 0 0.9rem;
+  font-size: 1.05rem;
+  color: var(--text-main);
+}
+
+.sa-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.sa-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 1rem 1.05rem;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.sa-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.sa-card-num {
+  font-family: var(--font-mono), Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-primary-light);
+}
+
+.sa-card-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.sa-card-desc {
+  font-size: 0.8rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.sa-card-cap {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+/* کارت‌های سری در دست انتشار (بدون لینک) */
+.sa-card-soon {
+  cursor: default;
+  opacity: 0.82;
+  border-style: dashed;
+}
+.sa-card-soon:hover {
+  transform: none;
+  border-color: var(--border-subtle);
+  background: var(--bg-surface-alt);
+}
+.sa-card-soon .sa-card-title {
+  color: var(--text-muted);
+}
+.sa-soon {
+  align-self: flex-start;
+  margin-top: 0.35rem;
+  font-family: var(--font-mono), Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  color: var(--color-warning);
+  background: var(--color-warning-soft);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.sa-cards-related {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.sa-cards-related .sa-card {
+  align-items: center;
+  text-align: center;
+  padding: 0.85rem;
+}
+
+/* --------------------------------------------------------------------------
+   ۳) شبیه‌ساز معماری Production
+   -------------------------------------------------------------------------- */
+.sa-sim {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+  align-items: stretch;
+}
+
+/* .sa-sim-stage روی <figure class="kl-fig"> می‌نشیند؛ پس فقط حاشیه‌ی بیرونی و
+   فاصله‌ی عمودی را ریست می‌کنیم تا پوسته‌ی شکل دوباره تکرار نشود. */
+.sa-sim-stage {
+  margin: 0;
+}
+
+.sa-sim-stage svg {
+  min-width: 470px;
+}
+
+.sa-node {
+  cursor: pointer;
+}
+.sa-node rect {
+  transition: opacity var(--transition-fast), filter var(--transition-fast);
+}
+.sa-node:hover rect,
+.sa-node:focus-visible rect,
+.sa-node.is-active rect {
+  filter: drop-shadow(0 0 7px rgba(20, 184, 166, 0.75));
+}
+.sa-node:focus-visible { outline: none; }
+.sa-node.is-dim rect {
+  opacity: 0.35;
+}
+.sa-node.is-active rect {
+  stroke-width: 2.6 !important;
+}
+
+.sa-sim-panel {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1.1rem 1rem;
+  min-height: 260px;
+  display: flex;
+}
+
+.sa-sim-empty {
+  margin: auto;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 2;
+}
+
+.sa-sim-empty-icon {
+  display: block;
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.sa-sim-detail {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.sa-sim-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.sa-sim-name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--color-primary-light);
+}
+
+.sa-sim-role {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.sa-sim-kv {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sa-sim-kv > div {
+  flex: 1 1 30%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.6rem;
+}
+
+.sa-sim-kv dt {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono), Consolas, monospace;
+  letter-spacing: 0.02em;
+}
+
+.sa-sim-kv dd {
+  margin: 0.15rem 0 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-main);
+  font-family: var(--font-mono), Consolas, monospace;
+  word-break: break-word;
+}
+
+.sa-sim-resp-title,
+.sa-sim-fail-title {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.sa-sim-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.sa-sim-list li {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+}
+
+.sa-sim-fail .sa-sim-list li {
+  border-color: rgba(244, 63, 94, 0.45);
+  color: var(--color-danger);
+}
+
+/* --------------------------------------------------------------------------
+   ۴) شبیه‌سازی خرابی و Failover
+   -------------------------------------------------------------------------- */
+.sa-fail {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1.1rem;
+  margin: 2rem 0;
+}
+
+.sa-fail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.sa-fail-btn {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-normal);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.sa-fail-btn:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.sa-fail-btn.is-active {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.sa-fail-reset {
+  margin-inline-start: auto;
+}
+.sa-fail-reset:hover {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.sa-fail-stage {
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+}
+
+.sa-fail-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-width: 560px;
+}
+
+.sa-fail-box {
+  font-family: var(--font-mono), Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-normal);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.sa-fail-nginx {
+  background: rgba(20, 184, 166, 0.16);
+  border-color: #14B8A6;
+}
+
+.sa-fail-arrow {
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.sa-fail-box.is-down {
+  background: rgba(244, 63, 94, 0.16);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  text-decoration: line-through;
+}
+
+.sa-fail-box.is-rerouted {
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
+}
+
+.sa-fail-log {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.sa-fail-line {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.95;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-md);
+  border-inline-start: 3px solid var(--border-normal);
+  background: var(--bg-surface);
+  color: var(--text-main);
+}
+
+.sa-fail-line-ok { border-inline-start-color: var(--color-success); }
+.sa-fail-line-warn { border-inline-start-color: var(--color-warning); }
+.sa-fail-line-bad { border-inline-start-color: var(--color-danger); }
+
+/* --------------------------------------------------------------------------
+   ۵) چک‌لیست Production
+   -------------------------------------------------------------------------- */
+.sa-checklist {
+  list-style: none;
+  margin: 2rem 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.5rem 0.9rem;
+}
+
+.sa-checklist li {
+  position: relative;
+  padding: 0.6rem 0.75rem 0.6rem 0.75rem;
+  padding-right: 2.1rem;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-main);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono), Consolas, monospace;
+}
+
+.sa-checklist li::before {
+  content: "☐";
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: var(--color-primary-light);
+}
+
+/* --------------------------------------------------------------------------
+   ۶) واژه‌نامه
+   -------------------------------------------------------------------------- */
+.sa-glossary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+  margin: 2rem 0;
+}
+
+.sa-glossary-item {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 0.9rem;
+  transition: border-color var(--transition-fast);
+}
+
+.sa-glossary-item:hover {
+  border-color: var(--color-primary);
+}
+
+.sa-glossary-item dt {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--color-primary-light);
+  font-family: var(--font-mono), Consolas, monospace;
+  margin-bottom: 0.3rem;
+}
+
+.sa-glossary-item dd {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.9;
+  color: var(--text-muted);
+}
+
+.sa-glossary-item b {
+  color: var(--text-main);
+}
+
+/* --------------------------------------------------------------------------
+   ۷) واکنش‌گرایی
+   -------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .sa-sim {
+    grid-template-columns: 1fr;
+  }
+  .sa-sim-panel {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .sa-roadmap,
+  .sa-cards,
+  .sa-glossary,
+  .sa-checklist {
+    grid-template-columns: 1fr;
+  }
+  .sa-fail-row {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sa-road,
+  .sa-card {
+    transition: none;
+  }
+  .sa-road:hover,
+  .sa-card:hover {
+    transform: none;
+  }
+}

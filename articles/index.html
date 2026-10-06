@@ -124,21 +124,21 @@
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">📚</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۲۸</span>
+        <span class="posts-stat-value">۳۹</span>
         <span class="posts-stat-label">مقاله منتشرشده</span>
       </div>
     </div>
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">🗂️</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۶</span>
+        <span class="posts-stat-value">۷</span>
         <span class="posts-stat-label">موضوع اصلی</span>
       </div>
     </div>
     <div class="posts-stat">
       <div class="posts-stat-icon" aria-hidden="true">⏱</div>
       <div class="posts-stat-text">
-        <span class="posts-stat-value">۱۳۷۲</span>
+        <span class="posts-stat-value">۱۷۸۲</span>
         <span class="posts-stat-label">دقیقه مطالعه</span>
       </div>
     </div>
@@ -174,25 +174,471 @@
     </div>
 
     <div class="tags-filter" id="articles-filters" role="group" aria-label="فیلتر بر اساس موضوع">
-      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۲۸</span></button>
+      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۶۱</span></button>
       <button type="button" class="tag-btn" data-filter="kotlin" data-label="کاتلین و هم‌زمانی" aria-pressed="false">کاتلین و هم‌زمانی <span class="chip-count" data-count="kotlin">۴</span></button>
       <button type="button" class="tag-btn" data-filter="android" data-label="اندروید و کامپوز" aria-pressed="false">اندروید و کامپوز <span class="chip-count" data-count="android">۴</span></button>
       <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۱۸</span></button>
       <button type="button" class="tag-btn" data-filter="api" data-label="API و ارتباطات" aria-pressed="false">API و ارتباطات <span class="chip-count" data-count="api">۵</span></button>
       <button type="button" class="tag-btn" data-filter="performance" data-label="پرفورمنس و حافظه" aria-pressed="false">پرفورمنس و حافظه <span class="chip-count" data-count="performance">۲</span></button>
       <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۵</span></button>
+      <button type="button" class="tag-btn" data-filter="server" data-label="سرور و استقرار بک‌اند" aria-pressed="false">سرور و استقرار بک‌اند <span class="chip-count" data-count="server">۲۸</span></button>
     </div>
   </div>
 
   <!-- ================= Results bar ================= -->
   <div class="posts-results">
     <h2 class="section-title">مقالات منتشرشده</h2>
-    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۲۸ مقاله</p>
+    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۶۱ مقاله</p>
   </div>
 
   <!-- ================= Articles grid ================= -->
   <main class="posts-container">
     <div class="posts-grid" id="articles-grid">
+
+      <article class="post-card" data-category="server" data-tags="server troubleshooting nginx journalctl debugging 502 504" data-order="61" data-minutes="45">
+        <a class="post-card-link" href="server-troubleshooting.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Server Troubleshooting: عیب‌یابی سرور در Production</h3>
+          <p class="post-excerpt">خطاهای 502 و 504 و 413، بررسی CPU و RAM و Disk، ابزارهای ss و journalctl و چک‌لیست کامل عیب‌یابی NGINX.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/server-troubleshooting.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Troubleshooting</li><li class="post-tag">#NGINX</li><li class="post-tag">#journalctl</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server zero-downtime graceful-shutdown deployment sigterm draining" data-order="60" data-minutes="40">
+        <a class="post-card-link" href="zero-downtime-deployment.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Zero-Downtime Deployment: استقرار بدون هیچ قطعی</h3>
+          <p class="post-excerpt">Graceful Shutdown با SIGTERM، Connection Draining در Load Balancer، Symlink Switch اتمیک و Migration با Expand/Contract.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/zero-downtime-deployment.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Zero_Downtime</li><li class="post-tag">#SIGTERM</li><li class="post-tag">#Draining</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server rolling kubernetes deployment readiness-probe maxsurge" data-order="59" data-minutes="35">
+        <a class="post-card-link" href="rolling-deployment.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Rolling Deployment: به‌روزرسانی تدریجی بدون Downtime</h3>
+          <p class="post-excerpt">maxSurge و maxUnavailable، Readiness Probe به‌عنوان Health Gate، Rollback تدریجی و مقایسه با Blue-Green و Canary.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/rolling-deployment.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Rolling</li><li class="post-tag">#Kubernetes</li><li class="post-tag">#Readiness_Probe</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server blue-green deployment rollback switching" data-order="58" data-minutes="35">
+        <a class="post-card-link" href="blue-green-deployment.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Blue-Green Deployment: تعویض محیط در یک لحظه</h3>
+          <p class="post-excerpt">دو محیط موازی، Switch لحظه‌ای، Rollback فوری، مدیریت Schema و پیکربندی NGINX برای Blue-Green.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/blue-green-deployment.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Blue_Green</li><li class="post-tag">#Deployment</li><li class="post-tag">#Rollback</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server kubernetes deployment ingress pod service" data-order="57" data-minutes="45">
+        <a class="post-card-link" href="kubernetes-server-deployment.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">استقرار سرور با Kubernetes: از Pod تا Ingress</h3>
+          <p class="post-excerpt">Pod، Deployment، Service، Ingress، ConfigMap و Secret، Readiness/Liveness Probe و Rolling Update خودکار.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/kubernetes-server-deployment.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Kubernetes</li><li class="post-tag">#Ingress</li><li class="post-tag">#Deployment</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server docker deployment compose container network" data-order="56" data-minutes="40">
+        <a class="post-card-link" href="docker-server-deployment.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">استقرار سرور با Docker: از Image تا Production</h3>
+          <p class="post-excerpt">Image، Container، Docker Compose، Network، Volume، Healthcheck و استقرار Production پشت NGINX.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/docker-server-deployment.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Docker</li><li class="post-tag">#Compose</li><li class="post-tag">#Deployment</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server scaling horizontal vertical architecture" data-order="55" data-minutes="30">
+        <a class="post-card-link" href="horizontal-vs-vertical-scaling.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Horizontal vs Vertical Scaling: Scale-Out یا Scale-Up؟</h3>
+          <p class="post-excerpt">مقایسه‌ی عمقی دو راه مقیاس‌پذیری، Shared-Nothing، Session و State بیرونی، و قانون انتخاب برای هر سرویس.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/horizontal-vs-vertical-scaling.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Scaling</li><li class="post-tag">#Scale_Out</li><li class="post-tag">#Architecture</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server high-availability failover redundancy keepalived" data-order="54" data-minutes="35">
+        <a class="post-card-link" href="high-availability.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">High Availability: معماری بدون نقطه‌ی شکست</h3>
+          <p class="post-excerpt">Redundancy، Failover، Quorum، Health Check، Keepalived و حذف Single Point of Failure در هر لایه.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/high-availability.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#High_Availability</li><li class="post-tag">#Failover</li><li class="post-tag">#Keepalived</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server logging monitoring observability prometheus grafana loki" data-order="53" data-minutes="40">
+        <a class="post-card-link" href="logging-monitoring-observability.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Logging و Monitoring و Observability</h3>
+          <p class="post-excerpt">سه ستون Observability (Logs، Metrics، Traces)، پشته‌ی Prometheus + Grafana + Loki، Alert کاربردی و لاگ ساخت‌یافته.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/logging-monitoring-observability.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Monitoring</li><li class="post-tag">#Prometheus</li><li class="post-tag">#Grafana</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server security hardening firewall ssh fail2ban" data-order="52" data-minutes="35">
+        <a class="post-card-link" href="server-security.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Server Security: سخت‌سازی سرور در Production</h3>
+          <p class="post-excerpt">Firewall، hardening SSH، fail2ban، Security Header، Rate Limiting، مدیریت Secret و اصل Least Privilege.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/server-security.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Security</li><li class="post-tag">#Firewall</li><li class="post-tag">#SSH</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server performance latency throughput concurrency pool" data-order="51" data-minutes="35">
+        <a class="post-card-link" href="server-performance.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Server Performance: مکان‌یابی گلوگاه‌ها</h3>
+          <p class="post-excerpt">Latency، Throughput، Concurrency، Thread Pool و Connection Pool، Caching و ابزارهای اندازه‌گیری بار.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/server-performance.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Performance</li><li class="post-tag">#Latency</li><li class="post-tag">#Throughput</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server http2 http3 quic nginx caddy protocol" data-order="50" data-minutes="30">
+        <a class="post-card-link" href="http1-http2-http3.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">HTTP/1 و HTTP/2 و HTTP/3: تکامل پروتکل وب</h3>
+          <p class="post-excerpt">از Pipelining و HOL تا Multiplexing، HPACK/QPACK، QUIC و فعال‌سازی HTTP/2 و HTTP/3 در NGINX و Caddy.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/http1-http2-http3.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#HTTP2</li><li class="post-tag">#HTTP3</li><li class="post-tag">#QUIC</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server tls https certbot lets-encrypt handshake" data-order="49" data-minutes="35">
+        <a class="post-card-link" href="tls-https.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">TLS / HTTPS: رمزنگاری ارتباط سرور و کلاینت</h3>
+          <p class="post-excerpt">TLS Handshake، Certificate، CA Chain، Let's Encrypt و Certbot، HSTS و TLS Termination در NGINX.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/tls-https.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#TLS</li><li class="post-tag">#HTTPS</li><li class="post-tag">#Certbot</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server deployment systemd ssh production nginx" data-order="48" data-minutes="40">
+        <a class="post-card-link" href="production-server-deployment.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">استقرار سرور در Production: از Provision تا Go-live</h3>
+          <p class="post-excerpt">Provision سرور، hardening SSH، systemd، NGINX، TLS، DNS، Backup و چک‌لیست Go-live.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/production-server-deployment.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Deployment</li><li class="post-tag">#systemd</li><li class="post-tag">#Production</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server nginx nodejs proxy cluster pm2" data-order="47" data-minutes="35">
+        <a class="post-card-link" href="nginx-nodejs.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">NGINX + Node.js: Reverse Proxy برای اپلیکیشن جاوااسکریپت</h3>
+          <p class="post-excerpt">upstream، Cluster و PM2، Graceful Shutdown، WebSocket و پیکربندی کامل Proxy برای Node.js.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/nginx-nodejs.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#NGINX</li><li class="post-tag">#Node_js</li><li class="post-tag">#PM2</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server nginx aspnet kestrel systemd dotnet" data-order="46" data-minutes="30">
+        <a class="post-card-link" href="nginx-aspnet-core.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">NGINX + ASP.NET Core: Kestrel پشت Reverse Proxy</h3>
+          <p class="post-excerpt">Kestrel، systemd، Forwarded Headers، UseForwardedHeaders و Deployment کامل روی Linux.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/nginx-aspnet-core.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#NGINX</li><li class="post-tag">#ASP_NET_Core</li><li class="post-tag">#Kestrel</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server nginx spring-boot java upstream websocket" data-order="45" data-minutes="30">
+        <a class="post-card-link" href="nginx-spring-boot.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">NGINX + Spring Boot: استقرار امن اپلیکیشن جاوا</h3>
+          <p class="post-excerpt">upstream، Forwarded Headers، WebSocket، timeout و Connection Pool برای Spring Boot پشت NGINX.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/nginx-spring-boot.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#NGINX</li><li class="post-tag">#Spring_Boot</li><li class="post-tag">#Java</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server nodejs http express fastify event-loop" data-order="44" data-minutes="35">
+        <a class="post-card-link" href="nodejs-http-server.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Node.js HTTP Server: از http module تا Production</h3>
+          <p class="post-excerpt">Event Loop، Non-blocking I/O، ماژول http، Express و Fastify، Cluster و Worker Threads.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/nodejs-http-server.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Node_js</li><li class="post-tag">#HTTP</li><li class="post-tag">#Express</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server caddy https http3 automatic-tls" data-order="43" data-minutes="30">
+        <a class="post-card-link" href="caddy.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Caddy: Web Server با Automatic HTTPS</h3>
+          <p class="post-excerpt">Caddyfile، گواهی خودکار Let's Encrypt، Reverse Proxy، HTTP/2 و HTTP/3 — و مقایسه با NGINX.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/caddy.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Caddy</li><li class="post-tag">#HTTPS</li><li class="post-tag">#HTTP3</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server iis aspnet windows application-pool" data-order="42" data-minutes="30">
+        <a class="post-card-link" href="microsoft-iis.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Microsoft IIS: Web Server در اکوسیستم ویندوز</h3>
+          <p class="post-excerpt">Application Pool، Worker Process، ARR، میزبانی ASP.NET Core و استقرار روی Windows Server.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/microsoft-iis.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#IIS</li><li class="post-tag">#ASP_NET</li><li class="post-tag">#Windows</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server haproxy load-balancer proxy acl" data-order="41" data-minutes="35">
+        <a class="post-card-link" href="haproxy.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">HAProxy: Load Balancer حرفه‌ای TCP و HTTP</h3>
+          <p class="post-excerpt">frontend و backend، ACL، الگوریتم‌های توزیع، Health Check، Sticky Session و stats صفحه.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/haproxy.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#HAProxy</li><li class="post-tag">#Load_Balancer</li><li class="post-tag">#ACL</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server load-balancing haproxy nginx health-check sticky" data-order="40" data-minutes="35">
+        <a class="post-card-link" href="load-balancing.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Load Balancing: توزیع هوشمند ترافیک</h3>
+          <p class="post-excerpt">Layer 4 و Layer 7، الگوریتم‌های Round Robin و Least Connections، Sticky Session، Health Check و Failover.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/load-balancing.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Load_Balancing</li><li class="post-tag">#HAProxy</li><li class="post-tag">#Health_Check</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server apache httpd virtual-host proxy ssl" data-order="39" data-minutes="35">
+        <a class="post-card-link" href="apache-http-server.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Apache HTTP Server: Virtual Host و mod_proxy</h3>
+          <p class="post-excerpt">معماری MPM، Virtual Host، mod_proxy و Load Balancing، mod_ssl، mod_rewrite و مقایسه با NGINX.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/apache-http-server.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Apache</li><li class="post-tag">#mod_proxy</li><li class="post-tag">#Virtual_Host</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server tomcat java servlet jvm" data-order="38" data-minutes="45">
+        <a class="post-card-link" href="apache-tomcat.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Apache Tomcat: Servlet Container و Deployment</h3>
+          <p class="post-excerpt">Catalina، Coyote، Jasper، Connector، Thread Pool، WAR، server.xml، JNDI و DataSource — با استقرار Production.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/apache-tomcat.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Tomcat</li><li class="post-tag">#Servlet</li><li class="post-tag">#WAR</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server tomee java jakarta cd i ejb jpa" data-order="37" data-minutes="40">
+        <a class="post-card-link" href="apache-tomee.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">Apache TomEE: Tomcat + Jakarta EE</h3>
+          <p class="post-excerpt">پروفایل‌های Jakarta EE، CDI، EJB، JPA، JAX-RS، JMS، JNDI، Transaction — و مقایسه با Tomcat و WildFly.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۰ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/apache-tomee.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#TomEE</li><li class="post-tag">#Jakarta_EE</li><li class="post-tag">#CDI</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server nginx tomcat reverse-proxy tls" data-order="36" data-minutes="35">
+        <a class="post-card-link" href="nginx-tomcat.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">NGINX + Tomcat: معماری Production</h3>
+          <p class="post-excerpt">TLS Termination، proxy_pass، X-Forwarded-For و Proto، timeout، buffering، Connection Pool و Health Check.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۳۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/nginx-tomcat.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#NGINX</li><li class="post-tag">#Tomcat</li><li class="post-tag">#TLS</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server architecture production devops tls redis postgresql" data-order="35" data-minutes="45">
+        <a class="post-card-link" href="production-backend-architecture.html">
+          <div class="post-card-head"><span class="post-cat">سرور و استقرار بک‌اند</span></div>
+          <h3 class="post-title">معماری کامل Backend در Production</h3>
+          <p class="post-excerpt">Internet، DNS، Firewall، NGINX با TLS و Load Balancing، چند Backend، Redis و PostgreSQL — با Zero-Downtime Deployment.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۴۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/production-backend-architecture.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#Production</li><li class="post-tag">#Architecture</li><li class="post-tag">#Zero_Downtime</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server architecture backend devops" data-order="34" data-minutes="20" data-featured="true">
+        <a class="post-card-link" href="server-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">سرور و استقرار بک‌اند</span>
+            <span class="post-badge">سری جدید</span>
+          </div>
+          <h3 class="post-title">آکادمی معماری سرور: از Web Server تا Production</h3>
+          <p class="post-excerpt">
+            نقشه‌ی راه کامل معماری سرور و استقرار بک‌اند: Web Server، Application Server،
+            Reverse Proxy، Load Balancer، فهرست مقالات سری، جدول مقایسه‌ی جامع،
+            شبیه‌ساز تعاملی معماری Production، شبیه‌سازی خرابی، چک‌لیست استقرار و Glossary.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۲۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/server-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Server_Architecture</li>
+              <li class="post-tag">#Production</li>
+              <li class="post-tag">#Roadmap</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server nginx apache caddy http" data-order="33" data-minutes="35" data-featured="true">
+        <a class="post-card-link" href="web-server.html">
+          <div class="post-card-head">
+            <span class="post-cat">سرور و استقرار بک‌اند</span>
+          </div>
+          <h3 class="post-title">Web Server چیست؟ آموزش کامل چرخه‌ی Request و Response</h3>
+          <p class="post-excerpt">
+            چرخه‌ی Request و Response، Static و Dynamic Content، MIME Type، Header، Cookie،
+            Compression، TLS و Caching — همراه با تفاوت Web Server با Application Server،
+            Reverse Proxy، API Gateway و Load Balancer.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۳۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/web-server.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Web_Server</li>
+              <li class="post-tag">#HTTP</li>
+              <li class="post-tag">#MIME</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server tomcat nodejs ide runtime" data-order="32" data-minutes="30">
+        <a class="post-card-link" href="web-server-vs-application-server.html">
+          <div class="post-card-head">
+            <span class="post-cat">سرور و استقرار بک‌اند</span>
+          </div>
+          <h3 class="post-title">Web Server vs Application Server: تفاوت دقیق و معماری</h3>
+          <p class="post-excerpt">
+            مقایسه‌ی مسئولیت‌ها: از فایل ثابت و TLS تا Business Logic، Runtime، Session،
+            Transaction و Dependency Injection — با مثال NGINX، Apache، IIS، Caddy،
+            Tomcat، WildFly، Kestrel و Node.js.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۳۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/web-server-vs-application-server.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Application_Server</li>
+              <li class="post-tag">#Runtime</li>
+              <li class="post-tag">#Session</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server nginx reverse-proxy haproxy caddy tls" data-order="31" data-minutes="30">
+        <a class="post-card-link" href="reverse-proxy.html">
+          <div class="post-card-head">
+            <span class="post-cat">سرور و استقرار بک‌اند</span>
+          </div>
+          <h3 class="post-title">Reverse Proxy چیست؟ آموزش کامل با دیاگرام و مثال</h3>
+          <p class="post-excerpt">
+            TLS Termination، Routing، Caching، Compression، Rate Limiting، Authentication،
+            Centralized Logging و پنهان‌کردن زیرساخت — و تفاوت دقیق با Forward Proxy،
+            همراه با پیکربندی NGINX و Caddy.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۳۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/reverse-proxy.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Reverse_Proxy</li>
+              <li class="post-tag">#TLS_Termination</li>
+              <li class="post-tag">#Routing</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server nginx upstream proxy-pass tls load-balancing" data-order="30" data-minutes="50" data-featured="true">
+        <a class="post-card-link" href="nginx.html">
+          <div class="post-card-head">
+            <span class="post-cat">سرور و استقرار بک‌اند</span>
+          </div>
+          <h3 class="post-title">NGINX چیست؟ آموزش کامل پیکربندی و Reverse Proxy</h3>
+          <p class="post-excerpt">
+            معماری worker، nginx.conf، server و location و upstream، proxy_pass و هدرها،
+            TLS، Load Balancing، Caching و Rate Limiting، Logging، Performance و
+            Troubleshooting — با پیکربندی‌های Production.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۵۰ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/nginx.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#NGINX</li>
+              <li class="post-tag">#upstream</li>
+              <li class="post-tag">#Load_Balancing</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
+
+      <article class="post-card" data-category="server" data-tags="server architecture production devops tls redis postgresql" data-order="29" data-minutes="45">
+        <a class="post-card-link" href="complete-production-architecture.html">
+          <div class="post-card-head">
+            <span class="post-cat">سرور و استقرار بک‌اند</span>
+          </div>
+          <h3 class="post-title">معماری کامل Production: از اینترنت تا Database و Cache</h3>
+          <p class="post-excerpt">
+            چیدن همه‌ی لایه‌ها در یک معماری کامل: Internet، DNS، Firewall، NGINX با TLS و
+            Load Balancing، چند Backend، Redis و PostgreSQL — همراه با Network Boundary،
+            Config و Secret، Observability و Zero-Downtime Deployment.
+          </p>
+          <div class="post-meta">
+            <span class="post-meta-item post-time">⏱ ~۴۵ دقیقه مطالعه</span>
+            <span class="post-meta-item post-views" data-pv="articles/complete-production-architecture.html">👁 —</span>
+            <span class="post-meta-item post-date">مهر ۱۴۰۵</span>
+          </div>
+          <div class="post-foot">
+            <ul class="post-tags">
+              <li class="post-tag">#Production</li>
+              <li class="post-tag">#High_Availability</li>
+              <li class="post-tag">#Zero_Downtime</li>
+            </ul>
+            <span class="post-go" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+          </div>
+        </a>
+      </article>
 
       <article class="post-card" data-category="api" data-tags="api grpc rpc protobuf http2 backend" data-order="28" data-minutes="50" data-featured="true">
         <a class="post-card-link" href="grpc.html">

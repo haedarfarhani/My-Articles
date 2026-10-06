@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horizontal در برابر Vertical Scaling | حیدر فرحانی</title>
+  <meta name="description" content="مقیاس‌پذیری افقی در برابر عمودی: مزایا و معایب، طراحی Stateless، مدیریت Session، مقیاس‌پذیری دیتابیس و Autoscaling.">
+  <meta name="keywords" content="Horizontal Scaling, Vertical Scaling, Scale Out, Scale Up, stateless, session, autoscaling, load balancing">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Horizontal در برابر Vertical Scaling">
+  <meta property="og:description" content="مزایا و معایب مقیاس‌پذیری افقی و عمودی، Stateless و Autoscaling.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/horizontal-vs-vertical-scaling.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/horizontal-vs-vertical-scaling.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Horizontal vs Vertical Scaling">
+  <meta name="twitter:description" content="Scale Out و Scale Up، Stateless و Autoscaling.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "Horizontal در برابر Vertical Scaling", "description": "مقیاس‌پذیری افقی و عمودی: مزایا و معایب، طراحی Stateless، مدیریت Session، دیتابیس و Autoscaling.", "url": "https://haedarfarhani.github.io/My-Articles/articles/horizontal-vs-vertical-scaling.html", "inLanguage": "fa-IR", "keywords": "Horizontal Scaling, Vertical Scaling, stateless, session, autoscaling", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "Horizontal vs Vertical Scaling", "item": "https://haedarfarhani.github.io/My-Articles/articles/horizontal-vs-vertical-scaling.html" } ] } }
+  </script>
+</head>
+<body data-article-id="horizontal-vs-vertical-scaling">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">سرور و استقرار بک‌اند</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح متوسط</span></div>
+        <h1 class="post-title"><span class="gradient-text">Horizontal</span> در برابر <span class="gradient-text">Vertical Scaling</span></h1>
+        <p class="hero-lead">
+          وقتی سرویس کند می‌شود، دو راه دارید: بزرگ‌ترکردن ماشین (<code>Scale Up</code>) یا
+          افزودن ماشین‌های بیشتر (<code>Scale Out</code>). این دو فلسفه‌ی متفاوت‌اند و انتخاب
+          درست، به معماری و محدودیت‌های شما بستگی دارد.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۳۵ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: متوسط</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#Scaling</span><span class="post-tag">#Horizontal</span><span class="post-tag">#Vertical</span><span class="post-tag">#Stateless</span><span class="post-tag">#Autoscaling</span><span class="post-tag">#Session</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>دو محور مقیاس‌پذیری</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>معماری و مقایسه</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>Stateless و مدیریت Session</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>مقیاس‌پذیری دیتابیس</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Autoscaling و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه</h2>
+<p>
+مقیاس‌پذیری یعنی توان افزودن ظرفیت همراه با رشد بار. دو راه‌برد اصلی وجود دارد و هرکدام
+محدودیت‌های خودش را دارد. انتخاب درست، پیش از بحران باید انجام شود، نه در لحظه‌ی افزایش ترافیک.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">در این مقاله</span>
+تفاوت Scale Up و Scale Out، طراحی Stateless، مدیریت Session، مقیاس‌پذیری دیتابیس و Autoscaling.</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+<a href="load-balancing.html">Load Balancing</a> و <a href="high-availability.html">High Availability</a>.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>دو محور مقیاس‌پذیری</h2>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>Vertical (Scale Up)</th><th>Horizontal (Scale Out)</th></tr>
+  <tr><td>روش</td><td>افزودن CPU/RAM به یک ماشین</td><td>افزودن ماشین‌های بیشتر</td></tr>
+  <tr><td>سقف</td><td>سخت‌افزار محدود است</td><td>تقریباً نامحدود</td></tr>
+  <tr><td>نگهداری</td><td>نیازمند Restart و Downtime</td><td>بدون Downtime</td></tr>
+  <tr><td>هزینه‌ی اولیه</td><td>ساده و ارزان در شروع</td><td>پیچیدگی معماری</td></tr>
+</table></div>
+<div class="kl-box kl-deep"><span class="kl-h">ترکیب هوشمندانه</span>
+در عمل بهترین راهبرد ترکیبی است: ابتدا عمودی تا سقف منطقی، سپس افقی برای ادامه‌ی رشد و
+تاب‌آوری.
+</div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>معماری و مقایسه</h2>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 320" role="img" aria-label="مقایسه Scale Up با یک سرور بزرگ و Scale Out با چند سرور پشت Load Balancer">
+  <text class="s-group-t" x="200" y="18" text-anchor="middle">Vertical — Scale Up</text>
+  <g class="s-node" style="--kl-i:1"><rect class="s-acc" x="70" y="30" width="260" height="90" rx="10"/><text class="s-t" x="200" y="60" text-anchor="middle">یک سرور بزرگ‌تر</text><text class="s-t2" x="200" y="88" text-anchor="middle">CPU / RAM بیشتر</text><text class="s-t2" x="200" y="110" text-anchor="middle">سقف سخت‌افزاری</text></g>
+  <path class="s-arr" d="M 200 120 L 200 160"/><path class="s-head" d="M 200 166 L 193 154 L 207 154 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c6" x="90" y="170" width="220" height="34" rx="8"/><text class="s-t2" x="200" y="192" text-anchor="middle">Bank / Database</text></g>
+  <text class="s-group-t" x="580" y="18" text-anchor="middle">Horizontal — Scale Out</text>
+  <g class="s-node" style="--kl-i:3"><rect class="s-box" x="450" y="30" width="260" height="34" rx="8"/><text class="s-t" x="580" y="52" text-anchor="middle">Load Balancer</text></g>
+  <path class="s-arr s-flow" d="M 510 64 L 490 92"/><path class="s-arr s-flow" d="M 580 64 L 580 92"/><path class="s-arr s-flow" d="M 650 64 L 670 92"/>
+  <g class="s-node" style="--kl-i:4"><rect class="s-ok" x="440" y="98" width="90" height="60" rx="8"/><text class="s-t2" x="485" y="132" text-anchor="middle">App</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-ok" x="536" y="98" width="90" height="60" rx="8"/><text class="s-t2" x="581" y="132" text-anchor="middle">App</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-ok" x="632" y="98" width="90" height="60" rx="8"/><text class="s-t2" x="677" y="132" text-anchor="middle">App</text></g>
+  <path class="s-arr" d="M 485 158 L 485 200"/><path class="s-arr" d="M 581 158 L 581 200"/><path class="s-arr" d="M 677 158 L 677 200"/>
+  <path class="s-head" d="M 485 206 L 478 194 L 492 194 Z"/><path class="s-head" d="M 581 206 L 574 194 L 588 194 Z"/><path class="s-head" d="M 677 206 L 670 194 L 684 194 Z"/>
+  <g class="s-node" style="--kl-i:7"><rect class="s-c5" x="440" y="210" width="282" height="34" rx="8"/><text class="s-t2" x="581" y="232" text-anchor="middle">Shared Session (Redis)</text></g>
+  <rect class="s-group s-group-acc" x="40" y="258" width="690" height="50" rx="12"/>
+  <text class="s-t2" x="385" y="288" text-anchor="middle">Scale Out: افزودن نسخه‌ی آماری + Load Balancer = رشد و تاب‌آوری همزمان</text>
+</svg>
+<figcaption><b>دو راهبرد:</b> Scale Up یک نقطه‌ی قوی می‌سازد اما سقف دارد و Downtime می‌آورد؛ Scale Out با نسخه‌های متعدد، رشد و افزونگی را یک‌جا می‌دهد.</figcaption>
+</figure>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>Stateless و مدیریت Session</h2>
+<p>
+مقیاس‌پذیری افقی بدون <strong>Stateless</strong> بودن برنامه تقریباً ناممکن است. اگر وضعیت کاربر
+روی خود Process ذخیره شود، افزودن نسخه‌ی جدید بی‌فایده یا حتی خطرناک می‌شود.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>وضعیت</th><th>محل درست</th></tr>
+  <tr><td>Session کاربر</td><td>Redis یا دیتابیس مشترک</td></tr>
+  <tr><td>فایل‌های آپلودی</td><td>Object Storage مشترک</td></tr>
+  <tr><td>Rate Limit</td><td>Redis مشترک</td></tr>
+  <tr><td>Cache محلی</td><td>مشترک یا Sticky با آگاهی</td></tr>
+  <tr><td>Lock و Queue</td><td>سرویس مشترک</td></tr>
+</table></div>
+<div class="kl-box kl-warn"><span class="kl-h">Sticky Session</span>
+راه‌حل موقت است. اگر چند نسخه دارید و State محلی دارید، حتماً Session را به منبع مشترک منتقل
+کنید؛ وگرنه Deploy یا خرابی یک نسخه، کاربر را بیرون می‌اندازد.
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>مقیاس‌پذیری دیتابیس</h2>
+<div class="kl-scroll"><table>
+  <tr><th>روش</th><th>توضیح</th></tr>
+  <tr><td>Index و Query Tuning</td><td>اولین و کم‌هزینه‌ترین گام</td></tr>
+  <tr><td>Read Replica</td><td>توزیع خواندن بین چند نسخه</td></tr>
+  <tr><td>Caching</td><td>کاهش بار با Redis</td></tr>
+  <tr><td>Sharding</td><td>تقسیم داده بین چند دیتابیس</td></tr>
+  <tr><td>Connection Pooling</td><td>کاهش هزینه‌ی اتصال (PgBouncer)</td></tr>
+</table></div>
+<div class="kl-box kl-deep"><span class="kl-h">دیتابیس گلوگاه است</span>
+اغلب برنامه‌ها را می‌توان افقی مقیاس داد، اما دیتابیس تک‌نقطه‌ای باقی می‌ماند. ابتدا با
+Index، Cache و Replica سراغش بروید و Sharding را آخرین گزینه بگذارید.
+</div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>Autoscaling و جمع‌بندی</h2>
+<pre class="kl-code" data-lang="yaml"><code># نمونه‌ی Horizontal Pod Autoscaler در Kubernetes
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: { name: api }
+spec:
+  scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: api }
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource: { name: cpu, target: { type: Utilization, averageUtilization: 65 } }</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+با افزایش بار، تعداد نسخه‌ها خودکار بیشتر می‌شود و با افت بار کم می‌شود؛ هزینه با نیاز هم‌راستا
+می‌شود.
+</div>
+<div class="kl-scroll"><table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>رشد بدون سقف و با افزونگی</td><td>نیاز به طراحی Stateless</td></tr>
+  <tr><td>Autoscaling و هزینه‌ی پویا</td><td>مدیریت پیچیده‌ی State و دیتابیس</td></tr>
+  <tr><td>Deploy بدون قطعی</td><td>نیاز به Observability قوی</td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">When to Use Vertical</span>پروژه‌های کوچک یا دیتابیس‌هایی که افقی‌کردنشان پرهزینه است.</div>
+<div class="kl-box kl-ok"><span class="kl-h">When to Use Horizontal</span>سرویس‌های Stateless با بار متغیر و نیاز به تاب‌آوری.</div>
+<p>انتخاب بین Scale Up و Scale Out، یک تصمیم معماری است نه فقط عملیاتی. با طراحی Stateless و
+لایه‌بندی درست، مقیاس‌پذیری افقی می‌تواند رشد و پایداری را همزمان بدهد.</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="load-balancing.html">Load Balancing</a></li>
+  <li><a href="high-availability.html">High Availability</a></li>
+  <li><a href="kubernetes-server-deployment.html">استقرار با Kubernetes</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">دو محور مقیاس‌پذیری</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">معماری و مقایسه</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Stateless و مدیریت Session</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مقیاس‌پذیری دیتابیس</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Autoscaling و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">دو محور مقیاس‌پذیری</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">معماری و مقایسه</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Stateless و مدیریت Session</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مقیاس‌پذیری دیتابیس</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Autoscaling و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

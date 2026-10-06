@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGINX چیست؟ آموزش کامل پیکربندی و Reverse Proxy | حیدر فرحانی</title>
+  <meta name="description" content="راهنمای عمیق NGINX: معماری worker، nginx.conf، server و location و upstream، proxy_pass، TLS، Load Balancing، Caching، Compression، Rate Limiting، Logging و Troubleshooting.">
+  <meta name="keywords" content="NGINX, nginx.conf, server block, location block, upstream, proxy_pass, proxy_set_header, Reverse Proxy, Load Balancing, TLS, gzip, Rate Limiting, Caching, Web Server">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="NGINX چیست؟ آموزش کامل پیکربندی و Reverse Proxy">
+  <meta property="og:description" content="معماری worker، بلوک‌های پیکربندی، upstream، TLS، Load Balancing، Caching، Rate Limiting و Troubleshooting.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/nginx.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/nginx.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NGINX — راهنمای عمیق">
+  <meta name="twitter:description" content="از nginx.conf و upstream تا TLS، Caching و Rate Limiting.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/net-guard.js"></script>
+  <script defer src="../js/comments.js"></script>
+  <script defer src="../js/diagrams.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
+  <link rel="stylesheet" href="../css/net-guard.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "NGINX چیست؟ آموزش کامل پیکربندی و Reverse Proxy",
+    "description": "راهنمای عمیق NGINX: معماری worker، nginx.conf، server و location و upstream، proxy_pass، TLS، Load Balancing، Caching، Compression، Rate Limiting، Logging و Troubleshooting.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/nginx.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/nginx.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "NGINX, upstream, proxy_pass, Reverse Proxy, Load Balancing, TLS, Caching, Rate Limiting",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "NGINX", "item": "https://haedarfarhani.github.io/My-Articles/articles/nginx.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body data-article-id="nginx">
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">سرور و استقرار بک‌اند</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">مقاله ۰۵ — سطح متوسط</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">NGINX</span>؛ پرکاربردترین Reverse Proxy و Web Server
+          </h1>
+
+          <p class="hero-lead">
+            NGINX امروز لبه‌ی ورودی بیشتر سرویس‌های وب است: <strong>TLS Termination</strong>،
+            سرو فایل ثابت، <strong>Reverse Proxy</strong>، <strong>Load Balancing</strong>،
+            <strong>Caching</strong> و <strong>Rate Limiting</strong>. در این راهنما معماری آن،
+            بلوک‌های <code>nginx.conf</code>، <code>server</code>، <code>location</code> و
+            <code>upstream</code>، و پیکربندی Production را قدم‌به‌قدم می‌سازیم.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۵۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: متوسط تا پیشرفته</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#NGINX</span>
+            <span class="post-tag">#Reverse_Proxy</span>
+            <span class="post-tag">#upstream</span>
+            <span class="post-tag">#Load_Balancing</span>
+            <span class="post-tag">#TLS</span>
+            <span class="post-tag">#Caching</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه و قابلیت‌ها</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>معماری NGINX</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>ساختار nginx.conf</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>server block و Virtual Host</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>location block و اولویت‌ها</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>upstream و Load Balancing</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>proxy_pass و هدرها</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>TLS و HTTPS</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>Caching، Compression و Rate Limiting</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>Logging و Monitoring</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>Performance و Production</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>Troubleshooting و اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>مزایا، معایب و جمع‌بندی</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه و قابلیت‌ها</h2>
+
+<p>
+NGINX ابتدا به‌عنوان یک Web Server برای حل مشکل C10K (ده‌هزار اتصال همزمان) ساخته شد و امروز
+به یک لبه‌ی کامل تبدیل شده است. یک NGINX می‌تواند هم‌زمان چند نقش داشته باشد:
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>قابلیت</th><th>Directive کلیدی</th><th>کاربرد در Production</th></tr>
+  <tr><td>TLS Termination</td><td><code>ssl_certificate</code></td><td>رمزگشایی در لبه و ترافیک ساده‌تر داخلی</td></tr>
+  <tr><td>Reverse Proxy</td><td><code>proxy_pass</code></td><td>رساندن درخواست به Backend</td></tr>
+  <tr><td>Load Balancing</td><td><code>upstream</code></td><td>پخش بار بین نمونه‌ها</td></tr>
+  <tr><td>Static Files</td><td><code>root</code> / <code>alias</code></td><td>سرو بهینه‌ی فایل</td></tr>
+  <tr><td>Caching</td><td><code>proxy_cache</code></td><td>کاهش بار Backend</td></tr>
+  <tr><td>Compression</td><td><code>gzip</code></td><td>کاهش حجم پاسخ متنی</td></tr>
+  <tr><td>Rate Limiting</td><td><code>limit_req</code></td><td>محافظت در برابر سوءاستفاده</td></tr>
+</table>
+</div>
+
+<div class="kl-box">
+<span class="kl-h">Prerequisites</span>
+<a href="web-server.html">Web Server چیست؟</a> و
+<a href="reverse-proxy.html">Reverse Proxy</a> را پیش از این مقاله بخوانید.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>معماری NGINX</h2>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 330" role="img" aria-label="معماری NGINX: Master Process، Worker Processes، upstream با سه Backend و ذره‌های متحرک درخواست">
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-acc" x="285" y="8" width="200" height="44" rx="10"/>
+    <text class="s-t" x="385" y="30" text-anchor="middle">Master Process</text>
+    <text class="s-t2" x="385" y="48" text-anchor="middle">root · config</text>
+  </g>
+
+  <path class="s-line" d="M 385 52 L 385 78"/>
+  <path class="s-line" d="M 130 78 L 640 78"/>
+  <path class="s-arr" d="M 130 78 L 130 96"/>
+  <path class="s-arr" d="M 385 78 L 385 96"/>
+  <path class="s-arr" d="M 640 78 L 640 96"/>
+  <path class="s-head" d="M 130 102 L 123 90 L 137 90 Z"/>
+  <path class="s-head" d="M 385 102 L 378 90 L 392 90 Z"/>
+  <path class="s-head" d="M 640 102 L 633 90 L 647 90 Z"/>
+
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-box" x="40" y="104" width="180" height="52" rx="9"/>
+    <text class="s-t" x="130" y="126" text-anchor="middle">Worker 1</text>
+    <text class="s-t2" x="130" y="145" text-anchor="middle">www-data</text>
+  </g>
+  <g class="s-node s-pulse" style="--kl-i:3">
+    <rect class="s-box" x="295" y="104" width="180" height="52" rx="9"/>
+    <text class="s-t" x="385" y="126" text-anchor="middle">Worker 2</text>
+    <text class="s-t2" x="385" y="145" text-anchor="middle">Event Loop</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-box" x="550" y="104" width="180" height="52" rx="9"/>
+    <text class="s-t" x="640" y="126" text-anchor="middle">Worker N</text>
+    <text class="s-t2" x="640" y="145" text-anchor="middle">Proxy Cache</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 130 156 L 130 182"/>
+  <path class="s-arr s-flow" d="M 385 156 L 385 182"/>
+  <path class="s-arr s-flow" d="M 640 156 L 640 182"/>
+  <path class="s-head" d="M 130 188 L 123 176 L 137 176 Z"/>
+  <path class="s-head" d="M 385 188 L 378 176 L 392 176 Z"/>
+  <path class="s-head" d="M 640 188 L 633 176 L 647 176 Z"/>
+
+  <rect class="s-group" x="40" y="192" width="690" height="128" rx="14"/>
+  <text class="s-group-t" x="385" y="214" text-anchor="middle">upstream backend</text>
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c4" x="70" y="228" width="180" height="72" rx="9"/>
+    <text class="s-t" x="160" y="254" text-anchor="middle">Backend 1</text>
+    <text class="s-t2" x="160" y="274" text-anchor="middle">127.0.0.1:8080</text>
+    <text class="s-t2" x="160" y="291" text-anchor="middle">weight=3</text>
+  </g>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-c4" x="295" y="228" width="180" height="72" rx="9"/>
+    <text class="s-t" x="385" y="254" text-anchor="middle">Backend 2</text>
+    <text class="s-t2" x="385" y="274" text-anchor="middle">127.0.0.1:8081</text>
+    <text class="s-t2" x="385" y="291" text-anchor="middle">weight=2</text>
+  </g>
+  <g class="s-node" style="--kl-i:7">
+    <rect class="s-c4" x="520" y="228" width="180" height="72" rx="9"/>
+    <text class="s-t" x="610" y="254" text-anchor="middle">Backend 3</text>
+    <text class="s-t2" x="610" y="274" text-anchor="middle">127.0.0.1:8082</text>
+    <text class="s-t2" x="610" y="291" text-anchor="middle">backup</text>
+  </g>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.4s" repeatCount="indefinite" path="M 385 108 L 385 150 L 385 250"/>
+  </circle>
+</svg>
+<figcaption><b>معماری NGINX:</b> Master پیکربندی را می‌خواند و Workerها را مدیریت می‌کند؛ Workerها همگی از یک Worker Pool روی پورت مشترک گوش می‌دهند و درخواست را به <code>upstream</code> می‌فرستند.</figcaption>
+</figure>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Directive</th><th>معنا</th><th>مقدار عملی</th></tr>
+  <tr><td><code>worker_processes</code></td><td>تعداد Worker</td><td><code>auto</code> (برابر تعداد CPU Core)</td></tr>
+  <tr><td><code>worker_connections</code></td><td>حداکثر اتصال هر Worker</td><td>۱۰۲۴ تا ۱۰۲۴۰ بسته به حافظه</td></tr>
+  <tr><td><code>use epoll</code></td><td>مکانیزم رویداد روی Linux</td><td><code>epoll</code></td></tr>
+  <tr><td><code>multi_accept</code></td><td>پذیرش چند اتصال در یک رویداد</td><td><code>on</code></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>ساختار nginx.conf</h2>
+
+<pre class="kl-code" data-lang="nginx"><code>worker_processes auto;
+
+events {
+    worker_connections 1024;
+    use epoll;
+    multi_accept on;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    tcp_nopush      on;
+    keepalive_timeout 65;
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript;
+
+    include /etc/nginx/conf.d/*.conf;
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Context</th><th>معنا</th></tr>
+  <tr><td><code>main</code></td><td>تنظیمات سراسری مثل <code>worker_processes</code></td></tr>
+  <tr><td><code>events</code></td><td>مدیریت اتصال‌ها</td></tr>
+  <tr><td><code>http</code></td><td>تنظیمات مشترک HTTP و میزبان بلوک‌های <code>server</code></td></tr>
+  <tr><td><code>server</code></td><td>یک Virtual Host (دامنه یا IP + Port)</td></tr>
+  <tr><td><code>location</code></td><td>مسیر خاص درون یک <code>server</code></td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Production Note</span>
+پیکربندی را همیشه به بخش‌های کوچک در <code>conf.d/</code> بشکنید و پس از هر تغییر
+<code>nginx -t</code> بزنید. Reload نرم با <code>nginx -s reload</code> بدون قطعی سرویس انجام می‌شود.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>server block و Virtual Host</h2>
+
+<pre class="kl-code" data-lang="nginx"><code>server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    return 301 https://$host$request_uri;   # ریدایرکت به HTTPS
+}
+
+server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    root  /var/www/app;
+    index index.html;
+
+    # اولین server به‌عنوان default_server پاسخ نام ناشناس را می‌دهد
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Directive</th><th>کار</th></tr>
+  <tr><td><code>listen</code></td><td>پورت و آدرس گوش‌دادن</td></tr>
+  <tr><td><code>server_name</code></td><td>دامنه‌هایی که این بلوک میزبان آن‌هاست</td></tr>
+  <tr><td><code>root</code></td><td>پوشه‌ی ریشه برای مسیرها</td></tr>
+  <tr><td><code>return 301</code></td><td>ریدایرکت دائمی (بهتر برای SEO)</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>location block و اولویت‌ها</h2>
+
+<p>
+انتخاب <code>location</code> قلب پیکربندی NGINX است. ترتیب اولویت دقیقاً این‌طور است:
+</p>
+
+<pre class="kl-code" data-lang="nginx"><code>server {
+    # ۱) تطبیق دقیق = بالاترین اولویت
+    location = /health { return 200 "ok"; }
+
+    # ۲) تطبیق پیشوندی ترجیحی ^~
+    location ^~ /static/ {
+        root /var/www/app;
+        expires 30d;
+    }
+
+    # ۳) Regex با ~ (حساس) یا ~* (غیرحساس)
+    location ~* \.(?:css|js|webp|woff2)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # ۴) پیشوند عادی / — پایین‌ترین اولویت
+    location / {
+        proxy_pass http://backend;
+    }
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ترتیب</th><th>نوع</th><th>مثال</th></tr>
+  <tr><td>۱</td><td>دقیق</td><td><code>= /health</code></td></tr>
+  <tr><td>۲</td><td>پیشوندی ترجیحی</td><td><code>^~ /static/</code></td></tr>
+  <tr><td>۳</td><td>Regex</td><td><code>~* \.js$</code></td></tr>
+  <tr><td>۴</td><td>پیشوندی</td><td><code>/</code></td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-bad">
+<span class="kl-h">Common Mistake</span>
+فرض این‌که <code>location /</code> که اول نوشته شده اول اجرا می‌شود. NGINX بر اساس
+<strong>اولویت نوع تطبیق</strong> تصمیم می‌گیرد، نه ترتیب نگارش.
+</div>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>upstream و Load Balancing</h2>
+
+<pre class="kl-code" data-lang="nginx"><code>upstream backend {
+    least_conn;                 # الگوریتم توزیع
+    keepalive 32;               # اتصال‌های Keep-Alive به Backend
+
+    server 127.0.0.1:8080 weight=3 max_fails=3 fail_timeout=15s;
+    server 127.0.0.1:8081 weight=2;
+    server 127.0.0.1:8082 backup;
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>الگوریتم</th><th>Directive</th><th>مناسب برای</th></tr>
+  <tr><td>Round Robin</td><td>پیش‌فرض</td><td>نمونه‌های هم‌توان</td></tr>
+  <tr><td>Least Connections</td><td><code>least_conn</code></td><td>درخواست‌های با زمان متغیر</td></tr>
+  <tr><td>IP Hash</td><td><code>ip_hash</code></td><td>Sticky Session ساده</td></tr>
+  <tr><td>Weighted</td><td><code>weight=N</code></td><td>سخت‌افزار ناهمگون</td></tr>
+  <tr><td>Random</td><td><code>random</code></td><td>توزیع تصادفی با بار کم</td></tr>
+</table>
+</div>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>پارامتر</th><th>معنا</th></tr>
+  <tr><td><code>max_fails</code></td><td>تعداد خطا پیش از علامت‌زدن گره به‌عنوان خراب</td></tr>
+  <tr><td><code>fail_timeout</code></td><td>مدت خارج بودن گره از گردش</td></tr>
+  <tr><td><code>backup</code></td><td>گره‌ی پشتیبان که فقط در نبود گره‌های اصلی استفاده می‌شود</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">Health Check</span>
+نسخه‌ی Open Source NGINX Active Health Check ندارد و به‌جای آن از
+<code>max_fails</code> و <code>fail_timeout</code> (Passive) استفاده می‌کند. برای Active Health Check
+به NGINX Plus یا یک Load Balancer مجزا نیاز دارید.
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>proxy_pass و هدرها</h2>
+
+<pre class="kl-code" data-lang="nginx"><code>location /api/ {
+    proxy_pass http://backend;
+
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";                 # حفظ Keep-Alive
+
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host  $host;
+
+    proxy_connect_timeout 5s;
+    proxy_send_timeout    30s;
+    proxy_read_timeout    30s;
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Directive</th><th>کار</th><th>خطای رایج</th></tr>
+  <tr><td><code>proxy_pass</code></td><td>آدرس Backend</td><td>اسلش انتهایی که مسیر را عوض می‌کند</td></tr>
+  <tr><td><code>Host</code></td><td>نگه‌داشتن دامنه‌ی اصلی</td><td>نبود آن باعث خطای Virtual Host در Backend</td></tr>
+  <tr><td><code>X-Forwarded-For</code></td><td>IP واقعی کاربر</td><td>اعتماد کورکورانه به آن</td></tr>
+  <tr><td><code>proxy_read_timeout</code></td><td>حد انتظار برای پاسخ</td><td>مقدار پیش‌فرض ۶۰ ثانیه برای API کند</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">تفاوت proxy_pass با و بدون اسلش</span>
+<code>proxy_pass http://backend/;</code> پیشوند <code>/api/</code> را حذف می‌کند،
+اما <code>proxy_pass http://backend;</code> مسیر کامل را نگه می‌دارد. این تفاوت منبع
+بسیاری از خطاهای ۴۰۴ است.
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>TLS و HTTPS</h2>
+
+<pre class="kl-code" data-lang="nginx"><code>server {
+    listen 443 ssl http2;
+    server_name api.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/api.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.example.com/privkey.pem;
+
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    add_header Strict-Transport-Security "max-age=63072000" always;
+
+    location / { proxy_pass http://backend; }
+}</code></pre>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">Expected Behavior</span>
+<code>curl -I https://api.example.com</code> باید <code>HTTP/2</code> و
+<code>strict-transport-security</code> را نشان دهد. تست TLS:
+<code>openssl s_client -connect api.example.com:443 -tls1_2</code>.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>Caching، Compression و Rate Limiting</h2>
+
+<pre class="kl-code" data-lang="nginx"><code># --- Caching پاسخ Backend ---
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=api_cache:10m
+                 max_size=1g inactive=60m use_temp_path=off;
+
+location /api/public/ {
+    proxy_cache api_cache;
+    proxy_cache_valid 200 302 10m;
+    proxy_cache_valid 404 1m;
+    proxy_cache_use_stale error timeout updating;
+    add_header X-Cache-Status $upstream_cache_status;
+    proxy_pass http://backend;
+}
+
+# --- Rate Limiting ---
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+
+location /api/ {
+    limit_req zone=api_limit burst=20 nodelay;
+    limit_req_status 429;
+    proxy_pass http://backend;
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>قابلیت</th><th>Directive</th><th>اثر</th></tr>
+  <tr><td>Caching</td><td><code>proxy_cache</code></td><td>کاهش بار Backend و Latency</td></tr>
+  <tr><td>Compression</td><td><code>gzip</code> / <code>gzip_types</code></td><td>کاهش حجم پاسخ متنی</td></tr>
+  <tr><td>Rate Limiting</td><td><code>limit_req</code></td><td>محدودکردن نرخ درخواست هر IP</td></tr>
+  <tr><td>Connection Limit</td><td><code>limit_conn</code></td><td>محدودکردن اتصال همزمان</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Production Note</span>
+پاسخ‌های شخصی‌سازی‌شده (مثل <code>/api/me</code>) را هرگز Cache نکنید. برای آن‌ها
+<code>proxy_cache_bypass</code> بر اساس Cookie یا Authorization بگذارید.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>Logging و Monitoring</h2>
+
+<pre class="kl-code" data-lang="nginx"><code>log_format main_ext '$remote_addr - $remote_user [$time_local] '
+                    '"$request" $status $body_bytes_sent '
+                    '"$http_referer" "$http_user_agent" '
+                    'rt=$request_time uct=$upstream_connect_time '
+                    'uht=$upstream_header_time urt=$upstream_response_time';
+
+access_log /var/log/nginx/access.log main_ext;
+error_log  /var/log/nginx/error.log warn;
+
+# نقطه‌ی سلامت برای Load Balancer
+location = /health {
+    access_log off;
+    return 200 "ok\n";
+    add_header Content-Type text/plain;
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>فیلد</th><th>معنا</th></tr>
+  <tr><td><code>$request_time</code></td><td>کل زمان پاسخ از دید کلاینت</td></tr>
+  <tr><td><code>$upstream_response_time</code></td><td>زمان پاسخ Backend</td></tr>
+  <tr><td><code>$upstream_connect_time</code></td><td>زمان اتصال به Backend</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>Performance و Production</h2>
+
+<pre class="kl-code" data-lang="bash"><code># تست پیکربندی پیش از reload
+sudo nginx -t
+
+# reload بدون قطعی
+sudo nginx -s reload
+
+# مشاهده‌ی وضعیت Workerها و اتصال‌ها
+sudo systemctl status nginx
+ss -lntp | grep nginx
+
+# بنچمارک (روی سرویس تست، نه Production)
+wrk -t4 -c200 -d30s https://staging.example.com/api/products</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>تنظیم</th><th>اثر</th><th>ملاحظه</th></tr>
+  <tr><td><code>worker_processes auto</code></td><td>استفاده‌ی کامل از CPU</td><td>در Container برای CPU Limit بررسی کنید</td></tr>
+  <tr><td><code>sendfile on</code></td><td>سرو سریع‌تر فایل</td><td>برای فایل‌های بزرگ عالی است</td></tr>
+  <tr><td><code>keepalive</code> در upstream</td><td>حذف هزینه‌ی اتصال مکرر به Backend</td><td>همراه با <code>proxy_http_version 1.1</code></td></tr>
+  <tr><td>Cache روی دیسک/Tmpfs</td><td>کاهش I/O</td><td>برای محتوای پرتکرار مفید است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">هیچ ادعای بدون اندازه‌گیری</span>
+«NGINX همیشه سریع‌تر است» درست نیست. کارایی به Workload، پیکربندی، سخت‌افزار، شبکه،
+برنامه و دیتابیس بستگی دارد. همیشه روی سناریوی <strong>خودتان</strong> بنچمارک بگیرید.
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>Troubleshooting و اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>خطا</th><th>علت</th><th>تشخیص</th><th>راه‌حل</th></tr>
+  <tr><td><code>502</code></td><td>Backend بالا نیست یا پورت اشتباه</td><td><code>ss -lntp</code>، <code>curl 127.0.0.1:8080</code></td><td>سرویس و <code>proxy_pass</code> را چک کنید</td></tr>
+  <tr><td><code>504</code></td><td>پاسخ کندتر از Timeout</td><td>لاگ <code>$upstream_response_time</code></td><td>Timeout و بهینه‌سازی Backend</td></tr>
+  <tr><td><code>404</code> روی API</td><td>اسلش انتهایی <code>proxy_pass</code></td><td>مقایسه‌ی URI در Log</td><td>اسلش را درست کنید</td></tr>
+  <tr><td><code>413</code></td><td>بدنه‌ی بزرگ‌تر از سقف</td><td>—</td><td><code>client_max_body_size</code></td></tr>
+  <tr><td>IP کاربر جعلی است</td><td>اعتماد به <code>X-Forwarded-For</code> بدون کنترل</td><td>بازرسی هدر</td><td><code>set_real_ip_from</code> برای Proxy مطمئن</td></tr>
+  <tr><td>Reload خطا می‌دهد</td><td>Syntax پیکربندی</td><td><code>nginx -t</code></td><td>خطای گزارش‌شده را اصلاح کنید</td></tr>
+</table>
+</div>
+
+<pre class="kl-code" data-lang="bash"><code># دنبال خطای واقعی در لاگ
+sudo tail -f /var/log/nginx/error.log
+sudo journalctl -u nginx --since "10 min ago"</code></pre>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>مزایا، معایب و جمع‌بندی</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>مصرف کم حافظه و پشتیبانی از اتصال‌های بسیار</td><td>پیکربندی مبتنی بر فایل؛ برای کارهای داینامیک پیچیده محدود است</td></tr>
+  <tr><td>ابزار کامل لبه: TLS، Cache، Rate Limit</td><td>Active Health Check در نسخه‌ی Open Source نیست</td></tr>
+  <tr><td>Logging و Monitoring غنی و قابل اندازه‌گیری</td><td>منطق پیچیده‌ی مسیریابی نیاز به ماژول یا ابزار مکمل دارد</td></tr>
+  <tr><td>Reload بدون قطعی سرویس</td><td>نگه‌داری و پیکربندی درست نیازمند دانش واقعی است</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">When to Use</span>
+تقریباً همیشه به‌عنوان لایه‌ی ورودی و Reverse Proxy.
+</div>
+<div class="kl-box kl-bad">
+<span class="kl-h">When NOT to Use</span>
+وقتی منطق مسیریابی بسیار پویا و وابسته به داده دارید، API Gateway اختصاصی مناسب‌تر است.
+برای ترافیک بسیار بالا در Layer 4 محض، HAProxy ابزار دقیق‌تری است.
+</div>
+
+<p>
+<strong>NGINX</strong> ستون فقرات لبه‌ی Production است. اگر معماری آن را بفهمید و چند directive
+کلیدی را درست به‌کار ببرید، بخش بزرگی از مشکلات امنیت، کارایی و پاسخ‌گویی حل می‌شود.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">گام بعدی</span>
+<a href="complete-production-architecture.html"><strong>Complete Production Architecture</strong></a> — NGINX در بطن معماری کامل Production.
+</div>
+
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+  <li><a href="reverse-proxy.html">Reverse Proxy چیست؟</a></li>
+  <li><a href="web-server.html">Web Server چیست؟</a></li>
+  <li><a href="complete-production-architecture.html">Complete Production Architecture</a></li>
+</ul>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۱۳ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه و قابلیت‌ها</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">معماری NGINX</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">ساختار nginx.conf</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">server block و Virtual Host</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">location block و اولویت‌ها</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">upstream و Load Balancing</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">proxy_pass و هدرها</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">TLS و HTTPS</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Caching، Compression و Rate Limiting</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Logging و Monitoring</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Performance و Production</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">Troubleshooting و اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا، معایب و جمع‌بندی</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="server-architecture.html" class="btn-action-block" style="text-align:center;">
+              <span>نقشه‌ی راه آکادمی ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>بخشی از آکادمی معماری سرور: از یک درخواست ساده تا یک معماری Production کامل.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه و قابلیت‌ها</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">معماری NGINX</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">ساختار nginx.conf</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">server block و Virtual Host</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">location block و اولویت‌ها</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">upstream و Load Balancing</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">proxy_pass و هدرها</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">TLS و HTTPS</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Caching، Compression و Rate Limiting</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Logging و Monitoring</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">Performance و Production</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">Troubleshooting و اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">مزایا، معایب و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

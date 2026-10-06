@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Server vs Application Server: تفاوت دقیق و معماری | حیدر فرحانی</title>
+  <meta name="description" content="تفاوت Web Server و Application Server چیست؟ مقایسه‌ی مسئولیت‌ها، Runtime، Session، Database، Transaction و Dependency Injection با مثال NGINX، Apache، Tomcat، WildFly، Kestrel و Node.js.">
+  <meta name="keywords" content="Web Server, Application Server, Tomcat, TomEE, WildFly, Kestrel, NGINX, Apache, IIS, Caddy, Runtime, Servlet, Session, معماری سرور">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Web Server vs Application Server: تفاوت دقیق و معماری">
+  <meta property="og:description" content="مقایسه‌ی مسئولیت‌ها: از فایل ثابت و TLS تا Business Logic، Runtime، Session و Transaction.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/web-server-vs-application-server.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/web-server-vs-application-server.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Web Server vs Application Server">
+  <meta name="twitter:description" content="تفاوت دقیق مسئولیت‌ها با مثال NGINX، Apache، Tomcat، Kestrel و Node.js.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+
+  <script defer src="../js/theme.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/article.js"></script>
+  <script defer src="../js/parse-config.js"></script>
+  <script defer src="../js/net-guard.js"></script>
+  <script defer src="../js/comments.js"></script>
+  <script defer src="../js/diagrams.js"></script>
+  <script defer src="../js/views.js"></script>
+
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/article-shell.css">
+  <link rel="stylesheet" href="../css/article-content.css">
+  <link rel="stylesheet" href="../css/comments.css">
+  <link rel="stylesheet" href="../css/net-guard.css">
+  <link rel="stylesheet" href="../css/diagram-anim.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Web Server vs Application Server: تفاوت دقیق و معماری",
+    "description": "تفاوت Web Server و Application Server چیست؟ مقایسه‌ی مسئولیت‌ها، Runtime، Session، Database، Transaction و Dependency Injection با مثال NGINX، Apache، Tomcat، WildFly، Kestrel و Node.js.",
+    "url": "https://haedarfarhani.github.io/My-Articles/articles/web-server-vs-application-server.html",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://haedarfarhani.github.io/My-Articles/articles/web-server-vs-application-server.html" },
+    "inLanguage": "fa-IR",
+    "keywords": "Web Server, Application Server, Tomcat, WildFly, Kestrel, Runtime, Servlet",
+    "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png",
+    "author": { "@type": "Person", "name": "حیدر فرحانی", "url": "https://haedarfarhani.github.io/My-Articles/about/" },
+    "publisher": { "@type": "Organization", "name": "حیدر فرحانی", "logo": { "@type": "ImageObject", "url": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png" } },
+    "isPartOf": { "@id": "https://haedarfarhani.github.io/My-Articles/#website" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" },
+        { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" },
+        { "@type": "ListItem", "position": 3, "name": "Web Server vs Application Server", "item": "https://haedarfarhani.github.io/My-Articles/articles/web-server-vs-application-server.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body data-article-id="web-server-vs-application-server">
+
+  <div id="reading-progress"></div>
+
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="../" class="brand-link" title="خانه">
+        <div class="brand-badge">ح</div>
+        <div class="brand-details">
+          <span class="brand-title">حیدر فرحانی</span>
+          <span class="brand-subtitle">مهندس نرم‌افزار</span>
+        </div>
+      </a>
+
+      <div class="nav-center">
+        <a class="nav-breadcrumb-tag" href="../articles/" title="بازگشت به فهرست" style="text-decoration:none;color:inherit;">
+          <span>&#128221;</span>
+          <span>مقالات و راهنماها</span>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری و کپی لینک" aria-label="اشتراک‌گذاری">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        </button>
+
+        <button class="btn-icon" id="btn-theme" title="تغییر حالت شب/روز" aria-label="تغییر تم">
+          <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-wrapper">
+    <div class="blog-grid">
+
+      <article class="blog-article">
+
+        <header class="article-hero">
+          <div class="hero-category">
+            <span class="cat-pill">سرور و استقرار بک‌اند</span>
+            <span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">مقاله ۰۲ — سطح مبتدی</span>
+          </div>
+
+          <h1 class="post-title">
+            <span class="gradient-text">Web Server</span> در برابر <span class="gradient-text">Application Server</span>
+          </h1>
+
+          <p class="hero-lead">
+            این دو اصطلاح آن‌قدر در گفت‌وگوهای روزمره قاطی می‌شوند که بسیاری فکر می‌کنند یک چیزند.
+            در این مقاله تفاوت را در سطح <strong>مسئولیت</strong>، <strong>Runtime</strong>،
+            <strong>Session</strong>، <strong>Transaction</strong> و <strong>Dependency Injection</strong>
+            می‌شکنیم و می‌بینیم چرا در Production معمولاً <strong>هر دو</strong> لازم‌اند — نه یکی.
+          </p>
+
+          <div class="hero-meta-bar">
+            <div class="author-info">
+              <div class="author-avatar" title="حیدر فرحانی">ح</div>
+              <div class="author-meta">
+                <span class="author-name">حیدر فرحانی</span>
+                <span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span>
+              </div>
+            </div>
+
+            <div class="meta-badges">
+              <span class="meta-badge highlight">⏱ ~۳۰ دقیقه مطالعه</span>
+              <span class="meta-badge">📅 به‌روزرسانی: مهر ۱۴۰۵</span>
+              <span class="meta-badge">🚀 سطح: مبتدی</span>
+              <span class="meta-badge" id="pv-badge" title="تعداد بازدیدکنندگان این مقاله">👁 <span id="pv-num">···</span> نفر بازدید</span>
+            </div>
+          </div>
+
+          <div class="post-tags-list">
+            <span class="post-tag">#Web_Server</span>
+            <span class="post-tag">#Application_Server</span>
+            <span class="post-tag">#Tomcat</span>
+            <span class="post-tag">#Kestrel</span>
+            <span class="post-tag">#Runtime</span>
+            <span class="post-tag">#Session</span>
+          </div>
+
+          <nav class="inline-toc-box">
+            <div class="inline-toc-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست سریع مطالب مقاله</span>
+            </div>
+            <ul class="inline-toc-grid">
+              <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>چرا این تفکیک مهم است؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>مسئولیت‌های Web Server</span></a></li>
+              <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>مسئولیت‌های Application Server</span></a></li>
+              <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>جدول مقایسه‌ی کامل</span></a></li>
+              <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>معماری مشترک در Production</span></a></li>
+              <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>نمونه‌های واقعی: Web Serverها</span></a></li>
+              <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>نمونه‌های واقعی: Application Serverها</span></a></li>
+              <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>Runtime و چرخه‌ی حیات</span></a></li>
+              <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>Session و State</span></a></li>
+              <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>Transaction و Connection Pool</span></a></li>
+              <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>اشتباهات رایج</span></a></li>
+              <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>چه زمانی کدام؟</span></a></li>
+              <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div class="kl-article">
+
+<!-- ==================== 1 ==================== -->
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>چرا این تفکیک مهم است؟</h2>
+
+<p>
+وقتی یک تیم این تفکیک را نمی‌داند، سه اتفاق رایج می‌افتد: بک‌اند مستقیم روی پورت عمومی
+قرار می‌گیرد، وظایف مشترک (TLS، فایل ثابت، Rate Limiting) در هر سرویس دوباره نوشته می‌شود،
+و در زمان اشکال‌زدایی معلوم نیست خطا از لایه‌ی ورودی است یا از منطق برنامه.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">یک جمله‌ی خلاصه</span>
+<strong>Web Server</strong> می‌پرسد «چه پاسخی بدهم؟» — <strong>Application Server</strong>
+می‌پرسد «منطق برنامه چیست و چطور اجرا شود؟».
+</div>
+
+<div class="kl-box">
+<span class="kl-h">Prerequisites</span>
+خواندن <a href="web-server.html">Web Server چیست؟</a> پیش از این مقاله توصیه می‌شود.
+</div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>مسئولیت‌های Web Server</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئولیت</th><th>توضیح</th></tr>
+  <tr><td><strong>Static Files</strong></td><td>سرو HTML، CSS، JS، تصویر و فونت با استفاده‌ی بهینه از <code>sendfile</code>.</td></tr>
+  <tr><td><strong>HTTP</strong></td><td>فهم پروتکل، Parse درخواست، تولید پاسخ و مدیریت Keep-Alive.</td></tr>
+  <tr><td><strong>TLS</strong></td><td>Handshake و رمزنگاری در لبه (TLS Termination).</td></tr>
+  <tr><td><strong>Reverse Proxy</strong></td><td>ارسال درخواست به Backend داخلی و بازگرداندن پاسخ.</td></tr>
+  <tr><td><strong>Basic Routing</strong></td><td>انتخاب مسیر بر اساس Path، Host یا Header.</td></tr>
+  <tr><td><strong>Caching</strong></td><td>نگه‌داشتن پاسخ‌های تکراری در لبه.</td></tr>
+  <tr><td><strong>Compression</strong></td><td>gzip / brotli برای متن.</td></tr>
+</table>
+</div>
+
+<p>
+یک Web Server معمولاً <strong>هیچ اطلاعی از قوانین کسب‌وکار</strong> ندارد. نمی‌داند «سفارش»
+چیست؛ فقط می‌داند <code>GET /orders/42</code> را باید به کجا برساند.
+</p>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>مسئولیت‌های Application Server</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مسئولیت</th><th>توضیح</th></tr>
+  <tr><td><strong>Business Logic</strong></td><td>اجرای قوانین دامنه: محاسبه‌ی قیمت، اعتبارسنجی، وضعیت سفارش.</td></tr>
+  <tr><td><strong>Runtime</strong></td><td>فراهم‌کردن محیط اجرا: JVM، CLR، V8 یا Runtimeهای دیگر.</td></tr>
+  <tr><td><strong>Application Execution</strong></td><td>بارگذاری، مقداردهی اولیه و اجرای برنامه.</td></tr>
+  <tr><td><strong>Sessions</strong></td><td>نگه‌داری وضعیت کاربر بین درخواست‌ها (در حافظه یا Store خارجی).</td></tr>
+  <tr><td><strong>Database Interaction</strong></td><td>اتصال، Query و نگاشت نتیجه به مدل دامنه.</td></tr>
+  <tr><td><strong>Transactions</strong></td><td>تضمین اتمی‌بودن عملیات چندمرحله‌ای.</td></tr>
+  <tr><td><strong>Dependency Injection</strong></td><td>ساخت و تزریق وابستگی‌ها و مدیریت چرخه‌ی حیات آن‌ها.</td></tr>
+  <tr><td><strong>Application Lifecycle</strong></td><td>راه‌اندازی، Health، Graceful Shutdown و Deploy.</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">نکته‌ی اصطلاح</span>
+بسیاری از محصولات مدرن هر دو نقش را دارند: Kestrel هم HTTP Server است و هم میزبان برنامه.
+Spring Boot یک HTTP Server تعبیه‌شده (Tomcat/Netty) را درون خود اجرا می‌کند. تفکیک را
+بر اساس <strong>مسئولیت</strong> ببینید، نه نام محصول.
+</div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>جدول مقایسه‌ی کامل</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>ویژگی</th><th>Web Server</th><th>Application Server</th></tr>
+  <tr><td>تمرکز اصلی</td><td>HTTP، فایل ثابت، لبه</td><td>اجرای منطق برنامه</td></tr>
+  <tr><td>Runtime</td><td>معمولاً Native</td><td>JVM / CLR / V8 و …</td></tr>
+  <tr><td>Static Files</td><td>عالی و بهینه</td><td>ممکن اما نه تخصص آن</td></tr>
+  <tr><td>TLS</td><td>لبه (Termination)</td><td>معمولاً داخلی و ساده‌تر</td></tr>
+  <tr><td>Session</td><td>ندارد</td><td>دارد (حافظه یا Store خارجی)</td></tr>
+  <tr><td>Transaction</td><td>ندارد</td><td>دارد و مرز آن Use Case است</td></tr>
+  <tr><td>Dependency Injection</td><td>ندارد</td><td>دارد</td></tr>
+  <tr><td>Deploy</td><td>پیکربندی و Reload</td><td>Deploy (WAR/JAR/Container)</td></tr>
+  <tr><td>مثال</td><td>NGINX، Apache، Caddy، IIS</td><td>Tomcat، WildFly، Kestrel، Node.js</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>معماری مشترک در Production</h2>
+
+<figure class="kl-fig">
+<svg viewBox="0 0 770 340" role="img" aria-label="معماری ترکیبی Web Server در لبه و Application Server داخلی به همراه دیتابیس">
+  <g class="s-node" style="--kl-i:1">
+    <rect class="s-box" x="285" y="6" width="200" height="42" rx="9"/>
+    <text class="s-t" x="385" y="32" text-anchor="middle">Client</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 48 L 385 68"/>
+  <path class="s-head" d="M 385 74 L 378 62 L 392 62 Z"/>
+
+  <rect class="s-group s-group-acc" x="40" y="76" width="690" height="118" rx="16"/>
+  <text class="s-group-t" x="385" y="98" text-anchor="middle">Edge — Web Server / Reverse Proxy</text>
+  <g class="s-node" style="--kl-i:2">
+    <rect class="s-acc" x="70" y="110" width="200" height="64" rx="9"/>
+    <text class="s-t" x="170" y="134" text-anchor="middle">NGINX / Apache</text>
+    <text class="s-t2" x="170" y="154" text-anchor="middle">TLS · Static · Routing</text>
+  </g>
+  <g class="s-node" style="--kl-i:3">
+    <rect class="s-box" x="285" y="110" width="200" height="64" rx="9"/>
+    <text class="s-t" x="385" y="134" text-anchor="middle">Caddy / IIS</text>
+    <text class="s-t2" x="385" y="154" text-anchor="middle">Auto-TLS · ARR</text>
+  </g>
+  <g class="s-node" style="--kl-i:4">
+    <rect class="s-box" x="500" y="110" width="200" height="64" rx="9"/>
+    <text class="s-t" x="600" y="134" text-anchor="middle">HAProxy</text>
+    <text class="s-t2" x="600" y="154" text-anchor="middle">L4 / L7 Load Balancing</text>
+  </g>
+
+  <path class="s-arr s-flow" d="M 385 194 L 385 216"/>
+  <path class="s-head" d="M 385 222 L 378 210 L 392 210 Z"/>
+
+  <g class="s-node" style="--kl-i:5">
+    <rect class="s-c4" x="215" y="224" width="340" height="60" rx="10"/>
+    <text class="s-t" x="385" y="248" text-anchor="middle">Application Server</text>
+    <text class="s-t2" x="385" y="268" text-anchor="middle">Tomcat · Kestrel · Node.js · WildFly</text>
+  </g>
+  <path class="s-arr s-flow" d="M 385 284 L 385 300"/>
+  <path class="s-head" d="M 385 306 L 378 294 L 392 294 Z"/>
+  <g class="s-node" style="--kl-i:6">
+    <rect class="s-c5" x="255" y="308" width="260" height="30" rx="8"/>
+    <text class="s-t2" x="385" y="328" text-anchor="middle">Database / Cache</text>
+  </g>
+
+  <circle class="s-runner" r="5">
+    <animateMotion dur="3.2s" repeatCount="indefinite" path="M 385 48 L 385 300"/>
+  </circle>
+</svg>
+<figcaption><b>دو نقش، یک زنجیره:</b> لبه مسئول ورودی و کارهای مشترک است و Application Server مسئول منطق. مرز بین آن‌ها معمولاً شبکه‌ی خصوصی و پورت داخلی است.</figcaption>
+</figure>
+
+<pre class="kl-code" data-lang="text"><code>Client → HTTPS :443 → NGINX → http://127.0.0.1:8080 → Tomcat
+                                                  ↓
+                                          PostgreSQL / Redis</code></pre>
+</section>
+
+<!-- ==================== 6 ==================== -->
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>نمونه‌های واقعی: Web Serverها</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>محصول</th><th>ویژگی شاخص</th><th>نکته‌ی Production</th></tr>
+  <tr><td><strong>NGINX</strong></td><td>معماری Event-driven و مصرف حافظه‌ی کم</td><td>انتخاب پیش‌فرض لبه در بیشتر استقرارها</td></tr>
+  <tr><td><strong>Apache HTTP Server</strong></td><td>ماژول‌های غنی و <code>.htaccess</code></td><td>در حالت <code>prefork</code> حافظه‌ی بیشتری می‌خواهد</td></tr>
+  <tr><td><strong>IIS</strong></td><td>یکپارچگی با Windows و ASP.NET</td><td>Application Pool و مجوزهای NTFS را جدی بگیرید</td></tr>
+  <tr><td><strong>Caddy</strong></td><td>HTTPS خودکار و پیکربندی مینیمال</td><td>برای پروژه‌های کوچک و متوسط عالی است</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 7 ==================== -->
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>نمونه‌های واقعی: Application Serverها</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>محصول</th><th>Runtime</th><th>ویژگی</th></tr>
+  <tr><td><strong>Apache Tomcat</strong></td><td>JVM</td><td>Servlet Container مرجع؛ رایج‌ترین میزبان WAR</td></tr>
+  <tr><td><strong>Apache TomEE</strong></td><td>JVM</td><td>Tomcat + مجموعه‌ی Jakarta EE (CDI، EJB، JPA، JAX-RS)</td></tr>
+  <tr><td><strong>WildFly</strong></td><td>JVM</td><td>Application Server کامل Jakarta EE و Clustering</td></tr>
+  <tr><td><strong>Jetty</strong></td><td>JVM</td><td>سبک و Embeddable؛ مناسب میکروسرویس</td></tr>
+  <tr><td><strong>Spring Boot (Embedded)</strong></td><td>JVM</td><td>Tomcat/Netty درون برنامه؛ مدل غالب امروز</td></tr>
+  <tr><td><strong>Node.js</strong></td><td>V8</td><td>Runtime جاوااسکریپت با Event Loop و Non-blocking I/O</td></tr>
+  <tr><td><strong>Kestrel</strong></td><td>.NET</td><td>HTTP Server پیش‌فرض ASP.NET Core</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 8 ==================== -->
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>Runtime و چرخه‌ی حیات</h2>
+
+<p>
+تفاوت بنیادی این است که Application Server یک <strong>Runtime</strong> دارد و برنامه‌ی شما
+درون آن <em>اجرا</em> می‌شود. همین باعث می‌شود چرخه‌ی حیات برنامه از لایه‌ی ورودی جدا باشد.
+</p>
+
+<pre class="kl-code" data-lang="text"><code>Application Server Lifecycle
+
+  Boot → Class Loading → Dependency Injection
+    → Application Ready → Serve Requests
+    → Graceful Shutdown (drain) → Stop
+
+Web Server Lifecycle
+
+  Boot → Load Config → Bind Port
+    → Accept Connections → Reload Config (SIGHUP)</code></pre>
+
+<div class="kl-box kl-deep">
+<span class="kl-h">چرا مهم است؟</span>
+در Zero-Downtime Deployment، توانایی <strong>Graceful Shutdown</strong> در Application Server
+حیاتی است: ابتدا درخواست‌های در جریان تمام می‌شوند و تازه بعد فرآیند متوقف می‌شود.
+</div>
+</section>
+
+<!-- ==================== 9 ==================== -->
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>Session و State</h2>
+
+<p>
+Session یکی از روشن‌ترین دلایل وجود Application Server است. اگر وضعیت کاربر را در حافظه‌ی
+همان Instance نگه دارید، <strong>Horizontal Scaling</strong> سخت می‌شود: کاربر باید به همان
+Instance برگردد.
+</p>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>رویکرد</th><th>مزیت</th><th>عیب</th></tr>
+  <tr><td>In-Memory Session</td><td>ساده و سریع</td><td>نیازمند Sticky Session؛ برای Scaling ضعیف</td></tr>
+  <tr><td>Session در Redis</td><td>Stateless شدن Instanceها</td><td>یک وابستگی جدید و Latency شبکه</td></tr>
+  <tr><td>Token (JWT)</td><td>بدون وضعیت در سرور</td><td>Invalidation دشوار و اندازه‌ی بزرگ‌تر</td></tr>
+</table>
+</div>
+
+<div class="kl-box kl-warn">
+<span class="kl-h">Production Note</span>
+هدف نهایی در سیستم‌های مقیاس‌پذیر، <strong>Stateless</strong> کردن Application است؛
+وضعیت را به Redis، دیتابیس یا Token منتقل کنید.
+</div>
+</section>
+
+<!-- ==================== 10 ==================== -->
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>Transaction و Connection Pool</h2>
+
+<p>
+<strong>Transaction</strong> و <strong>Connection Pool</strong> دو مسئولیتی‌اند که Web Server
+هرگز ندارد.
+</p>
+
+<pre class="kl-code" data-lang="java"><code>@Service
+public class OrderService {
+
+    private final OrderRepository orders;   // Connection Pool از اینجا تأمین می‌شود
+
+    @Transactional                          // مرز تراکنش = مرز Use Case
+    public Order placeOrder(PlaceOrderCommand cmd) {
+        Order order = Order.create(cmd.items());
+        orders.save(order);                 // یک عملیات اتمیک
+        return order;
+    }
+}</code></pre>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>مفهوم</th><th>مسئولیت</th><th>خطای رایج</th></tr>
+  <tr><td>Transaction</td><td>اتمی‌بودن عملیات</td><td>قرار دادن مرز تراکنش روی Controller</td></tr>
+  <tr><td>Connection Pool</td><td>بازاستفاده از اتصال دیتابیس</td><td>Pool کوچک در بار بالا → Timeout</td></tr>
+  <tr><td>Dependency Injection</td><td>ساخت و اشتراک وابستگی‌ها</td><td>ساخت دستی Repository در هر درخواست</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 11 ==================== -->
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>اشتباهات رایج</h2>
+
+<div class="kl-scroll">
+<table>
+  <tr><th>اشتباه</th><th>پیامد</th><th>اصلاح</th></tr>
+  <tr><td>قرار دادن فایل ثابت درون کد برنامه</td><td>مصرف منابع Runtime برای کاری که Web Server بهتر انجام می‌دهد</td><td>Static را به لبه بسپارید</td></tr>
+  <tr><td>یکسان‌گرفتن IIS/NGINX با Tomcat</td><td>انتظار اشتباه از قابلیت‌ها</td><td>تفکیک مسئولیت را مبنا بگیرید</td></tr>
+  <tr><td>نگه‌داشتن وضعیت در حافظه‌ی Instance</td><td>شکستن Load Balancing</td><td>انتقال Session به Redis</td></tr>
+  <tr><td>باز کردن پورت Application Server به اینترنت</td><td>افزایش سطح حمله</td><td>فقط لبه عمومی باشد</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== 12 ==================== -->
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>چه زمانی کدام؟</h2>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">When to Use a dedicated Web Server</span>
+وقتی فایل ثابت، TLS، چند سرویس، Caching یا Rate Limiting دارید — یعنی تقریباً هر سرویس Production.
+</div>
+<div class="kl-box kl-ok">
+<span class="kl-h">When to Use an Application Server</span>
+هر زمان منطق کسب‌وکار، Session، Transaction یا Runtime نیاز دارید. یعنی همیشه در سمت برنامه.
+</div>
+<div class="kl-box kl-bad">
+<span class="kl-h">When NOT to over-split</span>
+برای یک اسکریپت داخلی کوچک با کاربر کم، جداکردن سخت‌گیرانه‌ی لایه‌ها فقط پیچیدگی اضافه می‌کند.
+</div>
+</section>
+
+<!-- ==================== 13 ==================== -->
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>جمع‌بندی و مقالات مرتبط</h2>
+
+<p>
+Web Server و Application Server دو نقش متفاوت با دو مجموعه مسئولیت متفاوت‌اند. در Production
+مدرن معمولاً هر دو حاضرند: اولی در لبه ترافیک را می‌پذیرد و کارهای مشترک را انجام می‌دهد،
+دومی منطق کسب‌وکار را اجرا می‌کند.
+</p>
+
+<div class="kl-box kl-ok">
+<span class="kl-h">گام بعدی</span>
+<a href="reverse-proxy.html"><strong>Reverse Proxy چیست؟</strong></a> — لایه‌ای که این دو را
+به شکل امن و کارا به هم می‌بندد.
+</div>
+
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="server-architecture.html">آکادمی معماری سرور — نقشه‌ی راه</a></li>
+  <li><a href="web-server.html">Web Server چیست؟</a></li>
+  <li><a href="reverse-proxy.html">Reverse Proxy چیست؟</a></li>
+  <li><a href="nginx.html">NGINX — راهنمای عمیق</a></li>
+</ul>
+</section>
+        </div>
+
+        <footer class="article-end-box">
+          <div class="author-card-lg">
+            <div class="author-card-avatar">ح</div>
+            <div class="author-card-content">
+              <h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3>
+              <p class="author-card-bio">
+                مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها. علاقه‌مند به مهندسی نرم‌افزار تمیز،
+                طراحی لایه‌ها و اشتراک دانش با جامعه‌ی توسعه‌دهندگان.
+              </p>
+            </div>
+          </div>
+        </footer>
+
+      </article>
+
+      <aside class="blog-sidebar">
+        <div class="sidebar-card toc-card">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>فهرست مطالب</span>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">۱۳ بخش</span>
+          </div>
+
+          <div class="toc-scroll-container">
+            <ul class="toc-list" id="sidebar-toc">
+              <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">چرا این تفکیک مهم است؟</span></a></li>
+              <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">مسئولیت‌های Web Server</span></a></li>
+              <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">مسئولیت‌های Application Server</span></a></li>
+              <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">جدول مقایسه‌ی کامل</span></a></li>
+              <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">معماری مشترک در Production</span></a></li>
+              <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">نمونه‌های واقعی: Web Serverها</span></a></li>
+              <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">نمونه‌های واقعی: Application Serverها</span></a></li>
+              <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Runtime و چرخه‌ی حیات</span></a></li>
+              <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Session و State</span></a></li>
+              <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Transaction و Connection Pool</span></a></li>
+              <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">اشتباهات رایج</span></a></li>
+              <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">چه زمانی کدام؟</span></a></li>
+              <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-actions">
+            <button class="btn-action-block" id="sidebar-share-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>اشتراک‌گذاری مقاله</span>
+            </button>
+            <a href="server-architecture.html" class="btn-action-block" style="text-align:center;">
+              <span>نقشه‌ی راه آکادمی ⚡</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">مقالات من — حیدر فرحانی</div>
+    <p>بخشی از آکادمی معماری سرور: از یک درخواست ساده تا یک معماری Production کامل.</p>
+  </footer>
+
+  <div class="floating-actions">
+    <button class="btn-fab" id="back-to-top" title="بازگشت به ابتدای صفحه" aria-label="بازگشت به بالا">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="sidebar-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>فهرست بخش‌های مقاله</span>
+      </div>
+      <button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button>
+    </div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">چرا این تفکیک مهم است؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">مسئولیت‌های Web Server</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">مسئولیت‌های Application Server</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">جدول مقایسه‌ی کامل</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">معماری مشترک در Production</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">نمونه‌های واقعی: Web Serverها</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">نمونه‌های واقعی: Application Serverها</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Runtime و چرخه‌ی حیات</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">Session و State</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">Transaction و Connection Pool</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">اشتباهات رایج</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">چه زمانی کدام؟</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">جمع‌بندی و مقالات مرتبط</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">لینک مقاله در حافظه کپی شد!</span>
+  </div>
+
+</body>
+</html>

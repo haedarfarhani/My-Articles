@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caddy: Web Server با HTTPS خودکار | حیدر فرحانی</title>
+  <meta name="description" content="Caddy چیست؟ Web Server و Reverse Proxy مدرن با HTTPS خودکار (ACME)، فایل Caddyfile، reverse_proxy، Load Balancing و مقایسه با NGINX و Apache.">
+  <meta name="keywords" content="Caddy, Caddyfile, automatic HTTPS, ACME, Let's Encrypt, Reverse Proxy, Load Balancing, Web Server">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="Caddy: Web Server با HTTPS خودکار">
+  <meta property="og:description" content="Reverse Proxy مدرن با HTTPS خودکار، Caddyfile و مقایسه با NGINX و Apache.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/caddy.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/caddy.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Caddy Web Server">
+  <meta name="twitter:description" content="HTTPS خودکار، Caddyfile، reverse_proxy و مقایسه با NGINX.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "Caddy: Web Server با HTTPS خودکار", "description": "Reverse Proxy مدرن با HTTPS خودکار (ACME)، Caddyfile، reverse_proxy، Load Balancing و مقایسه با NGINX و Apache.", "url": "https://haedarfarhani.github.io/My-Articles/articles/caddy.html", "inLanguage": "fa-IR", "keywords": "Caddy, Caddyfile, automatic HTTPS, ACME, Reverse Proxy, Load Balancing", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "Caddy", "item": "https://haedarfarhani.github.io/My-Articles/articles/caddy.html" } ] } }
+  </script>
+</head>
+<body data-article-id="caddy">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">سرور و استقرار بک‌اند</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح متوسط</span></div>
+        <h1 class="post-title"><span class="gradient-text">Caddy</span>؛ Web Server با HTTPS خودکار</h1>
+        <p class="hero-lead">
+          Caddy یک Web Server و <strong>Reverse Proxy</strong> مدرن است که بزرگ‌ترین دردسر همیشگی را حل
+          می‌کند: <strong>گرفتن و تمدید خودکار گواهی TLS</strong> از طریق <code>ACME</code>. پیکربندی
+          ساده‌ی <code>Caddyfile</code> آن را به گزینه‌ای جذاب برای سرویس‌های کوچک و متوسط تبدیل کرده است.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۳۰ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: متوسط</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#Caddy</span><span class="post-tag">#Caddyfile</span><span class="post-tag">#HTTPS</span><span class="post-tag">#ACME</span><span class="post-tag">#Reverse_Proxy</span><span class="post-tag">#Let's_Encrypt</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>مقدمه</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>Caddy چیست؟</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>HTTPS خودکار</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>معماری و Reverse Proxy</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>مثال‌های Caddyfile</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>مقایسه و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>مقدمه</h2>
+<p>
+سال‌ها NGINX و Apache انتخاب‌های اصلی بودند، اما پیکربندی TLS در آن‌ها همیشه دستی و پرجزئیات بوده
+است. <strong>Caddy</strong> با فلسفه‌ی «HTTPS پیش‌فرض» آمد: کافی است دامنه را در فایل پیکربندی
+بنویسید، بقیه‌ی کار — دریافت گواهی، نصب، و تمدید خودکار — را خودش انجام می‌دهد.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">در این مقاله</span>
+مدل HTTPS خودکار، ساختار <code>Caddyfile</code>، پیکربندی Reverse Proxy و Load Balancing، و مقایسه با NGINX و Apache.</div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+<a href="reverse-proxy.html">Reverse Proxy</a> و <a href="web-server.html">Web Server</a>.</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>Caddy چیست؟</h2>
+<div class="kl-box kl-ok"><span class="kl-h">تعریف</span>
+<strong>Caddy</strong> یک Web Server و Reverse Proxy با زبان Go است که به‌صورت پیش‌فرض HTTPS را فعال
+می‌کند، گواهی‌ها را از <code>ACME</code> (Let's Encrypt و ZeroSSL) می‌گیرد و تمدید را خودکار انجام می‌دهد.
+</div>
+<div class="kl-scroll"><table>
+  <tr><th>ویژگی</th><th>مزیت</th></tr>
+  <tr><td>HTTPS خودکار</td><td>بدون certbot، بدون cron، بدون فراموشی تمدید</td></tr>
+  <tr><td>تک فایل اجرایی</td><td>نصب ساده، بدون وابستگی سیستمی</td></tr>
+  <tr><td>پیکربندی کوتاه</td><td>قرائت‌پذیری بالا نسبت به NGINX</td></tr>
+  <tr><td>HTTP/2 و HTTP/3</td><td>فعال به‌صورت پیش‌فرض</td></tr>
+</table></div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>HTTPS خودکار</h2>
+<p>
+وقتی یک دامنه در <code>Caddyfile</code> تعریف می‌کنید، Caddy با پروتکل <code>ACME</code> یک Challenge
+می‌سازد (معمولاً HTTP-01 یا TLS-ALPN)، گواهی می‌گیرد و آن را در حافظه‌ی محلی ذخیره می‌کند. پیش از
+انقضای گواهی، تمدید را خودکار انجام می‌دهد.
+</p>
+<div class="kl-box kl-deep"><span class="kl-h">نکته‌ی مهم</span>
+HTTPS خودکار فقط با یک شرط کار می‌کند: دامنه باید در DNS به سرور اشاره کند و پورت‌های
+<code>80</code> و <code>443</code> در دسترس باشند.
+</div>
+<pre class="kl-code" data-lang="bash"><code># نصب سریع (Linux)
+curl -fsSL https://get.caddy.io | bash
+
+# اجرا با فایل پیکربندی
+caddy run --config /etc/caddy/Caddyfile
+
+# فقط اعتبارسنجی پیکربندی
+caddy validate --config /etc/caddy/Caddyfile</code></pre>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>معماری و Reverse Proxy</h2>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="معماری Caddy: دریافت خودکار گواهی از ACME و پروکسی به سرویس‌های داخلی">
+  <g class="s-node" style="--kl-i:1"><rect class="s-box" x="285" y="6" width="200" height="40" rx="9"/><text class="s-t" x="385" y="31" text-anchor="middle">Client (HTTPS)</text></g>
+  <path class="s-arr s-flow" d="M 385 46 L 385 68"/><path class="s-head" d="M 385 74 L 378 62 L 392 62 Z"/>
+  <g class="s-node" style="--kl-i:2"><rect class="s-acc" x="215" y="76" width="340" height="48" rx="10"/><text class="s-t" x="385" y="105" text-anchor="middle">Caddy — TLS + Reverse Proxy</text></g>
+  <path class="s-dash s-arr" d="M 385 124 L 385 138"/><path class="s-head" d="M 385 144 L 378 132 L 392 132 Z"/>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c6" x="310" y="90" width="150" height="0" rx="0"/></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c6" x="45" y="90" width="150" height="0" rx="0"/></g>
+  <path class="s-dash" d="M 300 100 L 165 100 L 165 148"/>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c5" x="70" y="150" width="190" height="44" rx="8"/><text class="s-t2" x="165" y="177" text-anchor="middle">ACME (Let's Encrypt)</text></g>
+  <path class="s-arr" d="M 250 200 L 250 240"/><path class="s-arr" d="M 450 200 L 450 240"/><path class="s-arr" d="M 620 200 L 620 240"/>
+  <path class="s-head" d="M 250 246 L 243 234 L 257 234 Z"/><path class="s-head" d="M 450 246 L 443 234 L 457 234 Z"/><path class="s-head" d="M 620 246 L 613 234 L 627 234 Z"/>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c4" x="150" y="248" width="200" height="44" rx="8"/><text class="s-t2" x="250" y="275" text-anchor="middle">Static Files</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c4" x="360" y="248" width="180" height="44" rx="8"/><text class="s-t2" x="450" y="275" text-anchor="middle">App :8080</text></g>
+  <g class="s-node" style="--kl-i:7"><rect class="s-c4" x="550" y="248" width="180" height="44" rx="8"/><text class="s-t2" x="640" y="275" text-anchor="middle">App :9090</text></g>
+</svg>
+<figcaption><b>معماری Caddy:</b> از یک سو با ACME گواهی می‌گیرد و از سوی دیگر به سرویس‌های داخلی پروکسی می‌کند؛ یک باینری، همه‌ی نقش‌ها.</figcaption>
+</figure>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>مثال‌های Caddyfile</h2>
+<pre class="kl-code" data-lang="text"><code># 1) سرو فایل‌های استاتیک + HTTPS خودکار
+example.com {
+    root * /var/www/site
+    file_server
+    encode gzip zstd
+}
+
+# 2) Reverse Proxy با چند Backend (Load Balancing)
+api.example.com {
+    reverse_proxy 10.0.0.11:8080 10.0.0.12:8080 {
+        lb_policy least_conn
+        health_uri /health
+    }
+}
+
+# 3) مسیرهای ترکیبی
+app.example.com {
+    handle /static/* {
+        root * /srv/public
+        file_server
+    }
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
+}</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Expected Behavior</span>
+<bdi dir="ltr">Caddy</bdi> برای هر دامنه به‌طور خودکار گواهی می‌گیرد، ترافیک <code>/static/*</code> را از
+دیسک می‌خواند، بقیه را به Backend پروکسی می‌کند و سلامت Backendها را بررسی می‌کند.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">Graceful &amp; Admin API</span>
+Caddy دارای یک <code>Admin API</code> روی پورت <code>2019</code> است که امکان تغییر پیکربندی بدون
+Restart و بدون قطع اتصال را می‌دهد.
+</div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>مقایسه و جمع‌بندی</h2>
+<div class="kl-scroll"><table>
+  <tr><th>معیار</th><th>Caddy</th><th>NGINX</th><th>Apache</th></tr>
+  <tr><td>HTTPS خودکار</td><td>✅ پیش‌فرض</td><td>با certbot</td><td>با certbot</td></tr>
+  <tr><td>سادگی پیکربندی</td><td>✅ بسیار بالا</td><td>متوسط</td><td>متوسط تا پیچیده</td></tr>
+  <tr><td>کارایی خام</td><td>عالی</td><td>عالی</td><td>خوب</td></tr>
+  <tr><td>ماژول/اکوسیستم</td><td>کوچک‌تر</td><td>خیلی بزرگ</td><td>بزرگ</td></tr>
+  <tr><td>HTTP/3</td><td>✅ پیش‌فرض</td><td>در نسخه‌های جدید</td><td>محدود</td></tr>
+</table></div>
+<div class="kl-scroll"><table>
+  <tr><th>Advantages</th><th>Disadvantages</th></tr>
+  <tr><td>HTTPS بدون دردسر</td><td>اکوسیستم ماژول کوچک‌تر از NGINX و Apache</td></tr>
+  <tr><td>پیکربندی خواناتر</td><td>کنترل ریزدانه‌ی کمتر در بارهای بسیار پیچیده</td></tr>
+  <tr><td>تک باینری، نصب ساده</td><td>کمتر شناخته‌شده در تیم‌های بزرگ</td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">When to Use</span>پروژه‌های کوچک و متوسطی که می‌خواهند TLS را بدون هزینه‌ی عملیاتی مدیریت کنند، و تیم‌هایی که پیکربندی خوانا می‌خواهند.</div>
+<div class="kl-box kl-bad"><span class="kl-h">When NOT to Use</span>سامانه‌های بسیار پیچیده با نیاز به ماژول‌های خاص یا یک تیم بزرگ که استاندارد داخلی‌اش NGINX است.</div>
+<p>Caddy ثابت می‌کند «امنیت پیش‌فرض» می‌تواند ساده باشد. اگر می‌خواهید از روز اول HTTPS امن داشته باشید و از پیچیدگی پیکربندی فرار کنید، Caddy انتخاب هوشمندانه‌ای است.</p>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="nginx.html">NGINX</a></li>
+  <li><a href="apache-http-server.html">Apache HTTP Server</a></li>
+  <li><a href="tls-https.html">TLS و HTTPS</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Caddy چیست؟</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">HTTPS خودکار</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">معماری و Reverse Proxy</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مثال‌های Caddyfile</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مقایسه و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">مقدمه</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">Caddy چیست؟</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">HTTPS خودکار</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">معماری و Reverse Proxy</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">مثال‌های Caddyfile</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">مقایسه و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

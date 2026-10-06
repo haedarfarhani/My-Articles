@@ -34,6 +34,55 @@
 | ۲۲ | CQRS چیست؟ آموزش کامل Command Query Responsibility Segregation با مثال و ساختار پروژه | [`articles/cqrs-architecture.html`](articles/cqrs-architecture.html) | ~۶۰ دقیقه |
 | ۲۳ | Microservices چیست؟ آموزش کامل معماری سرویس‌محور با مثال و ساختار پروژه | [`articles/microservices-architecture.html`](articles/microservices-architecture.html) | ~۶۵ دقیقه |
 
+## آکادمی معماری سرور (سری جدید)
+
+سری «Web Servers, Application Servers & Backend Deployment» با محوریت مقاله‌ی مرجع
+[`articles/server-architecture.html`](articles/server-architecture.html) اضافه شد؛ این صفحه
+نقشه‌ی راه، فهرست مقالات، جدول مقایسه‌ی جامع، شبیه‌ساز تعاملی معماری Production،
+شبیه‌سازی خرابی، چک‌لیست استقرار و Glossary را در یک جا جمع می‌کند.
+
+مقالات منتشرشده‌ی این سری (۳۱ مقاله + صفحه‌ی مرجع — سری کامل است):
+
+| # | مقاله | فایل |
+|---|-------|------|
+| ۰۱ | Web Server چیست؟ | [`articles/web-server.html`](articles/web-server.html) |
+| ۰۲ | Web Server vs Application Server | [`articles/web-server-vs-application-server.html`](articles/web-server-vs-application-server.html) |
+| ۰۳ | Reverse Proxy | [`articles/reverse-proxy.html`](articles/reverse-proxy.html) |
+| ۰۴ | Load Balancing | [`articles/load-balancing.html`](articles/load-balancing.html) |
+| ۰۵ | NGINX | [`articles/nginx.html`](articles/nginx.html) |
+| ۰۶ | Apache HTTP Server | [`articles/apache-http-server.html`](articles/apache-http-server.html) |
+| ۰۷ | Apache Tomcat | [`articles/apache-tomcat.html`](articles/apache-tomcat.html) |
+| ۰۸ | Apache TomEE | [`articles/apache-tomee.html`](articles/apache-tomee.html) |
+| ۰۹ | Node.js HTTP Server | [`articles/nodejs-http-server.html`](articles/nodejs-http-server.html) |
+| ۱۰ | Caddy | [`articles/caddy.html`](articles/caddy.html) |
+| ۱۱ | Microsoft IIS | [`articles/microsoft-iis.html`](articles/microsoft-iis.html) |
+| ۱۲ | HAProxy | [`articles/haproxy.html`](articles/haproxy.html) |
+| ۱۳ | NGINX + Tomcat | [`articles/nginx-tomcat.html`](articles/nginx-tomcat.html) |
+| ۱۴ | NGINX + Spring Boot | [`articles/nginx-spring-boot.html`](articles/nginx-spring-boot.html) |
+| ۱۵ | NGINX + ASP.NET Core | [`articles/nginx-aspnet-core.html`](articles/nginx-aspnet-core.html) |
+| ۱۶ | NGINX + Node.js | [`articles/nginx-nodejs.html`](articles/nginx-nodejs.html) |
+| ۱۷ | Production Server Deployment | [`articles/production-server-deployment.html`](articles/production-server-deployment.html) |
+| ۱۸ | TLS / HTTPS | [`articles/tls-https.html`](articles/tls-https.html) |
+| ۱۹ | HTTP/1, HTTP/2 و HTTP/3 | [`articles/http1-http2-http3.html`](articles/http1-http2-http3.html) |
+| ۲۰ | Server Performance | [`articles/server-performance.html`](articles/server-performance.html) |
+| ۲۱ | Server Security | [`articles/server-security.html`](articles/server-security.html) |
+| ۲۲ | Logging و Monitoring و Observability | [`articles/logging-monitoring-observability.html`](articles/logging-monitoring-observability.html) |
+| ۲۳ | High Availability | [`articles/high-availability.html`](articles/high-availability.html) |
+| ۲۴ | Horizontal vs Vertical Scaling | [`articles/horizontal-vs-vertical-scaling.html`](articles/horizontal-vs-vertical-scaling.html) |
+| ۲۵ | Docker Server Deployment | [`articles/docker-server-deployment.html`](articles/docker-server-deployment.html) |
+| ۲۶ | Kubernetes Server Deployment | [`articles/kubernetes-server-deployment.html`](articles/kubernetes-server-deployment.html) |
+| ۲۷ | Blue-Green Deployment | [`articles/blue-green-deployment.html`](articles/blue-green-deployment.html) |
+| ۲۸ | Rolling Deployment | [`articles/rolling-deployment.html`](articles/rolling-deployment.html) |
+| ۲۹ | Zero-Downtime Deployment | [`articles/zero-downtime-deployment.html`](articles/zero-downtime-deployment.html) |
+| ۳۰ | Server Troubleshooting | [`articles/server-troubleshooting.html`](articles/server-troubleshooting.html) |
+| ۳۱ | Production Backend Architecture | [`articles/production-backend-architecture.html`](articles/production-backend-architecture.html) |
+| + | آکادمی معماری سرور (نقشه‌ی راه + شبیه‌ساز) | [`articles/server-architecture.html`](articles/server-architecture.html) |
+
+اجزای اختصاصی این سری: `css/server-sim.css` و `js/server-sim.js` (فقط در صفحه‌ی
+`server-architecture.html` بارگذاری می‌شوند و از همان توکن‌های طراحی موجود استفاده می‌کنند).
+هاب سری، نقشه‌ی راه، جدول مقایسه‌ی تکنولوژی‌ها، شبیه‌ساز تعاملی معماری Production،
+شبیه‌سازی خرابی، چک‌لیست استقرار و Glossary را در یک جا جمع می‌کند.
+
 ## فهرست پروژه‌ها
 
 | پروژه | معماری / تکنولوژی | مخزن |
