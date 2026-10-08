@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>آدرس‌دهی IP: راهنمای جامع Subnetting، CIDR و VLSM | حیدر فرحانی</title>
+  <meta name="description" content="راهنمای کامل آدرس‌دهی IP: ساختار IPv4 و IPv6، Network و Host، Subnet Mask و CIDR، محاسبه‌ی Network و Broadcast، Subnetting و VLSM، Supernetting و Route Summarization، ابزارهای Linux (ip، ipcalc، sipcalc، mtr، ss، nmap)، دستورات Windows PowerShell، طراحی آدرس‌دهی سازمانی، نکات امنیتی و عیب‌یابی شبکه — همراه با نمودارهای متحرک، جدول‌های مرجع، اسکریپت‌های آماده و تمرین‌های عملی.">
+  <meta name="keywords" content="IP Addressing, IPv4, IPv6, Subnet Mask, CIDR, Subnetting, VLSM, Supernetting, Route Summarization, Network Address, Broadcast Address, ipcalc, sipcalc, ip command, PowerShell, Get-NetIPAddress, Test-NetConnection, nmap, mtr, ss, arp, DHCP, NAT, APIPA, آدرس‌دهی IP, زیرشبکه">
+  <meta name="author" content="حیدر فرحانی">
+  <meta property="og:title" content="آدرس‌دهی IP: راهنمای جامع Subnetting، CIDR و VLSM">
+  <meta property="og:description" content="از بیت‌های آدرس IPv4 تا VLSM و Route Summarization — با ابزارهای Linux و PowerShell، نمودارهای متحرک و تمرین‌های عملی.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://haedarfarhani.github.io/My-Articles/articles/ip-addressing.html">
+  <meta property="og:site_name" content="حیدر فرحانی">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://haedarfarhani.github.io/My-Articles/articles/ip-addressing.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="آدرس‌دهی IP: راهنمای جامع Subnetting، CIDR و VLSM">
+  <meta name="twitter:description" content="Subnetting، VLSM، CIDR، ابزارهای Linux و PowerShell و عیب‌یابی شبکه — راهنمای کامل.">
+  <meta name="twitter:image" content="https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png">
+  <meta name="theme-color" content="#0F766E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230F766E'/><text x='50' y='70' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>&#1581;</text></svg>">
+  <script defer src="../js/theme.js"></script><script defer src="../js/main.js"></script><script defer src="../js/article.js"></script><script defer src="../js/parse-config.js"></script><script defer src="../js/net-guard.js"></script><script defer src="../js/comments.js"></script><script defer src="../js/diagrams.js"></script><script defer src="../js/views.js"></script>
+  <link rel="stylesheet" href="../css/fonts.css"><link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/article-shell.css"><link rel="stylesheet" href="../css/article-content.css"><link rel="stylesheet" href="../css/comments.css"><link rel="stylesheet" href="../css/net-guard.css"><link rel="stylesheet" href="../css/diagram-anim.css"><link rel="stylesheet" href="../css/responsive.css">
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "BlogPosting", "headline": "آدرس‌دهی IP: راهنمای جامع Subnetting، CIDR و VLSM", "description": "راهنمای کامل آدرس‌دهی IP از IPv4 و Subnet Mask و CIDR تا Subnetting و VLSM و Route Summarization، همراه با ابزارهای Linux و PowerShell و عیب‌یابی شبکه.", "url": "https://haedarfarhani.github.io/My-Articles/articles/ip-addressing.html", "inLanguage": "fa-IR", "keywords": "IP Addressing, IPv4, IPv6, Subnet Mask, CIDR, Subnetting, VLSM, ipcalc, PowerShell, Linux", "image": "https://haedarfarhani.github.io/My-Articles/assets/og/og-default.png", "author": { "@type": "Person", "name": "حیدر فرحانی" }, "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "خانه", "item": "https://haedarfarhani.github.io/My-Articles/" }, { "@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://haedarfarhani.github.io/My-Articles/articles/" }, { "@type": "ListItem", "position": 3, "name": "آدرس‌دهی IP", "item": "https://haedarfarhani.github.io/My-Articles/articles/ip-addressing.html" } ] } }
+  </script>
+</head>
+<body data-article-id="ip-addressing">
+  <div id="reading-progress"></div>
+  <header class="site-nav"><div class="nav-container">
+    <a href="../" class="brand-link" title="خانه"><div class="brand-badge">ح</div><div class="brand-details"><span class="brand-title">حیدر فرحانی</span><span class="brand-subtitle">مهندس نرم‌افزار</span></div></a>
+    <div class="nav-center"><a class="nav-breadcrumb-tag" href="../articles/" style="text-decoration:none;color:inherit;"><span>&#128221;</span><span>مقالات و راهنماها</span></a></div>
+    <div class="nav-actions">
+      <button class="btn-icon btn-toc-toggle" id="btn-toc-toggle" title="فهرست مطالب" aria-label="فهرست مطالب"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+      <button class="btn-icon" id="btn-share" title="اشتراک‌گذاری" aria-label="اشتراک‌گذاری"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg></button>
+      <button class="btn-icon" id="btn-theme" title="تغییر تم" aria-label="تغییر تم"><svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg><svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+    </div>
+  </div></header>
+
+  <div class="blog-wrapper"><div class="blog-grid">
+    <article class="blog-article">
+      <header class="article-hero">
+        <div class="hero-category"><span class="cat-pill">شبکه و آدرس‌دهی</span><span class="cat-pill" style="color:var(--color-secondary);background:var(--color-secondary-soft);">سطح متوسط تا پیشرفته</span></div>
+        <h1 class="post-title"><span class="gradient-text">آدرس‌دهی IP</span>؛ از بیت تا شبکه‌ی سازمانی</h1>
+        <p class="hero-lead">
+          آدرس‌دهی IP زبان مشترک همه‌ی شبکه‌هاست: از یک لپ‌تاپ خانگی تا دیتاسنتر چندلایه. این مقاله
+          از پایه شروع می‌کند — <code>IPv4</code>، <code>Network</code> و <code>Host</code> — و تا
+          <code>Subnetting</code>، <code>VLSM</code>، <code>Route Summarization</code> و
+          <code>IPv6</code> پیش می‌رود. همه‌ی محاسبات را با <code>ipcalc</code>، <code>sipcalc</code>
+          و <code>PowerShell</code> تمرین می‌کنیم و در پایان با یک چک‌لیست عملی، شبکه را
+          گام‌به‌گام عیب‌یابی می‌کنیم.
+        </p>
+        <div class="hero-meta-bar">
+          <div class="author-info"><div class="author-avatar">ح</div><div class="author-meta"><span class="author-name">حیدر فرحانی</span><span class="author-role">مهندس نرم‌افزار — معماری سیستم‌ها</span></div></div>
+          <div class="meta-badges"><span class="meta-badge highlight">⏱ ~۷۵ دقیقه مطالعه</span><span class="meta-badge">📅 مهر ۱۴۰۵</span><span class="meta-badge">🚀 سطح: متوسط تا پیشرفته</span><span class="meta-badge" id="pv-badge">👁 <span id="pv-num">···</span></span></div>
+        </div>
+        <div class="post-tags-list"><span class="post-tag">#IPv4</span><span class="post-tag">#Subnetting</span><span class="post-tag">#CIDR</span><span class="post-tag">#VLSM</span><span class="post-tag">#IPv6</span><span class="post-tag">#Linux</span></div>
+        <nav class="inline-toc-box">
+          <div class="inline-toc-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست سریع مطالب مقاله</span></div>
+          <ul class="inline-toc-grid">
+            <li class="inline-toc-item"><a href="#s1" class="inline-toc-link"><span class="inline-toc-num">۱</span><span>IP چیست و چرا مهم است؟</span></a></li>
+            <li class="inline-toc-item"><a href="#s2" class="inline-toc-link"><span class="inline-toc-num">۲</span><span>آناتومی IPv4: بیت، اکتت، Network و Host</span></a></li>
+            <li class="inline-toc-item"><a href="#s3" class="inline-toc-link"><span class="inline-toc-num">۳</span><span>کلاس‌ها، آدرس خصوصی و Public، NAT</span></a></li>
+            <li class="inline-toc-item"><a href="#s4" class="inline-toc-link"><span class="inline-toc-num">۴</span><span>Subnet Mask و CIDR</span></a></li>
+            <li class="inline-toc-item"><a href="#s5" class="inline-toc-link"><span class="inline-toc-num">۵</span><span>محاسبات شبکه: Network، Broadcast و بازه‌ی Host</span></a></li>
+            <li class="inline-toc-item"><a href="#s6" class="inline-toc-link"><span class="inline-toc-num">۶</span><span>Subnetting: تقسیم یک شبکه به زیرشبکه</span></a></li>
+            <li class="inline-toc-item"><a href="#s7" class="inline-toc-link"><span class="inline-toc-num">۷</span><span>VLSM: تخصیص بهینه‌ی فضای آدرس</span></a></li>
+            <li class="inline-toc-item"><a href="#s8" class="inline-toc-link"><span class="inline-toc-num">۸</span><span>Supernetting و Route Summarization</span></a></li>
+            <li class="inline-toc-item"><a href="#s9" class="inline-toc-link"><span class="inline-toc-num">۹</span><span>IPv6: آدرس‌دهی نسل جدید</span></a></li>
+            <li class="inline-toc-item"><a href="#s10" class="inline-toc-link"><span class="inline-toc-num">۱۰</span><span>ابزارهای خط فرمان در Linux</span></a></li>
+            <li class="inline-toc-item"><a href="#s11" class="inline-toc-link"><span class="inline-toc-num">۱۱</span><span>ابزارهای خط فرمان در Windows (PowerShell)</span></a></li>
+            <li class="inline-toc-item"><a href="#s12" class="inline-toc-link"><span class="inline-toc-num">۱۲</span><span>طراحی آدرس‌دهی سازمانی و نکات امنیتی</span></a></li>
+            <li class="inline-toc-item"><a href="#s13" class="inline-toc-link"><span class="inline-toc-num">۱۳</span><span>عیب‌یابی شبکه: گام‌به‌گام و Case Study</span></a></li>
+            <li class="inline-toc-item"><a href="#s14" class="inline-toc-link"><span class="inline-toc-num">۱۴</span><span>تمرین‌های عملی، سوالات مهم و جمع‌بندی</span></a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="kl-article">
+
+<section id="s1">
+<h2><span class="kl-num">بخش ۱</span>IP چیست و چرا مهم است؟</h2>
+<p>
+<strong>آدرس IP (Internet Protocol Address)</strong> شناسه‌ی منطقی هر دستگاه در یک شبکه‌ی
+<code>IP</code> است. نقش آن دقیقاً مثل نشانی پست است: بسته‌ی داده (Packet) باید بداند <em>به کدام
+دستگاه</em> برود و <em>پاسخ را به کدام دستگاه</em> برگرداند. آدرس IP برخلاف <code>MAC Address</code>
+فیزیکی نیست و با جابه‌جا شدن دستگاه یا شبکه، تغییر می‌کند.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">سه وظیفه‌ی آدرس IP</span>
+<strong>۱)</strong> شناسایی یکتا برای هر اینترفیس در شبکه · <strong>۲)</strong> تعیین «مرز شبکه»
+تا دستگاه بفهمد مقصد داخل شبکه است یا از <code>Router</code> باید عبور کند ·
+<strong>۳)</strong> فراهم‌کردن مبنای مسیریابی و سیاست‌های امنیتی.
+</div>
+<div class="kl-scroll"><table>
+  <tr><th>ویژگی</th><th>IPv4</th><th>IPv6</th></tr>
+  <tr><td>طول آدرس</td><td>۳۲ بیت (۴ اکتت)</td><td>۱۲۸ بیت (۸ گروه)</td></tr>
+  <tr><td>نمایش</td><td><code>192.168.1.10</code></td><td><code>2001:db8::1</code></td></tr>
+  <tr><td>فضای آدرس</td><td>~۴٫۳ میلیارد</td><td>~۳٫۴ × ۱۰³⁸</td></tr>
+  <tr><td>Header</td><td>۲۰ بایت پایه، چک‌سام دارد</td><td>۴۰ بایت ثابت، بدون چک‌سام</td></tr>
+  <tr><td>Broadcast</td><td>دارد</td><td>ندارد (به‌جایش Multicast)</td></tr>
+  <tr><td>پیکربندی خودکار</td><td>DHCP</td><td>SLAAC + DHCPv6</td></tr>
+  <tr><td>ARP</td><td>ARP</td><td>NDP (Neighbor Discovery)</td></tr>
+  <tr><td>NAT</td><td>رایج و تقریباً ضروری</td><td>در عمل غیرضروری</td></tr>
+</table></div>
+<div class="kl-box"><span class="kl-h">Prerequisites</span>
+آشنایی مقدماتی با شبکه و خط فرمان. برای درک نقش IP در لایه‌های بالاتر،
+<a href="web-server.html">Web Server</a> و <a href="load-balancing.html">Load Balancing</a> را ببینید.
+</div>
+</section>
+
+<section id="s2">
+<h2><span class="kl-num">بخش ۲</span>آناتومی IPv4: بیت، اکتت، Network و Host</h2>
+<p>
+آدرس IPv4 از چهار عدد بین ۰ تا ۲۵۵ ساخته شده که با نقطه جدا می‌شوند و هر عدد یک
+<strong>اکتت (Octet)</strong> یا ۸ بیت است. پس کل آدرس ۳۲ بیت است. این ۳۲ بیت همیشه به دو بخش
+تقسیم می‌شود: بخش <strong>Network</strong> (کدام شبکه؟) و بخش <strong>Host</strong> (کدام دستگاه
+در آن شبکه؟). مرز این دو بخش را <code>Subnet Mask</code> تعیین می‌کند.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="آناتومی آدرس IPv4: چهار اکتت 192.168.10.50 با 32 بیت و تقسیم به بخش Network با پیشوند 24 و بخش Host و بازه‌ی میزبان‌ها">
+  <rect class="s-group" x="30" y="18" width="710" height="264" rx="14"/>
+  <text class="s-group-t" x="385" y="42" text-anchor="middle">آدرس IPv4 — ۳۲ بیت، ۴ اکتت</text>
+
+  <g class="s-node" style="--kl-i:1"><rect class="s-c4" x="55" y="64" width="160" height="60" rx="9"/><text class="s-t" x="135" y="94" text-anchor="middle">192</text><text class="s-lbl" x="135" y="114" text-anchor="middle">بیت ۳۱..۲۴</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c4" x="225" y="64" width="160" height="60" rx="9"/><text class="s-t" x="305" y="94" text-anchor="middle">168</text><text class="s-lbl" x="305" y="114" text-anchor="middle">بیت ۲۳..۱۶</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c4" x="395" y="64" width="160" height="60" rx="9"/><text class="s-t" x="475" y="94" text-anchor="middle">10</text><text class="s-lbl" x="475" y="114" text-anchor="middle">بیت ۱۵..۸</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-warn" x="565" y="64" width="160" height="60" rx="9"/><text class="s-t" x="645" y="94" text-anchor="middle">50</text><text class="s-lbl" x="645" y="114" text-anchor="middle">بیت ۷..۰</text></g>
+
+  <path class="s-arr" d="M 135 124 L 135 146"/><path class="s-arr" d="M 305 124 L 305 146"/><path class="s-arr" d="M 475 124 L 475 146"/><path class="s-arr" d="M 645 124 L 645 146"/>
+
+  <g class="s-node" style="--kl-i:5"><rect class="s-acc" x="55" y="148" width="515" height="34" rx="8"/><text class="s-t" x="312" y="170" text-anchor="middle">Network — پیشوند /24 (۲۴ بیت)</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-ok" x="580" y="148" width="145" height="34" rx="8"/><text class="s-t2" x="652" y="170" text-anchor="middle">Host</text></g>
+
+  <text class="s-lbl" x="725" y="212" text-anchor="end">Network Address:  192.168.10.0</text>
+  <text class="s-lbl" x="725" y="236" text-anchor="end">Broadcast:  192.168.10.255</text>
+  <text class="s-lbl" x="725" y="260" text-anchor="end">Host Range:  192.168.10.1 – 192.168.10.254</text>
+</svg>
+<figcaption><b>آناتومی IPv4:</b> سه اکتت اول شبکه را می‌سازند و اکتت آخر میزبان است. مرز شبکه/میزبان را ماسک (<code>/24</code>) تعیین می‌کند، نه خودِ آدرس.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="text"><code>آدرس:    192      . 168      . 10       . 50
+باینری:  11000000 . 10101000 . 00001010 . 00110010
+وزن بیت: 128+64   . 128+32+8 . 8+2      . 32+16+2
+         = 192      = 168      = 10       = 50
+
+# دو آدرس در هر شبکه رزرو است:
+#   Network Address   → همه‌ی بیت‌های Host صفر   (192.168.10.0)
+#   Broadcast Address → همه‌ی بیت‌های Host یک    (192.168.10.255)
+# پس تعداد میزبان قابل استفاده = 2^h - 2</code></pre>
+<div class="kl-box kl-deep"><span class="kl-h">نمایش دودویی چرا؟</span>
+همه‌ی محاسبات Subnetting در واقع عملیات بیتی است: <code>AND</code> برای پیدا کردن Network و
+<code>OR</code> برای Broadcast. اگر بتوانید آدرس را ذهنی به باینری ببرید، دیگر نیازی به حفظ
+کردن جدول‌ها ندارید.
+</div>
+</section>
+
+<section id="s3">
+<h2><span class="kl-num">بخش ۳</span>کلاس‌ها، آدرس خصوصی و Public، NAT</h2>
+<p>
+در گذشته آدرس‌ها در «کلاس‌ها» دسته‌بندی می‌شدند (A تا E) و محدوده‌ی شبکه از روی مقدار اکتت اول
+تعیین می‌شد. این مدل امروز با <code>CIDR</code> جایگزین شده، اما نام کلاس‌ها هنوز در ابزارها و
+مستندات دیده می‌شود.
+</p>
+<div class="kl-scroll"><table>
+  <tr><th>کلاس</th><th>اکتت اول</th><th>ماسک پیش‌فرض</th><th>شبکه‌های خصوصی (RFC 1918)</th></tr>
+  <tr><td>A</td><td>۱..۱۲۶</td><td><code>/8</code> — 255.0.0.0</td><td><code>10.0.0.0/8</code></td></tr>
+  <tr><td>B</td><td>۱۲۸..۱۹۱</td><td><code>/16</code> — 255.255.0.0</td><td><code>172.16.0.0/12</code></td></tr>
+  <tr><td>C</td><td>۱۹۲..۲۲۳</td><td><code>/24</code> — 255.255.255.0</td><td><code>192.168.0.0/16</code></td></tr>
+  <tr><td>D</td><td>۲۲۴..۲۳۹</td><td>—</td><td>Multicast</td></tr>
+  <tr><td>E</td><td>۲۴۰..۲۵۵</td><td>—</td><td>آزمایشی / رزرو</td></tr>
+</table></div>
+<div class="kl-scroll"><table>
+  <tr><th>محدوده</th><th>CIDR</th><th>کاربرد</th></tr>
+  <tr><td><code>10.0.0.0 – 10.255.255.255</code></td><td>10.0.0.0/8</td><td>شبکه‌های خصوصی بزرگ (دیتاسنتر، ابر)</td></tr>
+  <tr><td><code>172.16.0.0 – 172.31.255.255</code></td><td>172.16.0.0/12</td><td>شبکه‌های خصوصی متوسط</td></tr>
+  <tr><td><code>192.168.0.0 – 192.168.255.255</code></td><td>192.168.0.0/16</td><td>شبکه‌های خانگی و اداری کوچک</td></tr>
+  <tr><td><code>100.64.0.0 – 100.127.255.255</code></td><td>100.64.0.0/10</td><td>CGNAT — NAT اپراتورها</td></tr>
+  <tr><td><code>127.0.0.0 – 127.255.255.255</code></td><td>127.0.0.0/8</td><td>Loopback — <code>127.0.0.1</code> یعنی خودم</td></tr>
+  <tr><td><code>169.254.0.0 – 169.254.255.255</code></td><td>169.254.0.0/16</td><td>Link-Local / APIPA — نشانه‌ی شکست DHCP</td></tr>
+  <tr><td><code>224.0.0.0 – 239.255.255.255</code></td><td>224.0.0.0/4</td><td>Multicast</td></tr>
+  <tr><td><code>255.255.255.255</code></td><td>/32</td><td>Broadcast محدود (در شبکه‌ی محلی)</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code># تأیید کلاس و محدوده‌ی خصوصی بودن یک آدرس
+ipcalc --class 192.168.1.10     # Class C, Private Internet
+ipcalc --class 8.8.8.8          # Class A, Public Internet
+
+# تشخیص سریع نوع آدرس با پایتون (بدون نصب ابزار اضافه)
+python3 - &lt;&lt;'PY'
+import ipaddress
+for a in ("192.168.1.10", "10.0.0.5", "169.254.3.3", "8.8.8.8", "172.20.0.1"):
+    ip = ipaddress.ip_address(a)
+    print(f"{a:15} private={ip.is_private}  loopback={ip.is_loopback}  link_local={ip.is_link_local}")
+PY</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">NAT و آدرس خصوصی</span>
+آدرس‌های خصوصی در اینترنت مسیریابی نمی‌شوند. دسترسی به بیرون از طریق <code>NAT</code> روی
+Router/فایروال انجام می‌شود که آدرس داخلی را به یک آدرس عمومی ترجمه می‌کند. همین موضوع
+<code>Port Forwarding</code> و <code>SNAT/DNAT</code> را ضروری می‌کند.
+</div>
+</section>
+
+<section id="s4">
+<h2><span class="kl-num">بخش ۴</span>Subnet Mask و CIDR</h2>
+<p>
+<strong>Subnet Mask</strong> عددی ۳۲ بیتی است که با بیت‌های <code>1</code> بخش شبکه و با بیت‌های
+<code>0</code> بخش میزبان را مشخص می‌کند و همیشه یک‌تکه است (یک‌ها پشت‌سرهم از چپ). نماد
+<strong>CIDR</strong> فقط تعداد آن یک‌ها را نشان می‌دهد: <code>/24</code> یعنی ۲۴ بیت شبکه و
+۸ بیت میزبان.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="ماسک زیرشبکه در پیشوند 26: چهار اکتت باینری 11111111 11111111 11111111 11000000 که به ماسک 255.255.255.192 تبدیل می‌شود">
+  <rect class="s-group s-group-acc" x="30" y="18" width="710" height="264" rx="14"/>
+  <text class="s-group-t" x="385" y="42" text-anchor="middle">پیشوند /26 — ۲۶ بیت شبکه و ۶ بیت میزبان</text>
+
+  <g class="s-node" style="--kl-i:1"><rect class="s-acc" x="55" y="60" width="160" height="46" rx="8"/><text class="s-t2" x="135" y="88" text-anchor="middle">11111111</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-acc" x="225" y="60" width="160" height="46" rx="8"/><text class="s-t2" x="305" y="88" text-anchor="middle">11111111</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-acc" x="395" y="60" width="160" height="46" rx="8"/><text class="s-t2" x="475" y="88" text-anchor="middle">11111111</text></g>
+  <g class="s-node s-pulse" style="--kl-i:4"><rect class="s-warn" x="565" y="60" width="160" height="46" rx="8"/><text class="s-t" x="645" y="88" text-anchor="middle">11000000</text></g>
+
+  <path class="s-arr s-flow" d="M 385 106 L 385 128"/>
+  <path class="s-head" d="M 385 134 L 378 122 L 392 122 Z"/>
+
+  <g class="s-node" style="--kl-i:5"><rect class="s-c4" x="55" y="136" width="160" height="46" rx="8"/><text class="s-t" x="135" y="164" text-anchor="middle">255</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-c4" x="225" y="136" width="160" height="46" rx="8"/><text class="s-t" x="305" y="164" text-anchor="middle">255</text></g>
+  <g class="s-node" style="--kl-i:7"><rect class="s-c4" x="395" y="136" width="160" height="46" rx="8"/><text class="s-t" x="475" y="164" text-anchor="middle">255</text></g>
+  <g class="s-node" style="--kl-i:8"><rect class="s-c5" x="565" y="136" width="160" height="46" rx="8"/><text class="s-t" x="645" y="164" text-anchor="middle">192</text></g>
+
+  <text class="s-lbl" x="725" y="212" text-anchor="end">Mask: 255.255.255.192   ·   Wildcard: 0.0.0.63</text>
+  <text class="s-lbl" x="725" y="236" text-anchor="end">Block Size = 2^6 = 64   ·   Usable Hosts = 2^6 − 2 = 62</text>
+  <text class="s-lbl" x="725" y="260" text-anchor="end">۲ بیت آخر اکتت چهارم در هر بلوک تغییر می‌کند: .0 و .64 و .128 و .192</text>
+</svg>
+<figcaption><b>ماسک در /26:</b> ۲۶ بیت شبکه و ۶ بیت میزبان. تعداد میزبان = ۲<sup>۶</sup> − ۲ = ۶۲ و اندازه‌ی بلوک = ۶۴.</figcaption>
+</figure>
+<div class="kl-scroll"><table>
+  <tr><th>CIDR</th><th>Subnet Mask</th><th>Wildcard</th><th>تعداد آدرس</th><th>میزبان قابل استفاده</th></tr>
+  <tr><td>/30</td><td>255.255.255.252</td><td>0.0.0.3</td><td>۴</td><td>۲ (لینک Point-to-Point)</td></tr>
+  <tr><td>/29</td><td>255.255.255.248</td><td>0.0.0.7</td><td>۸</td><td>۶</td></tr>
+  <tr><td>/28</td><td>255.255.255.240</td><td>0.0.0.15</td><td>۱۶</td><td>۱۴</td></tr>
+  <tr><td>/27</td><td>255.255.255.224</td><td>0.0.0.31</td><td>۳۲</td><td>۳۰</td></tr>
+  <tr><td>/26</td><td>255.255.255.192</td><td>0.0.0.63</td><td>۶۴</td><td>۶۲</td></tr>
+  <tr><td>/25</td><td>255.255.255.128</td><td>0.0.0.127</td><td>۱۲۸</td><td>۱۲۶</td></tr>
+  <tr><td>/24</td><td>255.255.255.0</td><td>0.0.0.255</td><td>۲۵۶</td><td>۲۵۴</td></tr>
+  <tr><td>/23</td><td>255.255.254.0</td><td>0.0.1.255</td><td>۵۱۲</td><td>۵۱۰</td></tr>
+  <tr><td>/22</td><td>255.255.252.0</td><td>0.0.3.255</td><td>۱٫۰۲۴</td><td>۱٫۰۲۲</td></tr>
+  <tr><td>/21</td><td>255.255.248.0</td><td>0.0.7.255</td><td>۲٫۰۴۸</td><td>۲٫۰۴۶</td></tr>
+  <tr><td>/20</td><td>255.255.240.0</td><td>0.0.15.255</td><td>۴٫۰۹۶</td><td>۴٫۰۹۴</td></tr>
+  <tr><td>/16</td><td>255.255.0.0</td><td>0.0.255.255</td><td>۶۵٫۵۳۶</td><td>۶۵٫۵۳۴</td></tr>
+  <tr><td>/12</td><td>255.240.0.0</td><td>0.15.255.255</td><td>۱٫۰۴۸٫۵۷۶</td><td>۱٫۰۴۸٫۵۷۴</td></tr>
+  <tr><td>/8</td><td>255.0.0.0</td><td>0.255.255.255</td><td>۱۶٫۷۷۷٫۲۱۶</td><td>۱۶٫۷۷۷٫۲۱۴</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code># تبدیل بین دو نمایش با ipcalc و sipcalc
+ipcalc -n 192.168.1.50/24        # فقط Network
+ipcalc -b 192.168.1.50/24        # فقط Broadcast
+ipcalc -m 192.168.1.50/24        # فقط Netmask
+ipcalc -p 255.255.255.192        # فقط پیشوند  →  /26
+
+sipcalc 192.168.1.0/24           # گزارش کامل با جزئیات باینری
+
+# تبدیل سریع با Python
+python3 -c "import ipaddress as i; n=i.ip_network('192.168.1.50/26', strict=False); print(n, n.netmask, n.hostmask, n.num_addresses)"</code></pre>
+<div class="kl-box kl-deep"><span class="kl-h">چرا Wildcard مهم است؟</span>
+<code>Wildcard Mask</code> مکمل ماسک است (ماسک XOR wildcard = 255.255.255.255) و در
+<code>ACL</code>، <code>OSPF</code> و <code>route-map</code> کاربرد دارد. <code>0.0.0.63</code>
+یعنی «۶ بیت آخر مهم نیستند».
+</div>
+</section>
+
+<section id="s5">
+<h2><span class="kl-num">بخش ۵</span>محاسبات شبکه: Network، Broadcast و بازه‌ی Host</h2>
+<p>
+همه‌ی محاسبات از یک ایده‌ی ساده می‌آید: <strong>Network Address = IP AND Mask</strong> و
+<strong>Broadcast = Network + BlockSize − 1</strong>. برای شبکه‌های <code>/25</code> تا
+<code>/32</code> کار ساده‌تر هم می‌شود، چون Block Size فقط به اکتت آخر ربط دارد.
+</p>
+<div class="kl-box kl-ok"><span class="kl-h">فرمول‌های اساسی</span>
+<strong>Block Size</strong> = ۲<sup>h</sup> (h = تعداد بیت میزبان) ·
+<strong>Network</strong> = IP AND Mask ·
+<strong>Broadcast</strong> = Network OR Wildcard = Network + BlockSize − 1 ·
+<strong>Host Range</strong> = Network+1 تا Broadcast−1 ·
+<strong>تعداد زیرشبکه</strong> = ۲<sup>b</sup> (b = بیت قرض‌گرفته‌شده)
+</div>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="محاسبه‌ی Network Address با عملگر AND بین آدرس IP و Subnet Mask و سپس محاسبه‌ی Broadcast و بازه‌ی میزبان‌ها">
+  <g class="s-node" style="--kl-i:1"><rect class="s-c4" x="50" y="52" width="290" height="46" rx="9"/><text class="s-t" x="195" y="80" text-anchor="middle">IP: 172.16.20.130</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c4" x="50" y="112" width="290" height="46" rx="9"/><text class="s-t" x="195" y="140" text-anchor="middle">Mask: 255.255.255.224</text></g>
+
+  <path class="s-arr s-flow" d="M 340 75 L 384 112"/>
+  <path class="s-arr s-flow" d="M 340 135 L 384 122"/>
+  <path class="s-head" d="M 390 119 L 377 112 L 380 126 Z"/>
+
+  <g class="s-node" style="--kl-i:3"><circle class="s-acc" cx="420" cy="117" r="30"/><text class="s-t2" x="420" y="123" text-anchor="middle">AND</text></g>
+
+  <path class="s-arr s-flow" d="M 450 117 L 496 117"/>
+  <path class="s-head" d="M 502 117 L 490 110 L 490 124 Z"/>
+
+  <g class="s-node" style="--kl-i:4"><rect class="s-ok" x="506" y="94" width="234" height="46" rx="9"/><text class="s-t" x="623" y="122" text-anchor="middle">172.16.20.128/27</text></g>
+
+  <text class="s-lbl" x="740" y="196" text-anchor="end">Network   = 172.16.20.128</text>
+  <text class="s-lbl" x="740" y="220" text-anchor="end">HostMin   = 172.16.20.129</text>
+  <text class="s-lbl" x="740" y="244" text-anchor="end">HostMax   = 172.16.20.158</text>
+  <text class="s-lbl" x="740" y="268" text-anchor="end">Broadcast = 172.16.20.159   ·   Block Size = 32</text>
+</svg>
+<figcaption><b>محاسبه‌ی Network:</b> فقط بیت‌های ۱ ماسک باقی می‌مانند؛ بیت‌های میزبان صفر می‌شوند. سپس Broadcast با پرکردن همه‌ی بیت‌های میزبان به‌دست می‌آید.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="text"><code>مثال گام‌به‌گام — 172.16.20.130/27
+
+گام ۱) ماسک /27 = 255.255.255.224  →  ۲۷ بیت شبکه، ۵ بیت میزبان
+گام ۲) Block Size = 2^5 = 32
+گام ۳) 130 ÷ 32 = 4.06  →  چهار بلوکِ کامل  →  4 × 32 = 128
+       پس Network = 172.16.20.128
+گام ۴) Broadcast = 128 + 32 − 1 = 159   →  172.16.20.159
+گام ۵) Host Range = 172.16.20.129 .. 172.16.20.158  (۳۰ میزبان)
+گام ۶) اکتت چهارم تغییر می‌کند: .128 و .160 و .192 و .224 بلوک‌های مجاوراند
+
+باینری (اکتت چهارم):
+  130 = 10000010
+  224 = 11100000   (ماسک)
+  AND = 10000000 = 128   ✔ Network
+  OR  = 10011111 = 159   ✔ Broadcast</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>آدرس</th><th>Network</th><th>Broadcast</th><th>بازه‌ی میزبان</th><th>تعداد</th></tr>
+  <tr><td>192.168.1.130/25</td><td>192.168.1.128</td><td>192.168.1.255</td><td>.129 – .254</td><td>۱۲۶</td></tr>
+  <tr><td>192.168.1.200/26</td><td>192.168.1.192</td><td>192.168.1.255</td><td>.193 – .254</td><td>۶۲</td></tr>
+  <tr><td>10.10.10.200/29</td><td>10.10.10.200</td><td>10.10.10.207</td><td>.201 – .206</td><td>۶</td></tr>
+  <tr><td>172.16.5.3/30</td><td>172.16.5.0</td><td>172.16.5.3</td><td>.1 – .2</td><td>۲</td></tr>
+  <tr><td>192.168.4.77/22</td><td>192.168.4.0</td><td>192.168.7.255</td><td>.0.1 – .7.254</td><td>۱٫۰۲۲</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code># اعتبارسنجی محاسبات خودمان با ipcalc
+ipcalc 172.16.20.130/27
+ipcalc 192.168.1.200/26 -b        # فقط Broadcast
+ipcalc -r 192.168.1.0/24          # فقط بازه‌ی میزبان‌ها
+
+# آیا دو آدرس در یک شبکه‌اند؟ (مهم‌ترین سؤال روزمره)
+python3 - &lt;&lt;'PY'
+import ipaddress
+a = ipaddress.ip_interface("192.168.1.10/25")
+b = ipaddress.ip_interface("192.168.1.200/25")
+print(a.network)          # 192.168.1.0/25
+print(b.network)          # 192.168.1.128/25
+print("same subnet:", a.network == b.network)   # False
+PY</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">تله‌ی رایج ماسک نامتقارن</span>
+اگر یک دستگاه <code>/24</code> و دیگری <code>/25</code> داشته باشد، ممکن است هر دو
+<em>فکر کنند</em> در یک شبکه‌اند در حالی که یکی از آن‌ها ترافیک را مستقیم می‌فرستد و دیگری از
+Router. نتیجه: پینگ یک‌طرفه و قطع‌وصل‌های مرموز.
+</div>
+</section>
+
+<section id="s6">
+<h2><span class="kl-num">بخش ۶</span>Subnetting: تقسیم یک شبکه به زیرشبکه</h2>
+<p>
+<strong>Subnetting</strong> یعنی قرض‌گرفتن بیت از بخش میزبان و ساختن چند شبکه‌ی کوچک‌تر. دلیلش
+فقط «کمبود آدرس» نیست: جداسازی ترافیک، کاهش Broadcast Domain، اعمال سیاست‌های امنیتی و
+مستندسازی تمیزتر از دلایل اصلی‌اند.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="تقسیم شبکه‌ی 192.168.1.0/24 به چهار زیرشبکه‌ی 26 با بازه‌های میزبان مختلف">
+  <rect class="s-group s-group-acc" x="30" y="18" width="710" height="264" rx="14"/>
+  <text class="s-group-t" x="385" y="42" text-anchor="middle">192.168.1.0/24 → چهار زیرشبکه‌ی /26 (قرض‌گرفتن ۲ بیت)</text>
+
+  <g class="s-node" style="--kl-i:1"><rect class="s-c4" x="55" y="64" width="160" height="72" rx="9"/><text class="s-t" x="135" y="92" text-anchor="middle">/26 · .0</text><text class="s-lbl" x="135" y="114" text-anchor="middle">میزبان .1 – .62</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c5" x="225" y="64" width="160" height="72" rx="9"/><text class="s-t" x="305" y="92" text-anchor="middle">/26 · .64</text><text class="s-lbl" x="305" y="114" text-anchor="middle">میزبان .65 – .126</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c6" x="395" y="64" width="160" height="72" rx="9"/><text class="s-t" x="475" y="92" text-anchor="middle">/26 · .128</text><text class="s-lbl" x="475" y="114" text-anchor="middle">میزبان .129 – .190</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-ok" x="565" y="64" width="160" height="72" rx="9"/><text class="s-t" x="645" y="92" text-anchor="middle">/26 · .192</text><text class="s-lbl" x="645" y="114" text-anchor="middle">میزبان .193 – .254</text></g>
+
+  <path class="s-dash s-flow-soft s-arr" d="M 135 136 L 135 168 L 645 168 L 645 136"/>
+  <path class="s-head" d="M 645 130 L 638 142 L 652 142 Z"/>
+
+  <text class="s-lbl" x="725" y="200" text-anchor="end">هر زیرشبکه: ۶۴ آدرس · ۶۲ میزبان · Broadcast در انتهای هر بلوک</text>
+  <text class="s-lbl" x="725" y="226" text-anchor="end">Broadcastها: 192.168.1.63 · .127 · .191 · .255</text>
+  <text class="s-lbl" x="725" y="252" text-anchor="end">قرض‌گرفتن ۲ بیت → 2^2 = ۴ زیرشبکه · باقی‌مانده‌ی میزبان → 2^6 − 2 = ۶۲</text>
+</svg>
+<figcaption><b>Subnetting روی /24:</b> با قرض‌گرفتن ۲ بیت، چهار زیرشبکه‌ی /26 ساخته می‌شود. هر بلوک مرز خودش را دارد و Broadcast آن، آدرس بعدی منهای یک است.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="bash"><code># تقسیم خودکار یک شبکه بر اساس تعداد میزبان مورد نیاز
+ipcalc -s 62 62 62 62 192.168.1.0/24        # چهار زیرشبکه‌ی /26
+ipcalc -s 30 30 30 30 30 30 10.0.0.0/24     # شش زیرشبکه‌ی /27
+ipcalc -s 500 10.0.0.0/22                   # بر اساس میزبان، پیشوند را انتخاب می‌کند
+
+# تقسیم دستی به بلوک‌های /28
+subnetcalc 192.168.1.0/24 -s 28</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>نیاز</th><th>بیت قرضی</th><th>پیشوند جدید</th><th>تعداد زیرشبکه</th><th>میزبان هرکدام</th></tr>
+  <tr><td>۲ زیرشبکه</td><td>۱</td><td>/25</td><td>۲</td><td>۱۲۶</td></tr>
+  <tr><td>۴ زیرشبکه</td><td>۲</td><td>/26</td><td>۴</td><td>۶۲</td></tr>
+  <tr><td>۸ زیرشبکه</td><td>۳</td><td>/27</td><td>۸</td><td>۳۰</td></tr>
+  <tr><td>۱۶ زیرشبکه</td><td>۴</td><td>/28</td><td>۱۶</td><td>۱۴</td></tr>
+  <tr><td>۳۲ زیرشبکه</td><td>۵</td><td>/29</td><td>۳۲</td><td>۶</td></tr>
+  <tr><td>۶۴ زیرشبکه</td><td>۶</td><td>/30</td><td>۶۴</td><td>۲</td></tr>
+</table></div>
+<div class="kl-box kl-deep"><span class="kl-h">مثال واقعی</span>
+یک شرکت یک <code>192.168.50.0/24</code> دارد و می‌خواهد چهار بخش بسازد: مالی، فروش،
+فنی و مهمان. با <code>/26</code> هر بخش ۶۲ میزبان می‌گیرد و ترافیک مهمان با یک
+<code>ACL</code> روی Router از سه شبکه‌ی دیگر جدا می‌شود.
+</div>
+<div class="kl-box kl-bad"><span class="kl-h">اشتباه رایج</span>
+کوچک‌کردن بیش‌ازحد subnet باعث هدررفت آدرس و پیچیدگی مسیریابی می‌شود؛ بزرگ‌کردنش
+Broadcast Domain را بزرگ و جداسازی امنیتی را بی‌اثر می‌کند. مرز را بر اساس
+«تعداد دستگاه + رشد ۲۰٪» انتخاب کنید، نه بر اساس مد روز.
+</div>
+</section>
+
+<section id="s7">
+<h2><span class="kl-num">بخش ۷</span>VLSM: تخصیص بهینه‌ی فضای آدرس</h2>
+<p>
+در Subnetting ساده همه‌ی زیرشبکه‌ها یک اندازه دارند. اما نیازها یکسان نیستند: یک لینک
+<code>Point-to-Point</code> حداکثر ۲ آدرس می‌خواهد و یک طبقه‌ی اداری ۱۰۰ آدرس.
+<strong>VLSM (Variable Length Subnet Masking)</strong> اجازه می‌دهد هر زیرشبکه ماسک
+متفاوتی داشته باشد. قانون طلایی: <strong>از بزرگ‌ترین نیاز به کوچک‌ترین</strong> تخصیص بدهید.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 330" role="img" aria-label="تخصیص VLSM روی 10.0.0.0/24 برای چهار بخش با اندازه‌های مختلف از بزرگ به کوچک">
+  <rect class="s-group" x="30" y="14" width="710" height="302" rx="14"/>
+  <text class="s-group-t" x="385" y="38" text-anchor="middle">VLSM روی 10.0.0.0/24 — از بزرگ‌ترین به کوچک‌ترین</text>
+
+  <g class="s-node" style="--kl-i:1"><rect class="s-c4" x="40" y="56" width="390" height="42" rx="9"/><text class="s-t" x="235" y="82" text-anchor="middle">10.0.0.0/25 · .0 – .127</text></g>
+  <text class="s-lbl" x="735" y="82" text-anchor="end">فروش — ۱۰۰ میزبان</text>
+
+  <g class="s-node" style="--kl-i:2"><rect class="s-c5" x="40" y="104" width="300" height="42" rx="9"/><text class="s-t" x="190" y="130" text-anchor="middle">10.0.0.128/26 · .128 – .191</text></g>
+  <text class="s-lbl" x="735" y="130" text-anchor="end">فنی — ۵۰ میزبان</text>
+
+  <g class="s-node" style="--kl-i:3"><rect class="s-c6" x="40" y="152" width="250" height="42" rx="9"/><text class="s-t" x="165" y="178" text-anchor="middle">10.0.0.192/27 · .192 – .223</text></g>
+  <text class="s-lbl" x="735" y="178" text-anchor="end">منابع انسانی — ۲۵ میزبان</text>
+
+  <g class="s-node" style="--kl-i:4"><rect class="s-ok" x="40" y="200" width="140" height="42" rx="9"/><text class="s-t" x="110" y="226" text-anchor="middle">.224/30</text></g>
+  <text class="s-lbl" x="735" y="226" text-anchor="end">لینک WAN — ۲ میزبان</text>
+
+  <g class="s-node" style="--kl-i:5"><rect class="s-warn" x="40" y="248" width="170" height="42" rx="9"/><text class="s-t" x="125" y="274" text-anchor="middle">.232/29</text></g>
+  <text class="s-lbl" x="735" y="274" text-anchor="end">مدیریت تجهیزات — ۵ میزبان</text>
+</svg>
+<figcaption><b>VLSM:</b> هر بخش دقیقاً به اندازه‌ی نیازش فضا می‌گیرد و فضای باقی‌مانده (<code>.240 – .255</code>) برای رشد آینده رزرو می‌ماند.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="bash"><code># ترتیب نیازها دقیقاً مثل ترتیب تخصیص ماست: بزرگ به کوچک
+ipcalc -s 100 50 25 5 2 10.0.0.0/24
+
+# بررسی اینکه بلوک‌ها روی هم نیفتاده‌اند (بدون هم‌پوشانی)
+for cidr in 10.0.0.0/25 10.0.0.128/26 10.0.0.192/27 10.0.0.224/30 10.0.0.232/29; do
+  ipcalc -n "$cidr"
+done</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>بخش</th><th>نیاز</th><th>پیشوند</th><th>شبکه</th><th>بازه‌ی میزبان</th><th>هدررفت</th></tr>
+  <tr><td>فروش</td><td>۱۰۰</td><td>/25</td><td>10.0.0.0</td><td>.1 – .126</td><td>۲۶</td></tr>
+  <tr><td>فنی</td><td>۵۰</td><td>/26</td><td>10.0.0.128</td><td>.129 – .190</td><td>۱۲</td></tr>
+  <tr><td>منابع انسانی</td><td>۲۵</td><td>/27</td><td>10.0.0.192</td><td>.193 – .222</td><td>۵</td></tr>
+  <tr><td>لینک WAN</td><td>۲</td><td>/30</td><td>10.0.0.224</td><td>.225 – .226</td><td>۰</td></tr>
+  <tr><td>مدیریت</td><td>۵</td><td>/29</td><td>10.0.0.232</td><td>.233 – .238</td><td>۱</td></tr>
+  <tr><td>رزرو رشد</td><td>—</td><td>/28</td><td>10.0.0.240</td><td>—</td><td>—</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code>#!/bin/bash
+# vlsm_plan.sh — طرح VLSM خودکار برای یک شبکه‌ی پایه
+# استفاده: ./vlsm_plan.sh 10.0.0.0/24 100 50 25 5 2
+
+set -euo pipefail
+BASE=$1; shift
+NEEDS=("$@")
+
+python3 - "$BASE" "${NEEDS[@]}" &lt;&lt;'PY'
+import ipaddress, sys
+base = ipaddress.ip_network(sys.argv[1], strict=False)
+needs = sorted((int(n) for n in sys.argv[2:]), reverse=True)   # بزرگ به کوچک
+cursor = int(base.network_address)
+for need in needs:
+    h = max(2, need + 2)                       # +2 برای Network و Broadcast
+    prefix = 32 - (h - 1).bit_length()         # کوچک‌ترین بلوک کافی
+    net = ipaddress.ip_network((cursor, prefix))
+    print(f"need={need:4d}  {str(net):20} hosts={net.num_addresses - 2:4d}  {net.netmask}")
+    cursor = int(net.broadcast_address) + 1
+free = base.num_addresses - (cursor - int(base.network_address))
+print(f"remaining addresses for growth: {free}")
+PY</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">نکته‌ی اجرایی</span>
+همیشه پیش از تخصیص، بلوک‌ها را در یک سند (<code>IPAM</code> یا حتی یک صفحه‌ی
+<code>Markdown</code>) ثبت کنید. ۹۰٪ درگیری‌های شبکه‌ای از «کسی یادش نبوده» شروع می‌شود.
+</div>
+</section>
+
+<section id="s8">
+<h2><span class="kl-num">بخش ۸</span>Supernetting و Route Summarization</h2>
+<p>
+<strong>Supernetting</strong> (یا Route Summarization / Aggregation) عکس Subnetting است: چند
+شبکه‌ی پیوسته را در یک اعلان مسیر خلاصه می‌کنیم. نتیجه، جدول مسیریابی کوچک‌تر، همگرایی سریع‌تر
+و نوسان کمتر (<code>flapping</code>) است. شرط اصلی، <strong>پیوستگی و هم‌ترازی</strong>
+بلوک‌هاست.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 300" role="img" aria-label="خلاصه‌سازی مسیر چهار شبکه‌ی 192.168.0.0 تا 192.168.3.0 با پیشوند 24 در یک مسیر 192.168.0.0/22">
+  <g class="s-node" style="--kl-i:1"><rect class="s-c4" x="40" y="52" width="250" height="36" rx="8"/><text class="s-t2" x="165" y="76" text-anchor="middle">192.168.0.0/24</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c4" x="40" y="96" width="250" height="36" rx="8"/><text class="s-t2" x="165" y="120" text-anchor="middle">192.168.1.0/24</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c4" x="40" y="140" width="250" height="36" rx="8"/><text class="s-t2" x="165" y="164" text-anchor="middle">192.168.2.0/24</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c4" x="40" y="184" width="250" height="36" rx="8"/><text class="s-t2" x="165" y="208" text-anchor="middle">192.168.3.0/24</text></g>
+
+  <path class="s-arr s-flow" d="M 290 70 L 380 128"/>
+  <path class="s-arr s-flow" d="M 290 114 L 380 132"/>
+  <path class="s-arr s-flow" d="M 290 158 L 380 138"/>
+  <path class="s-arr s-flow" d="M 290 202 L 380 142"/>
+  <path class="s-head" d="M 386 134 L 373 128 L 375 142 Z"/>
+
+  <g class="s-node" style="--kl-i:5"><rect class="s-ok" x="400" y="106" width="340" height="56" rx="10"/><text class="s-t" x="570" y="132" text-anchor="middle">192.168.0.0/22</text><text class="s-lbl" x="570" y="152" text-anchor="middle">یک مسیر برای چهار شبکه · ۱٫۰۲۲ آدرس</text></g>
+
+  <text class="s-lbl" x="740" y="212" text-anchor="end">اکتت سوم: 000000|00  000000|01  000000|10  000000|11</text>
+  <text class="s-lbl" x="740" y="238" text-anchor="end">دو بیت آخر متغیر است → پیشوند ۲۲ بیت مشترک → /22</text>
+</svg>
+<figcaption><b>Route Summarization:</b> وقتی بیت‌های متغیر فقط در انتهای پیشوند باشند، می‌توان چند مسیر را در یک اعلان جمع کرد.</figcaption>
+</figure>
+<pre class="kl-code" data-lang="bash"><code># پیدا کردن خلاصه‌ی یک مجموعه‌ی شبکه‌ی پیوسته با colliwobbles-free روش استاندارد
+python3 - &lt;&lt;'PY'
+import ipaddress
+nets = [ipaddress.ip_network(n) for n in
+        ("192.168.0.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24")]
+summary = list(ipaddress.collapse_addresses(nets))
+print("summary:", [str(s) for s in summary])      # ['192.168.0.0/22']
+
+# اگر شبکه‌ها پیوسته نباشند، چند مسیر باقی می‌ماند
+mixed = [ipaddress.ip_network(n) for n in ("192.168.0.0/24", "192.168.2.0/24")]
+print("mixed:  ", [str(s) for s in ipaddress.collapse_addresses(mixed)])
+PY
+
+# اعمال خلاصه روی خود سیستم
+sudo ip route add 192.168.0.0/22 via 10.0.0.1 dev eth0
+ip route get 192.168.2.55          # باید از همان مسیر خلاصه برود</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>شبکه‌های ورودی</th><th>خلاصه‌ی ممکن</th><th>توضیح</th></tr>
+  <tr><td>10.1.0.0/24 + 10.1.1.0/24</td><td>10.1.0.0/23</td><td>دو بلوک پیوسته و هم‌تراز</td></tr>
+  <tr><td>172.16.0.0/24 … 172.16.3.0/24</td><td>172.16.0.0/22</td><td>چهار بلوک پشت‌سرهم</td></tr>
+  <tr><td>192.168.0.0/24 … .3.0/24</td><td>192.168.0.0/22</td><td>شبکه‌های سوم و چهارم هم داخل مرزند</td></tr>
+  <tr><td>10.0.0.0/24 و 10.0.2.0/24</td><td>— (دو مسیر)</td><td><code>10.0.1.0/24</code> وجود ندارد؛ خلاصه غیرممکن است</td></tr>
+  <tr><td>0.0.0.0/0</td><td>Default Route</td><td>خلاصه‌ی همه‌چیز</td></tr>
+</table></div>
+<div class="kl-box kl-ok"><span class="kl-h">فایده‌ی عملی</span>
+در یک سازمان با ۵۰ زیرشبکه، خلاصه‌سازی می‌تواند تعداد ردیف‌های جدول مسیریابی Routerهای
+هسته را از چند صد به چند ده کاهش دهد؛ نتیجه: مصرف CPU کمتر و همگرایی سریع‌تر.
+</div>
+<div class="kl-box kl-bad"><span class="kl-h">خطر Blackhole</span>
+اگر خلاصه‌ای اعلان کنید که بخشی از آن به شبکه‌ی واقعی وصل نیست، ترافیک آن بخش
+<em>بی‌صدا</em> دور ریخته می‌شود. همیشه پیش از خلاصه‌سازی، مرز دقیق بلوک‌ها را بررسی کنید.
+</div>
+</section>
+
+<section id="s9">
+<h2><span class="kl-num">بخش ۹</span>IPv6: آدرس‌دهی نسل جدید</h2>
+<p>
+IPv6 با ۱۲۸ بیت، فضای آدرس را عملاً بی‌پایان می‌کند و در کنار آن Broadcast را حذف کرده،
+<code>NDP</code> را جای <code>ARP</code> گذاشته و پیکربندی خودکار بدون سرور (<code>SLAAC</code>)
+را ممکن کرده است. آدرس در ۸ گروه ۱۶ بیتی هگزادسیمال نوشته می‌شود و با <code>::</code> کوتاه می‌شود.
+</p>
+<pre class="kl-code" data-lang="text"><code>بنویسید:  2001:0db8:0000:0000:0000:ff00:0042:8329
+ساده‌شود: 2001:db8::ff00:42:8329
+
+قوانین کوتاه‌سازی:
+  ۱) صفرهای ابتدای هر گروه حذف می‌شوند:  0db8 → db8  و  0042 → 42
+  ۲) یک‌بار مجاز است گروه‌های صفر متوالی با :: جمع شوند
+  ۳) :: را جای یک گروه صفر تنها نگذارید؛ همان 0 بنویسید
+
+انواع مهم:
+  Global Unicast    2000::/3      آدرس عمومی قابل مسیریابی
+  Unique Local      fc00::/7      مثل آدرس خصوصی IPv4 (پرکاربرد در سازمان)
+  Link-Local        fe80::/10     فقط در همان لینک؛ خودکار روی هر اینترفیس
+  Multicast         ff00::/8      جایگزین Broadcast
+  Loopback          ::1/128       معادل 127.0.0.1
+
+نکته‌ی کلیدی: پیشوند استانداردِ هر LAN همیشه /64 است (۶۴ بیت شبکه + ۶۴ بیت اینترفیس)</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>مفهوم IPv4</th><th>معادل در IPv6</th><th>توضیح</th></tr>
+  <tr><td>ARP</td><td>NDP (NS/NA)</td><td>کشف همسایه و MAC</td></tr>
+  <tr><td>Broadcast</td><td>Multicast</td><td>گروه‌های <code>ff02::1</code></td></tr>
+  <tr><td>آدرس خصوصی</td><td>ULA <code>fc00::/7</code></td><td>قابل استفاده‌ی داخلی</td></tr>
+  <tr><td>APIPA</td><td>Link-Local <code>fe80::/10</code></td><td>همیشه روی هر اینترفیس فعال است</td></tr>
+  <tr><td>DHCP</td><td>SLAAC + DHCPv6</td><td>پیکربندی بدون سرور هم ممکن است</td></tr>
+  <tr><td>NAT</td><td>معمولاً لازم نیست</td><td>هر دستگاه آدرس جهانی می‌گیرد</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code># دیدن آدرس‌های IPv6 فعال روی اینترفیس‌ها
+ip -6 addr show
+ip -6 addr show dev eth0 scope global
+ip -6 route show
+
+# همسایه‌ها (معادل جدول ARP)
+ip -6 neigh show
+
+# محاسبه و اعتبارسنجی
+ipcalc -6 2001:db8::1/64         # در نسخه‌های جدید ipcalc
+sipcalc 2001:db8::/48
+ping -6 -c 2 2001:4860:4860::8888
+traceroute6 2001:4860:4860::8888
+ndisc6 fe80::1%eth0              # معادل arping برای IPv6</code></pre>
+<div class="kl-box kl-deep"><span class="kl-h">چرا /64 را نشکنید؟</span>
+<code>SLAAC</code> با <code>/64</code> طراحی شده و Autoconfiguration به ۶۴ بیت اینترفیس تکیه دارد.
+اگر روی LAN پیشوندی غیر از <code>/64</code> بگذارید، دستگاه‌های زیادی آدرس‌دهی خودکار را
+از دست می‌دهند. برای تقسیم داخلی، از پیشوندهای <code>/64</code> متعدد استفاده کنید، نه از
+زیرشبکه‌های کوچک‌تر.
+</div>
+</section>
+
+<section id="s10">
+<h2><span class="kl-num">بخش ۱۰</span>ابزارهای خط فرمان در Linux</h2>
+<p>
+مجموعه‌ی <code>iproute2</code> (دستور <code>ip</code>) جای ابزارهای قدیمی مثل
+<code>ifconfig</code> و <code>route</code> و <code>netstat</code> را گرفته است. <code>ip</code>
+سریع‌تر، دقیق‌تر و از IPv6 به‌طور بومی پشتیبانی می‌کند.
+</p>
+<pre class="kl-code" data-lang="bash"><code># ── ۱) نمایش تنظیمات ──────────────────────────────────────────
+ip -br addr                      # خلاصه‌ی همه‌ی اینترفیس‌ها (ستون‌های کوتاه)
+ip addr show                     # جزئیات کامل: IP، ماسک، MAC، وضعیت
+ip addr show dev eth0
+ip route show                    # جدول مسیریابی (همان ip route)
+ip -6 route show                 # مسیرهای IPv6
+ip neigh show                    # جدول ARP / NDP  (معادل arp -an)
+ip link show                     # وضعیت لایه‌ی ۲: MTU، MAC، UP/DOWN
+ip -s link show eth0             # آمار RX/TX و خطاها
+
+# ── ۲) تنظیم موقت آدرس و مسیر ─────────────────────────────────
+sudo ip addr add 192.168.1.100/24 dev eth0
+sudo ip link set eth0 up
+sudo ip route add default via 192.168.1.1
+sudo ip route add 10.20.0.0/16 via 192.168.1.254      # مسیر ثابت
+ip route get 8.8.8.8             # سیستم از کدام مسیر و اینترفیس می‌رود؟
+
+# ── ۳) ابزارهای قدیمی که هنوز در اسکریپت‌ها می‌بینید ───────────
+ifconfig -a                      # همه‌ی اینترفیس‌ها
+ifconfig eth0
+netstat -tulpn                   # پورت‌های Listening با PID (جایگزین: ss)</code></pre>
+<pre class="kl-code" data-lang="bash"><code># ── ۴) محاسبه‌گرها ────────────────────────────────────────────
+sudo apt install ipcalc sipcalc subnetcalc      # Debian/Ubuntu
+sudo dnf install ipcalc                         # Fedora/RHEL
+
+ipcalc 192.168.1.0/24
+ipcalc 192.168.1.0 255.255.255.0                # با ماسک نقطه‌ای
+ipcalc -n 192.168.1.50/24                       # فقط Network
+ipcalc -b 192.168.1.50/24                       # فقط Broadcast
+ipcalc -r 192.168.1.0/24                        # فقط بازه‌ی میزبان
+ipcalc -s 1000 500 200 100 10.0.0.0/8           # تقسیم بر اساس نیاز
+
+sipcalc 192.168.1.0/24                          # گزارش کامل‌تر
+sipcalc 192.168.1.0/24 10.0.0.0/8               # چند شبکه با هم
+sipcalc 192.168.1.0/24 -s 26                    # تقسیم به /26
+
+subnetcalc 192.168.1.0 255.255.255.0
+subnetcalc 10.0.0.0/22 -n</code></pre>
+<pre class="kl-code" data-lang="text"><code>خروجی نمونه:
+
+$ ipcalc 192.168.10.50/26
+Address:   192.168.10.50        11000000.10101000.00001010.00110010
+Netmask:   255.255.255.192 = 26 11111111.11111111.11111111.11000000
+Wildcard:  0.0.0.63             00000000.00000000.00000000.00111111
+=&gt;
+Network:   192.168.10.0/26      11000000.10101000.00001010.00000000
+HostMin:   192.168.10.1         11000000.10101000.00001010.00000001
+HostMax:   192.168.10.62        11000000.10101000.00001010.00111110
+Broadcast: 192.168.10.63        11000000.10101000.00001010.00111111
+Hosts/Net: 62                   Class C, Private Internet</code></pre>
+<pre class="kl-code" data-lang="bash"><code># ── ۵) تست اتصال و مسیر ───────────────────────────────────────
+ping -c 4 192.168.1.1            # چهار بسته
+ping -s 1400 -M do 8.8.8.8       # تست MTU بدون Fragment  (۱۴۰۰+۲۸ = ۱۴۲۸)
+ping -I eth0 8.8.8.8             # خروج از اینترفیس مشخص
+arping -c 3 -I eth0 192.168.1.1  # تست لایه‌ی ۲ (IP اشغال است؟)
+traceroute -I 8.8.8.8            # مسیر با ICMP به‌جای UDP
+tracepath 8.8.8.8                # بدون نیاز به root
+mtr -rwzc 10 8.8.8.8             # گزارش ترکیبی ping + traceroute
+
+# ── ۶) سوکت‌ها و پورت‌ها ──────────────────────────────────────
+ss -tulpn                        # TCP/UDP، Listening، PID، بدون Resolve نام
+ss -tnp state established        # فقط اتصال‌های برقرارشده
+ss -s                            # خلاصه‌ی آماری سوکت‌ها
+nmap -sn 192.168.1.0/24          # کشف دستگاه‌های زنده (بدون اسکن پورت)
+nmap -F 192.168.1.1              # اسکن سریع پورت‌های رایج
+sudo nmap -p 22,80,443 -sV 192.168.1.1</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">تغییرات ip addr موقتی است</span>
+تنظیمات <code>ip addr add</code> و <code>ip route add</code> با ری‌استارت از بین می‌روند. برای
+ماندگاری از <code>netplan</code> (Ubuntu)، <code>NetworkManager</code> (<code>nmcli</code>) یا
+فایل‌های <code>/etc/systemd/network/</code> استفاده کنید.
+</div>
+<pre class="kl-code" data-lang="bash"><code># ── ۷) ماندگار کردن پیکربندی ──────────────────────────────────
+# Ubuntu Server — netplan
+sudo tee /etc/netplan/01-static.yaml &gt; /dev/null &lt;&lt;'YAML'
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: false
+      addresses: [192.168.1.100/24]
+      routes:
+        - to: default
+          via: 192.168.1.1
+      nameservers:
+        addresses: [1.1.1.1, 8.8.8.8]
+YAML
+sudo netplan apply
+
+# NetworkManager — خط فرمان
+nmcli con mod "Wired connection 1" ipv4.addresses 192.168.1.100/24
+nmcli con mod "Wired connection 1" ipv4.gateway 192.168.1.1
+nmcli con mod "Wired connection 1" ipv4.dns "1.1.1.1 8.8.8.8"
+nmcli con mod "Wired connection 1" ipv4.method manual
+nmcli con up "Wired connection 1"
+
+# DNS و کش
+resolvectl status
+sudo resolvectl flush-caches     # جایگزین مدرن systemd-resolve --flush-caches</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>کار</th><th>Linux (مدرن)</th><th>Linux (قدیمی)</th><th>Windows</th></tr>
+  <tr><td>نمایش IP</td><td><code>ip -br addr</code></td><td><code>ifconfig</code></td><td><code>ipconfig</code> / <code>Get-NetIPAddress</code></td></tr>
+  <tr><td>جدول مسیر</td><td><code>ip route</code></td><td><code>route -n</code></td><td><code>Get-NetRoute</code> / <code>route print</code></td></tr>
+  <tr><td>جدول ARP</td><td><code>ip neigh</code></td><td><code>arp -an</code></td><td><code>Get-NetNeighbor</code></td></tr>
+  <tr><td>محاسبه‌ی شبکه</td><td><code>ipcalc</code> / <code>sipcalc</code></td><td><code>ipcalc</code></td><td>اسکریپت PowerShell / <code>ipconfig /all</code></td></tr>
+  <tr><td>Ping</td><td><code>ping</code></td><td><code>ping</code></td><td><code>Test-Connection</code></td></tr>
+  <tr><td>Traceroute</td><td><code>mtr</code> / <code>traceroute</code></td><td><code>traceroute</code></td><td><code>Test-NetConnection -TraceRoute</code></td></tr>
+  <tr><td>سوکت‌ها</td><td><code>ss -tulpn</code></td><td><code>netstat -tulpn</code></td><td><code>Get-NetTCPConnection</code></td></tr>
+  <tr><td>اسکن پورت</td><td><code>nmap</code></td><td><code>nc -zv</code></td><td><code>Test-NetConnection -Port</code></td></tr>
+  <tr><td>تنظیم IP</td><td><code>ip addr add</code> / netplan</td><td><code>ifconfig</code></td><td><code>New-NetIPAddress</code></td></tr>
+  <tr><td>پاک‌کردن کش DNS</td><td><code>resolvectl flush-caches</code></td><td><code>systemd-resolve</code></td><td><code>ipconfig /flushdns</code></td></tr>
+</table></div>
+</section>
+
+<section id="s11">
+<h2><span class="kl-num">بخش ۱۱</span>ابزارهای خط فرمان در Windows (PowerShell)</h2>
+<p>
+در ویندوز دو لایه ابزار دارید: دستورهای کلاسیک مثل <code>ipconfig</code> و مجموعه‌ی
+<code>NetTCPIP</code> در PowerShell که خروجی شیء می‌دهد و برای اسکریپت‌نویسی و گزارش‌گیری
+ایده‌آل است.
+</p>
+<pre class="kl-code" data-lang="powershell"><code># ── ۱) ipconfig کلاسیک ────────────────────────────────────────
+ipconfig                              # خلاصه
+ipconfig /all                         # جزئیات کامل: DHCP، MAC، DNS، Lease
+ipconfig /release                     # رها کردن Lease
+ipconfig /renew                       # گرفتن Lease جدید
+ipconfig /flushdns                    # پاک کردن کش DNS
+ipconfig /displaydns                  # نمایش کش DNS
+
+# ── ۲) Cmdletهای مدرن ────────────────────────────────────────
+Get-NetIPAddress -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress, PrefixLength
+Get-NetIPConfiguration -Detailed
+Get-NetAdapter | Where-Object Status -eq Up
+Get-NetRoute -DestinationPrefix "0.0.0.0/0"          # پیش‌فرض‌ها (Gateway)
+Get-NetNeighbor -AddressFamily IPv4                   # جدول ARP
+Get-DnsClientServerAddress -AddressFamily IPv4
+Get-NetTCPConnection -State Listen | Sort-Object LocalPort</code></pre>
+<pre class="kl-code" data-lang="powershell"><code># ── ۳) تنظیم آدرس استاتیک و بازگشت به DHCP ──────────────────
+New-NetIPAddress -InterfaceAlias "Ethernet" -IPAddress 192.168.1.100 `
+    -PrefixLength 24 -DefaultGateway 192.168.1.1
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses 1.1.1.1, 8.8.8.8
+
+# بازگشت به DHCP
+Remove-NetIPAddress -InterfaceAlias "Ethernet" -Confirm:$false
+Remove-NetRoute -InterfaceAlias "Ethernet" -Confirm:$false
+Set-NetIPInterface -InterfaceAlias "Ethernet" -Dhcp Enabled
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ResetServerAddresses</code></pre>
+<pre class="kl-code" data-lang="powershell"><code># ── ۴) محاسبه‌گر زیرشبکه در PowerShell ────────────────────────
+function Get-SubnetInfo {
+    param([Parameter(Mandatory)][string]$CIDR)
+
+    $ip, $prefix = $CIDR -split '/'
+    $prefix = [int]$prefix
+
+    # ماسک از روی تعداد بیت‌ها
+    $bits = ('1' * $prefix).PadRight(32, '0')
+    $maskOctets = 0..3 | ForEach-Object { [Convert]::ToInt32($bits.Substring($_ * 8, 8), 2) }
+    $mask = $maskOctets -join '.'
+
+    # تبدیل IP به عدد ۳۲ بیتی (Int64 برای پرهیز از سرریز علامت‌دار)
+    $toNum = {
+        param($s)
+        $o = $s -split '\.' | ForEach-Object { [int64]$_ }
+        ($o[0] -shl 24) + ($o[1] -shl 16) + ($o[2] -shl 8) + $o[3]
+    }
+    $toIp = {
+        param([int64]$n)
+        (($n -shr 24) -band 255), (($n -shr 16) -band 255),
+        (($n -shr 8) -band 255), ($n -band 255) -join '.'
+    }
+
+    $ipNum   = &amp; $toNum $ip
+    $maskNum = &amp; $toNum $mask
+    $netNum  = $ipNum -band $maskNum
+    $bcast   = $netNum + ([Math]::Pow(2, 32 - $prefix) - 1)
+
+    [pscustomobject]@{
+        Input         = $CIDR
+        SubnetMask    = $mask
+        Wildcard      = ($maskOctets | ForEach-Object { 255 - $_ }) -join '.'
+        Network       = (&amp; $toIp $netNum) + "/$prefix"
+        FirstHost     = &amp; $toIp ($netNum + 1)
+        LastHost      = &amp; $toIp ([int64]$bcast - 1)
+        Broadcast     = &amp; $toIp ([int64]$bcast)
+        TotalIPv4     = [Math]::Pow(2, 32 - $prefix)
+        UsableHosts   = [Math]::Pow(2, 32 - $prefix) - 2
+    }
+}
+
+Get-SubnetInfo -CIDR "172.16.20.130/27" | Format-List</code></pre>
+<pre class="kl-code" data-lang="powershell"><code># ── ۵) تست اتصال و پورت ──────────────────────────────────────
+Test-Connection -ComputerName 8.8.8.8 -Count 4                 # معادل ping
+Test-Connection -ComputerName 8.8.8.8, 1.1.1.1 -Count 2 -Quiet # فقط موفق/ناموفق
+
+Test-NetConnection -ComputerName google.com                   # خلاصه‌ی کامل
+Test-NetConnection -ComputerName google.com -Port 443          # تست پورت
+Test-NetConnection -ComputerName 8.8.8.8 -TraceRoute           # مسیر بسته‌ها
+Resolve-DnsName google.com                                     # معادل dig
+Get-NetFirewallProfile | Select-Object Name, Enabled           # وضعیت فایروال</code></pre>
+<pre class="kl-code" data-lang="powershell"><code># ── ۶) اسکن زیرشبکه (Ping Sweep) — PowerShell 7+ ─────────────
+function Invoke-PingSweep {
+    param(
+        [Parameter(Mandatory)][string]$Network,   # مثل: 192.168.1
+        [int]$TimeoutSeconds = 1
+    )
+    Write-Host "Scanning $Network.0/24 ..."
+    1..254 | ForEach-Object -Parallel {
+        $ip = "$using:Network.$_"
+        if (Test-Connection -ComputerName $ip -Count 1 -Quiet -TimeoutSeconds $using:TimeoutSeconds) {
+            [pscustomobject]@{ IP = $ip; Status = 'UP' }
+        }
+    } -ThrottleLimit 64 | Sort-Object { [int]($_.IP -split '\.')[-1] }
+}
+
+Invoke-PingSweep -Network '192.168.1' | Format-Table -AutoSize</code></pre>
+<pre class="kl-code" data-lang="powershell"><code># ── ۷) گزارش تصویری از وضعیت شبکه ────────────────────────────
+function Get-NetworkReport {
+    $rows = foreach ($adapter in Get-NetAdapter | Where-Object Status -eq 'Up') {
+        $ipv4 = Get-NetIPAddress -InterfaceAlias $adapter.Name -AddressFamily IPv4 -ErrorAction SilentlyContinue
+        $gw   = Get-NetRoute -InterfaceAlias $adapter.Name -DestinationPrefix '0.0.0.0/0' -ErrorAction SilentlyContinue
+        $dns  = Get-DnsClientServerAddress -InterfaceAlias $adapter.Name -AddressFamily IPv4 -ErrorAction SilentlyContinue
+        [pscustomobject]@{
+            Interface  = $adapter.Name
+            MAC        = $adapter.MacAddress
+            IPv4       = $ipv4.IPAddress
+            Prefix     = $ipv4.PrefixLength
+            Gateway    = $gw.NextHop
+            DNS        = ($dns.ServerAddresses -join ', ')
+        }
+    }
+    $rows | Format-Table -AutoSize
+    $csv = "NetworkReport_$(Get-Date -Format 'yyyyMMdd_HHmmss').csv"
+    $rows | Export-Csv -Path $csv -NoTypeInformation -Encoding UTF8
+    Write-Host "Saved: $csv" -ForegroundColor Green
+}
+
+Get-NetworkReport</code></pre>
+<div class="kl-box kl-warn"><span class="kl-h">تفاوت نسخه‌ها</span>
+<code>ForEach-Object -Parallel</code> و پارامتر <code>-TimeoutSeconds</code> در
+<strong>PowerShell 7</strong> به بعد وجود دارند. در Windows PowerShell 5.1 (نسخه‌ی پیش‌فرض
+ویندوز) از <code>Test-Connection -Count 1 -Quiet</code> و حلقه‌ی معمولی یا
+<code>Start-Job</code> استفاده کنید.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">چرا ابزار شیءگرا بهتر است؟</span>
+<code>Get-NetIPAddress</code> به‌جای متن، شیء برمی‌گرداند؛ پس می‌توانید فیلتر، مرتب‌سازی و
+<code>Export-Csv</code> کنید. برای گزارش‌گیری دوره‌ای از کلاینت‌ها، همین یک ویژگی کار
+چندساعته‌ی دستی را حذف می‌کند.
+</div>
+</section>
+
+<section id="s12">
+<h2><span class="kl-num">بخش ۱۲</span>طراحی آدرس‌دهی سازمانی و نکات امنیتی</h2>
+<p>
+طرح آدرس‌دهی یک سازمان باید پیش از خرید تجهیزات نوشته شود، نه بعد از آن. یک طرح درست سه
+ویژگی دارد: <strong>سلسله‌مراتبی</strong> است (قابل خلاصه‌سازی)، <strong>مستند</strong> است و
+<strong>فضای رشد</strong> دارد.
+</p>
+<pre class="kl-code" data-lang="text"><code>نمونه‌ی طرح آدرس‌دهی یک سازمان (سلسله‌مراتبی)
+
+کد مکان   ساختمان تهران    10.10.0.0/16
+          ├── کاربران      10.10.0.0/18
+          │     ├── طبقه ۱ 10.10.0.0/24
+          │     └── طبقه ۲ 10.10.1.0/24
+          ├── سرورها       10.10.64.0/19
+          │     ├── تولید   10.10.64.0/20
+          │     └── آزمون   10.10.80.0/20
+          ├── مدیریت      10.10.96.0/22   (Out-of-Band / IPMI)
+          ├── مهمان        10.10.100.0/24
+          └── DMZ          10.10.101.0/24
+کد مکان   شعبه اصفهان     10.20.0.0/16     (خلاصه‌ی همه‌ی سایت‌ها: 10.0.0.0/8)
+
+نکته: با این ساختار هر سایت با یک مسیر /16 و کل سازمان با /8 خلاصه می‌شود.</code></pre>
+<div class="kl-scroll"><table>
+  <tr><th>اصل طراحی</th><th>چرا</th></tr>
+  <tr><td>از <code>10.0.0.0/8</code> برای شبکه‌ی داخلی استفاده کنید</td><td>فضای زیاد، قابلیت خلاصه‌سازی، عدم تداخل با رنج‌های رایج دیگران</td></tr>
+  <tr><td>هر سایت یک بلوک بزرگ و هم‌تراز</td><td>خلاصه‌سازی ساده و مقاوم در برابر رشد</td></tr>
+  <tr><td>زیرشبکه‌ی جداگانه برای مدیریت</td><td>دسترسی <code>Out-of-Band</code> باید مستقل از شبکه‌ی کاربران باشد</td></tr>
+  <tr><td>DMZ مجزا برای سرویس‌های عمومی</td><td>کاهش سطح حمله و امکان اعمال ACL سختگیرانه</td></tr>
+  <tr><td>شبکه‌ی مهمان با اینترنت‌فقط</td><td>جداسازی کامل از منابع داخلی</td></tr>
+  <tr><td>۲۰٪ ظرفیت رزرو برای رشد</td><td>جلوگیری از آدرس‌دهی شلوغ و بی‌نظم در آینده</td></tr>
+  <tr><td>پرهیز از رنج‌هایی که با VPN شریک‌ها تداخل دارند</td><td>جلوگیری از <code>overlapping subnet</code> در اتصال‌های بین‌سازمانی</td></tr>
+</table></div>
+<div class="kl-scroll"><table>
+  <tr><th>ریسک امنیتی لایه‌ی شبکه</th><th>اقدام پیشگیرانه</th></tr>
+  <tr><td>ARP Spoofing / MITM</td><td>Dynamic ARP Inspection، جدول ARP استاتیک برای Gateway</td></tr>
+  <tr><td>DHCP Rogue Server</td><td>DHCP Snooping و Port Security روی سوئیچ</td></tr>
+  <tr><td>دسترسی گسترده‌ی بین‌زیرشبکه‌ای</td><td>قاعده‌ی «Deny by default» و ACL بین شبکه‌ها</td></tr>
+  <tr><td>IP Spoofing</td><td>uRPF / Anti-spoofing در لبه و فیلتر RFC 1918 روی اینترفیس عمومی</td></tr>
+  <tr><td>اسکن شبکه و پورت‌های باز</td><td>بستن سرویس‌های بی‌استفاده، فایروال مبتنی بر هاست، مانیتورینگ</td></tr>
+  <tr><td>آدرس‌دهی IP عمومی روی سرورها</td><td>NAT/Reverse Proxy و قرار دادن سرور در شبکه‌ی خصوصی</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code># فایروال میزبان با nftables: فقط اجازه‌ی لازم
+sudo nft add table inet filter
+sudo nft add chain inet filter input '{ type filter hook input priority 0; policy drop; }'
+sudo nft add rule inet filter input ct state established,related accept
+sudo nft add rule inet filter input iif lo accept
+sudo nft add rule inet filter input tcp dport { 22, 443 } accept
+
+# فیلتر کردن رنج‌های خصوصی روی اینترفیس عمومی (Anti-spoofing)
+sudo iptables -A INPUT -i eth0 -s 10.0.0.0/8 -j DROP
+sudo iptables -A INPUT -i eth0 -s 192.168.0.0/16 -j DROP
+
+# مشاهده‌ی اثر قواعد
+sudo nft list ruleset</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">مستندسازی اجباری است</span>
+هر تخصیص بلوک را با تاریخ، مالک و هدف ثبت کنید. فرق یک شبکه‌ی قابل‌اداره و یک شبکه‌ی
+دردسرساز، تقریباً همیشه یک فایل <code>IPAM</code> به‌روز است.
+</div>
+</section>
+
+<section id="s13">
+<h2><span class="kl-num">بخش ۱۳</span>عیب‌یابی شبکه: گام‌به‌گام و Case Study</h2>
+<p>
+عیب‌یابی شبکه یعنی رفتن از پایین‌ترین لایه به بالا، نه حدس‌زدن. در هر گام یک سؤال می‌پرسید و با
+یک دستور به آن پاسخ می‌دهید.
+</p>
+<figure class="kl-fig">
+<svg viewBox="0 0 770 340" role="img" aria-label="چک‌لیست عیب‌یابی شبکه از لایه‌ی لینک تا سرویس: ip link، ip addr، ip neigh، ip route، mtr، dig و ss">
+  <rect class="s-group" x="24" y="14" width="722" height="312" rx="14"/>
+  <text class="s-group-t" x="385" y="38" text-anchor="middle">عیب‌یابی از لایه‌ی ۱ به بالاتر — هر گام یک سؤال</text>
+
+  <g class="s-node" style="--kl-i:1"><rect class="s-c4" x="70" y="52" width="660" height="34" rx="8"/><text class="s-t2" x="400" y="74" text-anchor="middle">۱) ip link — اینترفیس UP و کابل/BSSID برقرار است؟</text></g>
+  <g class="s-node" style="--kl-i:2"><rect class="s-c4" x="70" y="92" width="660" height="34" rx="8"/><text class="s-t2" x="400" y="114" text-anchor="middle">۲) ip addr — IP و ماسک درست است؟ (نه 169.254.x.x)</text></g>
+  <g class="s-node" style="--kl-i:3"><rect class="s-c4" x="70" y="132" width="660" height="34" rx="8"/><text class="s-t2" x="400" y="154" text-anchor="middle">۳) ip neigh / arping — همسایه پاسخ می‌دهد؟ (تست لایه‌ی ۲)</text></g>
+  <g class="s-node" style="--kl-i:4"><rect class="s-c5" x="70" y="172" width="660" height="34" rx="8"/><text class="s-t2" x="400" y="194" text-anchor="middle">۴) ip route get — دروازه و مسیر خروجی درست است؟</text></g>
+  <g class="s-node" style="--kl-i:5"><rect class="s-c5" x="70" y="212" width="660" height="34" rx="8"/><text class="s-t2" x="400" y="234" text-anchor="middle">۵) mtr / traceroute — بسته در کدام گام گم می‌شود؟</text></g>
+  <g class="s-node" style="--kl-i:6"><rect class="s-warn" x="70" y="252" width="660" height="34" rx="8"/><text class="s-t2" x="400" y="274" text-anchor="middle">۶) dig / Resolve-DnsName — نام به IP درست تبدیل می‌شود؟</text></g>
+  <g class="s-node" style="--kl-i:7"><rect class="s-ok" x="70" y="292" width="660" height="30" rx="8"/><text class="s-t2" x="400" y="312" text-anchor="middle">۷) ss / Test-NetConnection -Port — سرویس روی پورت گوش می‌دهد؟</text></g>
+
+  <circle class="s-runner" r="5" cx="0" cy="0"><animateMotion dur="5s" repeatCount="indefinite" path="M 40 69 L 40 307"/></circle>
+</svg>
+<figcaption><b>چک‌لیست لایه‌به‌لایه:</b> از لینک شروع کنید و بالا بروید. هر گام با یک دستور پاسخ روشن می‌دهد و دامنه‌ی مشکل را نصف می‌کند.</figcaption>
+</figure>
+<div class="kl-scroll"><table>
+  <tr><th>نشانه</th><th>تشخیص</th><th>رفع</th></tr>
+  <tr><td>آدرس <code>169.254.x.x</code></td><td>DHCP پاسخ نداده (APIPA)</td><td>بررسی سرور/رله‌ی DHCP، کابل و VLAN</td></tr>
+  <tr><td>پینگ IP کار می‌کند، پینگ نام نه</td><td>مشکل DNS، نه شبکه</td><td><code>resolvectl status</code>، <code>dig @1.1.1.1</code></td></tr>
+  <tr><td>شبکه‌ی محلی OK، اینترنت نه</td><td>دروازه‌ی پیش‌فرض یا NAT</td><td><code>ip route get 8.8.8.8</code>، بررسی NAT</td></tr>
+  <tr><td>«Host Unreachable» برای همسایه‌ی همان شبکه</td><td>ماسک اشتباه یا VLAN متفاوت</td><td>مقایسه‌ی ماسک/پیشوند دو دستگاه</td></tr>
+  <tr><td>پینگ کوچک OK، انتقال بزرگ قطع می‌شود</td><td>MTU/MSS و Fragment</td><td><code>ping -M do -s 1472</code>، تنظیم MSS Clamping</td></tr>
+  <tr><td>دو دستگاه ادعای یک IP دارند</td><td>IP تکراری</td><td>اسکن IP رایگان، رزرو DHCP، <code>arping</code></td></tr>
+  <tr><td>ارتباط یک‌طرفه یا بی‌نظم</td><td>مسیریابی نامتقارن یا تداخل زیرشبکه</td><td><code>ip route get</code> روی دو سر، بازبینی مسیرها</td></tr>
+  <tr><td>پورت بسته است ولی سرویس اجرا می‌شود</td><td>Listen روی <code>127.0.0.1</code> یا فایروال</td><td><code>ss -tulpn</code> و بازبینی Bind و Firewall</td></tr>
+</table></div>
+<pre class="kl-code" data-lang="bash"><code># ── دنباله‌ی عیب‌یابی عملی ────────────────────────────────────
+ip -br addr                                  # ۱) آدرس و وضعیت
+ip route get 8.8.8.8                         # ۴) خروجی از کدام مسیر؟
+mtr -rwzc 20 8.8.8.8                         # ۵) کجا بسته می‌ریزد؟
+dig +short google.com && dig @1.1.1.1 +short google.com   # ۶) DNS
+ss -tulpn | grep ':443'                      # ۷) سرویس گوش می‌دهد؟
+sudo tcpdump -ni eth0 -c 20 'host 8.8.8.8'   # نگاه به بسته‌های واقعی
+
+# تست MTU: بزرگ‌ترین بسته‌ای که بدون Fragment رد می‌شود
+ping -M do -s 1472 8.8.8.8      # اگر OK شد، MTU ≥ 1500
+ping -M do -s 1400 8.8.8.8      # برای تونل‌ها (VPN) معمولاً این پاسخ می‌دهد</code></pre>
+<div class="kl-box kl-ok"><span class="kl-h">Case Study ۱ — «همسایه‌ها جواب می‌دهند، اینترنت نه»</span>
+سروری روی <code>10.10.0.15/24</code> می‌تواند <code>10.10.0.1</code> را پینگ کند اما
+<code>8.8.8.8</code> را نه. <code>ip route get 8.8.8.8</code> نشان می‌دهد هیچ مسیر پیش‌فرضی
+وجود ندارد. با <code>ip route add default via 10.10.0.1</code> مشکل حل می‌شود. پس از رفع،
+مسیر در <code>netplan</code> ماندگار می‌شود.
+</div>
+<div class="kl-box kl-ok"><span class="kl-h">Case Study ۲ — «نیمی از کاربران به سرویس نمی‌رسند»</span>
+یک سرویس روی <code>192.168.20.10/25</code> اجرا می‌شود. کاربران بازه‌ی <code>.128 – .254</code>
+به آن نمی‌رسند، چون آن‌ها در زیرشبکه‌ی دیگرند و به‌جای رفتن از Router، ARP می‌زنند و پاسخی
+نمی‌گیرند. راه‌حل: یکسان‌کردن پیشوند روی همه‌ی کلاینت‌ها یا افزودن مسیر در Router.
+</div>
+<div class="kl-box kl-warn"><span class="kl-h">Case Study ۳ — «پینگ OK، ولی دانلود بزرگ قطع می‌شود»</span>
+دسترسی از طریق VPN برقرار است، <code>ping</code> با بسته‌ی کوچک موفق است ولی
+<code>scp</code> می‌شکند. تست با <code>ping -M do -s 1472</code> شکست می‌خورد و با
+<code>-s 1372</code> موفق می‌شود؛ یعنی MTU تونل کمتر از ۱۵۰۰ است. با تنظیم
+<code>MSS Clamping</code> روی Router (یا <code>mtu</code> روی اینترفیس تونل) مشکل حل می‌شود.
+</div>
+</section>
+
+<section id="s14">
+<h2><span class="kl-num">بخش ۱۴</span>تمرین‌های عملی، سوالات مهم و جمع‌بندی</h2>
+<p>
+بدون تمرین، Subnetting در ذهن جا نمی‌افتد. این تمرین‌ها را روی کاغذ حل کنید و بعد با
+<code>ipcalc</code> یا <code>Get-SubnetInfo</code> اعتبارسنجی کنید.
+</p>
+<h3>تمرین‌های عملی</h3>
+<div class="kl-scroll"><table>
+  <tr><th>#</th><th>سؤال</th><th>پاسخ</th></tr>
+  <tr><td>۱</td><td>Network و Broadcast آدرس <code>192.168.15.200/26</code>؟</td><td><code>192.168.15.192</code> و <code>192.168.15.255</code> (میزبان‌های .193 – .254)</td></tr>
+  <tr><td>۲</td><td><code>10.0.0.0/24</code> را به شش زیرشبکه‌ی کافی تقسیم کنید.</td><td><code>/27</code> (۳۰ میزبان) — با <code>ipcalc -s 30 30 30 30 30 30 10.0.0.0/24</code></td></tr>
+  <tr><td>۳</td><td>دو آدرس <code>172.16.5.10/25</code> و <code>172.16.5.130/25</code> هم‌شبکه‌اند؟</td><td>خیر؛ اولی در <code>.0/25</code> و دومی در <code>.128/25</code> — نیازمند Router</td></tr>
+  <tr><td>۴</td><td>آیا <code>192.168.1.10/24</code> و <code>192.168.1.200/24</code> هم‌شبکه‌اند؟</td><td>بله؛ پیشوند یکسان و هر دو در <code>192.168.1.0/24</code></td></tr>
+  <tr><td>۵</td><td>خلاصه‌ی <code>10.10.0.0/24</code> تا <code>10.10.3.0/24</code> چیست؟</td><td><code>10.10.0.0/22</code></td></tr>
+  <tr><td>۶</td><td>برای ۲ میزبان (لینک WAN) کدام پیشوند؟</td><td><code>/30</code>؛ در <code>RFC 3021</code> می‌توان از <code>/31</code> هم استفاده کرد</td></tr>
+</table></div>
+<h3>سوالات مهم (Q&amp;A)</h3>
+<div class="kl-box kl-deep"><span class="kl-h">۱) چرا از هر زیرشبکه ۲ آدرس کم می‌کنیم؟</span>
+یک آدرس برای <strong>Network</strong> (همه‌ی بیت‌های میزبان صفر) و یکی برای
+<strong>Broadcast</strong> (همه‌ی بیت‌های میزبان یک) رزرو است. استثنا: <code>/31</code> در
+لینک‌های Point-to-Point (RFC 3021) و <code>/32</code> برای یک آدرس تک (<em>Host Route</em>).
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۲) تفاوت Subnet Mask و Wildcard Mask چیست؟</span>
+ماسک بیت‌های شبکه را <code>1</code> و بیت‌های میزبان را <code>0</code> می‌گیرد؛ Wildcard
+دقیقاً برعکس است. مجموعشان همیشه <code>255.255.255.255</code> است. Wildcard در ACL و
+پروتکل‌های مسیریابی استفاده می‌شود.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۳) چطور سریع بفهمم دو IP در یک شبکه‌اند؟</span>
+هر دو را با ماسک <code>AND</code> کنید. اگر Network یکسان شد، هم‌شبکه‌اند؛ وگرنه ترافیک از
+Router می‌گذرد. با Python: <code>ipaddress.ip_interface(a).network == ipaddress.ip_interface(b).network</code>.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۴) تفاوت Subnetting و VLSM چیست؟</span>
+Subnetting همه‌ی زیرشبکه‌ها را <em>هم‌اندازه</em> می‌سازد؛ VLSM اجازه می‌دهد ماسک هر زیرشبکه
+متفاوت باشد و فضا بهینه مصرف شود. VLSM همیشه از بزرگ‌ترین نیاز شروع می‌شود.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۵) چرا <code>ping 8.8.8.8</code> کار می‌کند اما <code>ping google.com</code> نه؟</span>
+یعنی IP و مسیریابی سالم است و فقط نام‌گذاری مشکل دارد: <code>resolv.conf</code> یا
+<code>/etc/hosts</code> یا سرور DNS. با <code>dig @1.1.1.1 google.com</code> تفکیک کنید.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۶) آدرس <code>169.254.x.x</code> چه معنایی دارد؟</span>
+Link-Local یا APIPA است؛ یعنی کلاینت نتوانسته از DHCP آدرس بگیرد و خودش یکی ساخته. تقریباً
+همیشه نشانه‌ی مشکل در DHCP، کابل یا VLAN است — نه یک آدرس سالم.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۷) NAT چه‌کار می‌کند و چرا لازم است؟</span>
+آدرس‌های خصوصی در اینترنت مسیریابی نمی‌شوند. NAT در لبه، آدرس داخلی را به یک آدرس عمومی
+ترجمه می‌کند و به‌این‌ترتیب هزاران دستگاه با یک آدرس عمومی به بیرون می‌روند.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۸) چرا IPv6 در LAN همیشه <code>/64</code> است؟</span>
+چون <code>SLAAC</code> و Autoconfiguration بر پایه‌ی ۶۴ بیت اینترفیس طراحی شده‌اند. شکستن
+<code>/64</code> روی LAN باعث می‌شود بخش زیادی از دستگاه‌ها نتوانند خودکار آدرس بگیرند.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۹) Route Summarization چگونه محاسبه می‌شود؟</span>
+شبکه‌های پیوسته و هم‌تراز را به باینری ببرید و طولانی‌ترین پیشوند مشترک را پیدا کنید.
+پیشوند نتیجه، همان طول مشترک است: چهار شبکه‌ی <code>/24</code> پشت‌سرهم → <code>/22</code>.
+</div>
+<div class="kl-box kl-deep"><span class="kl-h">۱۰) چرا از <code>ifconfig</code> به <code>ip</code> مهاجرت کنیم؟</span>
+<code>ip</code> سریع‌تر، اتمیک‌تر، از IPv6 بومی پشتیبانی می‌کند و کارهایی مثل
+<code>ip route get</code> و <code>ip -br</code> را ممکن می‌کند که در مجموعه‌ی قدیمی معادل
+ساده‌ای ندارند.
+</div>
+<h3>مراجع و منابع</h3>
+<ul>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc1918" target="_blank" rel="noopener">RFC 1918 — Address Allocation for Private Internets</a></li>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc4632" target="_blank" rel="noopener">RFC 4632 — Classless Inter-Domain Routing (CIDR)</a></li>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc3021" target="_blank" rel="noopener">RFC 3021 — Using 31-Bit Prefixes on Point-to-Point Links</a></li>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc4291" target="_blank" rel="noopener">RFC 4291 — IP Version 6 Addressing Architecture</a></li>
+  <li><a href="https://man7.org/linux/man-pages/man8/ip.8.html" target="_blank" rel="noopener">ip(8) — Linux man page</a></li>
+  <li><a href="https://github.com/kjokjo/ipcalc" target="_blank" rel="noopener">ipcalc — شبکه‌ی ابزار محاسبه</a></li>
+  <li><a href="https://learn.microsoft.com/powershell/module/nettcpip/" target="_blank" rel="noopener">Microsoft Learn — NetTCPIP PowerShell Cmdlets</a></li>
+  <li><a href="https://www.subnet-calculator.com/" target="_blank" rel="noopener">subnet-calculator.com</a> · <a href="https://cidr.xyz/" target="_blank" rel="noopener">cidr.xyz</a></li>
+</ul>
+<div class="kl-box kl-ok"><span class="kl-h">جمع‌بندی در یک نفس</span>
+آدرس IP = بخش Network + بخش Host؛ مرز را <strong>ماسک/CIDR</strong> تعیین می‌کند.
+<strong>AND</strong> برای Network، <strong>OR</strong> برای Broadcast. <strong>Subnetting</strong>
+برای جداسازی، <strong>VLSM</strong> برای بهینه‌سازی، <strong>Summarization</strong> برای
+کوچک‌کردن جدول مسیر. و همیشه: محاسبه با ابزار، مستندسازی با <code>IPAM</code>، و عیب‌یابی
+لایه‌به‌لایه.
+</div>
+<h3>مقالات مرتبط</h3>
+<ul>
+  <li><a href="web-server.html">Web Server چیست؟</a></li>
+  <li><a href="load-balancing.html">Load Balancing</a></li>
+  <li><a href="reverse-proxy.html">Reverse Proxy</a></li>
+  <li><a href="tls-https.html">TLS / HTTPS</a></li>
+  <li><a href="server-security.html">Server Security</a></li>
+  <li><a href="server-troubleshooting.html">Server Troubleshooting</a></li>
+  <li><a href="docker-server-deployment.html">Docker Server Deployment</a></li>
+  <li><a href="server-architecture.html">آکادمی معماری سرور</a></li>
+</ul>
+</section>
+      </div>
+
+      <footer class="article-end-box"><div class="author-card-lg"><div class="author-card-avatar">ح</div><div class="author-card-content"><h3 class="author-card-name">نوشته شده توسط حیدر فرحانی</h3><p class="author-card-bio">مهندس نرم‌افزار با تمرکز بر اندروید، کاتلین و معماری سیستم‌ها.</p></div></div></footer>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-card toc-card">
+        <div class="sidebar-header"><div class="sidebar-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>فهرست مطالب</span></div></div>
+        <div class="toc-scroll-container">
+          <ul class="toc-list" id="sidebar-toc">
+            <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">IP چیست و چرا مهم است؟</span></a></li>
+            <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">آناتومی IPv4: بیت، اکتت، Network و Host</span></a></li>
+            <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">کلاس‌ها، آدرس خصوصی و Public، NAT</span></a></li>
+            <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Subnet Mask و CIDR</span></a></li>
+            <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">محاسبات شبکه: Network، Broadcast و بازه‌ی Host</span></a></li>
+            <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Subnetting: تقسیم یک شبکه به زیرشبکه</span></a></li>
+            <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">VLSM: تخصیص بهینه‌ی فضای آدرس</span></a></li>
+            <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Supernetting و Route Summarization</span></a></li>
+            <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">IPv6: آدرس‌دهی نسل جدید</span></a></li>
+            <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">ابزارهای خط فرمان در Linux</span></a></li>
+            <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ابزارهای خط فرمان در Windows (PowerShell)</span></a></li>
+            <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">طراحی آدرس‌دهی سازمانی و نکات امنیتی</span></a></li>
+            <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">عیب‌یابی شبکه: گام‌به‌گام و Case Study</span></a></li>
+            <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">تمرین‌های عملی، سوالات مهم و جمع‌بندی</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-actions">
+          <button class="btn-action-block" id="sidebar-share-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle></svg><span>اشتراک‌گذاری مقاله</span></button>
+          <a href="server-architecture.html" class="btn-action-block" style="text-align:center;"><span>نقشه‌ی راه آکادمی ⚡</span></a>
+        </div>
+      </div>
+    </aside>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-brand">مقالات من — حیدر فرحانی</div><p>بخشی از آکادمی معماری سرور.</p></footer>
+  <div class="floating-actions"><button class="btn-fab" id="back-to-top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button></div>
+
+  <div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header"><div class="sidebar-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg><span>فهرست بخش‌ها</span></div><button class="btn-icon" id="btn-close-drawer" style="width:32px;height:32px;">✕</button></div>
+    <div class="toc-scroll-container">
+      <ul class="toc-list" id="drawer-toc">
+        <li class="toc-item"><a href="#s1" class="toc-link" data-target="s1"><span class="toc-num">۱</span><span class="toc-text">IP چیست و چرا مهم است؟</span></a></li>
+        <li class="toc-item"><a href="#s2" class="toc-link" data-target="s2"><span class="toc-num">۲</span><span class="toc-text">آناتومی IPv4: بیت، اکتت، Network و Host</span></a></li>
+        <li class="toc-item"><a href="#s3" class="toc-link" data-target="s3"><span class="toc-num">۳</span><span class="toc-text">کلاس‌ها، آدرس خصوصی و Public، NAT</span></a></li>
+        <li class="toc-item"><a href="#s4" class="toc-link" data-target="s4"><span class="toc-num">۴</span><span class="toc-text">Subnet Mask و CIDR</span></a></li>
+        <li class="toc-item"><a href="#s5" class="toc-link" data-target="s5"><span class="toc-num">۵</span><span class="toc-text">محاسبات شبکه: Network، Broadcast و بازه‌ی Host</span></a></li>
+        <li class="toc-item"><a href="#s6" class="toc-link" data-target="s6"><span class="toc-num">۶</span><span class="toc-text">Subnetting: تقسیم یک شبکه به زیرشبکه</span></a></li>
+        <li class="toc-item"><a href="#s7" class="toc-link" data-target="s7"><span class="toc-num">۷</span><span class="toc-text">VLSM: تخصیص بهینه‌ی فضای آدرس</span></a></li>
+        <li class="toc-item"><a href="#s8" class="toc-link" data-target="s8"><span class="toc-num">۸</span><span class="toc-text">Supernetting و Route Summarization</span></a></li>
+        <li class="toc-item"><a href="#s9" class="toc-link" data-target="s9"><span class="toc-num">۹</span><span class="toc-text">IPv6: آدرس‌دهی نسل جدید</span></a></li>
+        <li class="toc-item"><a href="#s10" class="toc-link" data-target="s10"><span class="toc-num">۱۰</span><span class="toc-text">ابزارهای خط فرمان در Linux</span></a></li>
+        <li class="toc-item"><a href="#s11" class="toc-link" data-target="s11"><span class="toc-num">۱۱</span><span class="toc-text">ابزارهای خط فرمان در Windows (PowerShell)</span></a></li>
+        <li class="toc-item"><a href="#s12" class="toc-link" data-target="s12"><span class="toc-num">۱۲</span><span class="toc-text">طراحی آدرس‌دهی سازمانی و نکات امنیتی</span></a></li>
+        <li class="toc-item"><a href="#s13" class="toc-link" data-target="s13"><span class="toc-num">۱۳</span><span class="toc-text">عیب‌یابی شبکه: گام‌به‌گام و Case Study</span></a></li>
+        <li class="toc-item"><a href="#s14" class="toc-link" data-target="s14"><span class="toc-num">۱۴</span><span class="toc-text">تمرین‌های عملی، سوالات مهم و جمع‌بندی</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toast-text">لینک کپی شد!</span></div>
+</body>
+</html>

@@ -174,7 +174,7 @@
     </div>
 
     <div class="tags-filter" id="articles-filters" role="group" aria-label="فیلتر بر اساس موضوع">
-      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۶۲</span></button>
+      <button type="button" class="tag-btn active" data-filter="all" data-label="همهٔ مقالات" aria-pressed="true">همه <span class="chip-count" data-count="all">۶۳</span></button>
       <button type="button" class="tag-btn" data-filter="kotlin" data-label="کاتلین و هم‌زمانی" aria-pressed="false">کاتلین و هم‌زمانی <span class="chip-count" data-count="kotlin">۴</span></button>
       <button type="button" class="tag-btn" data-filter="android" data-label="اندروید و کامپوز" aria-pressed="false">اندروید و کامپوز <span class="chip-count" data-count="android">۴</span></button>
       <button type="button" class="tag-btn" data-filter="architecture" data-label="معماری نرم‌افزار" aria-pressed="false">معماری نرم‌افزار <span class="chip-count" data-count="architecture">۱۸</span></button>
@@ -183,18 +183,29 @@
       <button type="button" class="tag-btn" data-filter="fundamentals" data-label="مبانی و کیفیت کد" aria-pressed="false">مبانی و کیفیت کد <span class="chip-count" data-count="fundamentals">۵</span></button>
       <button type="button" class="tag-btn" data-filter="server" data-label="سرور و استقرار بک‌اند" aria-pressed="false">سرور و استقرار بک‌اند <span class="chip-count" data-count="server">۲۸</span></button>
       <button type="button" class="tag-btn" data-filter="javascript" data-label="جاوااسکریپت و همزمانی" aria-pressed="false">جاوااسکریپت و همزمانی <span class="chip-count" data-count="javascript">۱</span></button>
+      <button type="button" class="tag-btn" data-filter="network" data-label="شبکه و آدرس‌دهی" aria-pressed="false">شبکه و آدرس‌دهی <span class="chip-count" data-count="network">۲</span></button>
     </div>
   </div>
 
   <!-- ================= Results bar ================= -->
   <div class="posts-results">
     <h2 class="section-title">مقالات منتشرشده</h2>
-    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۶۲ مقاله</p>
+    <p class="posts-summary" id="posts-summary" aria-live="polite">همهٔ ۶۳ مقاله</p>
   </div>
 
   <!-- ================= Articles grid ================= -->
   <main class="posts-container">
     <div class="posts-grid" id="articles-grid">
+
+      <article class="post-card" data-category="network" data-tags="network ip addressing ipv4 ipv6 subnetting cidr vlsm subnetmask routing linux powershell" data-order="63" data-minutes="75">
+        <a class="post-card-link" href="ip-addressing.html">
+          <div class="post-card-head"><span class="post-cat">شبکه و آدرس‌دهی</span></div>
+          <h3 class="post-title">آدرس‌دهی IP: راهنمای جامع Subnetting، CIDR و VLSM</h3>
+          <p class="post-excerpt">IPv4 و IPv6، Network و Host، Subnet Mask و CIDR، محاسبه‌ی Network و Broadcast، Subnetting و VLSM، Route Summarization، ابزارهای Linux و PowerShell و عیب‌یابی شبکه.</p>
+          <div class="post-meta"><span class="post-meta-item post-time">⏱ ~۷۵ دقیقه</span><span class="post-meta-item post-views" data-pv="articles/ip-addressing.html">👁 —</span><span class="post-meta-item post-date">مهر ۱۴۰۵</span></div>
+          <div class="post-foot"><ul class="post-tags"><li class="post-tag">#IPv4</li><li class="post-tag">#Subnetting</li><li class="post-tag">#CIDR</li></ul><span class="post-go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg></span></div>
+        </a>
+      </article>
 
       <article class="post-card" data-category="javascript" data-tags="javascript async concurrency eventloop promise threading" data-order="62" data-minutes="60">
         <a class="post-card-link" href="javascript-event-loop.html">
